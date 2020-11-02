@@ -1,19 +1,22 @@
 #include "ModuleProgram.h"
 #include "GL/glew.h"
 
-ModuleProgram::ModuleProgram(const char* vertexPath, const char* fragmentPath)
+ModuleProgram::ModuleProgram()
 {
-	const char* vShaderCode = LoadShaderSource(vertexPath);
-	const char* fShaderCode = LoadShaderSource(fragmentPath);
-	unsigned int vertex, fragment;
-	CompileShader(vertex, vShaderCode);
-	CompileShader(fragment, fShaderCode);
-	ID = CreateProgram(vertex, fragment);
 }
 
 // Destructor
 ModuleProgram::~ModuleProgram()
 {
+}
+
+void ModuleProgram::CreateProgramFromFile(const char* vertexPath, const char* fragmentPath)
+{
+	const char* vShaderCode = LoadShaderSource(vertexPath);
+	const char* fShaderCode = LoadShaderSource(fragmentPath);
+	unsigned int vertex = CompileShader(GL_VERTEX_SHADER, vShaderCode);
+	unsigned int fragment = CompileShader(GL_FRAGMENT_SHADER, fShaderCode);
+	ID = CreateProgram(vertex, fragment);
 }
 
 // Called before quitting
@@ -36,11 +39,13 @@ char* ModuleProgram::LoadShaderSource(const char* shader_file_name)
 		fseek(file, 0, SEEK_END);
 		int size = ftell(file);
 		data = (char*)malloc(size + 1);
+		fseek(file, 0, SEEK_SET);
 		fread(data, 1, size, file);
 		data[size] = 0;
 		fclose(file);
 	}
 	return data;
+
 }
 
 unsigned ModuleProgram::CompileShader(unsigned type, const char* source)
@@ -66,7 +71,7 @@ unsigned ModuleProgram::CompileShader(unsigned type, const char* source)
 	return shader_id;
 }
 
-unsigned CreateProgram(unsigned vtx_shader, unsigned frg_shader)
+unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader)
 {
 	unsigned program_id = glCreateProgram();
 	glAttachShader(program_id, vtx_shader);
@@ -90,4 +95,5 @@ unsigned CreateProgram(unsigned vtx_shader, unsigned frg_shader)
 	glDeleteShader(vtx_shader);
 	glDeleteShader(frg_shader);
 	return program_id;
+
 }

@@ -7,8 +7,10 @@ class ModuleProgram : public Module
 {
 public:
 	unsigned int ID;
-	ModuleProgram(const char* vertexPath, const char* fragmentPath);
+	ModuleProgram();
 	~ModuleProgram();
+
+	void CreateProgramFromFile(const char* vertexPath, const char* fragmentPath);
 
 	bool CleanUp();
 private:

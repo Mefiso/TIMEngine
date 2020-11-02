@@ -41,8 +41,9 @@ bool ModuleRender::Init()
 	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	glEnable(GL_DEPTH_TEST); // Enable depth test
-	glEnable(GL_CULL_FACE); // Enable cull backward faces
-	glFrontFace(GL_CCW); // Front faces will be counter clockwise
+	//glEnable(GL_CULL_FACE); // Enable cull backward faces
+	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
+	glDisable(GL_CULL_FACE);
 
 	return true;
 }
@@ -52,7 +53,7 @@ update_status ModuleRender::PreUpdate()
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
 	glViewport(0, 0, w, h);
-	glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
+	glClearColor(0.0f, 0.1f, 0.0f, 0.1f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	return UPDATE_CONTINUE;
