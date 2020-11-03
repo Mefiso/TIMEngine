@@ -1,5 +1,4 @@
 #pragma once
-#include<string>
 #include "Module.h"
 #include "Globals.h"
 
@@ -17,5 +16,5 @@ private:
 	char* LoadShaderSource(const char* shader_file_name);
 	unsigned CompileShader(unsigned type, const char* source);
 	unsigned CreateProgram(unsigned vtx_shader, unsigned frg_shader);
-	void checkCompileErrors(unsigned int shader, std::string type);
+	void checkCompileErrors(unsigned int shader, const char* type);
 };

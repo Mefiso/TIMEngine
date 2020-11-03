@@ -1,3 +1,6 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 #include "ModuleProgram.h"
 #include "GL/glew.h"
 
@@ -17,14 +20,15 @@ void ModuleProgram::CreateProgramFromFile(const char* vertexPath, const char* fr
 	unsigned int vertex = CompileShader(GL_VERTEX_SHADER, vShaderCode);
 	unsigned int fragment = CompileShader(GL_FRAGMENT_SHADER, fShaderCode);
 	ID = CreateProgram(vertex, fragment);
+	free((void*) vShaderCode);
+	free((void*) fShaderCode);
 }
 
 // Called before quitting
 bool ModuleProgram::CleanUp()
 {
 	LOG("Destroying Shader Program");
-
-	//Destroy window
+	glDeleteProgram(ID);
 
 	return true;
 }
@@ -44,6 +48,8 @@ char* ModuleProgram::LoadShaderSource(const char* shader_file_name)
 		data[size] = 0;
 		fclose(file);
 	}
+	else
+		LOG("Can't read file %s", shader_file_name);
 	return data;
 
 }
@@ -53,21 +59,9 @@ unsigned ModuleProgram::CompileShader(unsigned type, const char* source)
 	unsigned shader_id = glCreateShader(type);
 	glShaderSource(shader_id, 1, &source, 0);
 	glCompileShader(shader_id);
-	int res = GL_FALSE;
-	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &res);
-	if (res == GL_FALSE)
-	{
-		int len = 0;
-		glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &len);
-		if (len > 0)
-		{
-			int written = 0;
-			char* info = (char*)malloc(len);
-			glGetShaderInfoLog(shader_id, len, &written, info);
-			LOG("Log Info: %s", info);
-			free(info);
-		}
-	}
+	const char* type_name = type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT";
+	checkCompileErrors(shader_id, type_name);
+
 	return shader_id;
 }
 
@@ -77,23 +71,49 @@ unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader)
 	glAttachShader(program_id, vtx_shader);
 	glAttachShader(program_id, frg_shader);
 	glLinkProgram(program_id);
-	int res;
-	glGetProgramiv(program_id, GL_LINK_STATUS, &res);
-	if (res == GL_FALSE)
-	{
-		int len = 0;
-		glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &len);
-		if (len > 0)
-		{
-			int written = 0;
-			char* info = (char*)malloc(len);
-			glGetProgramInfoLog(program_id, len, &written, info);
-			LOG("Program Log Info: %s", info);
-			free(info);
-		}
-	}
+	checkCompileErrors(program_id, "PROGRAM");
 	glDeleteShader(vtx_shader);
 	glDeleteShader(frg_shader);
 	return program_id;
+}
 
+// utility function for checking shader compilation/linking errors.
+	// ------------------------------------------------------------------------
+void ModuleProgram::checkCompileErrors(unsigned int shader, const char* type)
+{
+	int success;
+	if (type != "PROGRAM")
+	{
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			int len = 0;
+			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+			if (len > 0)
+			{
+				int written = 0;
+				char* infoLog = (char*)malloc(len);
+				glGetShaderInfoLog(shader, len, &written, infoLog);
+				LOG("ERROR::SHADER_COMPILATION_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", type, infoLog);
+				free(infoLog);
+			}
+		}
+	}
+	else
+	{
+		glGetProgramiv(shader, GL_LINK_STATUS, &success);
+		if (!success)
+		{
+			int len = 0;
+			glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &len);
+			if (len > 0)
+			{
+				int written = 0;
+				char* infoLog = (char*)malloc(len);
+				glGetProgramInfoLog(shader, len, &written, infoLog);
+				LOG("ERROR::PROGRAM_LINKING_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", type, infoLog);
+				free(infoLog);
+			}
+		}
+	}
 }
