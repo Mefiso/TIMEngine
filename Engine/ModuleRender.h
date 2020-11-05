@@ -23,12 +23,13 @@ public:
 	void RotateCameraMouse(float xoffset, float yoffset);
 	void MouseWheel(float xoffset, float yoffset);
 
+	void* context;
+
 private:
 	void TranslateCamera(float deltaTime);
 	void RotateCameraKeys(float deltaTime);
 
 private:
-	void* context;
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
 };

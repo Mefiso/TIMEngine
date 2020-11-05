@@ -35,7 +35,7 @@ update_status ModuleCamera::PreUpdate()
 {
 	// Gramm-Schmidt process, comment if using RotateCamera
 
-	/*// new front with simple trigonometry
+	// new front with simple trigonometry
 	float3 front;
 	front.x = cos(DegToRad(Yaw)) * cos(DegToRad(Pitch));
 	front.y = sin(DegToRad(Pitch));
@@ -44,7 +44,7 @@ update_status ModuleCamera::PreUpdate()
 	
 	Right = Cross(Front, WorldUp).Normalized(); // 6 scalar products and 3 subtractions + 3 scalar products, 2 sums and one sqrt
 	Up = Cross(Right, Front).Normalized();
-	*/
+	
 
 	// Update frustum
 	UpdateFrustum();
@@ -137,8 +137,8 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	if (Pitch < -89.0f)
 		Pitch = -89.0f;
 
-	RotateCamera(Right, Pitch-oldPitch);
-	RotateCamera(WorldUp, -xoffset);
+	//RotateCamera(Right, Pitch-oldPitch);
+	//RotateCamera(WorldUp, -xoffset);
 
 }
 

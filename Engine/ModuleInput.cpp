@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleRender.h"
+#include "ModuleEditor.h"
 #include "SDL/include/SDL.h"
 
 #define MAX_KEYS 300
@@ -75,6 +76,7 @@ update_status ModuleInput::PreUpdate()
 			case SDL_MOUSEWHEEL:
 				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
         }
+		App->editor->SendEvent(sdlEvent);
     }
 
     return UPDATE_CONTINUE;

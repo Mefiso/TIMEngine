@@ -20,14 +20,6 @@ ModuleRender::~ModuleRender()
 bool ModuleRender::Init()
 {
 	LOG("Creating Renderer context");
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	
 	// Create an OpenGL context associated with the window.
 	context = SDL_GL_CreateContext(App->window->window);
@@ -139,7 +131,6 @@ bool ModuleRender::CleanUp()
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
 	App->camera->aspectRatio = (float) width / (float) height;
-	App->camera->HFOV = (height - App->window->height) != 0 ? App->camera->VFOV * App->camera->aspectRatio : App->camera->HFOV;
 	
 	App->window->width = width;
 	App->window->height = height;
