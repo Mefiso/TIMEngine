@@ -69,7 +69,11 @@ update_status ModuleInput::PreUpdate()
                     App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
                 break;
 			case SDL_MOUSEMOTION:
-
+				if (GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+					App->renderer->RotateCameraMouse(sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
+				break;
+			case SDL_MOUSEWHEEL:
+				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
         }
     }
 

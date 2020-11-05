@@ -7,7 +7,7 @@
 
 ModuleCamera::ModuleCamera(float3 position, float3 up, float yaw, float pitch, float near_plane, float far_plane) : Module(),
 	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), HFOV(HORIZONTALFOV), 
-	Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
+	VFOV(HORIZONTALFOV/ASPECTRATIO), Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
 	
 {
 }
@@ -33,18 +33,18 @@ bool ModuleCamera::Init()
 // Called every draw update
 update_status ModuleCamera::PreUpdate()
 {
-	// Gramm-Schmidt process
+	// Gramm-Schmidt process, comment if using RotateCamera
 
-	// new front with simple trigonometry
+	/*// new front with simple trigonometry
 	float3 front;
 	front.x = cos(DegToRad(Yaw)) * cos(DegToRad(Pitch));
 	front.y = sin(DegToRad(Pitch));
 	front.z = sin(DegToRad(Yaw)) * cos(DegToRad(Pitch));
 	Front = front.Normalized();
 	
-	Right = Cross(Front, WorldUp).Normalized(); // 6 scalar products and 3 subtractions
+	Right = Cross(Front, WorldUp).Normalized(); // 6 scalar products and 3 subtractions + 3 scalar products, 2 sums and one sqrt
 	Up = Cross(Right, Front).Normalized();
-	
+	*/
 
 	// Update frustum
 	UpdateFrustum();
@@ -74,6 +74,7 @@ float4x4 ModuleCamera::ProjectionMatrix()
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
 	float celerity = MovementSpeed * deltaTime;
+	float oldPitch; // Only needed if using RotateCamera
 	switch (direction)
 	{
 	case FORWARD:
@@ -95,20 +96,26 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 		Position -= WorldUp * celerity;
 		break;
 	case PITCH_UP:
-		//RotateCamera(Right, RotationSpeed * celerity);
+		oldPitch = Pitch; // Only needed if using RotateCamera
 		Pitch += RotationSpeed * celerity;
+		if (Pitch > 89.0f)
+			Pitch = 89.0f;
+		RotateCamera(Right, Pitch - oldPitch);
 		break;
 	case PITCH_DOWN:
-		//RotateCamera(Right, -RotationSpeed * celerity);
+		oldPitch = Pitch; // Only needed if using RotateCamera
 		Pitch -= RotationSpeed * celerity;
+		if (Pitch < -89.0f)
+			Pitch = -89.0f;
+		RotateCamera(Right, Pitch - oldPitch);
 		break;
 	case YAW_LEFT:
-		//RotateCamera(WorldUp, RotationSpeed * celerity);
 		Yaw -= RotationSpeed * celerity;
+		RotateCamera(WorldUp, RotationSpeed * celerity);
 		break;
 	case YAW_RIGHT:
-		//RotateCamera(WorldUp, -RotationSpeed * celerity);
 		Yaw += RotationSpeed * celerity;
+		RotateCamera(WorldUp, -RotationSpeed * celerity);
 		break;
 	}
 	
@@ -119,6 +126,8 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
 
+	float oldPitch = Pitch; // Only needed if using RotateCamera
+
 	Yaw += xoffset;
 	Pitch += yoffset;
 
@@ -128,6 +137,14 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	if (Pitch < -89.0f)
 		Pitch = -89.0f;
 
+	RotateCamera(Right, Pitch-oldPitch);
+	RotateCamera(WorldUp, -xoffset);
+
+}
+
+void ModuleCamera::ProcessMouseScroll(float yoffset)
+{
+	Position += Front * yoffset;
 }
 
 void ModuleCamera::UpdateFrustum()

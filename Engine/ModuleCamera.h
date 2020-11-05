@@ -43,6 +43,8 @@ public:
 	// Process movement
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 	void ProcessMouseMovement(float xoffset, float yoffset);
+	void ProcessMouseScroll(float yoffset);
+
 public:
 	float3 Position;
 	float3 Front;
@@ -60,6 +62,7 @@ public:
 	float nearPlane;
 	float farPlane;
 	float HFOV;
+	float VFOV;
 	float aspectRatio;
 private:
 	Frustum frustum;

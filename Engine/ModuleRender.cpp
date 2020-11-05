@@ -61,6 +61,11 @@ update_status ModuleRender::PreUpdate()
 	glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_UP) {
+		//SDL_CaptureMouse(SDL_FALSE);
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
+
 	TranslateCamera(deltaTime);
 	RotateCameraKeys(deltaTime);
 
@@ -133,7 +138,25 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
-	App->camera->aspectRatio = width / height;
+	App->camera->aspectRatio = (float) width / (float) height;
+	App->camera->HFOV = (height - App->window->height) != 0 ? App->camera->VFOV * App->camera->aspectRatio : App->camera->HFOV;
+	
+	App->window->width = width;
+	App->window->height = height;
+}
+
+void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
+{
+	if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
+		//SDL_CaptureMouse(SDL_TRUE);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	}
+	App->camera->ProcessMouseMovement(xoffset, yoffset);
+}
+
+void ModuleRender::MouseWheel(float xoffset, float yoffset)
+{
+	App->camera->ProcessMouseScroll(yoffset);
 }
 
 void ModuleRender::TranslateCamera(float deltaTime)
@@ -151,6 +174,12 @@ void ModuleRender::TranslateCamera(float deltaTime)
 		App->camera->ProcessKeyboard(LEFT, deltaTime);
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 		App->camera->ProcessKeyboard(RIGHT, deltaTime);
+
+	// Speed increase/decrease
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN)
+		App->camera->MovementSpeed *= 2;
+	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP)
+		App->camera->MovementSpeed /= 2;
 }
 
 void ModuleRender::RotateCameraKeys(float deltaTime)
