@@ -4,8 +4,13 @@
 #include "ModuleRender.h"
 #include "SDL/include/SDL.h"
 
-ModuleInput::ModuleInput()
-{}
+#define MAX_KEYS 300
+
+ModuleInput::ModuleInput() : Module()
+{
+    keyboard_state = new KeyState[MAX_KEYS];
+    memset(keyboard_state, KEY_IDLE, sizeof(KeyState) * MAX_KEYS);
+}
 
 // Destructor
 ModuleInput::~ModuleInput()
@@ -28,9 +33,30 @@ bool ModuleInput::Init()
 }
 
 // Called every draw update
-update_status ModuleInput::Update()
+update_status ModuleInput::PreUpdate()
 {
     SDL_Event sdlEvent;
+
+	keyboard = SDL_GetKeyboardState(NULL);
+
+	// Update each key state
+	for (int i = 0; i < MAX_KEYS; ++i)
+	{
+		if (keyboard[i] == 1)
+		{
+			if (keyboard_state[i] == KEY_IDLE)
+				keyboard_state[i] = KEY_DOWN;
+			else
+				keyboard_state[i] = KEY_REPEAT;
+		}
+		else
+		{
+			if (keyboard_state[i] == KEY_REPEAT || keyboard_state[i] == KEY_DOWN)
+				keyboard_state[i] = KEY_UP;
+			else
+				keyboard_state[i] = KEY_IDLE;
+		}
+	}
 
     while (SDL_PollEvent(&sdlEvent) != 0)
     {
@@ -42,10 +68,10 @@ update_status ModuleInput::Update()
                 if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
                     App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
                 break;
+			case SDL_MOUSEMOTION:
+
         }
     }
-
-    keyboard = SDL_GetKeyboardState(NULL);
 
     return UPDATE_CONTINUE;
 }
@@ -55,5 +81,7 @@ bool ModuleInput::CleanUp()
 {
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
+    delete keyboard_state;
+
 	return true;
 }

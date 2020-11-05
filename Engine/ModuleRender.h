@@ -1,7 +1,6 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "Geometry/Frustum.h"
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -21,6 +20,11 @@ public:
 	void WindowResized(unsigned width, unsigned height);
 
 private:
+	void TranslateCamera(float deltaTime);
+	void RotateCameraKeys(float deltaTime);
+
+private:
 	void* context;
-	Frustum frustum;
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
 };

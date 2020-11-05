@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
+#include "ModuleCamera.h"
+#include "ModuleInput.h"
 #include "SDL.h"
 
 ModuleRender::ModuleRender()
@@ -49,11 +51,18 @@ bool ModuleRender::Init()
 
 update_status ModuleRender::PreUpdate()
 {
+	float currentFrame = SDL_GetTicks()/1000.0f;
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
 	glViewport(0, 0, w, h);
 	glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	TranslateCamera(deltaTime);
+	RotateCameraKeys(deltaTime);
 
 	return UPDATE_CONTINUE;
 }
@@ -95,21 +104,13 @@ update_status ModuleRender::Update()
 	glEnd();
 	glLineWidth(1.0f);
 
-	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	frustum.SetViewPlaneDistances(0.1f, 200.0f);
-	frustum.SetHorizontalFovAndAspectRatio(M_PI / 180.f * 90.0f, 1.3f);
-	frustum.SetPos(float3(0, 1, 2));
-	frustum.SetFront(-float3::unitZ);
-	frustum.SetUp(float3::unitY);
-	float4x4 projectionGL = frustum.ProjectionMatrix().Transposed(); //<-- Important to transpose!
 	//Send the frustum projection matrix to OpenGL
 	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(*(projectionGL.v));
+	glLoadMatrixf(*App->camera->ProjectionMatrix().v);
 
-	float4x4 viewModelGL = frustum.ViewMatrix();
+	
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(*(viewModelGL.Transposed().v));
-
+	glLoadMatrixf(*App->camera->ViewMatrix().v);
 	return UPDATE_CONTINUE;
 }
 
@@ -132,5 +133,35 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
+	App->camera->aspectRatio = width / height;
+}
+
+void ModuleRender::TranslateCamera(float deltaTime)
+{
+	// Translate camera
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(UP, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(DOWN, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(FORWARD, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(BACKWARD, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(LEFT, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(RIGHT, deltaTime);
+}
+
+void ModuleRender::RotateCameraKeys(float deltaTime)
+{
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(PITCH_DOWN, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(YAW_LEFT, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(YAW_RIGHT, deltaTime);
 }
 
