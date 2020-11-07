@@ -17,8 +17,19 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
+
+	// callback funcs
 	void WindowResized(unsigned width, unsigned height);
+	void RotateCameraMouse(float xoffset, float yoffset);
+	void MouseWheel(float xoffset, float yoffset);
+
+	void* context;
 
 private:
-	void* context;
+	void TranslateCamera(float deltaTime);
+	void RotateCameraKeys(float deltaTime);
+
+private:
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
 };
