@@ -2,9 +2,13 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera.h"
-#include "SDL.h"
+#include "Math/Quat.h"
 
-ModuleCamera::ModuleCamera()
+
+ModuleCamera::ModuleCamera(float3 position, float3 up, float yaw, float pitch, float near_plane, float far_plane) : Module(),
+	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), HFOV(HORIZONTALFOV), 
+	VFOV(HORIZONTALFOV/ASPECTRATIO), Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
+	
 {
 }
 
@@ -16,39 +20,23 @@ ModuleCamera::~ModuleCamera()
 // Called before Camera is available
 bool ModuleCamera::Init()
 {
-	
+	Front.Normalize();
+	Right = Cross(Front, WorldUp).Normalized();
+	Up = Cross(Right, Front).Normalized();
+
+	// init frustum
+	UpdateFrustum();
+
 	return true;
 }
 
-update_status ModuleCamera::PreUpdate()
-{
-
-	return UPDATE_CONTINUE;
-}
-
 // Called every draw update
-update_status ModuleCamera::Update()
-{
-	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	frustum.SetViewPlaneDistances(0.1f, 200.0f);
-	frustum.SetHorizontalFovAndAspectRatio(M_PI / 180.f * 90.0f, 1.3f);
-	frustum.SetPos(float3(0, 1, -2));
-	frustum.SetFront(float3::unitZ);
-	frustum.SetUp(float3::unitY);
-	float4x4 projectionGL = frustum.ProjectionMatrix().Transposed(); //<-- Important to transpose!
-	//Send the frustum projection matrix to OpenGL
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(*(projectionGL.v));
-	
-	float4x4 viewModelGL = frustum.ViewMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(*(viewModelGL.Transposed().v));
+update_status ModuleCamera::PreUpdate()
+{	
 
-	return UPDATE_CONTINUE;
-}
+	// Update frustum
+	UpdateFrustum();
 
-update_status ModuleCamera::PostUpdate()
-{
 	return UPDATE_CONTINUE;
 }
 
@@ -57,7 +45,126 @@ bool ModuleCamera::CleanUp()
 {
 	LOG("Destroying Camera");
 
-	//Destroy window
-
 	return true;
+}
+
+float4x4 ModuleCamera::ViewMatrix()
+{
+	float4x4 viewModelGL = frustum.ViewMatrix();
+	return viewModelGL.Transposed();
+}
+
+float4x4 ModuleCamera::ProjectionMatrix()
+{
+	return frustum.ProjectionMatrix().Transposed();
+}
+
+void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
+{
+	float celerity = MovementSpeed * deltaTime;
+	//float oldPitch; // Only needed if using RotateCamera
+	switch (direction)
+	{
+	case FORWARD:
+		Position += Front * celerity;
+		break;
+	case BACKWARD:
+		Position -= Front * celerity;
+		break;
+	case LEFT:
+		Position -= Right * celerity;
+		break;
+	case RIGHT:
+		Position += Right * celerity;
+		break;
+	case UP:
+		Position += WorldUp * celerity;
+		break;
+	case DOWN:
+		Position -= WorldUp * celerity;
+		break;
+	case PITCH_UP:
+		//oldPitch = Pitch; // Only needed if using RotateCamera
+		Pitch += RotationSpeed * celerity;
+		if (Pitch > 89.0f)
+			Pitch = 89.0f;
+		NewDirection();//RotateCamera(Right, Pitch - oldPitch);
+		break;
+	case PITCH_DOWN:
+		//oldPitch = Pitch; // Only needed if using RotateCamera
+		Pitch -= RotationSpeed * celerity;
+		if (Pitch < -89.0f)
+			Pitch = -89.0f;
+		NewDirection();//RotateCamera(Right, Pitch - oldPitch);
+		break;
+	case YAW_LEFT:
+		Yaw -= RotationSpeed * celerity;
+		NewDirection();//RotateCamera(WorldUp, RotationSpeed * celerity);
+		break;
+	case YAW_RIGHT:
+		Yaw += RotationSpeed * celerity;
+		NewDirection();//RotateCamera(WorldUp, -RotationSpeed * celerity);
+		break;
+	}
+	
+}
+
+void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
+{
+	xoffset *= MouseSensitivity;
+	yoffset *= MouseSensitivity;
+
+	//float oldPitch = Pitch; // Only needed if using RotateCamera
+
+	Yaw += xoffset;
+	Pitch += yoffset;
+
+	// make sure that when pitch is out of bounds, screen doesn't get flipped
+	if (Pitch > 89.0f)
+		Pitch = 89.0f;
+	if (Pitch < -89.0f)
+		Pitch = -89.0f;
+
+	NewDirection();
+	//RotateCamera(Right, Pitch-oldPitch);
+	//RotateCamera(WorldUp, -xoffset);
+
+}
+
+void ModuleCamera::ProcessMouseScroll(float yoffset)
+{
+	Position += Front * yoffset;
+}
+
+void ModuleCamera::UpdateFrustum()
+{
+	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
+	frustum.SetViewPlaneDistances(nearPlane, farPlane);
+	frustum.SetHorizontalFovAndAspectRatio(aspectRatio, HFOV);
+	frustum.SetPos(Position);
+	frustum.SetFront(Front);
+	frustum.SetUp(Up);
+}
+
+void ModuleCamera::RotateCamera(float3& axis, float angle)
+{
+	Quat rotationMatrix = Quat(axis, DegToRad(angle));
+	Front = rotationMatrix * Front;
+	Right = rotationMatrix * Right; // 9 scalar products and 6 sums
+	Up = rotationMatrix * Up;
+}
+
+void ModuleCamera::NewDirection()
+{
+	// Gramm-Schmidt process, comment if using RotateCamera
+
+	// new front with simple trigonometry
+	float3 front;
+	front.x = cos(DegToRad(Yaw)) * cos(DegToRad(Pitch));
+	front.y = sin(DegToRad(Pitch));
+	front.z = sin(DegToRad(Yaw)) * cos(DegToRad(Pitch));
+	Front = front.Normalized();
+
+	Right = Cross(Front, WorldUp).Normalized(); // 6 scalar products and 3 subtractions + 3 scalar products, 2 sums and one sqrt
+	Up = Cross(Right, Front).Normalized();
 }

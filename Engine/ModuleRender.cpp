@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
+#include "ModuleCamera.h"
+#include "ModuleInput.h"
 #include "SDL.h"
 
 ModuleRender::ModuleRender()
@@ -18,14 +20,6 @@ ModuleRender::~ModuleRender()
 bool ModuleRender::Init()
 {
 	LOG("Creating Renderer context");
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	
 	// Create an OpenGL context associated with the window.
 	context = SDL_GL_CreateContext(App->window->window);
@@ -49,11 +43,23 @@ bool ModuleRender::Init()
 
 update_status ModuleRender::PreUpdate()
 {
+	float currentFrame = SDL_GetTicks()/1000.0f;
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
 	glViewport(0, 0, w, h);
 	glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_UP) {
+		//SDL_CaptureMouse(SDL_FALSE);
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
+
+	TranslateCamera(deltaTime);
+	RotateCameraKeys(deltaTime);
 
 	return UPDATE_CONTINUE;
 }
@@ -95,6 +101,13 @@ update_status ModuleRender::Update()
 	glEnd();
 	glLineWidth(1.0f);
 
+	//Send the frustum projection matrix to OpenGL
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(*App->camera->ProjectionMatrix().v);
+
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(*App->camera->ViewMatrix().v);
 	return UPDATE_CONTINUE;
 }
 
@@ -117,5 +130,59 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
+	App->camera->aspectRatio = (float) width / (float) height;
+	App->camera->HFOV = App->camera->VFOV * App->camera->aspectRatio;
+
+	App->window->width = width;
+	App->window->height = height;
+}
+
+void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
+{
+	if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
+		//SDL_CaptureMouse(SDL_TRUE);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	}
+	App->camera->ProcessMouseMovement(xoffset, yoffset);
+}
+
+void ModuleRender::MouseWheel(float xoffset, float yoffset)
+{
+	App->camera->ProcessMouseScroll(yoffset);
+}
+
+void ModuleRender::TranslateCamera(float deltaTime)
+{
+	// Translate camera
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(UP, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(DOWN, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(FORWARD, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(BACKWARD, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(LEFT, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(RIGHT, deltaTime);
+
+	// Speed increase/decrease
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN)
+		App->camera->MovementSpeed *= 2;
+	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP)
+		App->camera->MovementSpeed /= 2;
+}
+
+void ModuleRender::RotateCameraKeys(float deltaTime)
+{
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(PITCH_DOWN, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(YAW_LEFT, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(YAW_RIGHT, deltaTime);
 }
 
