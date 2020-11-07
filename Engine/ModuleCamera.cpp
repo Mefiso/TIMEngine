@@ -32,19 +32,7 @@ bool ModuleCamera::Init()
 
 // Called every draw update
 update_status ModuleCamera::PreUpdate()
-{
-	// Gramm-Schmidt process, comment if using RotateCamera
-
-	// new front with simple trigonometry
-	float3 front;
-	front.x = cos(DegToRad(Yaw)) * cos(DegToRad(Pitch));
-	front.y = sin(DegToRad(Pitch));
-	front.z = sin(DegToRad(Yaw)) * cos(DegToRad(Pitch));
-	Front = front.Normalized();
-	
-	Right = Cross(Front, WorldUp).Normalized(); // 6 scalar products and 3 subtractions + 3 scalar products, 2 sums and one sqrt
-	Up = Cross(Right, Front).Normalized();
-	
+{	
 
 	// Update frustum
 	UpdateFrustum();
@@ -74,7 +62,7 @@ float4x4 ModuleCamera::ProjectionMatrix()
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
 	float celerity = MovementSpeed * deltaTime;
-	float oldPitch; // Only needed if using RotateCamera
+	//float oldPitch; // Only needed if using RotateCamera
 	switch (direction)
 	{
 	case FORWARD:
@@ -96,26 +84,26 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 		Position -= WorldUp * celerity;
 		break;
 	case PITCH_UP:
-		oldPitch = Pitch; // Only needed if using RotateCamera
+		//oldPitch = Pitch; // Only needed if using RotateCamera
 		Pitch += RotationSpeed * celerity;
 		if (Pitch > 89.0f)
 			Pitch = 89.0f;
-		RotateCamera(Right, Pitch - oldPitch);
+		NewDirection();//RotateCamera(Right, Pitch - oldPitch);
 		break;
 	case PITCH_DOWN:
-		oldPitch = Pitch; // Only needed if using RotateCamera
+		//oldPitch = Pitch; // Only needed if using RotateCamera
 		Pitch -= RotationSpeed * celerity;
 		if (Pitch < -89.0f)
 			Pitch = -89.0f;
-		RotateCamera(Right, Pitch - oldPitch);
+		NewDirection();//RotateCamera(Right, Pitch - oldPitch);
 		break;
 	case YAW_LEFT:
 		Yaw -= RotationSpeed * celerity;
-		RotateCamera(WorldUp, RotationSpeed * celerity);
+		NewDirection();//RotateCamera(WorldUp, RotationSpeed * celerity);
 		break;
 	case YAW_RIGHT:
 		Yaw += RotationSpeed * celerity;
-		RotateCamera(WorldUp, -RotationSpeed * celerity);
+		NewDirection();//RotateCamera(WorldUp, -RotationSpeed * celerity);
 		break;
 	}
 	
@@ -126,7 +114,7 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
 
-	float oldPitch = Pitch; // Only needed if using RotateCamera
+	//float oldPitch = Pitch; // Only needed if using RotateCamera
 
 	Yaw += xoffset;
 	Pitch += yoffset;
@@ -137,6 +125,7 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	if (Pitch < -89.0f)
 		Pitch = -89.0f;
 
+	NewDirection();
 	//RotateCamera(Right, Pitch-oldPitch);
 	//RotateCamera(WorldUp, -xoffset);
 
@@ -163,4 +152,19 @@ void ModuleCamera::RotateCamera(float3& axis, float angle)
 	Front = rotationMatrix * Front;
 	Right = rotationMatrix * Right; // 9 scalar products and 6 sums
 	Up = rotationMatrix * Up;
+}
+
+void ModuleCamera::NewDirection()
+{
+	// Gramm-Schmidt process, comment if using RotateCamera
+
+	// new front with simple trigonometry
+	float3 front;
+	front.x = cos(DegToRad(Yaw)) * cos(DegToRad(Pitch));
+	front.y = sin(DegToRad(Pitch));
+	front.z = sin(DegToRad(Yaw)) * cos(DegToRad(Pitch));
+	Front = front.Normalized();
+
+	Right = Cross(Front, WorldUp).Normalized(); // 6 scalar products and 3 subtractions + 3 scalar products, 2 sums and one sqrt
+	Up = Cross(Right, Front).Normalized();
 }

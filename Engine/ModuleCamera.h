@@ -24,7 +24,7 @@ const float SPEED = 2.5f;
 const float ROTATION_SPEED = 20.f;
 const float SENSITIVITY = .1f;
 const float HORIZONTALFOV = DegToRad(90.f);
-const float ASPECTRATIO = 1.3f;
+const float ASPECTRATIO = (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT;
 
 class ModuleCamera : public Module
 {
@@ -68,4 +68,5 @@ private:
 	Frustum frustum;
 	void UpdateFrustum();
 	void RotateCamera(float3& axis, float angle);
+	void NewDirection();
 };

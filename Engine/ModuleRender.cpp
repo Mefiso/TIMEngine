@@ -131,7 +131,8 @@ bool ModuleRender::CleanUp()
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
 	App->camera->aspectRatio = (float) width / (float) height;
-	
+	App->camera->HFOV = App->camera->VFOV * App->camera->aspectRatio;
+
 	App->window->width = width;
 	App->window->height = height;
 }
