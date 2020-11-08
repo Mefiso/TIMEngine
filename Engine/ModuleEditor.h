@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include <SDL.h>
+#include "ImGUI/imgui.h"
 
 class ModuleEditor : public Module
 {
@@ -17,5 +18,6 @@ public:
 
 	void SendEvent(SDL_Event& event);
 private:
+	ImGuiIO* io = nullptr;
 	bool show_demo_window = true;
 };

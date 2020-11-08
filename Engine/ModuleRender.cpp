@@ -23,7 +23,7 @@ bool ModuleRender::Init()
 	
 	// Create an OpenGL context associated with the window.
 	context = SDL_GL_CreateContext(App->window->window);
-
+	//SDL_GL_MakeCurrent(App->window->window, context);
 	GLenum err = glewInit();
 	// Åc check for errors
 	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
@@ -59,8 +59,10 @@ update_status ModuleRender::PreUpdate()
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
-	TranslateCamera(deltaTime);
-	RotateCameraKeys(deltaTime);
+	if (eventOcurred) {
+		TranslateCamera(deltaTime);
+		RotateCameraKeys(deltaTime);
+	}
 
 	return UPDATE_CONTINUE;
 }

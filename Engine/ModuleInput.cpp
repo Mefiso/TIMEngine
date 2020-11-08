@@ -3,14 +3,15 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleEditor.h"
+#include "ModuleWindow.h"
 #include "SDL/include/SDL.h"
 
 #define MAX_KEYS 300
 
 ModuleInput::ModuleInput() : Module()
 {
-    keyboard_state = new KeyState[MAX_KEYS];
-    memset(keyboard_state, KEY_IDLE, sizeof(KeyState) * MAX_KEYS);
+	keyboard_state = new KeyState[MAX_KEYS];
+	memset(keyboard_state, KEY_IDLE, sizeof(KeyState) * MAX_KEYS);
 }
 
 // Destructor
@@ -24,7 +25,7 @@ bool ModuleInput::Init()
 	bool ret = true;
 	SDL_Init(0);
 
-	if(SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
+	if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 	{
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
@@ -36,7 +37,37 @@ bool ModuleInput::Init()
 // Called every draw update
 update_status ModuleInput::PreUpdate()
 {
-    SDL_Event sdlEvent;
+	SDL_Event sdlEvent;
+
+	while (SDL_PollEvent(&sdlEvent) != 0)
+	{
+		
+		if (sdlEvent.window.windowID == SDL_GetWindowID(App->window->window))
+		{
+			App->renderer->eventOcurred = true;
+			switch (sdlEvent.type)
+			{
+			case SDL_QUIT:
+				return UPDATE_STOP;
+			case SDL_WINDOWEVENT:
+				if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
+					return UPDATE_STOP;
+				if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+					App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
+				break;
+			case SDL_MOUSEMOTION:
+				if (GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+					App->renderer->RotateCameraMouse(sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
+				break;
+			case SDL_MOUSEWHEEL:
+				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
+			}
+		}
+		else {
+			App->editor->SendEvent(sdlEvent);
+			App->renderer->eventOcurred = false;
+		}
+	}
 
 	keyboard = SDL_GetKeyboardState(NULL);
 
@@ -59,27 +90,8 @@ update_status ModuleInput::PreUpdate()
 		}
 	}
 
-    while (SDL_PollEvent(&sdlEvent) != 0)
-    {
-        switch (sdlEvent.type)
-        {
-            case SDL_QUIT:
-                return UPDATE_STOP;
-            case SDL_WINDOWEVENT:
-                if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-                    App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
-                break;
-			case SDL_MOUSEMOTION:
-				if (GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
-					App->renderer->RotateCameraMouse(sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
-				break;
-			case SDL_MOUSEWHEEL:
-				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
-        }
-		App->editor->SendEvent(sdlEvent);
-    }
 
-    return UPDATE_CONTINUE;
+	return UPDATE_CONTINUE;
 }
 
 // Called before quitting
@@ -87,7 +99,7 @@ bool ModuleInput::CleanUp()
 {
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
-    delete keyboard_state;
+	delete keyboard_state;
 
 	return true;
 }
