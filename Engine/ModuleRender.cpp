@@ -34,10 +34,11 @@ bool ModuleRender::Init()
 	LOG("OpenGL version supported %s", glGetString(GL_VERSION));
 	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
+	// They are enabled inside ImGui_ImplOpenGL3_RenderDrawData so setting them here is useless
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	//glEnable(GL_CULL_FACE); // Enable cull backward faces
-	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
-	glDisable(GL_CULL_FACE);
+	//glFrontFace(GL_CW); // Front faces will be counter clockwise
+	//glDisable(GL_CULL_FACE);
 
 	return true;
 }

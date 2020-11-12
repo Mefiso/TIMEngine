@@ -68,6 +68,8 @@ update_status ModuleRenderExercise::Update()
 {
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
+
+	glDisable(GL_CULL_FACE);
 	RenderVBO();
 
 	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
