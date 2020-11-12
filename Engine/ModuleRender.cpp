@@ -68,7 +68,7 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	glLineWidth(1.0f);
+	/*glLineWidth(1.0f);
 	float d = 200.0f;
 	glBegin(GL_LINES);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -108,13 +108,13 @@ update_status ModuleRender::Update()
 
 	
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(*App->camera->ViewMatrix().v);
+	glLoadMatrixf(*App->camera->ViewMatrix().v);*/
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleRender::PostUpdate()
 {
-	SDL_GL_SwapWindow(App->window->window);
+	//SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }
 

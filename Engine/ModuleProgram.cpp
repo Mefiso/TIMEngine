@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 #include "ModuleProgram.h"
-#include "GL/glew.h"
 
 ModuleProgram::ModuleProgram()
 {

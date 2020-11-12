@@ -23,7 +23,7 @@ const float PITCH = 0.0f;
 const float SPEED = 2.5f;
 const float ROTATION_SPEED = 20.f;
 const float SENSITIVITY = .1f;
-const float HORIZONTALFOV = DegToRad(90.f);
+const float VERTICALFOV = DegToRad(60.f);
 const float ASPECTRATIO = (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT;
 
 class ModuleCamera : public Module

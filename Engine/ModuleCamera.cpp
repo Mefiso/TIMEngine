@@ -6,8 +6,8 @@
 
 
 ModuleCamera::ModuleCamera(float3 position, float3 up, float yaw, float pitch, float near_plane, float far_plane) : Module(),
-	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), HFOV(HORIZONTALFOV), 
-	VFOV(HORIZONTALFOV/ASPECTRATIO), Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
+	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), HFOV(VERTICALFOV * ASPECTRATIO), 
+	VFOV(VERTICALFOV), Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
 	
 {
 }
