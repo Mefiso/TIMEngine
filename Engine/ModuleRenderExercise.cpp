@@ -4,9 +4,10 @@
 #include "ModuleProgram.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
-#include "SDL.h"
-#include "debugdraw.h"
+#include "ModuleTexture.h"
 #include "ModuleDebugDraw.h"
+#include "debugdraw.h"
+#include "SDL.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -57,6 +58,7 @@ bool ModuleRenderExercise::Init()
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
 #endif
 	VBO = CreateTriangleVBO();
+	texture0 = App->textureLoader->LoadTexture("textures/Lenna.png");
 	App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
 
 	return true;
@@ -66,7 +68,7 @@ update_status ModuleRenderExercise::Update()
 {
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
-	RenderVBO(VBO);
+	RenderVBO();
 
 	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
 
@@ -76,7 +78,7 @@ update_status ModuleRenderExercise::Update()
 bool ModuleRenderExercise::CleanUp()
 {
 	LOG("Destroying renderer exercise");
-	DestroyVBO(VBO);
+	DestroyVBO();
 
 	return true;
 }
@@ -84,36 +86,50 @@ bool ModuleRenderExercise::CleanUp()
 // This function must be called one time at creation of vertex buffer
 unsigned ModuleRenderExercise::CreateTriangleVBO()
 {
-	float vtx_data[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+	float buffer_data[] = {
+		 -1.0f, -1.0f, 0.0f, // ← v0 pos
+		 1.0f, -1.0f, 0.0f, // ← v1 pos
+		 0.0f, 1.0f, 0.0f, // ← v2 pos
+		 
+		 0.0f, 0.0f, // ← v0 texcoord
+		 1.0f, 0.0f, // ← v1 texcoord
+		 0.5f, 1.0f // ← v2 texcoord
+	};
 	unsigned vbo;
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo); // set vbo active
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vtx_data), vtx_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
 
 	return vbo;
 }
 // This function must be called one time at destruction of vertex buffer
-void ModuleRenderExercise::DestroyVBO(unsigned vbo)
+void ModuleRenderExercise::DestroyVBO()
 {
-	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &VBO);
 }
 
 // This function must be called each frame for drawing the triangle
-void ModuleRenderExercise::RenderVBO(unsigned vbo)
+void ModuleRenderExercise::RenderVBO()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glEnableVertexAttribArray(0);
 	// size = 3 float per vertex
 	// stride = 0 is equivalent to stride = sizeof(float)*3
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) (sizeof(float) * 3 * 3));
 	
 	float4x4 model = float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),
-		float4x4::RotateZ(pi / 4.0f),
+		float4x4::identity,
 		float3(2.0f, 1.0f, 0.0f));
 	App->program->use();
 	App->program->setMat4("model", model);
 	App->program->setMat4("view", App->camera->ViewMatrix());
 	App->program->setMat4("proj", App->camera->ProjectionMatrix());
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture0);
+	App->program->setInt("mytexture", 0);
 
 	// 1 triangle to draw = 3 vertices
 	glDrawArrays(GL_TRIANGLES, 0, 3);

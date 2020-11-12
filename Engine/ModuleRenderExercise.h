@@ -14,7 +14,9 @@ public:
 
 private:
 	unsigned int VBO;
+	unsigned int texture0;
+private:
 	unsigned CreateTriangleVBO();
-	void DestroyVBO(unsigned vbo);
-	void RenderVBO(unsigned vbo);
+	void DestroyVBO();
+	void RenderVBO();
 };
