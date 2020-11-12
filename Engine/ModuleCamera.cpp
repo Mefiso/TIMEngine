@@ -6,8 +6,8 @@
 
 
 ModuleCamera::ModuleCamera(float3 position, float3 up, float yaw, float pitch, float near_plane, float far_plane) : Module(),
-	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), HFOV(HORIZONTALFOV), 
-	VFOV(HORIZONTALFOV/ASPECTRATIO), Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
+	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), HFOV(VERTICALFOV * ASPECTRATIO), 
+	VFOV(VERTICALFOV), Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
 	
 {
 }
@@ -51,12 +51,12 @@ bool ModuleCamera::CleanUp()
 float4x4 ModuleCamera::ViewMatrix()
 {
 	float4x4 viewModelGL = frustum.ViewMatrix();
-	return viewModelGL.Transposed();
+	return viewModelGL;// .Transposed();
 }
 
 float4x4 ModuleCamera::ProjectionMatrix()
 {
-	return frustum.ProjectionMatrix().Transposed();
+	return frustum.ProjectionMatrix();// .Transposed();
 }
 
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
