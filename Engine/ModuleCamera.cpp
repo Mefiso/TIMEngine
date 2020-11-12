@@ -51,12 +51,12 @@ bool ModuleCamera::CleanUp()
 float4x4 ModuleCamera::ViewMatrix()
 {
 	float4x4 viewModelGL = frustum.ViewMatrix();
-	return viewModelGL.Transposed();
+	return viewModelGL;// .Transposed();
 }
 
 float4x4 ModuleCamera::ProjectionMatrix()
 {
-	return frustum.ProjectionMatrix().Transposed();
+	return frustum.ProjectionMatrix();// .Transposed();
 }
 
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)

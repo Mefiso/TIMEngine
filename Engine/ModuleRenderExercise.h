@@ -9,9 +9,7 @@ public:
 	~ModuleRenderExercise();
 
 	bool Init();
-	update_status PreUpdate();
 	update_status Update();
-	update_status PostUpdate();
 	bool CleanUp();
 
 private:
@@ -19,5 +17,4 @@ private:
 	unsigned CreateTriangleVBO();
 	void DestroyVBO(unsigned vbo);
 	void RenderVBO(unsigned vbo);
-	void* context;
 };
