@@ -17,6 +17,7 @@ private:
 	unsigned int texture0;
 private:
 	unsigned CreateTriangleVBO();
+	unsigned CreateQuadVBO();
 	void DestroyVBO();
 	void RenderVBO();
 };
