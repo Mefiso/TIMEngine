@@ -37,7 +37,6 @@ bool ModuleRender::Init()
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	//glEnable(GL_CULL_FACE); // Enable cull backward faces
 	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
-	glDisable(GL_CULL_FACE);
 
 	return true;
 }

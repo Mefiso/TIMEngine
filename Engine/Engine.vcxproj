@@ -231,6 +231,7 @@
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="W_console.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

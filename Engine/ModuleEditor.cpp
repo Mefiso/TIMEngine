@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ImGUI/imgui_impl_sdl.h"
 #include "ImGUI/imgui_impl_opengl3.h"
+#include "W_console.h"
 
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
@@ -23,6 +24,7 @@ static void HelpMarker(const char* desc)
 
 ModuleEditor::ModuleEditor()
 {
+	console = new WConsole();
 }
 
 ModuleEditor::~ModuleEditor()
@@ -33,7 +35,7 @@ bool ModuleEditor::Init()
 {
 	ImGui::CreateContext();
 	io = &ImGui::GetIO();
-	io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+	//io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
@@ -64,27 +66,8 @@ update_status ModuleEditor::PreUpdate()
 update_status ModuleEditor::Update()
 {
 	ImGui::ShowDemoWindow();
-	//ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-	/*{
-		static float f = 0.0f;
-		static int counter = 0;
+	console->Draw("Console", &show_demo_window);
 
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::End();
-	}*/
 	// Rendering
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -112,6 +95,9 @@ update_status ModuleEditor::PostUpdate()
 
 bool ModuleEditor::CleanUp()
 {
+	delete console;
+	console = nullptr;
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
@@ -122,4 +108,10 @@ bool ModuleEditor::CleanUp()
 void ModuleEditor::SendEvent(SDL_Event& event)
 {
 	ImGui_ImplSDL2_ProcessEvent(&event);
+}
+
+void ModuleEditor::Log(const char* input)
+{
+	if (console)
+		console->AddLog(input);
 }

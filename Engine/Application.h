@@ -25,6 +25,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void Log(const char* input);
+
 public:
 	ModuleRender* renderer = nullptr;
 	ModuleWindow* window = nullptr;
