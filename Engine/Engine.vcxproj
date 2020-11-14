@@ -231,6 +231,7 @@
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="Window.h" />
     <ClInclude Include="W_console.h" />
   </ItemGroup>
   <ItemGroup>
@@ -291,6 +292,8 @@
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="W_console.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\emscripten\library_system.js" />

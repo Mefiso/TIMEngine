@@ -3,7 +3,9 @@
 #include "Globals.h"
 #include <SDL.h>
 #include "ImGUI/imgui.h"
+#include <vector>
 
+class Window;
 class WConsole;
 
 class ModuleEditor : public Module
@@ -22,6 +24,6 @@ public:
 	void Log(const char* input);
 private:
 	ImGuiIO* io = nullptr;
-	bool show_demo_window = true;
 	WConsole* console = nullptr;
+	std::vector<Window*> editorWindows;
 };

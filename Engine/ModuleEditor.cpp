@@ -24,11 +24,15 @@ static void HelpMarker(const char* desc)
 
 ModuleEditor::ModuleEditor()
 {
-	console = new WConsole();
+	editorWindows.push_back(console = new WConsole("Console", 0));
 }
 
 ModuleEditor::~ModuleEditor()
 {
+	delete console;
+	console = nullptr;
+	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
+		delete* it;
 }
 
 bool ModuleEditor::Init()
@@ -66,8 +70,12 @@ update_status ModuleEditor::PreUpdate()
 update_status ModuleEditor::Update()
 {
 	ImGui::ShowDemoWindow();
-	if (show_demo_window)
-		console->Draw("Console", &show_demo_window);
+	
+	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
+	{
+		if ((*it)->isEnabled())
+			(*it)->Draw();
+	}
 
 	// Rendering
 	ImGui::Render();
@@ -96,9 +104,6 @@ update_status ModuleEditor::PostUpdate()
 
 bool ModuleEditor::CleanUp()
 {
-	delete console;
-	console = nullptr;
-
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
