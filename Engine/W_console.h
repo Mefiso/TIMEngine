@@ -9,9 +9,7 @@ class WConsole
 private:
     char                  InputBuf[256];
     ImVector<char*>       Items;
-    //ImVector<const char*> Commands;
-    //ImVector<char*>       History;
-    //int                   HistoryPos;    // -1: new line, 0..History.Size-1 browsing history.
+    ImVector<const char*> Commands;
     ImGuiTextFilter       Filter;
     bool                  AutoScroll;
     bool                  ScrollToBottom;
@@ -24,12 +22,12 @@ public:
         //HistoryPos = -1;
 
         // "CLASSIFY" is here to provide the test case where "C"+[tab] completes to "CL" and display multiple matches.
-        //Commands.push_back("HELP");
-        //Commands.push_back("HISTORY");
-        //Commands.push_back("CLEAR");
-        //Commands.push_back("CLASSIFY");
-        //AutoScroll = true;
-        ScrollToBottom = false;
+        Commands.push_back("HELP");
+        Commands.push_back("HISTORY");
+        Commands.push_back("CLEAR");
+        Commands.push_back("CLASSIFY");
+        AutoScroll = true;
+        ScrollToBottom = true;
         AddLog("Welcome to Engine!");
     }
     ~WConsole()
@@ -52,7 +50,7 @@ public:
         Items.clear();
     }
 
-    void    AddLog(const char* fmt) IM_FMTARGS(2)
+    void    AddLog(const char* fmt, ...) IM_FMTARGS(2)
     {
         // FIXME-OPT
         char buf[1024];
@@ -61,7 +59,7 @@ public:
         vsnprintf(buf, IM_ARRAYSIZE(buf), fmt, args);
         buf[IM_ARRAYSIZE(buf) - 1] = 0;
         va_end(args);
-        Items.push_back(strdup(fmt));
+        Items.push_back(strdup(buf));
     }
     void    Draw(const char* title, bool* p_open)
     {
@@ -83,16 +81,10 @@ public:
         }
 
         ImGui::TextWrapped(
-            "This example implements a console with basic coloring, completion (TAB key) and history (Up/Down keys). A more elaborate "
-            "implementation may want to store entries along with extra data such as timestamp, emitter, etc.");
-        ImGui::TextWrapped("Enter 'HELP' for help.");
+            "Console with basic coloring, completion (TAB key) and history (Up/Down keys).");
 
         // TODO: display items starting from the bottom
 
-        //if (ImGui::SmallButton("Add Debug Text")) { AddLog("%d some text", Items.Size); AddLog("some more text"); AddLog("display very important message here!"); }
-        //ImGui::SameLine();
-        if (ImGui::SmallButton("Add Debug Error")) { AddLog("[error] something went wrong"); }
-        ImGui::SameLine();
         if (ImGui::SmallButton("Clear")) { ClearLog(); }
         ImGui::SameLine();
         bool copy_to_clipboard = ImGui::SmallButton("Copy");
@@ -100,7 +92,7 @@ public:
 
         ImGui::Separator();
 
-        /*// Options menu
+        // Options menu
         if (ImGui::BeginPopup("Options"))
         {
             ImGui::Checkbox("Auto-scroll", &AutoScroll);
@@ -113,16 +105,16 @@ public:
         ImGui::SameLine();
         Filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
         ImGui::Separator();
-        */
+        
 
         // Reserve enough left-over height for 1 separator + 1 input text
         const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
         ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
-        /*if (ImGui::BeginPopupContextWindow())
+        if (ImGui::BeginPopupContextWindow())
         {
             if (ImGui::Selectable("Clear")) ClearLog();
             ImGui::EndPopup();
-        }*/
+        }
 
         
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
@@ -157,10 +149,10 @@ public:
         ImGui::EndChild();
         ImGui::Separator();
 
-        /*// Command-line
+        // Command-line
         bool reclaim_focus = false;
-        ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory;
-        if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf), input_text_flags, &TextEditCallbackStub, (void*)this))
+        ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue;
+        if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf), input_text_flags, (ImGuiInputTextCallback) 0, (void*)this))
         {
             char* s = InputBuf;
             Strtrim(s);
@@ -174,8 +166,32 @@ public:
         ImGui::SetItemDefaultFocus();
         if (reclaim_focus)
             ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
-        */
+        
         ImGui::End();
+    }
+
+    void    ExecCommand(const char* command_line)
+    {
+        AddLog("# %s\n", command_line);
+
+        // Process command
+        if (stricmp(command_line, "CLEAR") == 0)
+        {
+            ClearLog();
+        }
+        else if (stricmp(command_line, "HELP") == 0)
+        {
+            AddLog("Commands:");
+            for (int i = 0; i < Commands.Size; i++)
+                AddLog("- %s", Commands[i]);
+        }
+        else
+        {
+            AddLog("Unknown command: '%s'\n", command_line);
+        }
+
+        // On command input, we scroll to bottom even if AutoScroll==false
+        ScrollToBottom = true;
     }
 
 };

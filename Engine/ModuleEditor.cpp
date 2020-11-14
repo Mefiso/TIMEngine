@@ -66,7 +66,8 @@ update_status ModuleEditor::PreUpdate()
 update_status ModuleEditor::Update()
 {
 	ImGui::ShowDemoWindow();
-	console->Draw("Console", &show_demo_window);
+	if (show_demo_window)
+		console->Draw("Console", &show_demo_window);
 
 	// Rendering
 	ImGui::Render();
