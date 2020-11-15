@@ -172,10 +172,14 @@ void ModuleRender::TranslateCamera(float deltaTime)
 		App->camera->ProcessKeyboard(RIGHT, deltaTime);
 
 	// Speed increase/decrease
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
 		App->camera->MovementSpeed *= 2;
-	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP)
+		App->editor->UpdateCameraSettings();
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
 		App->camera->MovementSpeed /= 2;
+		App->editor->UpdateCameraSettings();
+	}
 }
 
 void ModuleRender::RotateCameraKeys(float deltaTime)

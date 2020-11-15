@@ -8,6 +8,7 @@
 class Window;
 class WConsole;
 class WMonitor;
+class WConfig;
 
 class ModuleEditor : public Module
 {
@@ -22,13 +23,17 @@ public:
 	bool CleanUp();
 
 	void SendEvent(SDL_Event& event);
+
+	// Windows methods
 	void Log(const char* input);
 	void ProcessFPS(float deltaTime);
+	void UpdateCameraSettings();
 private:
 	ImGuiIO* io = nullptr;
 	
 	WConsole* console = nullptr;
 	WMonitor* monitor = nullptr;
+	WConfig* configuration = nullptr;
 
 	std::vector<Window*> editorWindows;
 };
