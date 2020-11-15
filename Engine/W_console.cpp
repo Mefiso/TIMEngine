@@ -1,7 +1,6 @@
 #include "W_console.h"
-#define _CRTDBG_MAP_ALLOC
-#include <cstdlib>
-#include <crtdbg.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 WConsole::WConsole(std::string name, int ID) : Window(name, ID)
 {
@@ -22,8 +21,6 @@ WConsole::WConsole(std::string name, int ID) : Window(name, ID)
 WConsole::~WConsole()
 {
     ClearLog();
-    //for (int i = 0; i < History.Size; i++)
-      //  free(History[i]);
 }
 
 void    WConsole::ClearLog()
@@ -47,7 +44,7 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 
 void    WConsole::Draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(520, 300), ImGuiCond_Once);
     if (!ImGui::Begin(name.c_str(), &active))
     {
         ImGui::End();

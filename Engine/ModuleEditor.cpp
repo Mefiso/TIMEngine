@@ -5,6 +5,7 @@
 #include "ImGUI/imgui_impl_sdl.h"
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "W_console.h"
+#include "W_monitor.h"
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
 // In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
@@ -24,6 +25,7 @@ static void HelpMarker(const char* desc)
 ModuleEditor::ModuleEditor()
 {
 	editorWindows.push_back(console = new WConsole("Console", 0));
+	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -105,6 +107,7 @@ bool ModuleEditor::CleanUp()
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 		delete (*it);
 	editorWindows.clear();
+	
 	console = nullptr;
 
 	ImGui_ImplOpenGL3_Shutdown();
@@ -123,4 +126,9 @@ void ModuleEditor::Log(const char* input)
 {
 	if (console)
 		console->AddLog(input);
+}
+
+void ModuleEditor::ProcessFPS(float deltaTime)
+{
+	monitor->AddFPS(deltaTime);
 }

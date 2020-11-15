@@ -1,6 +1,4 @@
 #pragma once
-#include <stdlib.h>
-#include <stdio.h>
 #include "ImGUI/imgui.h"
 #include "Window.h"
 #include <ctype.h>

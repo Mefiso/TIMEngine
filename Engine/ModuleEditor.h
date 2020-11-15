@@ -7,6 +7,7 @@
 
 class Window;
 class WConsole;
+class WMonitor;
 
 class ModuleEditor : public Module
 {
@@ -22,8 +23,12 @@ public:
 
 	void SendEvent(SDL_Event& event);
 	void Log(const char* input);
+	void ProcessFPS(float deltaTime);
 private:
 	ImGuiIO* io = nullptr;
+	
 	WConsole* console = nullptr;
+	WMonitor* monitor = nullptr;
+
 	std::vector<Window*> editorWindows;
 };

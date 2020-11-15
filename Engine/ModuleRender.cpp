@@ -5,6 +5,7 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
+#include "ModuleEditor.h"
 #include "SDL.h"
 
 ModuleRender::ModuleRender()
@@ -46,6 +47,7 @@ update_status ModuleRender::PreUpdate()
 	float currentFrame = SDL_GetTicks()/1000.0f;
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
+	App->editor->ProcessFPS(deltaTime);
 
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);

@@ -160,6 +160,9 @@
     <ClCompile Include="W_console.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
+    <ClCompile Include="W_monitor.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -427,6 +430,9 @@
       <Filter>EditorWindows</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="W_monitor.h">
       <Filter>EditorWindows</Filter>
     </ClInclude>
   </ItemGroup>
