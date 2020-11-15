@@ -1,4 +1,7 @@
 #pragma once
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
 #include "Globals.h"
 #include "Application.h"
 

@@ -1,4 +1,7 @@
 #include "W_console.h"
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
 
 WConsole::WConsole(std::string name, int ID) : Window(name, ID)
 {
