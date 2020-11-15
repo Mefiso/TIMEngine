@@ -1,4 +1,5 @@
 #include "W_monitor.h"
+#include "GL/glew.h"
 #include "ImGUI/imgui.h"
 
 WMonitor::WMonitor(std::string name, int ID) : Window(name, ID)
@@ -52,6 +53,22 @@ void WMonitor::Draw()
 			}
 		}
 		ImGui::Separator();
+
+		ImGui::TextUnformatted("GPU:");
+		ImGui::SameLine();
+		ImGui::TextColored(color, (const char*)glGetString(GL_RENDERER));
+		ImGui::TextUnformatted("Brand:");
+		ImGui::SameLine();
+		ImGui::TextColored(color, (const char*) glGetString(GL_VENDOR));
+		ImGui::TextUnformatted("VRAM budget:");
+		ImGui::SameLine();
+		int kb = 0;
+		glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &kb);
+		ImGui::TextColored(color, "%.1f Mb", (float) kb / 1024.0f);
+		ImGui::TextUnformatted("VRAM available:");
+		ImGui::SameLine();
+		glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &kb);
+		ImGui::TextColored(color, "%.1f Mb", (float)kb / 1024.0f);
 		
 	}
 
