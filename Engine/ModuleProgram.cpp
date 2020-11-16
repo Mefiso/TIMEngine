@@ -1,5 +1,4 @@
 #include "ModuleProgram.h"
-#include "GL/glew.h"
 
 ModuleProgram::ModuleProgram()
 {

@@ -26,7 +26,7 @@ bool ModuleRender::Init()
 	context = SDL_GL_CreateContext(App->window->window);
 	//SDL_GL_MakeCurrent(App->window->window, context);
 	GLenum err = glewInit();
-	// c check for errors
+	// Âc check for errors
 	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
 	// Should be 2.0
 
@@ -35,9 +35,11 @@ bool ModuleRender::Init()
 	LOG("OpenGL version supported %s", glGetString(GL_VERSION));
 	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
+	// They are enabled inside ImGui_ImplOpenGL3_RenderDrawData so setting them here is useless
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	//glEnable(GL_CULL_FACE); // Enable cull backward faces
 	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
+	//glDisable(GL_CULL_FACE);
 
 	return true;
 }
@@ -71,7 +73,7 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	glLineWidth(1.0f);
+	/*glLineWidth(1.0f);
 	float d = 200.0f;
 	glBegin(GL_LINES);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -111,7 +113,7 @@ update_status ModuleRender::Update()
 
 	
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(*App->camera->ViewMatrix().v);
+	glLoadMatrixf(*App->camera->ViewMatrix().v);*/
 	return UPDATE_CONTINUE;
 }
 

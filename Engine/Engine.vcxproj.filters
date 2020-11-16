@@ -169,6 +169,7 @@
     <ClCompile Include="W_about.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -447,6 +448,7 @@
     <ClInclude Include="W_about.h">
       <Filter>EditorWindows</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
