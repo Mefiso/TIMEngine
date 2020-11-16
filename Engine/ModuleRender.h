@@ -24,6 +24,7 @@ public:
 	void MouseWheel(float xoffset, float yoffset);
 
 	void* context;
+	bool eventOcurred = false;
 
 private:
 	void TranslateCamera(float deltaTime);

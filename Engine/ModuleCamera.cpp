@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera.h"
+#include "ModuleEditor.h"
 #include "Math/Quat.h"
 
 
@@ -106,7 +107,7 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 		NewDirection();//RotateCamera(WorldUp, -RotationSpeed * celerity);
 		break;
 	}
-	
+	App->editor->UpdateCameraSettings();
 }
 
 void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
@@ -128,12 +129,13 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	NewDirection();
 	//RotateCamera(Right, Pitch-oldPitch);
 	//RotateCamera(WorldUp, -xoffset);
-
+	App->editor->UpdateCameraSettings();
 }
 
 void ModuleCamera::ProcessMouseScroll(float yoffset)
 {
 	Position += Front * yoffset;
+	App->editor->UpdateCameraSettings();
 }
 
 void ModuleCamera::UpdateFrustum()

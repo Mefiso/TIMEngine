@@ -154,8 +154,21 @@
       <Filter>ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="ModuleEditor.cpp" />
-    <ClCompile Include="ModuleRenderExercise.cpp" />
-    <ClCompile Include="ModuleDebugDraw.cpp" />
+    <ClCompile Include="Window.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_console.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_monitor.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_config.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_about.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
     <ClCompile Include="ModuleTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -420,10 +433,21 @@
       <Filter>ImGUI</Filter>
     </ClInclude>
     <ClInclude Include="ModuleEditor.h" />
-    <ClInclude Include="ModuleRenderExercise.h" />
-    <ClInclude Include="debug_draw.hpp" />
-    <ClInclude Include="debugdraw.h" />
-    <ClInclude Include="ModuleDebugDraw.h" />
+    <ClInclude Include="W_console.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="W_monitor.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="W_config.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="W_about.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
     <ClInclude Include="ModuleTexture.h" />
   </ItemGroup>
   <ItemGroup>
@@ -447,6 +471,9 @@
     </Filter>
     <Filter Include="ImGUI">
       <UniqueIdentifier>{3da5a169-84ae-4247-9342-53a8cb9abef4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EditorWindows">
+      <UniqueIdentifier>{38666de9-9d7a-4166-aca2-67bc73a9f8a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

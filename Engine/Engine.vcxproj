@@ -236,6 +236,11 @@
     <ClInclude Include="ModuleRenderExercise.h" />
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="W_about.h" />
+    <ClInclude Include="W_config.h" />
+    <ClInclude Include="W_console.h" />
+    <ClInclude Include="W_monitor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -298,6 +303,11 @@
     <ClCompile Include="ModuleRenderExercise.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="W_about.cpp" />
+    <ClCompile Include="W_config.cpp" />
+    <ClCompile Include="W_console.cpp" />
+    <ClCompile Include="W_monitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\emscripten\library_system.js" />

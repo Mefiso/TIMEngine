@@ -69,3 +69,8 @@ bool Application::CleanUp()
 
 	return ret;
 }
+
+void Application::Log(const char* input)
+{
+	editor->Log(input);
+}

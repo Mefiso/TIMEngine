@@ -1,5 +1,4 @@
 #pragma once
-
 #include<list>
 #include "Globals.h"
 #include "Module.h"
@@ -26,6 +25,8 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+
+	void Log(const char* input);
 
 public:
 	ModuleRender* renderer = nullptr;

@@ -5,6 +5,7 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
+#include "ModuleEditor.h"
 #include "SDL.h"
 
 ModuleRender::ModuleRender()
@@ -23,9 +24,9 @@ bool ModuleRender::Init()
 	
 	// Create an OpenGL context associated with the window.
 	context = SDL_GL_CreateContext(App->window->window);
-
+	//SDL_GL_MakeCurrent(App->window->window, context);
 	GLenum err = glewInit();
-	// c check for errors
+	// Âc check for errors
 	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
 	// Should be 2.0
 
@@ -37,7 +38,7 @@ bool ModuleRender::Init()
 	// They are enabled inside ImGui_ImplOpenGL3_RenderDrawData so setting them here is useless
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	//glEnable(GL_CULL_FACE); // Enable cull backward faces
-	//glFrontFace(GL_CW); // Front faces will be counter clockwise
+	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
 	//glDisable(GL_CULL_FACE);
 
 	return true;
@@ -48,6 +49,7 @@ update_status ModuleRender::PreUpdate()
 	float currentFrame = SDL_GetTicks()/1000.0f;
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
+	App->editor->ProcessFPS(deltaTime);
 
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
@@ -60,8 +62,10 @@ update_status ModuleRender::PreUpdate()
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
-	TranslateCamera(deltaTime);
-	RotateCameraKeys(deltaTime);
+	if (eventOcurred) {
+		TranslateCamera(deltaTime);
+		RotateCameraKeys(deltaTime);
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -170,10 +174,14 @@ void ModuleRender::TranslateCamera(float deltaTime)
 		App->camera->ProcessKeyboard(RIGHT, deltaTime);
 
 	// Speed increase/decrease
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
 		App->camera->MovementSpeed *= 2;
-	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP)
+		App->editor->UpdateCameraSettings();
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
 		App->camera->MovementSpeed /= 2;
+		App->editor->UpdateCameraSettings();
+	}
 }
 
 void ModuleRender::RotateCameraKeys(float deltaTime)
