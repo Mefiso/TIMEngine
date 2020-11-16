@@ -166,6 +166,9 @@
     <ClCompile Include="W_config.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
+    <ClCompile Include="W_about.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -439,6 +442,9 @@
       <Filter>EditorWindows</Filter>
     </ClInclude>
     <ClInclude Include="W_config.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="W_about.h">
       <Filter>EditorWindows</Filter>
     </ClInclude>
   </ItemGroup>

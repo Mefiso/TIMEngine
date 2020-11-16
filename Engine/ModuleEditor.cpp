@@ -7,6 +7,7 @@
 #include "W_console.h"
 #include "W_monitor.h"
 #include "W_config.h"
+#include "W_about.h"
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
 // In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
@@ -28,6 +29,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(console = new WConsole("Console", 0));
 	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
 	editorWindows.push_back(configuration = new WConfig("Configuration", 2));
+	editorWindows.push_back(new WAbout("About", 3));
 }
 
 ModuleEditor::~ModuleEditor()
