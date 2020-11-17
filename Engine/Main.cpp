@@ -1,28 +1,17 @@
-#ifdef _DEBUG
-#define MYDEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__)
-#endif // _DEBUG
+#include <stdlib.h>
+#include "Application.h"
+#include "ModuleRender.h"
+#include "Globals.h"
+#include "Leaks.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <cstdlib>
-#include <crtdbg.h>
-
-#ifdef _DEBUG
-#define new MYDEBUG_NEW
-#endif
+#include "SDL.h"
+#pragma comment( lib, "SDL/lib/x86/SDL2.lib" )
+#pragma comment( lib, "SDL/lib/x86/SDL2main.lib" )
 
 void DumpLeaks(void)
 {
 	_CrtDumpMemoryLeaks(); // show leaks with file and line where allocation was made
 }
-
-#include <stdlib.h>
-#include "Application.h"
-#include "ModuleRender.h"
-#include "Globals.h"
-
-#include "SDL/include/SDL.h"
-#pragma comment( lib, "SDL/lib/x86/SDL2.lib" )
-#pragma comment( lib, "SDL/lib/x86/SDL2main.lib" )
 
 enum main_states
 {

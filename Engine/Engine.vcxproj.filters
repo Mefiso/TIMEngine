@@ -170,6 +170,9 @@
       <Filter>EditorWindows</Filter>
     </ClCompile>
     <ClCompile Include="ModuleTexture.cpp" />
+    <ClCompile Include="ModuleDebugDraw.cpp" />
+    <ClCompile Include="ModuleRenderExercise.cpp" />
+    <ClCompile Include="Model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -449,6 +452,12 @@
       <Filter>EditorWindows</Filter>
     </ClInclude>
     <ClInclude Include="ModuleTexture.h" />
+    <ClInclude Include="debugdraw.h" />
+    <ClInclude Include="debug_draw.hpp" />
+    <ClInclude Include="ModuleDebugDraw.h" />
+    <ClInclude Include="ModuleRenderExercise.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="Leaks.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

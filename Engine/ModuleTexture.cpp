@@ -46,6 +46,7 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 		if (!success)
 		{
 			/* Error occured */
+			LOG("Could not convert image");
 			return false;
 		}
 		iluGetImageInfo(&info);
@@ -64,10 +65,12 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	}
 	else
 	{
 		/* Error occured */
+		LOG("Could not Load image %s", path.c_str())
 		return false;
 	}
 	ilDeleteImages(1, &imgId);

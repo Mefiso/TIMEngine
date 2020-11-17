@@ -9,6 +9,7 @@
 #include "ModuleRenderExercise.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleTexture.h"
+#include "Leaks.h"
 
 using namespace std;
 

@@ -20,8 +20,5 @@ public:
 	bool CleanUp();
 
 	unsigned int LoadTexture(std::string path);
-private:
-	std::vector<Texture> loaded_textures;
-
 
 };
