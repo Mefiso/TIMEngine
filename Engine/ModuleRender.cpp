@@ -84,7 +84,7 @@ bool ModuleRender::Init()
 
 	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
 	// Load models
-	bakerHouse = new Model("models/BakerHouse.fbx");
+	bakerHouse = new Model("models/baker_house/BakerHouse.fbx");
 
 	return true;
 }
@@ -151,7 +151,6 @@ bool ModuleRender::CleanUp()
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
 	App->camera->aspectRatio = (float) width / (float) height;
-	App->camera->HFOV = App->camera->VFOV * App->camera->aspectRatio;
 
 	App->window->width = width;
 	App->window->height = height;
@@ -169,6 +168,12 @@ void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
 void ModuleRender::MouseWheel(float xoffset, float yoffset)
 {
 	App->camera->ProcessMouseScroll(yoffset);
+}
+
+void ModuleRender::DropFile(const char* file)
+{
+	delete bakerHouse;
+	bakerHouse = new Model(file);
 }
 
 void ModuleRender::TranslateCamera(float deltaTime)

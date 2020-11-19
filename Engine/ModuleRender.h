@@ -24,6 +24,7 @@ public:
 	void WindowResized(unsigned width, unsigned height);
 	void RotateCameraMouse(float xoffset, float yoffset);
 	void MouseWheel(float xoffset, float yoffset);
+	void DropFile(const char* file);
 public:
 	void* context = nullptr;
 	bool eventOcurred = false;

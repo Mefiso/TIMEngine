@@ -38,11 +38,36 @@ bool ModuleInput::Init()
 update_status ModuleInput::PreUpdate()
 {
 	SDL_Event sdlEvent;
+	ImGuiIO& io = ImGui::GetIO();
+	bool imguiHasInputs = io.WantCaptureMouse || io.WantCaptureKeyboard;
+
+	keyboard = SDL_GetKeyboardState(NULL);
+
+	if (!imguiHasInputs)
+	{// Update each key state
+		for (int i = 0; i < MAX_KEYS; ++i)
+		{
+			if (keyboard[i] == 1)
+			{
+				if (keyboard_state[i] == KEY_IDLE)
+					keyboard_state[i] = KEY_DOWN;
+				else
+					keyboard_state[i] = KEY_REPEAT;
+			}
+			else
+			{
+				if (keyboard_state[i] == KEY_REPEAT || keyboard_state[i] == KEY_DOWN)
+					keyboard_state[i] = KEY_UP;
+				else
+					keyboard_state[i] = KEY_IDLE;
+			}
+		}
+	}
 
 	while (SDL_PollEvent(&sdlEvent) != 0)
 	{
 		
-		if (sdlEvent.window.windowID == SDL_GetWindowID(App->window->window))
+		if (!imguiHasInputs)//sdlEvent.window.windowID == SDL_GetWindowID(App->window->window))
 		{
 			App->renderer->eventOcurred = true;
 			switch (sdlEvent.type)
@@ -61,32 +86,17 @@ update_status ModuleInput::PreUpdate()
 				break;
 			case SDL_MOUSEWHEEL:
 				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
+				break;
+			case SDL_DROPFILE:
+				LOG(sdlEvent.drop.file);
+				App->renderer->DropFile(sdlEvent.drop.file);
+				SDL_free(sdlEvent.drop.file);
+				break;
 			}
 		}
 		else {
 			App->editor->SendEvent(sdlEvent);
 			App->renderer->eventOcurred = false;
-		}
-	}
-
-	keyboard = SDL_GetKeyboardState(NULL);
-
-	// Update each key state
-	for (int i = 0; i < MAX_KEYS; ++i)
-	{
-		if (keyboard[i] == 1)
-		{
-			if (keyboard_state[i] == KEY_IDLE)
-				keyboard_state[i] = KEY_DOWN;
-			else
-				keyboard_state[i] = KEY_REPEAT;
-		}
-		else
-		{
-			if (keyboard_state[i] == KEY_REPEAT || keyboard_state[i] == KEY_DOWN)
-				keyboard_state[i] = KEY_UP;
-			else
-				keyboard_state[i] = KEY_IDLE;
 		}
 	}
 

@@ -36,7 +36,7 @@ update_status ModuleCamera::PreUpdate()
 {	
 
 	// Update frustum
-	UpdateFrustum();
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -108,6 +108,7 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 		break;
 	}
 	App->editor->UpdateCameraSettings();
+	UpdateFrustum();
 }
 
 void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
@@ -130,19 +131,21 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	//RotateCamera(Right, Pitch-oldPitch);
 	//RotateCamera(WorldUp, -xoffset);
 	App->editor->UpdateCameraSettings();
+	UpdateFrustum();
 }
 
 void ModuleCamera::ProcessMouseScroll(float yoffset)
 {
 	Position += Front * yoffset;
 	App->editor->UpdateCameraSettings();
+	UpdateFrustum();
 }
 
 void ModuleCamera::UpdateFrustum()
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
-	frustum.SetHorizontalFovAndAspectRatio(aspectRatio, HFOV);
+	frustum.SetVerticalFovAndAspectRatio(VFOV, aspectRatio);
 	frustum.SetPos(Position);
 	frustum.SetFront(Front);
 	frustum.SetUp(Up);

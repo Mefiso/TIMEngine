@@ -11,9 +11,10 @@ Model::Model(std::string const& path)
 
 Model::~Model()
 {
-	for (std::vector<Mesh*>::iterator it = meshes.begin(), end = meshes.end(); it != end; ++it)
+	for (std::vector<Mesh*>::iterator it = meshes.begin(), end = meshes.end(); it != end; ++it) {
 		(*it)->CleanUp();
-
+		delete* it;
+	}
 	for (std::vector<Texture>::iterator it = loaded_textures.begin(), end = loaded_textures.end(); it != end; ++it)
 		glDeleteTextures(1, &(it->id));
 }
@@ -36,7 +37,8 @@ void Model::Load(std::string const& path)
 	}
 	else
 	{
-		directory = path.substr(0, path.find_last_of('/'));
+		directory = path.substr(0, path.find_last_of('/')).size() == path.size() ? 
+			path.substr(0, path.find_last_of('\\')) : path.substr(0, path.find_last_of('/'));
 		LoadTextures(scene);
 		LoadMeshes(scene);
 	}
