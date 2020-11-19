@@ -9,37 +9,6 @@
 #include "debugdraw.h"
 #include "SDL.h"
 
-void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
-{
-	const char* tmp_source = "", * tmp_type = "", * tmp_severity = "";
-	switch (source) {
-	case GL_DEBUG_SOURCE_API: tmp_source = "API"; break;
-	case GL_DEBUG_SOURCE_WINDOW_SYSTEM: tmp_source = "Window System"; break;
-	case GL_DEBUG_SOURCE_SHADER_COMPILER: tmp_source = "Shader Compiler"; break;
-	case GL_DEBUG_SOURCE_THIRD_PARTY: tmp_source = "Third Party"; break;
-	case GL_DEBUG_SOURCE_APPLICATION: tmp_source = "Application"; break;
-	case GL_DEBUG_SOURCE_OTHER: tmp_source = "Other"; break;
-	};
-	switch (type) {
-	case GL_DEBUG_TYPE_ERROR: tmp_type = "Error"; break;
-	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: tmp_type = "Deprecated Behaviour"; break;
-	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: tmp_type = "Undefined Behaviour"; break;
-	case GL_DEBUG_TYPE_PORTABILITY: tmp_type = "Portability"; break;
-	case GL_DEBUG_TYPE_PERFORMANCE: tmp_type = "Performance"; break;
-	case GL_DEBUG_TYPE_MARKER: tmp_type = "Marker"; break;
-	case GL_DEBUG_TYPE_PUSH_GROUP: tmp_type = "Push Group"; break;
-	case GL_DEBUG_TYPE_POP_GROUP: tmp_type = "Pop Group"; break;
-	case GL_DEBUG_TYPE_OTHER: tmp_type = "Other"; break;
-	};
-	switch (severity) {
-	case GL_DEBUG_SEVERITY_HIGH: tmp_severity = "high"; break;
-	case GL_DEBUG_SEVERITY_MEDIUM: tmp_severity = "medium"; break;
-	case GL_DEBUG_SEVERITY_LOW: tmp_severity = "low"; break;
-	case GL_DEBUG_SEVERITY_NOTIFICATION: tmp_severity = "notification"; break;
-	};
-	LOG("<Source:%s> <Type:%s> <Severity:%s> <ID:%d> <Message:%s>\n", tmp_source, tmp_type, tmp_severity, id, message);
-}
-
 ModuleRenderExercise::ModuleRenderExercise()
 {
 }
@@ -50,16 +19,9 @@ ModuleRenderExercise::~ModuleRenderExercise()
 
 bool ModuleRenderExercise::Init()
 {
-
-#ifdef _DEBUG
-	glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(&OurOpenGLErrorFunction, nullptr);
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
-#endif
 	VBO = CreateQuadVBO(); //CreateTriangleVBO();
 	texture0 = App->textureLoader->LoadTexture("textures/Lenna.png");
-	App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
+	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
 
 	return true;
 }
@@ -81,6 +43,8 @@ bool ModuleRenderExercise::CleanUp()
 {
 	LOG("Destroying renderer exercise");
 	DestroyVBO();
+
+	glDeleteProgram(defaultProgram);
 
 	return true;
 }
@@ -151,14 +115,14 @@ void ModuleRenderExercise::RenderVBO()
 	float4x4 model = float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),
 		float4x4::identity,
 		float3(2.0f, 1.0f, 0.0f));
-	App->program->use();
-	App->program->setMat4("model", model);
-	App->program->setMat4("view", App->camera->ViewMatrix());
-	App->program->setMat4("proj", App->camera->ProjectionMatrix());
+	App->program->use(defaultProgram);
+	App->program->setMat4(defaultProgram, "model", model);
+	App->program->setMat4(defaultProgram, "view", App->camera->ViewMatrix());
+	App->program->setMat4(defaultProgram, "proj", App->camera->ProjectionMatrix());
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture0);
-	App->program->setInt("mytexture", 0);
+	App->program->setInt(defaultProgram, "mytexture", 0);
 
 	// 1 triangle to draw = 3 vertices
 	glDrawArrays(GL_TRIANGLES, 0, 6);

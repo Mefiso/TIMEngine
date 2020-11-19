@@ -6,7 +6,42 @@
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
 #include "ModuleEditor.h"
+#include "ModuleProgram.h"
+#include "Model.h"
 #include "SDL.h"
+#include "ModuleDebugDraw.h"
+#include "debugdraw.h"
+
+void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	const char* tmp_source = "", * tmp_type = "", * tmp_severity = "";
+	switch (source) {
+	case GL_DEBUG_SOURCE_API: tmp_source = "API"; break;
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM: tmp_source = "Window System"; break;
+	case GL_DEBUG_SOURCE_SHADER_COMPILER: tmp_source = "Shader Compiler"; break;
+	case GL_DEBUG_SOURCE_THIRD_PARTY: tmp_source = "Third Party"; break;
+	case GL_DEBUG_SOURCE_APPLICATION: tmp_source = "Application"; break;
+	case GL_DEBUG_SOURCE_OTHER: tmp_source = "Other"; break;
+	};
+	switch (type) {
+	case GL_DEBUG_TYPE_ERROR: tmp_type = "Error"; break;
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: tmp_type = "Deprecated Behaviour"; break;
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: tmp_type = "Undefined Behaviour"; break;
+	case GL_DEBUG_TYPE_PORTABILITY: tmp_type = "Portability"; break;
+	case GL_DEBUG_TYPE_PERFORMANCE: tmp_type = "Performance"; break;
+	case GL_DEBUG_TYPE_MARKER: tmp_type = "Marker"; break;
+	case GL_DEBUG_TYPE_PUSH_GROUP: tmp_type = "Push Group"; break;
+	case GL_DEBUG_TYPE_POP_GROUP: tmp_type = "Pop Group"; break;
+	case GL_DEBUG_TYPE_OTHER: tmp_type = "Other"; break;
+	};
+	switch (severity) {
+	case GL_DEBUG_SEVERITY_HIGH: tmp_severity = "high"; break;
+	case GL_DEBUG_SEVERITY_MEDIUM: tmp_severity = "medium"; break;
+	case GL_DEBUG_SEVERITY_LOW: tmp_severity = "low"; break;
+	case GL_DEBUG_SEVERITY_NOTIFICATION: tmp_severity = "notification"; break;
+	};
+	LOG("<Source:%s> <Type:%s> <Severity:%s> <ID:%d> <Message:%s>\n", tmp_source, tmp_type, tmp_severity, id, message);
+}
 
 ModuleRender::ModuleRender()
 {
@@ -40,6 +75,16 @@ bool ModuleRender::Init()
 	//glEnable(GL_CULL_FACE); // Enable cull backward faces
 	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
 	//glDisable(GL_CULL_FACE);
+#ifdef _DEBUG
+	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(&OurOpenGLErrorFunction, nullptr);
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
+#endif
+
+	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
+	// Load models
+	bakerHouse = new Model("models/BakerHouse.fbx");
 
 	return true;
 }
@@ -73,47 +118,13 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	/*glLineWidth(1.0f);
-	float d = 200.0f;
-	glBegin(GL_LINES);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	for (float i = -d; i <= d; i += 1.0f)
-	{
-		glVertex3f(i, 0.0f, -d);
-		glVertex3f(i, 0.0f, d);
-		glVertex3f(-d, 0.0f, i);
-		glVertex3f(d, 0.0f, i);
-	}
-	glEnd();
-	glLineWidth(2.0f);
-	glBegin(GL_LINES);
-	// red X
-	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
-	glVertex3f(1.1f, 0.1f, 0.0f); glVertex3f(1.0f, -0.1f, 0.0f);
-	// green Y
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.0f, 1.15f, 0.0f); glVertex3f(0.0f, 1.05f, 0.0f);
-	// blue Z
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-0.05f, 0.1f, 1.05f); glVertex3f(0.05f, 0.1f, 1.05f);
-	glVertex3f(0.05f, 0.1f, 1.05f); glVertex3f(-0.05f, -0.1f, 1.05f);
-	glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
-	glEnd();
-	glLineWidth(1.0f);
+	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
+	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
 
-	//Send the frustum projection matrix to OpenGL
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(*App->camera->ProjectionMatrix().v);
+	bakerHouse->Draw(defaultProgram);
 
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(*App->camera->ViewMatrix().v);*/
+	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
+
 	return UPDATE_CONTINUE;
 }
 
@@ -128,6 +139,9 @@ bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
 
+	delete bakerHouse;
+	glDeleteProgram(defaultProgram);
+	
 	//Destroy window
 	SDL_GL_DeleteContext(context);
 

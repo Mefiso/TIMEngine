@@ -172,7 +172,12 @@
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleDebugDraw.cpp" />
     <ClCompile Include="ModuleRenderExercise.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -456,8 +461,13 @@
     <ClInclude Include="debug_draw.hpp" />
     <ClInclude Include="ModuleDebugDraw.h" />
     <ClInclude Include="ModuleRenderExercise.h" />
-    <ClInclude Include="Model.h" />
     <ClInclude Include="Leaks.h" />
+    <ClInclude Include="Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
@@ -483,6 +493,9 @@
     </Filter>
     <Filter Include="EditorWindows">
       <UniqueIdentifier>{38666de9-9d7a-4166-aca2-67bc73a9f8a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{b1276430-e03e-47f5-acb9-30cb31f378aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

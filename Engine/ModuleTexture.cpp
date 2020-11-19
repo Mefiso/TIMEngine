@@ -25,7 +25,6 @@ bool ModuleTexture::Init()
 
 bool ModuleTexture::CleanUp()
 {
-	// TODO: clean textures vector
 	return true;
 }
 
