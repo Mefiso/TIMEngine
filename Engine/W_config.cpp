@@ -35,8 +35,8 @@ void WConfig::Draw()
 		ImGui::SliderAngle("FOV", &VFOV);
 		ImGui::InputFloat("Aspect Ratio", &aspectRatio, 0.01f, 0.1f, "%.2f");
 	}
-
-	UpdateCamera();
+	if (ImGui::IsWindowFocused())
+		UpdateCamera();
 	ImGui::End();
 
 }
@@ -64,4 +64,5 @@ void WConfig::UpdateCamera()
 	App->camera->VFOV = VFOV;
 	App->camera->aspectRatio = aspectRatio;
 	App->camera->HFOV = App->camera->VFOV * App->camera->aspectRatio;
+	App->camera->onCameraSettingsChanged();
 }

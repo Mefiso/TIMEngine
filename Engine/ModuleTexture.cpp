@@ -2,6 +2,7 @@
 #include "GL/glew.h"
 #include "IL/il.h"
 #include "IL/devil_cpp_wrapper.hpp"
+#include "Leaks.h"
 
 ModuleTexture::ModuleTexture()
 {
@@ -49,9 +50,9 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 			return false;
 		}
 		iluGetImageInfo(&info);
-		if (info.Origin == IL_ORIGIN_UPPER_LEFT)
+		if (IL_ORIGIN_UPPER_LEFT)
 			iluFlipImage();
-
+		
 		glGenTextures(1, &textureId); /* Texture name generation */
 		glBindTexture(GL_TEXTURE_2D, textureId); /* Binding of texture name */
 		

@@ -5,6 +5,7 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "SDL/include/SDL.h"
+#include "Leaks.h"
 
 #define MAX_KEYS 300
 
@@ -30,7 +31,7 @@ bool ModuleInput::Init()
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
-
+	
 	return ret;
 }
 
@@ -77,7 +78,7 @@ update_status ModuleInput::PreUpdate()
 			case SDL_WINDOWEVENT:
 				if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
 					return UPDATE_STOP;
-				if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED)// || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 					App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
 				break;
 			case SDL_MOUSEMOTION:

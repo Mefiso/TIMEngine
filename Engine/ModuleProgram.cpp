@@ -1,4 +1,5 @@
 #include "ModuleProgram.h"
+#include "Leaks.h"
 
 ModuleProgram::ModuleProgram()
 {

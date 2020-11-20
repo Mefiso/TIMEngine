@@ -11,6 +11,7 @@
 #include "SDL.h"
 #include "ModuleDebugDraw.h"
 #include "debugdraw.h"
+#include "Leaks.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -148,9 +149,9 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-void ModuleRender::WindowResized(unsigned width, unsigned height)
+void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 {
-	App->camera->aspectRatio = (float) width / (float) height;
+	App->camera->onResize((float) width / (float) height);
 
 	App->window->width = width;
 	App->window->height = height;
