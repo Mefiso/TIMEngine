@@ -2,6 +2,8 @@
 #include "Module.h"
 #include "Globals.h"
 
+class Model;
+
 struct SDL_Texture;
 struct SDL_Renderer;
 struct SDL_Rect;
@@ -22,9 +24,15 @@ public:
 	void WindowResized(unsigned width, unsigned height);
 	void RotateCameraMouse(float xoffset, float yoffset);
 	void MouseWheel(float xoffset, float yoffset);
-
-	void* context;
+	void DropFile(const char* file);
+public:
+	void* context = nullptr;
 	bool eventOcurred = false;
+
+	unsigned int defaultProgram;
+
+	// Models
+	Model* bakerHouse = nullptr;
 
 private:
 	void TranslateCamera(float deltaTime);

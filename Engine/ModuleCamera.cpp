@@ -4,13 +4,15 @@
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
 #include "Math/Quat.h"
+#include "Leaks.h"
 
 
 ModuleCamera::ModuleCamera(float3 position, float3 up, float yaw, float pitch, float near_plane, float far_plane) : Module(),
-	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), HFOV(VERTICALFOV * ASPECTRATIO), 
+	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO),
 	VFOV(VERTICALFOV), Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
 	
 {
+	HFOV = 2.f * Atan(Tan(VFOV * 0.5f) * aspectRatio);
 }
 
 // Destructor
@@ -34,9 +36,6 @@ bool ModuleCamera::Init()
 // Called every draw update
 update_status ModuleCamera::PreUpdate()
 {	
-
-	// Update frustum
-	UpdateFrustum();
 
 	return UPDATE_CONTINUE;
 }
@@ -107,7 +106,7 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 		NewDirection();//RotateCamera(WorldUp, -RotationSpeed * celerity);
 		break;
 	}
-	App->editor->UpdateCameraSettings();
+	UpdateFrustum();
 }
 
 void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
@@ -129,23 +128,36 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	NewDirection();
 	//RotateCamera(Right, Pitch-oldPitch);
 	//RotateCamera(WorldUp, -xoffset);
-	App->editor->UpdateCameraSettings();
+	UpdateFrustum();
 }
 
 void ModuleCamera::ProcessMouseScroll(float yoffset)
 {
 	Position += Front * yoffset;
-	App->editor->UpdateCameraSettings();
+	UpdateFrustum();
+}
+
+void ModuleCamera::onResize(float aspect_ratio)
+{
+	aspectRatio = aspect_ratio;
+	UpdateFrustum();
+}
+
+void ModuleCamera::onCameraSettingsChanged()
+{
+	UpdateFrustum();
 }
 
 void ModuleCamera::UpdateFrustum()
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
-	frustum.SetHorizontalFovAndAspectRatio(aspectRatio, HFOV);
+	frustum.SetVerticalFovAndAspectRatio(VFOV, aspectRatio);
 	frustum.SetPos(Position);
 	frustum.SetFront(Front);
 	frustum.SetUp(Up);
+	HFOV = frustum.HorizontalFov();
+	App->editor->UpdateCameraSettings();
 }
 
 void ModuleCamera::RotateCamera(float3& axis, float angle)
@@ -166,7 +178,6 @@ void ModuleCamera::NewDirection()
 	front.y = sin(DegToRad(Pitch));
 	front.z = sin(DegToRad(Yaw)) * cos(DegToRad(Pitch));
 	Front = front.Normalized();
-
 	Right = Cross(Front, WorldUp).Normalized(); // 6 scalar products and 3 subtractions + 3 scalar products, 2 sums and one sqrt
 	Up = Cross(Right, Front).Normalized();
 }

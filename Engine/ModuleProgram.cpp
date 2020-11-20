@@ -1,4 +1,5 @@
 #include "ModuleProgram.h"
+#include "Leaks.h"
 
 ModuleProgram::ModuleProgram()
 {
@@ -9,22 +10,23 @@ ModuleProgram::~ModuleProgram()
 {
 }
 
-void ModuleProgram::CreateProgramFromFile(const char* vertexPath, const char* fragmentPath)
+unsigned int ModuleProgram::CreateProgramFromFile(const char* vertexPath, const char* fragmentPath)
 {
 	const char* vShaderCode = LoadShaderSource(vertexPath);
 	const char* fShaderCode = LoadShaderSource(fragmentPath);
 	unsigned int vertex = CompileShader(GL_VERTEX_SHADER, vShaderCode);
 	unsigned int fragment = CompileShader(GL_FRAGMENT_SHADER, fShaderCode);
-	ID = CreateProgram(vertex, fragment);
+	unsigned int ID = CreateProgram(vertex, fragment);
 	free((void*) vShaderCode);
 	free((void*) fShaderCode);
+
+	return ID;
 }
 
 // Called before quitting
 bool ModuleProgram::CleanUp()
 {
-	LOG("Destroying Shader Program");
-	glDeleteProgram(ID);
+	LOG("Destroying Shader Module");
 
 	return true;
 }

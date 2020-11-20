@@ -74,13 +74,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>E:\Documentos\Master video games\Subjects\C++\Video-Games-Engine\Engine\DevIL\include;./ImGUI;./MathGeoLib;./glew-2.1.0/include;./SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./assimp/include;E:\Documentos\Master video games\Subjects\C++\Video-Games-Engine\Engine\DevIL\include;./ImGUI;./MathGeoLib;./glew-2.1.0/include;./SDL/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>./DevIL/lib/x86/Release;./glew-2.1.0/lib/Release/Win32;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DevIL.lib;Ilu.lib;Ilut.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\Documentos\Master video games\Subjects\C++\Video-Games-Engine\Engine\assimp\lib;./DevIL/lib/x86/Release;./glew-2.1.0/lib/Release/Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc141-mt.lib;DevIL.lib;Ilu.lib;Ilut.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -142,6 +142,9 @@
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="debug_draw.hpp" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Leaks.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
     <ClInclude Include="ImGUI\imgui_impl_opengl3.h" />
@@ -294,6 +297,8 @@
     <ClCompile Include="MathGeoLib\Math\SSEMath.cpp" />
     <ClCompile Include="MathGeoLib\Math\TransformOps.cpp" />
     <ClCompile Include="MathGeoLib\Time\Clock.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModuleCamera.cpp" />
     <ClCompile Include="ModuleDebugDraw.cpp" />
     <ClCompile Include="ModuleInput.cpp" />

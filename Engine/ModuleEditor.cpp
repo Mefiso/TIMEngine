@@ -8,6 +8,7 @@
 #include "W_monitor.h"
 #include "W_config.h"
 #include "W_about.h"
+#include "Leaks.h"
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
 // In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)

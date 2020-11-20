@@ -5,6 +5,8 @@
 class ModuleRenderExercise : public Module
 {
 public:
+	unsigned int defaultProgram = 0;
+public:
 	ModuleRenderExercise();
 	~ModuleRenderExercise();
 
