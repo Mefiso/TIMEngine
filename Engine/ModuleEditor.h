@@ -28,6 +28,7 @@ public:
 	void Log(const char* input);
 	void ProcessFPS(float deltaTime);
 	void UpdateCameraSettings();
+	void UpdateWindowSizeSettings();
 private:
 	ImGuiIO* io = nullptr;
 	

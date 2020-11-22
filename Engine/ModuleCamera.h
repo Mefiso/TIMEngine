@@ -29,7 +29,7 @@ const float ASPECTRATIO = (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT;
 class ModuleCamera : public Module
 {
 public:
-	ModuleCamera(float3 position = float3(0, 1, 4), float3 up = float3(0, 1, 0), float yaw = YAW, float pitch = PITCH,
+	ModuleCamera(float3 position = float3(0, 1, 7), float3 up = float3(0, 1, 0), float yaw = YAW, float pitch = PITCH,
 	float near_plane = 0.1f, float far_plane = 200.0f);
 	~ModuleCamera();
 

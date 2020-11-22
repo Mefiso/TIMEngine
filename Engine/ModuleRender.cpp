@@ -155,6 +155,7 @@ void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 
 	App->window->width = width;
 	App->window->height = height;
+	App->editor->UpdateWindowSizeSettings();
 }
 
 void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)

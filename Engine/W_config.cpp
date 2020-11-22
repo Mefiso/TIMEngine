@@ -1,8 +1,10 @@
 #include "W_config.h"
 #include "Application.h"
+#include "ModuleWindow.h"
 
-WConfig::WConfig(std::string name, int ID) : Window(name, ID), Position(float3(0, 1, 4)), nearPlane(0.1f), farPlane(200.0f), 
-MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), VFOV(VERTICALFOV)
+WConfig::WConfig(std::string name, int ID) : Window(name, ID), Position(float3(0, 1, 7)), nearPlane(0.1f), farPlane(200.0f), 
+MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), VFOV(VERTICALFOV),
+brightness(1.0f), width(SCREEN_WIDTH), height(SCREEN_HEIGHT), fullscreen(FULLSCREEN), resizable(RESIZABLE), borderless(false), fulldesktop(false)
 {
 }
 
@@ -17,6 +19,46 @@ void WConfig::Draw()
 	{
 		ImGui::End();
 		return;
+	}
+
+	if (ImGui::CollapsingHeader("Window")) {
+		if (ImGui::SliderFloat("Brightness", &brightness, 0.0f, 1.0f, "%.3f"))
+			App->window->SetBrightness(brightness);
+		if (ImGui::SliderInt("Width", &width, 0, 2560)) {
+			App->window->SetWindowSize(width, height);
+			App->camera->onResize(width / (float)height);
+		}
+		if (ImGui::SliderInt("Height", &height, 0, 1440)) {
+			App->window->SetWindowSize(width, height);
+			App->camera->onResize(width / (float)height);
+		}
+		
+		SDL_DisplayMode mode;
+		SDL_GetWindowDisplayMode(App->window->window, &mode);
+		ImGui::TextUnformatted("Refresh rate: ");
+		ImGui::SameLine();
+		ImGui::TextColored({0.0, 1.0, 1.0, 1.0}, "%d", mode.refresh_rate);
+
+		if (ImGui::Checkbox("Fullscreen", &fullscreen))
+			App->window->SetFullscreen(fullscreen);
+		ImGui::SameLine();
+		if (ImGui::Checkbox("Resizable", &resizable))
+			App->window->SetResizable(resizable);
+		if (ImGui::Checkbox("Borderless", &borderless))
+			App->window->SetBorderless(borderless);
+		ImGui::SameLine();
+		if (ImGui::Checkbox("Full Desktop", &fulldesktop)) {
+			App->window->SetFulldesktop(fulldesktop); 
+			if (fulldesktop) {
+				SDL_GetWindowDisplayMode(App->window->window, &mode);
+				width = mode.w;
+				height = mode.h;
+			} 
+			else {
+				this->UpdateWindowSizeSettings();
+			}
+			App->camera->onResize(width/(float) height);
+		}
 	}
 
 	if (ImGui::CollapsingHeader("Camera")) {
@@ -37,11 +79,13 @@ void WConfig::Draw()
 	}
 	if (ImGui::IsWindowFocused())
 		UpdateCamera();
+
+	
 	ImGui::End();
 
 }
 
-void WConfig::UpdateSettings()
+void WConfig::UpdateCameraSettings()
 {
 	Position = App->camera->Position;
 	MovementSpeed = App->camera->MovementSpeed;
@@ -51,6 +95,12 @@ void WConfig::UpdateSettings()
 	farPlane = App->camera->farPlane;
 	VFOV = App->camera->VFOV;
 	aspectRatio = App->camera->aspectRatio;
+}
+
+void WConfig::UpdateWindowSizeSettings()
+{
+	width = App->window->width;
+	height = App->window->height; 
 }
 
 void WConfig::UpdateCamera() 

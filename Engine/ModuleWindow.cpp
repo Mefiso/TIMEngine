@@ -35,7 +35,7 @@ bool ModuleWindow::Init()
 		width = SCREEN_WIDTH;
 		height = SCREEN_HEIGHT;
 		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
-
+		
 		if(FULLSCREEN == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
@@ -75,5 +75,49 @@ bool ModuleWindow::CleanUp()
 	//Quit SDL subsystems
 	SDL_Quit();
 	return true;
+}
+
+void ModuleWindow::SetFullscreen(const bool fullscreen)
+{
+	if (fullscreen)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	else
+		SDL_SetWindowFullscreen(window, 0);
+}
+
+void ModuleWindow::SetBorderless(const bool borderless)
+{
+	if (borderless)
+		SDL_SetWindowBordered(window, SDL_FALSE);
+	else
+		SDL_SetWindowBordered(window, SDL_TRUE);
+}
+
+void ModuleWindow::SetFulldesktop(const bool fulldesktop)
+{
+	if (fulldesktop)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else
+		SDL_SetWindowFullscreen(window, 0);
+}
+
+void ModuleWindow::SetResizable(const bool resizable)
+{
+	if (resizable)
+		SDL_SetWindowResizable(window, SDL_TRUE);
+	else
+		SDL_SetWindowResizable(window, SDL_FALSE);
+}
+
+void ModuleWindow::SetWindowSize(const float width, const float height)
+{
+	this->width = width;
+	this->height = height;
+	SDL_SetWindowSize(window, width, height);
+}
+
+void ModuleWindow::SetBrightness(const float brightness)
+{
+	SDL_SetWindowBrightness(window, brightness);
 }
 
