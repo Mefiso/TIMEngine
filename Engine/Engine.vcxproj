@@ -244,6 +244,7 @@
     <ClInclude Include="W_config.h" />
     <ClInclude Include="W_console.h" />
     <ClInclude Include="W_monitor.h" />
+    <ClInclude Include="W_properties.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -313,6 +314,7 @@
     <ClCompile Include="W_config.cpp" />
     <ClCompile Include="W_console.cpp" />
     <ClCompile Include="W_monitor.cpp" />
+    <ClCompile Include="W_properties.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\emscripten\library_system.js" />

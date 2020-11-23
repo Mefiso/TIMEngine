@@ -44,6 +44,7 @@ public:
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 	void ProcessMouseMovement(float xoffset, float yoffset);
 	void ProcessMouseScroll(float yoffset);
+	void ProcessSpeed(float multiplier);
 	void onResize(float aspect_ratio);
 	void onCameraSettingsChanged();
 

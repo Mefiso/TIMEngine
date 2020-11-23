@@ -137,6 +137,12 @@ void ModuleCamera::ProcessMouseScroll(float yoffset)
 	UpdateFrustum();
 }
 
+void ModuleCamera::ProcessSpeed(float multiplier)
+{
+	MovementSpeed *= multiplier;
+	App->editor->UpdateCameraSettings();
+}
+
 void ModuleCamera::onResize(float aspect_ratio)
 {
 	aspectRatio = aspect_ratio;

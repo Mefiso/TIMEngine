@@ -49,7 +49,7 @@ void Model::LoadMeshes(const aiScene* scene)
 {
 	for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
 	{
-		meshes.push_back(new Mesh(scene->mMeshes[i], 0));
+		meshes.push_back(new Mesh(scene->mMeshes[i], scene->mMeshes[i]->mMaterialIndex));
 	}
 }
 

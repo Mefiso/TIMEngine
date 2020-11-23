@@ -75,3 +75,8 @@ void Application::Log(const char* input)
 {
 	editor->Log(input);
 }
+
+void Application::ProcessFPS(const float deltaTime)
+{
+	editor->ProcessFPS(deltaTime);
+}

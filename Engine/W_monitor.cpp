@@ -1,6 +1,5 @@
 #include "W_monitor.h"
 #include "GL/glew.h"
-#include "ImGUI/imgui.h"
 
 WMonitor::WMonitor(std::string name, int ID) : Window(name, ID)
 {

@@ -1,6 +1,5 @@
 #pragma once
 #include "Globals.h"
-#include "ImGUI/imgui.h"
 #include "Window.h"
 #include "ModuleCamera.h"
 
@@ -26,8 +25,6 @@ private:
 	float farPlane;
 	float VFOV;
 	float aspectRatio;
-private:
-	void UpdateCamera();
 
 public:
 	WConfig(std::string name, int ID);

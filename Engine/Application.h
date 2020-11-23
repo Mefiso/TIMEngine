@@ -27,6 +27,7 @@ public:
 	bool CleanUp();
 
 	void Log(const char* input);
+	void ProcessFPS(const float deltaTime);
 
 public:
 	ModuleRender* renderer = nullptr;

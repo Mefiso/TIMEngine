@@ -5,12 +5,11 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
-#include "ModuleEditor.h"
 #include "ModuleProgram.h"
-#include "Model.h"
-#include "SDL.h"
 #include "ModuleDebugDraw.h"
 #include "debugdraw.h"
+#include "Model.h"
+#include "SDL.h"
 #include "Leaks.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -95,7 +94,7 @@ update_status ModuleRender::PreUpdate()
 	float currentFrame = SDL_GetTicks()/1000.0f;
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
-	App->editor->ProcessFPS(deltaTime);
+	App->ProcessFPS(deltaTime);
 
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
@@ -151,11 +150,9 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 {
-	App->camera->onResize((float) width / (float) height);
-
 	App->window->width = width;
 	App->window->height = height;
-	App->editor->UpdateWindowSizeSettings();
+	App->camera->onResize((float) width / (float) height);
 }
 
 void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
@@ -196,12 +193,10 @@ void ModuleRender::TranslateCamera(float deltaTime)
 
 	// Speed increase/decrease
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
-		App->camera->MovementSpeed *= 2;
-		App->editor->UpdateCameraSettings();
+		App->camera->ProcessSpeed(2);	
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
-		App->camera->MovementSpeed /= 2;
-		App->editor->UpdateCameraSettings();
+		App->camera->ProcessSpeed(0.5f);
 	}
 }
 
