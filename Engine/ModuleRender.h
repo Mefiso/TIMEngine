@@ -21,10 +21,10 @@ public:
 	bool CleanUp();
 
 	// callback funcs
-	void WindowResized(unsigned width, unsigned height);
+	void WindowResized(unsigned int width, unsigned int height);
 	void RotateCameraMouse(float xoffset, float yoffset);
 	void MouseWheel(float xoffset, float yoffset);
-	void DropFile(const char* file);
+	bool DropFile(const char* file);
 public:
 	void* context = nullptr;
 	bool eventOcurred = false;
@@ -32,7 +32,7 @@ public:
 	unsigned int defaultProgram;
 
 	// Models
-	Model* bakerHouse = nullptr;
+	Model* modelLoaded = nullptr;
 
 private:
 	void TranslateCamera(float deltaTime);

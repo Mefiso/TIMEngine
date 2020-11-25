@@ -84,7 +84,7 @@ bool ModuleRender::Init()
 
 	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
 	// Load models
-	bakerHouse = new Model("models/baker_house/BakerHouse.fbx");
+	modelLoaded = new Model("models/baker_house/BakerHouse.fbx");
 
 	return true;
 }
@@ -121,7 +121,7 @@ update_status ModuleRender::Update()
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
 
-	bakerHouse->Draw(defaultProgram);
+	modelLoaded->Draw(defaultProgram);
 
 	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
 
@@ -139,7 +139,7 @@ bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
 
-	delete bakerHouse;
+	delete modelLoaded;
 	glDeleteProgram(defaultProgram);
 	
 	//Destroy window
@@ -169,10 +169,14 @@ void ModuleRender::MouseWheel(float xoffset, float yoffset)
 	App->camera->ProcessMouseScroll(yoffset);
 }
 
-void ModuleRender::DropFile(const char* file)
+bool ModuleRender::DropFile(const char* file)
 {
-	delete bakerHouse;
-	bakerHouse = new Model(file);
+	delete modelLoaded;
+	modelLoaded = new Model(file);
+	if (modelLoaded)
+		return true;
+	else
+		return false;
 }
 
 void ModuleRender::TranslateCamera(float deltaTime)

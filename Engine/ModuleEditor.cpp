@@ -8,6 +8,7 @@
 #include "W_monitor.h"
 #include "W_config.h"
 #include "W_about.h"
+#include "W_properties.h"
 #include "Leaks.h"
 
 ModuleEditor::ModuleEditor()
@@ -16,6 +17,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
 	editorWindows.push_back(configuration = new WConfig("Configuration", 2));
 	editorWindows.push_back(new WAbout("About", 3));
+	editorWindows.push_back(properties = new WProperties("Properties", 4));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -42,6 +44,8 @@ bool ModuleEditor::Init()
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
 	ImGui_ImplOpenGL3_Init();
+
+	SelectedModel(App->renderer->modelLoaded);
 
 	return true;
 }
@@ -131,4 +135,9 @@ void ModuleEditor::UpdateCameraSettings()
 void ModuleEditor::UpdateWindowSizeSettings()
 {
 	configuration->UpdateWindowSizeSettings();
+}
+
+void ModuleEditor::SelectedModel(Model* model)
+{
+	properties->SelectTextures(model);
 }

@@ -66,7 +66,7 @@ void Model::LoadTextures(const aiScene* scene)
 		{
 			if (std::strcmp(loaded_textures[j].path.data(), file.C_Str()) == 0)
 			{
-				textures.push_back(loaded_textures[j]);
+				textures.push_back(&loaded_textures[j]);
 				skip = true;
 				break;
 			}
@@ -78,8 +78,8 @@ void Model::LoadTextures(const aiScene* scene)
 				texture.id = App->textureLoader->LoadTexture(directory + '/' + file.C_Str());
 				texture.type = "texture_diffuse";
 				texture.path = file.C_Str();
-				textures.push_back(texture);
 				loaded_textures.push_back(texture);
+				textures.push_back(&loaded_textures[loaded_textures.size()-1]);
 			}
 		}
 	}

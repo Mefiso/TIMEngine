@@ -17,7 +17,7 @@ public:
 	unsigned int material_index;
 public:
 	Mesh(const aiMesh* mesh, unsigned int index);
-	void Draw(unsigned int program, const std::vector<Texture>& model_textures);
+	void Draw(unsigned int program, const std::vector<Texture*>& model_textures);
 	void CleanUp();
 
 private:

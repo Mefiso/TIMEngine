@@ -14,7 +14,7 @@ class Model
 {
 public:
 	std::vector<Mesh*> meshes;
-	std::vector<Texture> textures;
+	std::vector<Texture*> textures;
 	std::string directory;
 
 	Model(std::string const& path);
