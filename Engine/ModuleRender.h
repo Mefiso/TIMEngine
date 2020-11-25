@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "Math/float4.h"
 
 class Model;
 
@@ -28,6 +29,8 @@ public:
 public:
 	void* context = nullptr;
 	bool eventOcurred = false;
+	bool showGrid = true;
+	float4 backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };
 
 	unsigned int defaultProgram;
 

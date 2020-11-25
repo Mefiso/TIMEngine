@@ -21,5 +21,11 @@ public:
 	bool CleanUp();
 
 	unsigned int LoadTexture(std::string path);
-
+public:
+	bool mipmap;
+	bool force_flip;
+	int wrap_s;
+	int wrap_t;
+	int filter_mag;
+	int filter_min;
 };

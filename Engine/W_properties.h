@@ -21,4 +21,8 @@ public:
 
 	void Draw();
 	void SelectPropertiesFromModel(Model* model);
+private:
+	void TransformationHeader();
+	void GeometryHeader();
+	void TexturesHeader();
 };

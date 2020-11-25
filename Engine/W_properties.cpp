@@ -20,6 +20,32 @@ void WProperties::Draw()
 		ImGui::End();
 		return;
 	}
+	
+	TransformationHeader();
+	GeometryHeader();
+	TexturesHeader();
+	
+	ImGui::End();
+}
+
+void WProperties::SelectPropertiesFromModel(Model* model)
+{
+	selected_textures = model->textures;
+	scale.x = model->transformation.Col3(0).Length();
+	scale.y = model->transformation.Col3(1).Length();
+	scale.z = model->transformation.Col3(2).Length();
+
+	rotation.x = RadToDeg(acos(model->transformation.Col3(0).Normalized().Dot(float3::unitX)));
+	rotation.y = RadToDeg(acos(model->transformation.Col3(1).Normalized().Dot(float3::unitY)));
+	rotation.z = RadToDeg(acos(model->transformation.Col3(2).Normalized().Dot(float3::unitZ)));
+
+	translation = model->transformation.Col3(3);
+
+	selected_meshes = model->meshes;
+}
+
+void WProperties::TransformationHeader()
+{
 	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
@@ -65,7 +91,11 @@ void WProperties::Draw()
 		ImGui::TextColored(color, "%.1f", scale.z);
 		ImGui::Separator();
 	}
+}
 
+void WProperties::GeometryHeader()
+{
+	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Geometry"))
 	{
 		ImGui::TextUnformatted("Num meshes:");
@@ -74,16 +104,20 @@ void WProperties::Draw()
 		ImGui::TextUnformatted("Num textures:");
 		ImGui::SameLine();
 		ImGui::TextColored(color, "%d", selected_textures.size());
-		
+
 		for (unsigned int i = 0; i < selected_meshes.size(); ++i)
 		{
 			ImGui::Separator();
 			ImGui::Text("Mesh %d", i);
 			ImGui::Text("Num vertices: %d", selected_meshes[i]->num_vertices);
-			ImGui::Text("Num triangles: %d", selected_meshes[i]->num_indices/3);
+			ImGui::Text("Num triangles: %d", selected_meshes[i]->num_indices / 3);
 		}
 	}
+}
 
+void WProperties::TexturesHeader()
+{
+	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Textures")) {
 		// This is read-only the texture properties, but in would be interesting to be able to change them
 		if (ImGui::BeginTabBar("Textures"))
@@ -94,7 +128,7 @@ void WProperties::Draw()
 				label = "Texture " + std::to_string(i);
 				if (ImGui::BeginTabItem(label.c_str()))
 				{
-					
+
 					glBindTexture(GL_TEXTURE_2D, selected_textures[i]->id);
 					// Texture size
 					int w, h;
@@ -180,8 +214,8 @@ void WProperties::Draw()
 						break;
 					}
 					ImGui::Separator();
-					ImTextureID texid = (ImTextureID) selected_textures[i]->id;
-					ImGui::Image(texid, ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().x*h/(float)w));
+					ImTextureID texid = (ImTextureID)selected_textures[i]->id;
+					ImGui::Image(texid, ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().x * h / (float)w));
 					ImGui::EndTabItem();
 				}
 
@@ -189,21 +223,4 @@ void WProperties::Draw()
 			ImGui::EndTabBar();
 		}
 	}
-	ImGui::End();
-}
-
-void WProperties::SelectPropertiesFromModel(Model* model)
-{
-	selected_textures = model->textures;
-	scale.x = model->transformation.Col3(0).Length();
-	scale.y = model->transformation.Col3(1).Length();
-	scale.z = model->transformation.Col3(2).Length();
-
-	rotation.x = RadToDeg(acos(model->transformation.Col3(0).Normalized().Dot(float3::unitX)));
-	rotation.y = RadToDeg(acos(model->transformation.Col3(1).Normalized().Dot(float3::unitY)));
-	rotation.z = RadToDeg(acos(model->transformation.Col3(2).Normalized().Dot(float3::unitZ)));
-
-	translation = model->transformation.Col3(3);
-
-	selected_meshes = model->meshes;
 }

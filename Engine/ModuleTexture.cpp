@@ -4,7 +4,8 @@
 #include "IL/devil_cpp_wrapper.hpp"
 #include "Leaks.h"
 
-ModuleTexture::ModuleTexture()
+ModuleTexture::ModuleTexture() : mipmap(true), force_flip(false), wrap_s(GL_REPEAT),
+wrap_t(GL_REPEAT), filter_min(GL_LINEAR_MIPMAP_LINEAR), filter_mag(GL_LINEAR)
 {
 }
 
@@ -52,19 +53,23 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 		iluGetImageInfo(&info);
 		if (IL_ORIGIN_UPPER_LEFT)
 			iluFlipImage();
-		
+		if (force_flip)
+			iluFlipImage();
+
 		glGenTextures(1, &textureId); /* Texture name generation */
 		glBindTexture(GL_TEXTURE_2D, textureId); /* Binding of texture name */
 		
 		glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), ilGetInteger(IL_IMAGE_WIDTH),
 			ilGetInteger(IL_IMAGE_HEIGHT), 0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE,
 			ilGetData()); /* Texture specification */
-		glGenerateMipmap(GL_TEXTURE_2D);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		if (mipmap)
+			glGenerateMipmap(GL_TEXTURE_2D);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_min);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_mag);
 		
 	}
 	else

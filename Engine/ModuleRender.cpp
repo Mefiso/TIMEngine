@@ -99,7 +99,7 @@ update_status ModuleRender::PreUpdate()
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
 	glViewport(0, 0, w, h);
-	glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
+	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_UP) {
@@ -123,7 +123,8 @@ update_status ModuleRender::Update()
 
 	modelLoaded->Draw(defaultProgram);
 
-	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
+	if (showGrid)
+		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
 
 	return UPDATE_CONTINUE;
 }

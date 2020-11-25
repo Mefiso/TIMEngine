@@ -33,4 +33,10 @@ public:
 	void Draw() override;
 	void UpdateCameraSettings();
 	void UpdateWindowSizeSettings();
+
+private:
+	void WindowHeader();
+	void RendererHeader();
+	void TextureHeader();
+	void CameraHeader();
 };
