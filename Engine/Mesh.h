@@ -1,8 +1,7 @@
 #pragma once
 #include "Globals.h"
-#include "Math/float2.h"
-#include "Math/float3.h"
 
+#include <Math/float4x4.h>
 #include <assimp/scene.h>
 #include <vector>
 
@@ -17,7 +16,7 @@ public:
 	unsigned int material_index;
 public:
 	Mesh(const aiMesh* mesh, unsigned int index);
-	void Draw(unsigned int program, const std::vector<Texture*>& model_textures);
+	void Draw(unsigned int program, const std::vector<Texture*>& model_textures, float4x4 model);
 	void CleanUp();
 
 private:

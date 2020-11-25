@@ -14,11 +14,11 @@ Mesh::Mesh(const aiMesh* mesh, unsigned int index) : material_index(index)
 	CreateVAO();
 }
 
-void Mesh::Draw(unsigned int program, const std::vector<Texture*>& model_textures)
+void Mesh::Draw(unsigned int program, const std::vector<Texture*>& model_textures, float4x4 model)
 {
 	App->program->use(program);
 
-	App->program->setMat4(program, "model", float4x4::identity);
+	App->program->setMat4(program, "model", model);
 	App->program->setMat4(program, "view", App->camera->ViewMatrix());
 	App->program->setMat4(program, "proj", App->camera->ProjectionMatrix());
 

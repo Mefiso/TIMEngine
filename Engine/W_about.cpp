@@ -8,6 +8,7 @@ WAbout::WAbout(std::string name, int ID) : Window(name, ID)
 	libraries["MathGeoLib"] = "v1.5";
 	libraries["DevIL"] = "1.8.0";
 	libraries["assimp"] = "5.0.1";
+	libraries["DebugDraw"] = "";
 }
 
 WAbout::~WAbout()

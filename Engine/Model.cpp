@@ -23,7 +23,7 @@ void Model::Draw(unsigned int program)
 {
 	for (unsigned int i = 0; i < meshes.size(); ++i)
 	{
-		meshes[i]->Draw(program, textures);
+		meshes[i]->Draw(program, textures, this->transformation);
 	}
 }
 

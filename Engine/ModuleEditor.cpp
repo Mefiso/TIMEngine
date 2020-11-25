@@ -139,5 +139,5 @@ void ModuleEditor::UpdateWindowSizeSettings()
 
 void ModuleEditor::SelectedModel(Model* model)
 {
-	properties->SelectTextures(model);
+	properties->SelectPropertiesFromModel(model);
 }
