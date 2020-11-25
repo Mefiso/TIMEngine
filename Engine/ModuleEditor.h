@@ -29,7 +29,6 @@ public:
 	// Windows methods
 	void Log(const char* input);
 	void ProcessFPS(float deltaTime);
-	void UpdateCameraSettings();
 	void UpdateWindowSizeSettings();
 	void SelectedModel(Model* model);
 private:

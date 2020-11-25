@@ -3,11 +3,11 @@
 #include "ModuleWindow.h"
 #include "ModuleTexture.h"
 #include "ModuleRender.h"
+#include "ModuleCamera.h"
 #include "GL/glew.h"
 #include "Leaks.h"
 
-WConfig::WConfig(std::string name, int ID) : Window(name, ID), Position(float3(0, 1, 7)), nearPlane(0.1f), farPlane(200.0f), 
-MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO), VFOV(VERTICALFOV),
+WConfig::WConfig(std::string name, int ID) : Window(name, ID),
 brightness(1.0f), width(SCREEN_WIDTH), height(SCREEN_HEIGHT), fullscreen(FULLSCREEN), resizable(RESIZABLE), borderless(false), fulldesktop(false)
 {
 }
@@ -31,18 +31,6 @@ void WConfig::Draw()
 	
 	ImGui::End();
 
-}
-
-void WConfig::UpdateCameraSettings()
-{
-	Position = App->camera->Position;
-	MovementSpeed = App->camera->MovementSpeed;
-	RotationSpeed = App->camera->RotationSpeed;
-	MouseSensitivity = App->camera->MouseSensitivity;
-	nearPlane = App->camera->nearPlane;
-	farPlane = App->camera->farPlane;
-	VFOV = App->camera->VFOV;
-	aspectRatio = App->camera->aspectRatio;
 }
 
 void WConfig::UpdateWindowSizeSettings()
@@ -151,43 +139,35 @@ void WConfig::TextureHeader()
 void WConfig::CameraHeader()
 {
 	if (ImGui::CollapsingHeader("Camera")) {
-		if (ImGui::InputFloat3("Position", &Position[0])) {
-			App->camera->Position = Position;
+		if (ImGui::InputFloat3("Position", &App->camera->Position[0])) {
 			App->camera->onCameraSettingsChanged();
 		}
 		ImGui::Separator();
 		ImGui::TextUnformatted("Movement");
-		if (ImGui::InputFloat("Mov Speed", &MovementSpeed, 0.1f, 0.5f, "%.2f")) {
-			App->camera->MovementSpeed = MovementSpeed;
+		if (ImGui::InputFloat("Mov Speed", &App->camera->MovementSpeed, 0.1f, 0.5f, "%.2f")) {
 			App->camera->onCameraSettingsChanged();
 		}
-		if (ImGui::InputFloat("Rot Speed", &RotationSpeed, 1.0f, 5.0f, "%.1f")) {
-			App->camera->RotationSpeed = RotationSpeed;
+		if (ImGui::InputFloat("Rot Speed", &App->camera->RotationSpeed, 1.0f, 5.0f, "%.1f")) {
 			App->camera->onCameraSettingsChanged();
 		}
-		if (ImGui::SliderFloat("Mouse Sens", &MouseSensitivity, 0.05f, 0.5f, "%.3f")) {
-			App->camera->MouseSensitivity = MouseSensitivity;
+		if (ImGui::SliderFloat("Mouse Sens", &App->camera->MouseSensitivity, 0.05f, 0.5f, "%.3f")) {
 			App->camera->onCameraSettingsChanged();
 		}
 		ImGui::Separator();
 
 		ImGui::TextUnformatted("Frustum");
-		if (ImGui::InputFloat("Near Plane", &nearPlane, 0.1f, 1.0f, "%.3f")) {
-			App->camera->nearPlane = nearPlane;
+		if (ImGui::InputFloat("Near Plane", &App->camera->nearPlane, 0.1f, 1.0f, "%.3f")) {
 			App->camera->onCameraSettingsChanged();
 		}
-		if (ImGui::InputFloat("Far Plane", &farPlane, 10.f, 30.0f, "%.3f")) {
-			App->camera->farPlane = farPlane;
+		if (ImGui::InputFloat("Far Plane", &App->camera->farPlane, 10.f, 30.0f, "%.3f")) {
 			App->camera->onCameraSettingsChanged();
 		}
 
-		if (ImGui::SliderAngle("FOV", &VFOV)) {
-			App->camera->VFOV = VFOV;
+		if (ImGui::SliderAngle("FOV", &App->camera->VFOV)) {
 			App->camera->HFOV = App->camera->VFOV * App->camera->aspectRatio;
 			App->camera->onCameraSettingsChanged();
 		}
-		if (ImGui::InputFloat("Aspect Ratio", &aspectRatio, 0.01f, 0.1f, "%.2f")) {
-			App->camera->aspectRatio = aspectRatio;
+		if (ImGui::InputFloat("Aspect Ratio", &App->camera->aspectRatio, 0.01f, 0.1f, "%.2f")) {
 			App->camera->HFOV = App->camera->VFOV * App->camera->aspectRatio;
 			App->camera->onCameraSettingsChanged();
 		}

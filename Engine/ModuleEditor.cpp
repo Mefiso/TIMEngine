@@ -127,11 +127,6 @@ void ModuleEditor::ProcessFPS(float deltaTime)
 	monitor->AddFPS(deltaTime);
 }
 
-void ModuleEditor::UpdateCameraSettings() 
-{
-	configuration->UpdateCameraSettings();
-}
-
 void ModuleEditor::UpdateWindowSizeSettings()
 {
 	configuration->UpdateWindowSizeSettings();

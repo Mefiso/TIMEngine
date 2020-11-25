@@ -140,7 +140,6 @@ void ModuleCamera::ProcessMouseScroll(float yoffset)
 void ModuleCamera::ProcessSpeed(float multiplier)
 {
 	MovementSpeed *= multiplier;
-	App->editor->UpdateCameraSettings();
 }
 
 void ModuleCamera::onResize(float aspect_ratio)
@@ -163,7 +162,6 @@ void ModuleCamera::UpdateFrustum()
 	frustum.SetFront(Front);
 	frustum.SetUp(Up);
 	HFOV = frustum.HorizontalFov();
-	App->editor->UpdateCameraSettings();
 }
 
 void ModuleCamera::RotateCamera(float3& axis, float angle)
