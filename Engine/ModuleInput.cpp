@@ -3,7 +3,6 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleEditor.h"
-#include "ModuleWindow.h"
 #include "SDL/include/SDL.h"
 #include "Leaks.h"
 
@@ -90,7 +89,8 @@ update_status ModuleInput::PreUpdate()
 				break;
 			case SDL_DROPFILE:
 				LOG(sdlEvent.drop.file);
-				App->renderer->DropFile(sdlEvent.drop.file);
+				if (App->renderer->DropFile(sdlEvent.drop.file))
+					App->editor->SelectedModel(App->renderer->modelLoaded);
 				SDL_free(sdlEvent.drop.file);
 				break;
 			}

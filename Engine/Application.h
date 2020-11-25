@@ -1,5 +1,5 @@
 #pragma once
-#include<list>
+#include<vector>
 #include "Globals.h"
 #include "Module.h"
 
@@ -27,6 +27,7 @@ public:
 	bool CleanUp();
 
 	void Log(const char* input);
+	void ProcessFPS(const float deltaTime);
 
 public:
 	ModuleRender* renderer = nullptr;
@@ -41,7 +42,7 @@ public:
 
 private:
 
-	std::list<Module*> modules;
+	std::vector<Module*> modules;
 
 };
 

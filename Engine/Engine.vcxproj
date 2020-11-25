@@ -74,12 +74,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./assimp/include;E:\Documentos\Master video games\Subjects\C++\Video-Games-Engine\Engine\DevIL\include;./ImGUI;./MathGeoLib;./glew-2.1.0/include;./SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./assimp/include;E:\Documentos\Master video games\Subjects\C++\TIMEngine\Engine\DevIL\include;./ImGUI;./MathGeoLib;./glew-2.1.0/include;./SDL/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>E:\Documentos\Master video games\Subjects\C++\Video-Games-Engine\Engine\assimp\lib;./DevIL/lib/x86/Release;./glew-2.1.0/lib/Release/Win32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Documentos\Master video games\Subjects\C++\TIMEngine\Engine\assimp\lib;./DevIL/lib/x86/Release;./glew-2.1.0/lib/Release/Win32</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc141-mt.lib;DevIL.lib;Ilu.lib;Ilut.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -244,6 +244,7 @@
     <ClInclude Include="W_config.h" />
     <ClInclude Include="W_console.h" />
     <ClInclude Include="W_monitor.h" />
+    <ClInclude Include="W_properties.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -313,6 +314,7 @@
     <ClCompile Include="W_config.cpp" />
     <ClCompile Include="W_console.cpp" />
     <ClCompile Include="W_monitor.cpp" />
+    <ClCompile Include="W_properties.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\emscripten\library_system.js" />

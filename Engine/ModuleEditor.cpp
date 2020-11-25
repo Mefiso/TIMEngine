@@ -8,22 +8,8 @@
 #include "W_monitor.h"
 #include "W_config.h"
 #include "W_about.h"
+#include "W_properties.h"
 #include "Leaks.h"
-
-// Helper to display a little (?) mark which shows a tooltip when hovered.
-// In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
-static void HelpMarker(const char* desc)
-{
-    ImGui::TextDisabled("(?)");
-    if (ImGui::IsItemHovered())
-    {
-        ImGui::BeginTooltip();
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(desc);
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
-    }
-}
 
 ModuleEditor::ModuleEditor()
 {
@@ -31,6 +17,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
 	editorWindows.push_back(configuration = new WConfig("Configuration", 2));
 	editorWindows.push_back(new WAbout("About", 3));
+	editorWindows.push_back(properties = new WProperties("Properties", 4));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -57,6 +44,8 @@ bool ModuleEditor::Init()
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
 	ImGui_ImplOpenGL3_Init();
+
+	SelectedModel(App->renderer->modelLoaded);
 
 	return true;
 }
@@ -138,7 +127,12 @@ void ModuleEditor::ProcessFPS(float deltaTime)
 	monitor->AddFPS(deltaTime);
 }
 
-void ModuleEditor::UpdateCameraSettings() 
+void ModuleEditor::UpdateWindowSizeSettings()
 {
-	configuration->UpdateSettings();
+	configuration->UpdateWindowSizeSettings();
+}
+
+void ModuleEditor::SelectedModel(Model* model)
+{
+	properties->SelectPropertiesFromModel(model);
 }

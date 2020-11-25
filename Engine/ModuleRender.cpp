@@ -5,12 +5,11 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
-#include "ModuleEditor.h"
 #include "ModuleProgram.h"
-#include "Model.h"
-#include "SDL.h"
 #include "ModuleDebugDraw.h"
 #include "debugdraw.h"
+#include "Model.h"
+#include "SDL.h"
 #include "Leaks.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -85,7 +84,7 @@ bool ModuleRender::Init()
 
 	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
 	// Load models
-	bakerHouse = new Model("models/baker_house/BakerHouse.fbx");
+	modelLoaded = new Model("models/baker_house/BakerHouse.fbx");
 
 	return true;
 }
@@ -95,12 +94,12 @@ update_status ModuleRender::PreUpdate()
 	float currentFrame = SDL_GetTicks()/1000.0f;
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
-	App->editor->ProcessFPS(deltaTime);
+	App->ProcessFPS(deltaTime);
 
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
 	glViewport(0, 0, w, h);
-	glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
+	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_UP) {
@@ -122,9 +121,10 @@ update_status ModuleRender::Update()
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
 
-	bakerHouse->Draw(defaultProgram);
+	modelLoaded->Draw(defaultProgram);
 
-	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
+	if (showGrid)
+		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
 
 	return UPDATE_CONTINUE;
 }
@@ -140,7 +140,7 @@ bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
 
-	delete bakerHouse;
+	delete modelLoaded;
 	glDeleteProgram(defaultProgram);
 	
 	//Destroy window
@@ -151,10 +151,9 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 {
-	App->camera->onResize((float) width / (float) height);
-
 	App->window->width = width;
 	App->window->height = height;
+	App->camera->onResize((float) width / (float) height);
 }
 
 void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
@@ -171,10 +170,14 @@ void ModuleRender::MouseWheel(float xoffset, float yoffset)
 	App->camera->ProcessMouseScroll(yoffset);
 }
 
-void ModuleRender::DropFile(const char* file)
+bool ModuleRender::DropFile(const char* file)
 {
-	delete bakerHouse;
-	bakerHouse = new Model(file);
+	delete modelLoaded;
+	modelLoaded = new Model(file);
+	if (modelLoaded)
+		return true;
+	else
+		return false;
 }
 
 void ModuleRender::TranslateCamera(float deltaTime)
@@ -195,12 +198,10 @@ void ModuleRender::TranslateCamera(float deltaTime)
 
 	// Speed increase/decrease
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
-		App->camera->MovementSpeed *= 2;
-		App->editor->UpdateCameraSettings();
+		App->camera->ProcessSpeed(2);	
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
-		App->camera->MovementSpeed /= 2;
-		App->editor->UpdateCameraSettings();
+		App->camera->ProcessSpeed(0.5f);
 	}
 }
 

@@ -9,6 +9,8 @@ class Window;
 class WConsole;
 class WMonitor;
 class WConfig;
+class WProperties;
+class Model;
 
 class ModuleEditor : public Module
 {
@@ -27,13 +29,15 @@ public:
 	// Windows methods
 	void Log(const char* input);
 	void ProcessFPS(float deltaTime);
-	void UpdateCameraSettings();
+	void UpdateWindowSizeSettings();
+	void SelectedModel(Model* model);
 private:
 	ImGuiIO* io = nullptr;
 	
 	WConsole* console = nullptr;
 	WMonitor* monitor = nullptr;
 	WConfig* configuration = nullptr;
+	WProperties* properties = nullptr;
 
 	std::vector<Window*> editorWindows;
 };

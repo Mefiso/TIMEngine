@@ -8,11 +8,9 @@ WConsole::WConsole(std::string name, int ID) : Window(name, ID)
     memset(InputBuf, 0, sizeof(InputBuf));
     //HistoryPos = -1;
 
-    // "CLASSIFY" is here to provide the test case where "C"+[tab] completes to "CL" and display multiple matches.
+    
     Commands.push_back("HELP");
-    Commands.push_back("HISTORY");
     Commands.push_back("CLEAR");
-    Commands.push_back("CLASSIFY");
     AutoScroll = true;
     ScrollToBottom = true;
     AddLog("Welcome to Engine!");
@@ -44,7 +42,7 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 
 void    WConsole::Draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(620, 330), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(650, 370), ImGuiCond_Once);
     if (!ImGui::Begin(name.c_str(), &active))
     {
         ImGui::End();
@@ -62,9 +60,7 @@ void    WConsole::Draw()
     }
 
     ImGui::TextWrapped(
-        "Console with basic coloring, completion (TAB key) and history (Up/Down keys).");
-
-    // TODO: display items starting from the bottom
+        "Basic console log with filtering and copy functions.");
 
     if (ImGui::SmallButton("Clear")) { ClearLog(); }
     ImGui::SameLine();

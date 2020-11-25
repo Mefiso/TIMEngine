@@ -33,5 +33,8 @@ public:
 
 	void Draw() override;
 	void AddFPS(float deltaTime);
+private:
+	void ShowSoftware();
+	void ShowHardware();
 
 };

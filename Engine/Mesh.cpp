@@ -14,16 +14,16 @@ Mesh::Mesh(const aiMesh* mesh, unsigned int index) : material_index(index)
 	CreateVAO();
 }
 
-void Mesh::Draw(unsigned int program, const std::vector<Texture>& model_textures)
+void Mesh::Draw(unsigned int program, const std::vector<Texture*>& model_textures, float4x4 model)
 {
 	App->program->use(program);
 
-	App->program->setMat4(program, "model", float4x4::identity);
+	App->program->setMat4(program, "model", model);
 	App->program->setMat4(program, "view", App->camera->ViewMatrix());
 	App->program->setMat4(program, "proj", App->camera->ProjectionMatrix());
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, model_textures[material_index].id);
+	glBindTexture(GL_TEXTURE_2D, model_textures[material_index]->id);
 	App->program->setInt(program, "diffuse", 0);
 
 	glBindVertexArray(VAO);
