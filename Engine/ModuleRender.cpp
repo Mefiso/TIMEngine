@@ -11,6 +11,7 @@
 #include "Model.h"
 #include "SDL.h"
 #include "Leaks.h"
+#include "uSTimer.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -45,6 +46,7 @@ void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLe
 
 ModuleRender::ModuleRender()
 {
+	msTimer = MSTimer();
 }
 
 // Destructor
@@ -84,17 +86,17 @@ bool ModuleRender::Init()
 
 	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
 	// Load models
+	uSTimer test = uSTimer();
 	modelLoaded = new Model("models/baker_house/BakerHouse.fbx");
+	
+	msTimer.Start();
 
 	return true;
 }
 
 update_status ModuleRender::PreUpdate()
 {
-	float currentFrame = SDL_GetTicks()/1000.0f;
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
-	App->ProcessFPS(deltaTime);
+	App->ProcessFPS(msTimer.Stop() / 1000.0f);
 
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
@@ -108,10 +110,10 @@ update_status ModuleRender::PreUpdate()
 	}
 
 	if (eventOcurred) {
-		TranslateCamera(deltaTime);
-		RotateCameraKeys(deltaTime);
+		TranslateCamera(msTimer.Read() / 1000.0f);
+		RotateCameraKeys(msTimer.Read() / 1000.0f);
 	}
-
+	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
 
