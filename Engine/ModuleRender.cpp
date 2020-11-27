@@ -87,7 +87,8 @@ bool ModuleRender::Init()
 	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
 	// Load models
 	uSTimer test = uSTimer();
-	modelLoaded = new Model("models/baker_house/BakerHouse.fbx");
+	modelLoaded = new Model();
+	modelLoaded->Load("models/baker_house/BakerHouse.fbx");
 	
 	msTimer.Start();
 
@@ -172,14 +173,17 @@ void ModuleRender::MouseWheel(float xoffset, float yoffset)
 	App->camera->ProcessMouseScroll(yoffset);
 }
 
-bool ModuleRender::DropFile(const char* file)
+bool ModuleRender::DropFile(const std::string& file)
 {
-	delete modelLoaded;
-	modelLoaded = new Model(file);
-	if (modelLoaded)
+	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
+		modelLoaded->Load(file);
 		return true;
-	else
+	}
+	else {
+		// Replace all textures because we only have one per model
+		modelLoaded->ReloadTexture(file.c_str());
 		return false;
+	}
 }
 
 void ModuleRender::TranslateCamera(float deltaTime)

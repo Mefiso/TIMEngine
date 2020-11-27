@@ -23,7 +23,8 @@ void Mesh::Draw(unsigned int program, const std::vector<Texture*>& model_texture
 	App->program->setMat4(program, "proj", App->camera->ProjectionMatrix());
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, model_textures[material_index]->id);
+	if (material_index < model_textures.size())
+		glBindTexture(GL_TEXTURE_2D, model_textures[material_index]->id);
 	App->program->setInt(program, "diffuse", 0);
 
 	glBindVertexArray(VAO);

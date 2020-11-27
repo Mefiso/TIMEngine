@@ -88,9 +88,10 @@ update_status ModuleInput::PreUpdate()
 				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
 				break;
 			case SDL_DROPFILE:
-				LOG(sdlEvent.drop.file);
-				if (App->renderer->DropFile(sdlEvent.drop.file))
+				LOG(sdlEvent.drop.file); 
+				if (App->renderer->DropFile(sdlEvent.drop.file)) {
 					App->editor->SelectedModel(App->renderer->modelLoaded);
+				}
 				SDL_free(sdlEvent.drop.file);
 				break;
 			}
