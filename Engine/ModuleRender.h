@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Math/float4.h"
+#include "MSTimer.h"
 
 class Model;
 
@@ -32,7 +33,7 @@ public:
 	bool showGrid = true;
 	float4 backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };
 
-	unsigned int defaultProgram;
+	unsigned int defaultProgram = 0;
 
 	// Models
 	Model* modelLoaded = nullptr;
@@ -42,6 +43,5 @@ private:
 	void RotateCameraKeys(float deltaTime);
 
 private:
-	float deltaTime = 0.0f;
-	float lastFrame = 0.0f;
+	MSTimer msTimer;
 };
