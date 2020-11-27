@@ -105,8 +105,7 @@ update_status ModuleRender::PreUpdate()
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_UP) {
-		//SDL_CaptureMouse(SDL_FALSE);
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
@@ -162,7 +161,6 @@ void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
 {
 	if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
-		//SDL_CaptureMouse(SDL_TRUE);
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
 	App->camera->ProcessMouseMovement(xoffset, yoffset);

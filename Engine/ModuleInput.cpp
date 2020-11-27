@@ -64,6 +64,15 @@ update_status ModuleInput::PreUpdate()
 		}
 	}
 
+	for (int i = 0; i < NUM_MOUSE_BUTTONS; ++i)
+	{
+		if (mouse_buttons[i] == KEY_DOWN)
+			mouse_buttons[i] = KEY_REPEAT;
+
+		if (mouse_buttons[i] == KEY_UP)
+			mouse_buttons[i] = KEY_IDLE;
+	}
+
 	while (SDL_PollEvent(&sdlEvent) != 0)
 	{
 		
@@ -81,7 +90,7 @@ update_status ModuleInput::PreUpdate()
 					App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
 				break;
 			case SDL_MOUSEMOTION:
-				if (GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 					App->renderer->RotateCameraMouse(sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
 				break;
 			case SDL_MOUSEWHEEL:
@@ -93,6 +102,12 @@ update_status ModuleInput::PreUpdate()
 					App->editor->SelectedModel(App->renderer->modelLoaded);
 				}
 				SDL_free(sdlEvent.drop.file);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				mouse_buttons[sdlEvent.button.button - 1] = KEY_DOWN;
+				break;
+			case SDL_MOUSEBUTTONUP:
+				mouse_buttons[sdlEvent.button.button - 1] = KEY_UP;
 				break;
 			}
 		}
