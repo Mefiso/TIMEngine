@@ -9,6 +9,7 @@ WAbout::WAbout(std::string name, int ID) : Window(name, ID)
 	libraries["DevIL"] = "1.8.0";
 	libraries["assimp"] = "5.0.1";
 	libraries["DebugDraw"] = "";
+	active = false;
 }
 
 WAbout::~WAbout()

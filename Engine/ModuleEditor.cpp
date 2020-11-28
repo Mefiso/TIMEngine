@@ -16,7 +16,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(console = new WConsole("Console", 0));
 	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
 	editorWindows.push_back(configuration = new WConfig("Configuration", 2));
-	editorWindows.push_back(new WAbout("About", 3));
+	editorWindows.push_back(about = new WAbout("About", 3));
 	editorWindows.push_back(properties = new WProperties("Properties", 4));
 }
 
@@ -46,7 +46,7 @@ bool ModuleEditor::Init()
 	ImGui_ImplOpenGL3_Init();
 
 	SelectedModel(App->renderer->modelLoaded);
-
+	
 	return true;
 }
 
@@ -61,8 +61,10 @@ update_status ModuleEditor::PreUpdate()
 
 update_status ModuleEditor::Update()
 {
+	//ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+	CreateMainMenu();
+
 	ImGui::ShowDemoWindow();
-	
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
 		if ((*it)->isEnabled())
@@ -84,13 +86,13 @@ update_status ModuleEditor::Update()
 		ImGui::RenderPlatformWindowsDefault();
 		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 	}
-
+	
+	if (should_quit) return UPDATE_STOP;
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleEditor::PostUpdate()
 {
-
 	return UPDATE_CONTINUE;
 }
 
@@ -135,4 +137,39 @@ void ModuleEditor::UpdateWindowSizeSettings()
 void ModuleEditor::SelectedModel(Model* model)
 {
 	properties->SelectPropertiesFromModel(model);
+}
+
+void ModuleEditor::CreateMainMenu()
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("Menu"))
+		{
+			if (ImGui::BeginMenu("Windows")) 
+			{
+				for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
+				{
+					if (ImGui::MenuItem((*it)->GetWindowName(), NULL, (*it)->isEnabled()))
+						(*it)->Enable(!(*it)->isEnabled());
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::MenuItem("Quit"))
+			{
+				should_quit = true;
+			}
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("About"))
+		{
+			if (ImGui::MenuItem("Visit Github page"))
+				ShellExecute(NULL, "open", "https://github.com/Mefiso/TIMEngine", NULL, NULL, SW_SHOWNORMAL);
+			if (ImGui::MenuItem("Show about window", NULL, about->isEnabled()))
+				about->Enable(!about->isEnabled());
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+	
 }

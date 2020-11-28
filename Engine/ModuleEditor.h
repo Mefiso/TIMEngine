@@ -10,6 +10,7 @@ class WConsole;
 class WMonitor;
 class WConfig;
 class WProperties;
+class WAbout;
 class Model;
 
 class ModuleEditor : public Module
@@ -32,12 +33,16 @@ public:
 	void UpdateWindowSizeSettings();
 	void SelectedModel(Model* model);
 private:
+	void CreateMainMenu();
+private:
+	bool should_quit = false;
 	ImGuiIO* io = nullptr;
 	
 	WConsole* console = nullptr;
 	WMonitor* monitor = nullptr;
 	WConfig* configuration = nullptr;
 	WProperties* properties = nullptr;
+	WAbout* about = nullptr;
 
 	std::vector<Window*> editorWindows;
 };

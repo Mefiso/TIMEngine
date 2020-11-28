@@ -33,8 +33,10 @@ bool ModuleWindow::Init()
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 		//Create window
-		width = SCREEN_WIDTH;
-		height = SCREEN_HEIGHT;
+		SDL_DisplayMode mode;
+		SDL_GetDesktopDisplayMode(0, &mode);
+		width = mode.w * 0.6;
+		height = mode.h * 0.6;
 		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
 		
 		if(FULLSCREEN == true)
