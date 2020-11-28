@@ -18,7 +18,7 @@ public:
 	std::vector<Texture*> textures; 
 	std::string directory;
 	float4x4 transformation = float4x4::identity; // in the future will be updated according to the transformation applied to the GameObject
-
+	
 	Model();
 	~Model();
 

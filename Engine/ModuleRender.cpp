@@ -112,6 +112,9 @@ update_status ModuleRender::PreUpdate()
 	if (eventOcurred) {
 		TranslateCamera(msTimer.Read() / 1000.0f);
 		RotateCameraKeys(msTimer.Read() / 1000.0f);
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
+			App->camera->onFocus(float3::zero, 10.0f);
+		}
 	}
 	msTimer.Start();
 	return UPDATE_CONTINUE;

@@ -117,6 +117,13 @@ void ModuleCamera::onResize(float aspect_ratio)
 	frustum.SetVerticalFovAndAspectRatio(frustum.VerticalFov(), aspect_ratio);
 }
 
+void ModuleCamera::onFocus(float3 center, float distance)
+{
+	// The effect is that it moves in a perpendicular way with respect the camera front and the backwards/forward a distance
+	frustum.SetPos(center);
+	frustum.SetPos(center - frustum.Front() * distance);
+}
+
 void ModuleCamera::RotateCamera(float yaw, float pitch)
 {
 	

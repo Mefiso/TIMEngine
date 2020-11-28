@@ -43,6 +43,7 @@ public:
 	void ProcessSpeed(float multiplier);
 	void ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre);
 	void onResize(float aspect_ratio);
+	void onFocus(float3 center, float distance);
 
 public:
 	// Camera options
