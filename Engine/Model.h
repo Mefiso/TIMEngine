@@ -6,6 +6,7 @@
 #include "ModuleTexture.h"
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
+#include <Geometry/Sphere.h>
 
 #include <vector>
 #include <string>
@@ -19,7 +20,8 @@ public:
 	std::vector<Texture*> textures; 
 	std::string directory;
 	float4x4 transformation = float4x4::identity; // in the future will be updated according to the transformation applied to the GameObject
-	
+	Sphere enclosingSphere = Sphere(float3::zero, 1.f);
+
 	Model();
 	~Model();
 
@@ -31,6 +33,7 @@ private:
 	void CleanUp();
 	void LoadMeshes(const aiScene* scene);
 	void LoadTextures(const aiScene* scene);
+	void DefineSphere(const aiScene* scene);
 
 private:
 	std::vector<Texture> loaded_textures;

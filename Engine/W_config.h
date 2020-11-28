@@ -15,7 +15,6 @@ private:
 	bool borderless;
 	bool fulldesktop;
 	bool vsync;
-
 public:
 	WConfig(std::string name, int ID);
 	~WConfig();

@@ -40,6 +40,29 @@ void Model::Draw(unsigned int program)
 	}
 }
 
+void Model::Load(std::string const& path)
+{
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
+	{
+		LOG("Error loading %s: %s", path, importer.GetErrorString());
+	}
+	else
+	{
+		if (!meshes.empty() || !textures.empty())
+			CleanUp();
+		directory = path.substr(0, path.find_last_of('/')).size() == path.size() ? 
+			path.substr(0, path.find_last_of('\\')) : path.substr(0, path.find_last_of('/'));
+		LoadTextures(scene);
+		LoadMeshes(scene);
+
+		// Enclosing sphere
+		DefineSphere(scene);
+	}
+
+}
+
 void Model::ReloadTexture(const char* path)
 {
 	for (std::vector<Texture*>::iterator it = textures.begin(), end = textures.end(); it != end; ++it) {
@@ -69,26 +92,6 @@ void Model::ReloadTexture(const char* path)
 			}
 		}
 	}
-}
-
-void Model::Load(std::string const& path)
-{
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
-	{
-		LOG("Error loading %s: %s", path, importer.GetErrorString());
-	}
-	else
-	{
-		if (!meshes.empty() || !textures.empty())
-			CleanUp();
-		directory = path.substr(0, path.find_last_of('/')).size() == path.size() ? 
-			path.substr(0, path.find_last_of('\\')) : path.substr(0, path.find_last_of('/'));
-		LoadTextures(scene);
-		LoadMeshes(scene);
-	}
-
 }
 
 void Model::LoadMeshes(const aiScene* scene)
@@ -160,6 +163,29 @@ void Model::LoadTextures(const aiScene* scene)
 		}
 	}
 
+}
+
+void Model::DefineSphere(const aiScene* scene)
+{
+	int total_vertices = 0;
+	for (unsigned int i = 0; i < meshes.size(); ++i)
+	{
+		total_vertices += meshes[i]->num_vertices;
+	}
+	std::vector<float3> points;
+	points.reserve(total_vertices);
+
+	for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
+	{
+		for (unsigned int j = 0; j < scene->mMeshes[i]->mNumVertices; ++j)
+		{
+			points.push_back(float3(scene->mMeshes[i]->mVertices[j].x, 
+				scene->mMeshes[i]->mVertices[j].y, 
+				scene->mMeshes[i]->mVertices[j].z ));
+		}
+	}
+
+	enclosingSphere = Sphere::FastEnclosingSphere(points.data(), total_vertices);
 }
 
 

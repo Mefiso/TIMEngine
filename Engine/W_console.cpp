@@ -1,6 +1,7 @@
 #include "W_console.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "Leaks.h"
 
 WConsole::WConsole(std::string name, int ID) : Window(name, ID)
 {

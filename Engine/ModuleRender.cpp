@@ -10,8 +10,8 @@
 #include "debugdraw.h"
 #include "Model.h"
 #include "SDL.h"
-#include "Leaks.h"
 #include "uSTimer.h"
+#include "Leaks.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -113,7 +113,7 @@ update_status ModuleRender::PreUpdate()
 		TranslateCamera(msTimer.Read() / 1000.0f);
 		RotateCameraKeys(msTimer.Read() / 1000.0f);
 		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-			App->camera->onFocus(float3::zero, 10.0f);
+			App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
 		}
 	}
 	msTimer.Start();
@@ -189,6 +189,7 @@ bool ModuleRender::DropFile(const std::string& file)
 {
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
 		modelLoaded->Load(file);
+		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
 		return true;
 	}
 	else {

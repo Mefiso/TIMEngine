@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "Leaks.h"
 
 Mesh::Mesh(const aiMesh* mesh, unsigned int index) : material_index(index)
 {

@@ -7,13 +7,22 @@
 #include "Model.h"
 #include "Leaks.h"
 
+// Texture
+constexpr char* wrap[4] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
+constexpr char* filterm[6] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
+constexpr char* filterM[2] = { "Linear", "Nearest" };
+const std::vector<GLint> wrapmode = { GL_REPEAT, GL_CLAMP, GL_CLAMP_TO_BORDER, GL_MIRRORED_REPEAT };
+const std::vector<GLint> filtermode = { GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR, GL_NEAREST };
+
 WConfig::WConfig(std::string name, int ID) : Window(name, ID),
 brightness(1.0f), width(SCREEN_WIDTH), height(SCREEN_HEIGHT), fullscreen(FULLSCREEN), resizable(RESIZABLE), borderless(false), fulldesktop(false), vsync(VSYNC)
 {
+	
 }
 
 WConfig::~WConfig()
 {
+
 }
 
 void WConfig::Draw()
@@ -131,11 +140,6 @@ void WConfig::RendererHeader()
 	}
 }
 
-const char* const wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
-const std::vector<GLint> wrapmode = { GL_REPEAT, GL_CLAMP, GL_CLAMP_TO_BORDER, GL_MIRRORED_REPEAT };
-const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear",  "Nearest, Mipmap nearest" };
-const char* filterM[] = { "Linear", "Nearest"};
-const std::vector<GLint> filtermode = { GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR, GL_NEAREST };
 void WConfig::TextureHeader()
 {
 	if (ImGui::CollapsingHeader("Texture"))
