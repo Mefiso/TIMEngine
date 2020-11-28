@@ -138,42 +138,40 @@ void WConfig::TextureHeader()
 
 void WConfig::CameraHeader()
 {
-	/*
+	
 	if (ImGui::CollapsingHeader("Camera")) {
-		if (ImGui::InputFloat3("Position", &App->camera->Position[0])) {
-			App->camera->onCameraSettingsChanged();
+		float3 pos = App->camera->frustum.Pos();
+		if (ImGui::InputFloat3("Position", &pos[0])) {
+			App->camera->frustum.SetPos(pos);
 		}
 		ImGui::Separator();
+		
 		ImGui::TextUnformatted("Movement");
-		if (ImGui::InputFloat("Mov Speed", &App->camera->MovementSpeed, 0.1f, 0.5f, "%.2f")) {
-			App->camera->onCameraSettingsChanged();
-		}
-		if (ImGui::InputFloat("Rot Speed", &App->camera->RotationSpeed, 1.0f, 5.0f, "%.1f")) {
-			App->camera->onCameraSettingsChanged();
-		}
-		if (ImGui::SliderFloat("Mouse Sens", &App->camera->MouseSensitivity, 0.05f, 0.5f, "%.3f")) {
-			App->camera->onCameraSettingsChanged();
-		}
+		ImGui::InputFloat("Mov Speed", &App->camera->MovementSpeed, 0.1f, 0.5f, "%.2f");
+		ImGui::InputFloat("Rot Speed", &App->camera->RotationSpeed, 0.2f, 1.0f, "%.1f");
+		ImGui::SliderFloat("Mouse Sens", &App->camera->MouseSensitivity, 0.0005f, 0.002f, "%.4f");
 		ImGui::Separator();
 
 		ImGui::TextUnformatted("Frustum");
-		if (ImGui::InputFloat("Near Plane", &App->camera->nearPlane, 0.1f, 1.0f, "%.3f")) {
-			App->camera->onCameraSettingsChanged();
+		float nearPlane = App->camera->frustum.NearPlaneDistance();
+		if (ImGui::InputFloat("Near Plane", &nearPlane, 0.1f, 1.0f, "%.3f")) {
+			App->camera->frustum.SetViewPlaneDistances(nearPlane, App->camera->frustum.FarPlaneDistance());
 		}
-		if (ImGui::InputFloat("Far Plane", &App->camera->farPlane, 10.f, 30.0f, "%.3f")) {
-			App->camera->onCameraSettingsChanged();
+		float farPlane = App->camera->frustum.FarPlaneDistance();
+		if (ImGui::InputFloat("Far Plane", &farPlane, 5.f, 20.0f, "%.3f")) {
+			App->camera->frustum.SetViewPlaneDistances(App->camera->frustum.NearPlaneDistance(), farPlane);
 		}
 
-		if (ImGui::SliderAngle("FOV", &App->camera->VFOV)) {
-			App->camera->HFOV = App->camera->VFOV * App->camera->aspectRatio;
-			App->camera->onCameraSettingsChanged();
+		float VFOV = App->camera->frustum.VerticalFov();
+		if (ImGui::SliderAngle("FOV", &VFOV)) {
+			App->camera->frustum.SetVerticalFovAndAspectRatio(VFOV, App->camera->frustum.AspectRatio());
 		}
-		if (ImGui::InputFloat("Aspect Ratio", &App->camera->aspectRatio, 0.01f, 0.1f, "%.2f")) {
-			App->camera->HFOV = App->camera->VFOV * App->camera->aspectRatio;
-			App->camera->onCameraSettingsChanged();
+		float aspectRatio = App->camera->frustum.AspectRatio();
+		if (ImGui::InputFloat("Aspect Ratio", &aspectRatio, 0.01f, 0.1f, "%.2f")) {
+			App->camera->frustum.SetVerticalFovAndAspectRatio(App->camera->frustum.VerticalFov(), aspectRatio);
 		}
 		ImGui::SameLine();
 		HelpMarker("This alters apect ratio without altering the window size, so it will deform the geometry. Resizeing the window restores geometry.");
 	}
-	*/
+	
 }
