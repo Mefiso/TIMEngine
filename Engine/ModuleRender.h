@@ -29,9 +29,12 @@ public:
 	void OrbitObject(float xoffset, float yoffset);
 	bool DropFile(const std::string& file);
 public:
+	bool depthTest = true;
+	bool cullFace = true;
 	void* context = nullptr;
 	bool eventOcurred = false;
 	bool showGrid = true;
+
 	float4 backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };
 
 	unsigned int defaultProgram = 0;

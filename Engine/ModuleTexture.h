@@ -8,6 +8,10 @@ struct Texture {
 	unsigned int id;
 	std::string type;
 	std::string path;
+	int wraps;
+	int wrapt;
+	int minfilter;
+	int magfilter;
 
 };
 
@@ -24,8 +28,4 @@ public:
 public:
 	bool mipmap;
 	bool force_flip;
-	int wrap_s;
-	int wrap_t;
-	int filter_mag;
-	int filter_min;
 };

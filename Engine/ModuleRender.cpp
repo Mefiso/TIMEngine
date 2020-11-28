@@ -73,7 +73,7 @@ bool ModuleRender::Init()
 	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	// They are enabled inside ImGui_ImplOpenGL3_RenderDrawData so setting them here is useless
-	glEnable(GL_DEPTH_TEST); // Enable depth test
+	//glEnable(GL_DEPTH_TEST); // Enable depth test
 	//glEnable(GL_CULL_FACE); // Enable cull backward faces
 	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
 	//glDisable(GL_CULL_FACE);
@@ -123,6 +123,12 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
+	if (depthTest) glEnable(GL_DEPTH_TEST); // Enable depth test
+	else glDisable(GL_DEPTH_TEST);
+
+	if (cullFace) glEnable(GL_CULL_FACE); // Enable cull backward faces
+	else glDisable(GL_CULL_FACE);
+
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
 

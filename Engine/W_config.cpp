@@ -4,7 +4,7 @@
 #include "ModuleTexture.h"
 #include "ModuleRender.h"
 #include "ModuleCamera.h"
-#include "GL/glew.h"
+#include "Model.h"
 #include "Leaks.h"
 
 WConfig::WConfig(std::string name, int ID) : Window(name, ID),
@@ -25,6 +25,7 @@ void WConfig::Draw()
 		return;
 	}
 	WindowHeader();
+	InputHeader();
 	RendererHeader();
 	TextureHeader();
 	CameraHeader();
@@ -61,7 +62,8 @@ void WConfig::WindowHeader()
 		ImGui::TextUnformatted("Refresh rate: ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0.0, 1.0, 1.0, 1.0 }, "%d", mode.refresh_rate);
-		ImGui::Checkbox(vsync);
+		if (ImGui::Checkbox("VSYNC", &vsync))
+			App->window->SetVsync(vsync);
 		if (ImGui::Checkbox("Fullscreen", &fullscreen))
 			App->window->SetFullscreen(fullscreen);
 		ImGui::SameLine();
@@ -85,10 +87,43 @@ void WConfig::WindowHeader()
 	}
 }
 
+void WConfig::InputHeader()
+{
+	if (ImGui::CollapsingHeader("Input"))
+	{
+		ImGuiIO& io = ImGui::GetIO();
+
+		if (ImGui::IsMousePosValid())
+			ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
+		else
+			ImGui::Text("Mouse pos: <INVALID>");
+		ImGui::Text("Mouse delta: (%g, %g)", io.MouseDelta.x, io.MouseDelta.y);
+
+		ImGui::Text("Mouse down:");     
+		for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
+		{
+			if (io.MouseDownDuration[i] >= 0.0f) {
+				ImGui::SameLine(); ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]);
+			}
+		}
+		ImGui::Text("Keys down:");      
+		for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++)
+		{
+			if (io.KeysDownDuration[i] >= 0.0f) {
+				ImGui::SameLine();
+				ImGui::Text("%d (0x%X) (%.02f secs)", i, i, io.KeysDownDuration[i]);
+			}
+		}
+	}
+}
+
 void WConfig::RendererHeader()
 {
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
+		ImGui::Checkbox("Enable Depth testing", &App->renderer->depthTest);
+		ImGui::Checkbox("Enable Face culling", &App->renderer->cullFace);
+
 		ImGui::InputFloat4("Background color", &App->renderer->backgroundColor[0]);
 		if (ImGui::Button("Default background"))
 			App->renderer->backgroundColor = { 0.1, 0.1, 0.1, 0.1 };
@@ -96,6 +131,11 @@ void WConfig::RendererHeader()
 	}
 }
 
+const char* const wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
+const std::vector<GLint> wrapmode = { GL_REPEAT, GL_CLAMP, GL_CLAMP_TO_BORDER, GL_MIRRORED_REPEAT };
+const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear",  "Nearest, Mipmap nearest" };
+const char* filterM[] = { "Linear", "Nearest"};
+const std::vector<GLint> filtermode = { GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR, GL_NEAREST };
 void WConfig::TextureHeader()
 {
 	if (ImGui::CollapsingHeader("Texture"))
@@ -103,36 +143,42 @@ void WConfig::TextureHeader()
 		HelpMarker("For this options to be applied reload the model.");
 		ImGui::Checkbox("Mipmap", &App->textureLoader->mipmap);
 		ImGui::Checkbox("Force flip", &App->textureLoader->force_flip);
-
-		ImGui::TextUnformatted("Wrap options (S direction)");
-		ImGui::RadioButton("S Repeat", &App->textureLoader->wrap_s, GL_REPEAT); ImGui::SameLine();
-		ImGui::RadioButton("S Clamp", &App->textureLoader->wrap_s, GL_CLAMP); ImGui::SameLine();
-		ImGui::RadioButton("S Clamp to border", &App->textureLoader->wrap_s, GL_CLAMP_TO_BORDER); ImGui::SameLine();
-		ImGui::RadioButton("S Mirrored repeat", &App->textureLoader->wrap_s, GL_MIRRORED_REPEAT);
-		ImGui::TextUnformatted("Wrap options (T direction)");
-		ImGui::RadioButton("T Repeat", &App->textureLoader->wrap_t, GL_REPEAT); ImGui::SameLine();
-		ImGui::RadioButton("T Clamp", &App->textureLoader->wrap_t, GL_CLAMP); ImGui::SameLine();
-		ImGui::RadioButton("T Clamp to border", &App->textureLoader->wrap_t, GL_CLAMP_TO_BORDER); ImGui::SameLine();
-		ImGui::RadioButton("T Mirrored repeat", &App->textureLoader->wrap_t, GL_MIRRORED_REPEAT);
 		ImGui::Separator();
 
-		ImGui::TextUnformatted("Minification filter");
-		if (App->textureLoader->mipmap)
+		if (ImGui::BeginTabBar("Current model textures"))
 		{
-			ImGui::RadioButton("Linear, Mipmap linear", &App->textureLoader->filter_min, GL_LINEAR_MIPMAP_LINEAR); ImGui::SameLine();
-			ImGui::RadioButton("Linear, Mipmap nearest", &App->textureLoader->filter_min, GL_LINEAR_MIPMAP_NEAREST);
-			ImGui::RadioButton("Nearest, Mipmap linear", &App->textureLoader->filter_min, GL_NEAREST_MIPMAP_LINEAR); ImGui::SameLine();
-			ImGui::RadioButton("Nearest, Mipmap nearest", &App->textureLoader->filter_min, GL_NEAREST_MIPMAP_NEAREST);
-		}
-		else
-		{
-			ImGui::RadioButton("Min Linear", &App->textureLoader->filter_min, GL_LINEAR); ImGui::SameLine();
-			ImGui::RadioButton("Min Nearest", &App->textureLoader->filter_min, GL_NEAREST);
-		}
-		ImGui::TextUnformatted("Magnification filter");
-		ImGui::RadioButton("Mag Linear", &App->textureLoader->filter_mag, GL_LINEAR); ImGui::SameLine();
-		ImGui::RadioButton("Mag Nearest", &App->textureLoader->filter_mag, GL_NEAREST);
+			std::string label;
+			for (unsigned int i = 0; i < App->renderer->modelLoaded->textures.size(); ++i)
+			{
+				label = "Texture " + std::to_string(i);
+				if (ImGui::BeginTabItem(label.c_str()))
+				{
+					glBindTexture(GL_TEXTURE_2D, App->renderer->modelLoaded->textures[i]->id);
 
+					auto it = std::find(wrapmode.begin(), wrapmode.end(), App->renderer->modelLoaded->textures[i]->wraps);
+					int indexWS = it - wrapmode.begin();
+					if (ImGui::Combo("Wrap options (S direction)", &indexWS, wrap, IM_ARRAYSIZE(wrap)))
+						App->renderer->modelLoaded->textures[i]->wraps = wrapmode[indexWS];
+					
+					it = std::find(wrapmode.begin(), wrapmode.end(), App->renderer->modelLoaded->textures[i]->wrapt);
+					int indexWT = it - wrapmode.begin();
+					if (ImGui::Combo("Wrap options (T direction)", &indexWT, wrap, IM_ARRAYSIZE(wrap)))
+						App->renderer->modelLoaded->textures[i]->wrapt = wrapmode[indexWT];
+
+					it = std::find(filtermode.begin(), filtermode.end() - 2, App->renderer->modelLoaded->textures[i]->minfilter);
+					int indexFm = it - filtermode.begin();
+					if (ImGui::Combo("Minification filter", &indexFm, filterm, IM_ARRAYSIZE(filterm)))
+						App->renderer->modelLoaded->textures[i]->minfilter = filtermode[indexFm];
+
+					it = std::find(filtermode.end() - 2, filtermode.end(), App->renderer->modelLoaded->textures[i]->magfilter);
+					int indexFM = it - (filtermode.end()-2);
+					if (ImGui::Combo("Magnification filter", &indexFM, filterM, IM_ARRAYSIZE(filterM)))
+						App->renderer->modelLoaded->textures[i]->magfilter = filtermode[4+indexFM];
+					ImGui::EndTabItem();
+				}
+			}
+			ImGui::EndTabBar();
+		}
 	}
 }
 

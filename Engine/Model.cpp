@@ -26,8 +26,10 @@ void Model::CleanUp()
 		(*it)->CleanUp();
 		delete* it;
 	}
+	meshes.clear();
 	for (std::vector<Texture>::iterator it = loaded_textures.begin(), end = loaded_textures.end(); it != end; ++it)
 		glDeleteTextures(1, &(it->id));
+	textures.clear();
 }
 
 void Model::Draw(unsigned int program)
@@ -58,6 +60,10 @@ void Model::ReloadTexture(const char* path)
 			if (texture.id) {
 				texture.type = "texture_diffuse";
 				texture.path = path;
+				texture.wraps = GL_REPEAT;
+				texture.wrapt = GL_REPEAT;
+				texture.minfilter = GL_LINEAR_MIPMAP_LINEAR;
+				texture.magfilter = GL_LINEAR;
 				loaded_textures.push_back(texture);
 				(*it) = &loaded_textures[loaded_textures.size() - 1];
 			}
@@ -130,11 +136,23 @@ void Model::LoadTextures(const aiScene* scene)
 							LOG("Texture not found.");
 							return;
 						}
+						else {
+							texture.path = std::string("./textures/") + file.C_Str();
+						}
 					}
+					else {
+						texture.path = directory + '/' + file.C_Str();
+					}
+				}
+				else {
+					texture.path = file.C_Str();
 				}
 				LOG("Texture loaded.");
 				texture.type = "texture_diffuse";
-				texture.path = file.C_Str();
+				texture.wraps = GL_REPEAT;
+				texture.wrapt = GL_REPEAT;
+				texture.minfilter = GL_LINEAR_MIPMAP_LINEAR;
+				texture.magfilter = GL_LINEAR;
 				loaded_textures.push_back(texture);
 				textures.push_back(&loaded_textures[loaded_textures.size() - 1]);
 				

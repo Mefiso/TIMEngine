@@ -1,6 +1,7 @@
 #pragma once
 #include "Globals.h"
 #include "Window.h"
+#include "GL/glew.h"
 
 class WConfig : public Window
 {
@@ -24,6 +25,7 @@ public:
 
 private:
 	void WindowHeader();
+	void InputHeader();
 	void RendererHeader();
 	void TextureHeader();
 	void CameraHeader();

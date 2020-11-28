@@ -141,7 +141,7 @@ void WProperties::TexturesHeader()
 					ImGui::SameLine();
 					ImGui::TextColored(color, "%d", h);
 
-					// Texture wrap and filter
+					// Texture wrap and filter. This is repeated in Texture settings, so it can be deleted.
 					GLint wraps, wrapt, filtermag, filtermin;
 					glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &wraps);
 					glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, &wrapt);
@@ -214,6 +214,7 @@ void WProperties::TexturesHeader()
 						break;
 					}
 					ImGui::Separator();
+
 					ImTextureID texid = (ImTextureID)selected_textures[i]->id;
 					ImGui::Image(texid, ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().x * h / (float)w));
 					ImGui::EndTabItem();
