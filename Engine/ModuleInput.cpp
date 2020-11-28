@@ -90,8 +90,12 @@ update_status ModuleInput::PreUpdate()
 					App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
 				break;
 			case SDL_MOUSEMOTION:
-				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
 					App->renderer->RotateCameraMouse(sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
+				}
+				else if (GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT) {
+					App->renderer->OrbitObject(-sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
+				}
 				break;
 			case SDL_MOUSEWHEEL:
 				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);

@@ -62,7 +62,7 @@ float4x4 ModuleCamera::ProjectionMatrix()
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
 	float celerity = MovementSpeed * deltaTime;
-	//float oldPitch; // Only needed if using RotateCamera
+	float oldPitch; // Only needed if using RotateCamera
 	switch (direction)
 	{
 	case FORWARD:
@@ -84,26 +84,26 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 		Position -= WorldUp * celerity;
 		break;
 	case PITCH_UP:
-		//oldPitch = Pitch; // Only needed if using RotateCamera
+		oldPitch = Pitch; // Only needed if using RotateCamera
 		Pitch += RotationSpeed * celerity;
 		if (Pitch > 89.0f)
 			Pitch = 89.0f;
-		NewDirection();//RotateCamera(Right, Pitch - oldPitch);
+		RotateCamera(0, RotationSpeed * celerity); //NewDirection();
 		break;
 	case PITCH_DOWN:
-		//oldPitch = Pitch; // Only needed if using RotateCamera
+		oldPitch = Pitch; // Only needed if using RotateCamera
 		Pitch -= RotationSpeed * celerity;
 		if (Pitch < -89.0f)
 			Pitch = -89.0f;
-		NewDirection();//RotateCamera(Right, Pitch - oldPitch);
+		RotateCamera(0, -RotationSpeed * celerity); // NewDirection();
 		break;
 	case YAW_LEFT:
 		Yaw -= RotationSpeed * celerity;
-		NewDirection();//RotateCamera(WorldUp, RotationSpeed * celerity);
+		RotateCamera(RotationSpeed * celerity, 0);//NewDirection();
 		break;
 	case YAW_RIGHT:
 		Yaw += RotationSpeed * celerity;
-		NewDirection();//RotateCamera(WorldUp, -RotationSpeed * celerity);
+		RotateCamera(-RotationSpeed * celerity, 0);//NewDirection();
 		break;
 	}
 	UpdateFrustum();
@@ -114,32 +114,46 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
 
-	//float oldPitch = Pitch; // Only needed if using RotateCamera
+	float oldPitch = Pitch; // Only needed if using RotateCamera
 
 	Yaw += xoffset;
 	Pitch += yoffset;
 
 	// make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (Pitch > 89.0f)
+	/*if (Pitch > 89.0f)
 		Pitch = 89.0f;
 	if (Pitch < -89.0f)
 		Pitch = -89.0f;
-
-	NewDirection();
-	//RotateCamera(Right, Pitch-oldPitch);
-	//RotateCamera(WorldUp, -xoffset);
+		*/
+	// NewDirection();
+	RotateCamera(-xoffset, yoffset);
 	UpdateFrustum();
 }
 
 void ModuleCamera::ProcessMouseScroll(float yoffset)
 {
-	Position += Front * yoffset;
+	//Position += Front * yoffset; // simulates zoom but it's actually moving
+	VFOV -= yoffset * ZOOM; // actual zoom
 	UpdateFrustum();
 }
 
 void ModuleCamera::ProcessSpeed(float multiplier)
 {
 	MovementSpeed *= multiplier;
+}
+
+void ModuleCamera::ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre)
+{
+	float3 lookDirection = Quat::RotateY(xoffset * MouseSensitivity) * (Position - orbit_centre);
+	lookDirection = Quat::RotateAxisAngle(Right, yoffset * MouseSensitivity) * lookDirection;
+	Position = lookDirection + orbit_centre;
+
+	// Look
+	Front = (-lookDirection).Normalized();
+	Right = Cross(Front, WorldUp).Normalized();
+	Up = Cross(Right, Front).Normalized();
+	
+	UpdateFrustum();
 }
 
 void ModuleCamera::onResize(float aspect_ratio)
@@ -164,17 +178,31 @@ void ModuleCamera::UpdateFrustum()
 	HFOV = frustum.HorizontalFov();
 }
 
-void ModuleCamera::RotateCamera(float3& axis, float angle)
+void ModuleCamera::RotateCamera(float yaw, float pitch)
 {
-	Quat rotationMatrix = Quat(axis, DegToRad(angle));
-	Front = rotationMatrix * Front;
-	Right = rotationMatrix * Right; // 9 scalar products and 6 sums
-	Up = rotationMatrix * Up;
+	
+	if (yaw != 0.f)
+	{
+		Quat yawRotation = Quat::RotateY(yaw);
+		Front = yawRotation.Mul(Front).Normalized();
+		Right = yawRotation.Mul(Right).Normalized();
+		Up = yawRotation.Mul(Up).Normalized();
+	}
+	if (pitch != 0.f)
+	{
+		Quat pitchRotation = Quat(Right, pitch);
+		float3 newUp = pitchRotation.Mul(Up).Normalized();
+		if (newUp.y > 0) {
+			Up = newUp;
+			Front = pitchRotation.Mul(Front).Normalized();
+			Right = pitchRotation.Mul(Right).Normalized();
+		}
+	}
 }
 
 void ModuleCamera::NewDirection()
 {
-	// Gramm-Schmidt process, comment if using RotateCamera
+	// Gramm-Schmidt process, not used if using RotateCamera
 
 	// new front with simple trigonometry
 	float3 front;

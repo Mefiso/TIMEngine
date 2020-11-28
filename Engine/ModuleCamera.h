@@ -21,10 +21,11 @@ enum Camera_Movement {
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float SPEED = 2.5f;
-const float ROTATION_SPEED = 20.f;
-const float SENSITIVITY = .1f;
+const float ROTATION_SPEED = M_PI / 8.0f;
+const float SENSITIVITY = .005f;
 const float VERTICALFOV = DegToRad(60.f);
 const float ASPECTRATIO = (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT;
+const float ZOOM = .1f;
 
 class ModuleCamera : public Module
 {
@@ -45,6 +46,7 @@ public:
 	void ProcessMouseMovement(float xoffset, float yoffset);
 	void ProcessMouseScroll(float yoffset);
 	void ProcessSpeed(float multiplier);
+	void ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre);
 	void onResize(float aspect_ratio);
 	void onCameraSettingsChanged();
 
@@ -70,6 +72,6 @@ public:
 private:
 	Frustum frustum;
 	void UpdateFrustum();
-	void RotateCamera(float3& axis, float angle);
+	void RotateCamera(float yaw, float pitch);
 	void NewDirection();
 };

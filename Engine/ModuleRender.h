@@ -26,6 +26,7 @@ public:
 	void WindowResized(unsigned int width, unsigned int height);
 	void RotateCameraMouse(float xoffset, float yoffset);
 	void MouseWheel(float xoffset, float yoffset);
+	void OrbitObject(float xoffset, float yoffset);
 	bool DropFile(const std::string& file);
 public:
 	void* context = nullptr;

@@ -171,6 +171,11 @@ void ModuleRender::MouseWheel(float xoffset, float yoffset)
 	App->camera->ProcessMouseScroll(yoffset);
 }
 
+void ModuleRender::OrbitObject(float xoffset, float yoffset)
+{
+	App->camera->ProcessOrbit(xoffset, yoffset, float3::zero);
+}
+
 bool ModuleRender::DropFile(const std::string& file)
 {
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
