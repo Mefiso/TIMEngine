@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "ModuleTexture.h"
 #include <assimp/scene.h>
+#include <assimp/cimport.h>
 
 #include <vector>
 #include <string>
@@ -33,5 +34,5 @@ private:
 
 private:
 	std::vector<Texture> loaded_textures;
-
+	struct aiLogStream stream;
 };

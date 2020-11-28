@@ -8,7 +8,7 @@
 #include "Leaks.h"
 
 WConfig::WConfig(std::string name, int ID) : Window(name, ID),
-brightness(1.0f), width(SCREEN_WIDTH), height(SCREEN_HEIGHT), fullscreen(FULLSCREEN), resizable(RESIZABLE), borderless(false), fulldesktop(false)
+brightness(1.0f), width(SCREEN_WIDTH), height(SCREEN_HEIGHT), fullscreen(FULLSCREEN), resizable(RESIZABLE), borderless(false), fulldesktop(false), vsync(VSYNC)
 {
 }
 
@@ -61,7 +61,7 @@ void WConfig::WindowHeader()
 		ImGui::TextUnformatted("Refresh rate: ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0.0, 1.0, 1.0, 1.0 }, "%d", mode.refresh_rate);
-
+		ImGui::Checkbox(vsync);
 		if (ImGui::Checkbox("Fullscreen", &fullscreen))
 			App->window->SetFullscreen(fullscreen);
 		ImGui::SameLine();

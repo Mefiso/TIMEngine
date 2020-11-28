@@ -27,6 +27,7 @@ public:
 	void SetResizable(const bool resizable);
 	void SetWindowSize(const float width, const float height);
 	void SetBrightness(const float brightness);
+	void SetVsync(const bool vsync);
 public:
 	int width, height;
 	float brightness = 1.0f;
