@@ -138,6 +138,7 @@ void WConfig::TextureHeader()
 
 void WConfig::CameraHeader()
 {
+	/*
 	if (ImGui::CollapsingHeader("Camera")) {
 		if (ImGui::InputFloat3("Position", &App->camera->Position[0])) {
 			App->camera->onCameraSettingsChanged();
@@ -174,4 +175,5 @@ void WConfig::CameraHeader()
 		ImGui::SameLine();
 		HelpMarker("This alters apect ratio without altering the window size, so it will deform the geometry. Resizeing the window restores geometry.");
 	}
+	*/
 }
