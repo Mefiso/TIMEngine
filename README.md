@@ -1,6 +1,6 @@
 # TIME
 ## Description
-Custom video game engine that tries to mimic Unity and the likes features. It is developed mostly for educational purposes and it will be used for the developing and delivering several assignments for the Master's Degree in [Advanced Programming for AAA Vide Games](https://www.talent.upc.edu/ing/estudis/formacio/curs/201200/master-degree-advanced-programming-aaa-videogames/) (UPC School).
+Custom video game engine that tries to mimic Unity and the likes features. It is developed mostly for educational purposes and it will be used for developing and delivering several assignments for the Master's Degree in [Advanced Programming for AAA Vide Games](https://www.talent.upc.edu/ing/estudis/formacio/curs/201200/master-degree-advanced-programming-aaa-videogames/) (UPC School).
 
 All the code and the releases can be found in the [github page](https://github.com/Mefiso/TIMEngine).
 
@@ -29,3 +29,13 @@ Finally, the Engine features Unity-like camera controls:
 4. Alt+Left click orbits the object.
 5. Pressing “f” focuses the camera around the geometry.
 6. Holding SHIFT duplicates movement speed.
+
+Of course docking/resizing/moving the GUI windows can be performed freely.
+
+## First assignment
+The first assignment delivery can be found on the release section, the Engine has all the functionalities specified on the requirements section of the assignment.
+_Note that the fox texture is a DDS file but the Totoro one is not due to the difficulty of finding models with DDS texture attached. Since the fox can be perfectly loaded is already proven that the specified requirement is met. You can also drag and drop DDS textures without any inconvenient._
+
+## Author
+Name: **Pol Pérez Granero**
+Github username: [**Mefiso**](https://github.com/Mefiso)
