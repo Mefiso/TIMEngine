@@ -134,13 +134,13 @@ void Model::LoadTextures(const aiScene* scene)
 					if (!texture.id) {
 						LOG("[info] Failed to load textures.");
 						LOG("[info] Trying to find texture on the textures folder.");
-						texture.id = App->textureLoader->LoadTexture(std::string("./textures/") + file.C_Str());
+						texture.id = App->textureLoader->LoadTexture(std::string("./resources/textures/") + file.C_Str());
 						if (!texture.id) {
 							LOG("[error] Texture not found.");
 							return;
 						}
 						else {
-							texture.path = std::string("./textures/") + file.C_Str();
+							texture.path = std::string("./resources/textures/") + file.C_Str();
 						}
 					}
 					else {

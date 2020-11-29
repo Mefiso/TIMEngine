@@ -84,11 +84,11 @@ bool ModuleRender::Init()
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
 #endif
 
-	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
+	defaultProgram = App->program->CreateProgramFromFile(".\\resources\\shaders\\vertex_shader.glsl", ".\\resources\\shaders\\fragment_shader.glsl");
 	// Load models
 	uSTimer test = uSTimer();
 	modelLoaded = new Model();
-	modelLoaded->Load("models/baker_house/BakerHouse.fbx");
+	modelLoaded->Load("./resources/models/baker_house/BakerHouse.fbx");
 
 	msTimer.Start();
 
