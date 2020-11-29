@@ -89,7 +89,7 @@ bool ModuleRender::Init()
 	uSTimer test = uSTimer();
 	modelLoaded = new Model();
 	modelLoaded->Load("models/baker_house/BakerHouse.fbx");
-	
+
 	msTimer.Start();
 
 	return true;
