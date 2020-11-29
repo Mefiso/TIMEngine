@@ -14,7 +14,7 @@ WProperties::~WProperties()
 
 void WProperties::Draw()
 {
-	ImGui::SetNextWindowSize(ImVec2(450, 530), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(450, 540), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();

@@ -47,7 +47,7 @@ char* ModuleProgram::LoadShaderSource(const char* shader_file_name) const
 		fclose(file);
 	}
 	else
-		LOG("Can't read file %s", shader_file_name);
+		LOG("[error] Can't read file %s", shader_file_name);
 	return data;
 
 }
@@ -92,7 +92,7 @@ void ModuleProgram::checkCompileErrors(unsigned int shader, const char* type) co
 				int written = 0;
 				char* infoLog = (char*)malloc(len);
 				glGetShaderInfoLog(shader, len, &written, infoLog);
-				LOG("ERROR::SHADER_COMPILATION_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", type, infoLog);
+				LOG("[error] ERROR::SHADER_COMPILATION_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", type, infoLog);
 				free(infoLog);
 			}
 		}
@@ -109,7 +109,7 @@ void ModuleProgram::checkCompileErrors(unsigned int shader, const char* type) co
 				int written = 0;
 				char* infoLog = (char*)malloc(len);
 				glGetProgramInfoLog(shader, len, &written, infoLog);
-				LOG("ERROR::PROGRAM_LINKING_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", type, infoLog);
+				LOG("[error] ERROR::PROGRAM_LINKING_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", type, infoLog);
 				free(infoLog);
 			}
 		}

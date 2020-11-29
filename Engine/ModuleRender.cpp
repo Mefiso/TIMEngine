@@ -64,13 +64,13 @@ bool ModuleRender::Init()
 	//SDL_GL_MakeCurrent(App->window->window, context);
 	GLenum err = glewInit();
 	// c check for errors
-	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
+	LOG("[info] Using Glew %s", glewGetString(GLEW_VERSION));
 	// Should be 2.0
 
-	LOG("Vendor: %s", glGetString(GL_VENDOR));
-	LOG("Renderer: %s", glGetString(GL_RENDERER));
-	LOG("OpenGL version supported %s", glGetString(GL_VERSION));
-	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	LOG("[info] Vendor: %s", glGetString(GL_VENDOR));
+	LOG("[info] Renderer: %s", glGetString(GL_RENDERER));
+	LOG("[info] OpenGL version supported %s", glGetString(GL_VERSION));
+	LOG("[info] GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	// They are enabled inside ImGui_ImplOpenGL3_RenderDrawData so setting them here is useless
 	//glEnable(GL_DEPTH_TEST); // Enable depth test

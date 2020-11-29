@@ -43,7 +43,7 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 
 void    WConsole::Draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(650, 370), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(1000, 390), ImGuiCond_Once);
     if (!ImGui::Begin(name.c_str(), &active))
     {
         ImGui::End();
@@ -109,7 +109,7 @@ void    WConsole::Draw()
         ImVec4 color;
         bool has_color = false;
         if (strstr(item, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
-        else if (strncmp(item, "[info]", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
+        else if (strncmp(item, "[info]", 2) == 0) { color = ImVec4(0.6f, 0.8f, 0.6f, 1.0f); has_color = true; }
         if (has_color)
             ImGui::PushStyleColor(ImGuiCol_Text, color);
         ImGui::TextUnformatted(item);

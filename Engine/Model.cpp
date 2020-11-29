@@ -6,7 +6,7 @@
 
 void AssimpLog(const char* msg, char* user) {
 	if (msg) 
-		LOG("Assimp Log: %s", msg);
+		LOG("[info] Assimp Log: %s", msg);
 }
 
 Model::Model()
@@ -46,7 +46,7 @@ void Model::Load(std::string const& path)
 	const aiScene* scene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
 	{
-		LOG("Error loading %s: %s", path, importer.GetErrorString());
+		LOG("[error] Error loading %s: %s", path, importer.GetErrorString());
 	}
 	else
 	{
@@ -124,19 +124,19 @@ void Model::LoadTextures(const aiScene* scene)
 		{
 			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS) {
 				Texture texture;
-				LOG("Trying to find texture on the path specified by the fbx: %s", file.C_Str());
+				LOG("[info] Trying to find texture on the path specified by the fbx: %s", file.C_Str());
 				texture.id = App->textureLoader->LoadTexture(file.C_Str());
 				if (!texture.id) {
-					LOG("Failed to load textures.");
-					LOG("Trying to find texture on the same folder as fbx: %s", (directory + '/' + file.C_Str()).c_str());
+					LOG("[info] Failed to load textures.");
+					LOG("[info] Trying to find texture on the same folder as fbx: %s", (directory + '/' + file.C_Str()).c_str());
 					texture.id = App->textureLoader->LoadTexture(directory + '/' + file.C_Str());
 					
 					if (!texture.id) {
-						LOG("Failed to load textures.");
-						LOG("Trying to find texture on the textures folder.");
+						LOG("[info] Failed to load textures.");
+						LOG("[info] Trying to find texture on the textures folder.");
 						texture.id = App->textureLoader->LoadTexture(std::string("./textures/") + file.C_Str());
 						if (!texture.id) {
-							LOG("Texture not found.");
+							LOG("[error] Texture not found.");
 							return;
 						}
 						else {
@@ -150,7 +150,7 @@ void Model::LoadTextures(const aiScene* scene)
 				else {
 					texture.path = file.C_Str();
 				}
-				LOG("Texture loaded.");
+				LOG("[info] Texture loaded.");
 				texture.type = "texture_diffuse";
 				texture.wraps = GL_REPEAT;
 				texture.wrapt = GL_REPEAT;

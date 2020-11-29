@@ -46,7 +46,7 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 		if (!success)
 		{
 			/* Error occured */
-			LOG("Could not convert image");
+			LOG("[error] Could not convert image");
 			return false;
 		}
 		iluGetImageInfo(&info);
@@ -74,7 +74,7 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 	else
 	{
 		/* Error occured */
-		LOG("Could not Load image %s", path.c_str())
+		LOG("[error] Could not Load image %s", path.c_str())
 		return false;
 	}
 	ilDeleteImages(1, &imgId);

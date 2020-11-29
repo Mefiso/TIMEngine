@@ -20,7 +20,7 @@ WConfig::~WConfig()
 
 void WConfig::Draw()
 {
-	ImGui::SetNextWindowSize(ImVec2(420, 500), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(430, 650), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
