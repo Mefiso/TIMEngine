@@ -8,7 +8,7 @@ All the code and the releases can be found in the [github page](https://github.c
 The name of this engine is **TIME** (_/taɪm/_) a.k.a **TIMEngine** (_/taɪm ˈɛnʤɪn/_). It is an acronym for The Incredible Mefiso's Engine. But more information may be revealed by the console inside the application.
 
 ## How to use it
-The main window will be filled with the rendered scene. A main menu is displayed at the top, with several options, such as quit, deactivate and activate UI windows and "about information". To close the application it can used the aforementioned "Quit" button on the menu or the cross at the top right. 
+The main window will be filled with the rendered scene. A main menu is displayed at the top, with several options, such as quit, deactivate and activate UI windows and "about information". To close the application it can be used the aforementioned "Quit" button on the menu or the cross at the top right. 
 
 The main window is resizable, but resizing and other main window actions are preferably done in the "Window" header inside the **"Configuration"** UI window.
 In this **Configuration** window other actions for every core module in the engine:
@@ -23,9 +23,9 @@ Apart from the described above, the **console** window also allows some actions:
 As far as the scene are concerned, **drag&drop** feature for both models and textures is implemented. Droping an _FBX_ model will load it and replace the current geometry. While dropping an image file will load it as a texture for the current model.
 
 Finally, the Engine features Unity-like camera controls:
-a. “WASD” fps-like movement and arrows free look around. 
-b. While Right clicking, free look around.
-b. Mouse wheel zooms in and out.
-c. Alt+Left click orbits the object.
-d. Pressing “f” focuses the camera around the geometry.
-e. Holding SHIFT duplicates movement speed.
+1. “WASD” fps-like movement and arrows free look around. 
+2. While Right clicking, free look around.
+3. Mouse wheel zooms in and out.
+4. Alt+Left click orbits the object.
+5. Pressing “f” focuses the camera around the geometry.
+6. Holding SHIFT duplicates movement speed.
