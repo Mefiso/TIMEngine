@@ -1,4 +1,6 @@
 #include "W_properties.h"
+#include "Application.h"
+#include "ModuleWindow.h"
 #include "GL/glew.h"
 #include "Model.h"
 #include "Leaks.h"
@@ -14,7 +16,10 @@ WProperties::~WProperties()
 
 void WProperties::Draw()
 {
-	ImGui::SetNextWindowSize(ImVec2(450, 540), ImGuiCond_Once);
+	int w, h;
+	SDL_GetWindowPosition(App->window->window, &w, &h);
+	ImGui::SetNextWindowPos(ImVec2(w - App->window->width * 0.25, h), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.6), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();

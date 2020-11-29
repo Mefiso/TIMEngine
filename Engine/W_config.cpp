@@ -20,7 +20,10 @@ WConfig::~WConfig()
 
 void WConfig::Draw()
 {
-	ImGui::SetNextWindowSize(ImVec2(430, 650), ImGuiCond_Once);
+	int w, h;
+	SDL_GetWindowPosition(App->window->window, &w, &h);
+	ImGui::SetNextWindowPos(ImVec2(w+App->window->width, h), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(App->window->width*0.3, App->window->height*0.9), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();

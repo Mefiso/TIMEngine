@@ -1,4 +1,6 @@
 #include "W_console.h"
+#include "Application.h"
+#include "ModuleWindow.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "Leaks.h"
@@ -45,7 +47,10 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 
 void    WConsole::Draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(1000, 390), ImGuiCond_Once);
+    int w, h;
+    SDL_GetWindowPosition(App->window->window, &w, &h);
+    ImGui::SetNextWindowPos(ImVec2(w + 10, h+App->window->height*0.8), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(App->window->width*0.9, App->window->height*0.4), ImGuiCond_Once);
     if (!ImGui::Begin(name.c_str(), &active))
     {
         ImGui::End();
