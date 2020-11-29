@@ -21,9 +21,16 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	int width, height;
-
+	void SetFullscreen(bool fullscreen) const;
+	void SetBorderless(bool borderless) const;
+	void SetFulldesktop(bool fulldesktop) const;
+	void SetResizable(bool resizable) const;
+	void SetWindowSize() const;
+	void SetBrightness(float brightness) const;
+	void SetVsync(bool vsync) const;
 public:
+	int width, height;
+	float brightness = 1.0f;
 	//The window we'll be rendering to
 	SDL_Window* window = NULL;
 

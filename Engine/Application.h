@@ -1,6 +1,5 @@
 #pragma once
-
-#include<list>
+#include<vector>
 #include "Globals.h"
 #include "Module.h"
 
@@ -10,7 +9,11 @@ class ModuleTextures;
 class ModuleInput;
 class ModuleRenderExercise;
 class ModuleCamera;
+class ModuleProgram;
+//class ModuleRenderExercise;
 class ModuleEditor;
+class ModuleDebugDraw;
+class ModuleTexture;
 
 class Application
 {
@@ -23,16 +26,23 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void Log(const char* input) const;
+	void ProcessFPS(const float deltaTime) const;
+
 public:
 	ModuleRender* renderer = nullptr;
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
 	ModuleCamera* camera = nullptr;
+	ModuleProgram* program = nullptr;
 	ModuleEditor* editor = nullptr;
+	//ModuleRenderExercise* exercise = nullptr;
+	ModuleDebugDraw* debugdraw = nullptr;
+	ModuleTexture* textureLoader = nullptr;
 
 private:
 
-	std::list<Module*> modules;
+	std::vector<Module*> modules;
 
 };
 

@@ -2,10 +2,16 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "Globals.h"
+#include "Leaks.h"
 
-#include "SDL/include/SDL.h"
+#include "SDL.h"
 #pragma comment( lib, "SDL/lib/x86/SDL2.lib" )
 #pragma comment( lib, "SDL/lib/x86/SDL2main.lib" )
+
+void DumpLeaks(void)
+{
+	_CrtDumpMemoryLeaks(); // show leaks with file and line where allocation was made
+}
 
 enum main_states
 {
@@ -20,6 +26,7 @@ Application* App = NULL;
 
 int main(int argc, char ** argv)
 {
+	atexit(DumpLeaks);
 	int main_return = EXIT_FAILURE;
 	main_states state = MAIN_CREATION;
 
@@ -84,6 +91,7 @@ int main(int argc, char ** argv)
 	}
 
 	delete App;
+	App = nullptr;
 	LOG("Bye :)\n");
 	return main_return;
 }

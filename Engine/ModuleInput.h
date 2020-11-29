@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 
+#define NUM_MOUSE_BUTTONS 5
 typedef unsigned __int8 Uint8;
 
 enum KeyState
@@ -27,9 +28,14 @@ public:
 	{
 		return keyboard_state[id];
 	}
+	KeyState GetMouseButtonDown(int id) const
+	{
+		return mouse_buttons[id - 1];
+	}
 
 private:
 	const Uint8 *keyboard = NULL;
 	KeyState* keyboard_state = nullptr;
+	KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
 
 };

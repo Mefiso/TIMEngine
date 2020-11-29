@@ -134,6 +134,7 @@
       <Filter>MathGeoLib\Time</Filter>
     </ClCompile>
     <ClCompile Include="ModuleCamera.cpp" />
+    <ClCompile Include="ModuleProgram.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp">
       <Filter>ImGUI</Filter>
     </ClCompile>
@@ -153,6 +154,33 @@
       <Filter>ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="ModuleEditor.cpp" />
+    <ClCompile Include="Window.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_console.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_monitor.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_config.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_about.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleTexture.cpp" />
+    <ClCompile Include="ModuleDebugDraw.cpp" />
+    <ClCompile Include="ModuleRenderExercise.cpp" />
+    <ClCompile Include="Model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="W_properties.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -390,6 +418,7 @@
       <Filter>MathGeoLib\Time</Filter>
     </ClInclude>
     <ClInclude Include="ModuleCamera.h" />
+    <ClInclude Include="ModuleProgram.h" />
     <ClInclude Include="ImGUI\imconfig.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
@@ -415,6 +444,38 @@
       <Filter>ImGUI</Filter>
     </ClInclude>
     <ClInclude Include="ModuleEditor.h" />
+    <ClInclude Include="W_console.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="W_monitor.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="W_config.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="W_about.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleTexture.h" />
+    <ClInclude Include="debugdraw.h" />
+    <ClInclude Include="debug_draw.hpp" />
+    <ClInclude Include="ModuleDebugDraw.h" />
+    <ClInclude Include="ModuleRenderExercise.h" />
+    <ClInclude Include="Leaks.h" />
+    <ClInclude Include="Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="W_properties.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="MSTimer.h" />
+    <ClInclude Include="uSTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
@@ -437,6 +498,12 @@
     </Filter>
     <Filter Include="ImGUI">
       <UniqueIdentifier>{3da5a169-84ae-4247-9342-53a8cb9abef4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EditorWindows">
+      <UniqueIdentifier>{38666de9-9d7a-4166-aca2-67bc73a9f8a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{b1276430-e03e-47f5-acb9-30cb31f378aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

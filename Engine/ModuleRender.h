@@ -1,6 +1,10 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "Math/float4.h"
+#include "MSTimer.h"
+
+class Model;
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -19,17 +23,29 @@ public:
 	bool CleanUp();
 
 	// callback funcs
-	void WindowResized(unsigned width, unsigned height);
-	void RotateCameraMouse(float xoffset, float yoffset);
-	void MouseWheel(float xoffset, float yoffset);
+	void WindowResized(unsigned int width, unsigned int height);
+	void RotateCameraMouse(float xoffset, float yoffset) const;
+	void MouseWheel(float xoffset, float yoffset) const;
+	void OrbitObject(float xoffset, float yoffset) const;
+	bool DropFile(const std::string& file);
+public:
+	bool depthTest = true;
+	bool cullFace = true;
+	void* context = nullptr;
+	bool eventOcurred = false;
+	bool showGrid = true;
 
-	void* context;
+	float4 backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };
+
+	unsigned int defaultProgram = 0;
+
+	// Models
+	Model* modelLoaded = nullptr;
 
 private:
-	void TranslateCamera(float deltaTime);
-	void RotateCameraKeys(float deltaTime);
+	void TranslateCamera(float deltaTime) const;
+	void RotateCameraKeys(float deltaTime) const;
 
 private:
-	float deltaTime = 0.0f;
-	float lastFrame = 0.0f;
+	MSTimer msTimer;
 };
