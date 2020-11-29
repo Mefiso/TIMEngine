@@ -80,7 +80,7 @@ bool ModuleWindow::CleanUp()
 	return true;
 }
 
-void ModuleWindow::SetFullscreen(const bool fullscreen)
+void ModuleWindow::SetFullscreen(const bool fullscreen) const
 {
 	if (fullscreen)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
@@ -88,7 +88,7 @@ void ModuleWindow::SetFullscreen(const bool fullscreen)
 		SDL_SetWindowFullscreen(window, 0);
 }
 
-void ModuleWindow::SetBorderless(const bool borderless)
+void ModuleWindow::SetBorderless(const bool borderless) const
 {
 	if (borderless)
 		SDL_SetWindowBordered(window, SDL_FALSE);
@@ -96,7 +96,7 @@ void ModuleWindow::SetBorderless(const bool borderless)
 		SDL_SetWindowBordered(window, SDL_TRUE);
 }
 
-void ModuleWindow::SetFulldesktop(const bool fulldesktop)
+void ModuleWindow::SetFulldesktop(const bool fulldesktop) const
 {
 	if (fulldesktop)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -104,7 +104,7 @@ void ModuleWindow::SetFulldesktop(const bool fulldesktop)
 		SDL_SetWindowFullscreen(window, 0);
 }
 
-void ModuleWindow::SetResizable(const bool resizable)
+void ModuleWindow::SetResizable(const bool resizable) const
 {
 	if (resizable)
 		SDL_SetWindowResizable(window, SDL_TRUE);
@@ -119,12 +119,12 @@ void ModuleWindow::SetWindowSize(const float width, const float height)
 	SDL_SetWindowSize(window, width, height);
 }
 
-void ModuleWindow::SetBrightness(const float brightness)
+void ModuleWindow::SetBrightness(const float brightness) const
 {
 	SDL_SetWindowBrightness(window, brightness);
 }
 
-void ModuleWindow::SetVsync(const bool vsync)
+void ModuleWindow::SetVsync(const bool vsync) const
 {
 	SDL_GL_SetSwapInterval(vsync);
 }

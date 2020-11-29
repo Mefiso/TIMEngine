@@ -69,12 +69,12 @@ bool Application::CleanUp()
 	return ret;
 }
 
-void Application::Log(const char* input)
+void Application::Log(const char* input) const
 {
 	editor->Log(input);
 }
 
-void Application::ProcessFPS(const float deltaTime)
+void Application::ProcessFPS(const float deltaTime) const
 {
 	editor->ProcessFPS(deltaTime);
 }
