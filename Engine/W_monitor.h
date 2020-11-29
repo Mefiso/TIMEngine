@@ -34,7 +34,7 @@ public:
 	void Draw() override;
 	void AddFPS(float deltaTime);
 private:
-	void ShowSoftware();
-	void ShowHardware();
+	void ShowSoftware() const;
+	void ShowHardware() const;
 
 };

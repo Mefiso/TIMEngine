@@ -64,7 +64,7 @@ update_status ModuleEditor::Update()
 	//ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	CreateMainMenu();
 
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
 		if ((*it)->isEnabled())
@@ -113,28 +113,23 @@ bool ModuleEditor::CleanUp()
 	return true;
 }
 
-void ModuleEditor::SendEvent(SDL_Event& event)
+void ModuleEditor::SendEvent(const SDL_Event& event) const
 {
 	ImGui_ImplSDL2_ProcessEvent(&event);
 }
 
-void ModuleEditor::Log(const char* input)
+void ModuleEditor::Log(const char* input) const
 {
 	if (console)
 		console->AddLog(input);
 }
 
-void ModuleEditor::ProcessFPS(float deltaTime)
+void ModuleEditor::ProcessFPS(float deltaTime) const
 {
 	monitor->AddFPS(deltaTime);
 }
 
-void ModuleEditor::UpdateWindowSizeSettings()
-{
-	configuration->UpdateWindowSizeSettings();
-}
-
-void ModuleEditor::SelectedModel(Model* model)
+void ModuleEditor::SelectedModel(const Model* const model) const
 {
 	properties->SelectPropertiesFromModel(model);
 }

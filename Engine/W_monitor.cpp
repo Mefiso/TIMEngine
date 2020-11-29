@@ -61,7 +61,7 @@ void WMonitor::AddFPS(float deltaTime)
 	elapsedTime += deltaTime;
 }
 
-void WMonitor::ShowSoftware()
+void WMonitor::ShowSoftware() const
 {
 	ImVec4 color = { 0.1f, 1.0f, 0.9f, 1.0f };
 	ImGui::TextUnformatted("Supported OpenGL:");
@@ -80,7 +80,7 @@ void WMonitor::ShowSoftware()
 	ImGui::Separator();
 }
 
-void WMonitor::ShowHardware()
+void WMonitor::ShowHardware() const
 {
 	ImVec4 color = { 0.1f, 1.0f, 0.9f, 1.0f };
 	ImGui::TextUnformatted("CPUs:");

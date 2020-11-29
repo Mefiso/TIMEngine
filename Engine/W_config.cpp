@@ -7,11 +7,6 @@
 #include "Model.h"
 #include "Leaks.h"
 
-// Texture
-constexpr char* wrap[4] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
-constexpr char* filterm[6] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
-constexpr char* filterM[2] = { "Linear", "Nearest" };
-
 
 WConfig::WConfig(std::string name, int ID) : Window(name, ID),
 brightness(1.0f), width(SCREEN_WIDTH), height(SCREEN_HEIGHT), fullscreen(FULLSCREEN), resizable(RESIZABLE), borderless(false), fulldesktop(false), vsync(VSYNC)
@@ -41,12 +36,6 @@ void WConfig::Draw()
 
 }
 
-void WConfig::UpdateWindowSizeSettings()
-{
-	width = App->window->width;
-	height = App->window->height; 
-}
-
 void WConfig::WindowHeader()
 {
 	if (ImGui::CollapsingHeader("Window")) {
@@ -54,13 +43,13 @@ void WConfig::WindowHeader()
 			App->window->SetBrightness(brightness);
 		if (!fullscreen && !fulldesktop) {
 
-			if (ImGui::SliderInt("Width", &width, 0, 2560)) {
-				App->window->SetWindowSize(width, height);
-				App->camera->onResize(width / (float)height);
+			if (ImGui::SliderInt("Width", &App->window->width, 0, 2560)) {
+				App->window->SetWindowSize();
+				App->camera->onResize(App->window->width / (float)App->window->height);
 			}
-			if (ImGui::SliderInt("Height", &height, 0, 1440)) {
-				App->window->SetWindowSize(width, height);
-				App->camera->onResize(width / (float)height);
+			if (ImGui::SliderInt("Height", &App->window->height, 0, 1440)) {
+				App->window->SetWindowSize();
+				App->camera->onResize(App->window->width / (float)App->window->height);
 			}
 		}
 
@@ -82,14 +71,19 @@ void WConfig::WindowHeader()
 		if (ImGui::Checkbox("Full Desktop", &fulldesktop)) {
 			App->window->SetFulldesktop(fulldesktop);
 			if (fulldesktop) {
+				width = App->window->width;
+				height = App->window->height;
+
 				SDL_GetWindowDisplayMode(App->window->window, &mode);
-				width = mode.w;
-				height = mode.h;
+				App->window->width = mode.w;
+				App->window->height = mode.h;
 			}
 			else {
-				this->UpdateWindowSizeSettings();
+				App->window->width = width;
+				App->window->height = height;
+				//this->UpdateWindowSizeSettings();
 			}
-			App->camera->onResize(width / (float)height);
+			App->camera->onResize(App->window->width / (float)App->window->height);
 		}
 	}
 }
@@ -138,9 +132,12 @@ void WConfig::RendererHeader()
 	}
 }
 
+// Texture
+const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
+const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
+const char* filterM[] = { "Linear", "Nearest" };
 void WConfig::TextureHeader()
 {
-	/*
 	if (ImGui::CollapsingHeader("Texture"))
 	{
 		HelpMarker("For this options to be applied reload the model.");
@@ -182,7 +179,7 @@ void WConfig::TextureHeader()
 			}
 			ImGui::EndTabBar();
 		}
-	}*/
+	}
 }
 
 void WConfig::CameraHeader()
@@ -198,7 +195,7 @@ void WConfig::CameraHeader()
 		ImGui::TextUnformatted("Movement");
 		ImGui::InputFloat("Mov Speed", &App->camera->MovementSpeed, 0.1f, 0.5f, "%.2f");
 		ImGui::InputFloat("Rot Speed", &App->camera->RotationSpeed, 0.2f, 1.0f, "%.1f");
-		ImGui::SliderFloat("Mouse Sens", &App->camera->MouseSensitivity, 0.0005f, 0.002f, "%.4f");
+		ImGui::SliderFloat("Mouse Sens", &App->camera->MouseSensitivity, 0.001f, 0.01f, "%.4f");
 		ImGui::Separator();
 
 		ImGui::TextUnformatted("Frustum");

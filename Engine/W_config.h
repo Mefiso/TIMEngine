@@ -9,8 +9,6 @@ class WConfig : public Window
 private:
 	// SDL window
 	float brightness;
-	int width;
-	int height;
 	bool fullscreen;
 	bool resizable;
 	bool borderless;
@@ -24,7 +22,6 @@ public:
 	~WConfig();
 
 	void Draw() override;
-	void UpdateWindowSizeSettings();
 	
 private:
 	void WindowHeader();
@@ -32,4 +29,6 @@ private:
 	void RendererHeader();
 	void TextureHeader();
 	void CameraHeader();
+	int width;
+	int height;
 };

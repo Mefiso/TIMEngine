@@ -24,9 +24,9 @@ public:
 
 	// callback funcs
 	void WindowResized(unsigned int width, unsigned int height);
-	void RotateCameraMouse(float xoffset, float yoffset);
-	void MouseWheel(float xoffset, float yoffset);
-	void OrbitObject(float xoffset, float yoffset);
+	void RotateCameraMouse(float xoffset, float yoffset) const;
+	void MouseWheel(float xoffset, float yoffset) const;
+	void OrbitObject(float xoffset, float yoffset) const;
 	bool DropFile(const std::string& file);
 public:
 	bool depthTest = true;
@@ -43,8 +43,8 @@ public:
 	Model* modelLoaded = nullptr;
 
 private:
-	void TranslateCamera(float deltaTime);
-	void RotateCameraKeys(float deltaTime);
+	void TranslateCamera(float deltaTime) const;
+	void RotateCameraKeys(float deltaTime) const;
 
 private:
 	MSTimer msTimer;

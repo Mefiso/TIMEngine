@@ -10,7 +10,7 @@ ModuleProgram::~ModuleProgram()
 {
 }
 
-unsigned int ModuleProgram::CreateProgramFromFile(const char* vertexPath, const char* fragmentPath)
+unsigned int ModuleProgram::CreateProgramFromFile(const char* vertexPath, const char* fragmentPath) const
 {
 	const char* vShaderCode = LoadShaderSource(vertexPath);
 	const char* fShaderCode = LoadShaderSource(fragmentPath);
@@ -31,7 +31,7 @@ bool ModuleProgram::CleanUp()
 	return true;
 }
 
-char* ModuleProgram::LoadShaderSource(const char* shader_file_name)
+char* ModuleProgram::LoadShaderSource(const char* shader_file_name) const
 {
 	char* data = nullptr;
 	FILE* file = nullptr;
@@ -52,7 +52,7 @@ char* ModuleProgram::LoadShaderSource(const char* shader_file_name)
 
 }
 
-unsigned ModuleProgram::CompileShader(unsigned type, const char* source)
+unsigned ModuleProgram::CompileShader(unsigned type, const char* source) const
 {
 	unsigned shader_id = glCreateShader(type);
 	glShaderSource(shader_id, 1, &source, 0);
@@ -63,7 +63,7 @@ unsigned ModuleProgram::CompileShader(unsigned type, const char* source)
 	return shader_id;
 }
 
-unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader)
+unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader) const
 {
 	unsigned program_id = glCreateProgram();
 	glAttachShader(program_id, vtx_shader);
@@ -77,7 +77,7 @@ unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader)
 
 // utility function for checking shader compilation/linking errors.
 	// ------------------------------------------------------------------------
-void ModuleProgram::checkCompileErrors(unsigned int shader, const char* type)
+void ModuleProgram::checkCompileErrors(unsigned int shader, const char* type) const
 {
 	int success;
 	if (type != "PROGRAM")

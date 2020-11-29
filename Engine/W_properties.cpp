@@ -28,7 +28,7 @@ void WProperties::Draw()
 	ImGui::End();
 }
 
-void WProperties::SelectPropertiesFromModel(Model* model)
+void WProperties::SelectPropertiesFromModel(const Model* model)
 {
 	selected_textures = model->textures;
 	scale.x = model->transformation.Col3(0).Length();
@@ -44,7 +44,7 @@ void WProperties::SelectPropertiesFromModel(Model* model)
 	selected_meshes = model->meshes;
 }
 
-void WProperties::TransformationHeader()
+void WProperties::TransformationHeader() const
 {
 	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Transformation"))
@@ -93,7 +93,7 @@ void WProperties::TransformationHeader()
 	}
 }
 
-void WProperties::GeometryHeader()
+void WProperties::GeometryHeader() const
 {
 	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Geometry"))
@@ -115,7 +115,7 @@ void WProperties::GeometryHeader()
 	}
 }
 
-void WProperties::TexturesHeader()
+void WProperties::TexturesHeader() const
 {
 	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Textures")) {

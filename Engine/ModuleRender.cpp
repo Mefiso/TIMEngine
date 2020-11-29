@@ -167,7 +167,7 @@ void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 	App->camera->onResize((float) width / (float) height);
 }
 
-void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
+void ModuleRender::RotateCameraMouse(float xoffset, float yoffset) const
 {
 	if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
 		SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -175,12 +175,12 @@ void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
 	App->camera->ProcessMouseMovement(xoffset, yoffset);
 }
 
-void ModuleRender::MouseWheel(float xoffset, float yoffset)
+void ModuleRender::MouseWheel(float xoffset, float yoffset) const
 {
 	App->camera->ProcessMouseScroll(yoffset);
 }
 
-void ModuleRender::OrbitObject(float xoffset, float yoffset)
+void ModuleRender::OrbitObject(float xoffset, float yoffset) const
 {
 	App->camera->ProcessOrbit(xoffset, yoffset, float3::zero);
 }
@@ -199,7 +199,7 @@ bool ModuleRender::DropFile(const std::string& file)
 	}
 }
 
-void ModuleRender::TranslateCamera(float deltaTime)
+void ModuleRender::TranslateCamera(float deltaTime) const
 {
 	// Translate camera
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
@@ -224,7 +224,7 @@ void ModuleRender::TranslateCamera(float deltaTime)
 	}
 }
 
-void ModuleRender::RotateCameraKeys(float deltaTime)
+void ModuleRender::RotateCameraKeys(float deltaTime) const
 {
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);
