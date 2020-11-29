@@ -182,7 +182,7 @@ void ModuleRender::MouseWheel(float xoffset, float yoffset) const
 
 void ModuleRender::OrbitObject(float xoffset, float yoffset) const
 {
-	App->camera->ProcessOrbit(xoffset, yoffset, float3::zero);
+	App->camera->ProcessOrbit(xoffset, yoffset, modelLoaded->enclosingSphere.pos);
 }
 
 bool ModuleRender::DropFile(const std::string& file)
