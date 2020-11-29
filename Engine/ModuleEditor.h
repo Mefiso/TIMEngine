@@ -10,6 +10,7 @@ class WConsole;
 class WMonitor;
 class WConfig;
 class WProperties;
+class WAbout;
 class Model;
 
 class ModuleEditor : public Module
@@ -24,20 +25,23 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void SendEvent(SDL_Event& event);
+	void SendEvent(const SDL_Event& event) const;
 
 	// Windows methods
-	void Log(const char* input);
-	void ProcessFPS(float deltaTime);
-	void UpdateWindowSizeSettings();
-	void SelectedModel(Model* model);
+	void Log(const char* input) const;
+	void ProcessFPS(float deltaTime) const;
+	void SelectedModel(const Model* const model) const;
 private:
+	void CreateMainMenu();
+private:
+	bool should_quit = false;
 	ImGuiIO* io = nullptr;
 	
 	WConsole* console = nullptr;
 	WMonitor* monitor = nullptr;
 	WConfig* configuration = nullptr;
 	WProperties* properties = nullptr;
+	WAbout* about = nullptr;
 
 	std::vector<Window*> editorWindows;
 };

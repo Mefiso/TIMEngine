@@ -6,7 +6,6 @@
 #include "ModuleCamera.h"
 #include "ModuleProgram.h"
 #include "ModuleEditor.h"
-//#include "ModuleRenderExercise.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleTexture.h"
 #include "Leaks.h"
@@ -20,7 +19,6 @@ Application::Application()
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(program = new ModuleProgram());
 	modules.push_back(renderer = new ModuleRender());
-	//modules.push_back(exercise = new ModuleRenderExercise());
 	modules.push_back(editor = new ModuleEditor());
 	modules.push_back(textureLoader = new ModuleTexture());
 	modules.push_back(camera = new ModuleCamera());
@@ -71,12 +69,12 @@ bool Application::CleanUp()
 	return ret;
 }
 
-void Application::Log(const char* input)
+void Application::Log(const char* input) const
 {
 	editor->Log(input);
 }
 
-void Application::ProcessFPS(const float deltaTime)
+void Application::ProcessFPS(const float deltaTime) const
 {
 	editor->ProcessFPS(deltaTime);
 }

@@ -21,12 +21,13 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	void SetFullscreen(const bool fullscreen);
-	void SetBorderless(const bool borderless);
-	void SetFulldesktop(const bool fulldesktop);
-	void SetResizable(const bool resizable);
-	void SetWindowSize(const float width, const float height);
-	void SetBrightness(const float brightness);
+	void SetFullscreen(bool fullscreen) const;
+	void SetBorderless(bool borderless) const;
+	void SetFulldesktop(bool fulldesktop) const;
+	void SetResizable(bool resizable) const;
+	void SetWindowSize() const;
+	void SetBrightness(float brightness) const;
+	void SetVsync(bool vsync) const;
 public:
 	int width, height;
 	float brightness = 1.0f;

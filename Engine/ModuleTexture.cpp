@@ -4,8 +4,7 @@
 #include "IL/devil_cpp_wrapper.hpp"
 #include "Leaks.h"
 
-ModuleTexture::ModuleTexture() : mipmap(true), force_flip(false), wrap_s(GL_REPEAT),
-wrap_t(GL_REPEAT), filter_min(GL_LINEAR_MIPMAP_LINEAR), filter_mag(GL_LINEAR)
+ModuleTexture::ModuleTexture() : mipmap(true), force_flip(false)
 {
 }
 
@@ -47,7 +46,7 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 		if (!success)
 		{
 			/* Error occured */
-			LOG("Could not convert image");
+			LOG("[error] Could not convert image");
 			return false;
 		}
 		iluGetImageInfo(&info);
@@ -66,16 +65,16 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 		if (mipmap)
 			glGenerateMipmap(GL_TEXTURE_2D);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_min);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_mag);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		
 	}
 	else
 	{
 		/* Error occured */
-		LOG("Could not Load image %s", path.c_str())
+		LOG("[error] Could not Load image %s", path.c_str())
 		return false;
 	}
 	ilDeleteImages(1, &imgId);

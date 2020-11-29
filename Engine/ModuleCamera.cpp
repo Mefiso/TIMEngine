@@ -4,40 +4,24 @@
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
 #include "Math/Quat.h"
+#include "Math/float3x3.h"
 #include "Leaks.h"
 
 
-ModuleCamera::ModuleCamera(float3 position, float3 up, float yaw, float pitch, float near_plane, float far_plane) : Module(),
-	Front(-float3::unitZ), MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY), aspectRatio(ASPECTRATIO),
-	VFOV(VERTICALFOV), Position(position), WorldUp(up), Yaw(yaw), Pitch(pitch), nearPlane(near_plane), farPlane(far_plane)
-	
+ModuleCamera::ModuleCamera(float3 position, float3 up, float near_plane, float far_plane) : Module(),
+	MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY)
 {
-	HFOV = 2.f * Atan(Tan(VFOV * 0.5f) * aspectRatio);
+	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
+	frustum.SetViewPlaneDistances(near_plane, far_plane);
+	frustum.SetVerticalFovAndAspectRatio(VERTICALFOV, ASPECTRATIO);
+	frustum.SetPos(position);
+	frustum.SetFront(-float3::unitZ);
+	frustum.SetUp(up);
 }
 
 // Destructor
 ModuleCamera::~ModuleCamera()
 {
-}
-
-// Called before Camera is available
-bool ModuleCamera::Init()
-{
-	Front.Normalize();
-	Right = Cross(Front, WorldUp).Normalized();
-	Up = Cross(Right, Front).Normalized();
-
-	// init frustum
-	UpdateFrustum();
-
-	return true;
-}
-
-// Called every draw update
-update_status ModuleCamera::PreUpdate()
-{	
-
-	return UPDATE_CONTINUE;
 }
 
 // Called before quitting
@@ -62,51 +46,39 @@ float4x4 ModuleCamera::ProjectionMatrix()
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
 	float celerity = MovementSpeed * deltaTime;
-	//float oldPitch; // Only needed if using RotateCamera
 	switch (direction)
 	{
 	case FORWARD:
-		Position += Front * celerity;
+		frustum.SetPos(frustum.Pos() + frustum.Front() * celerity);
 		break;
 	case BACKWARD:
-		Position -= Front * celerity;
+		frustum.SetPos(frustum.Pos() - frustum.Front() * celerity);
 		break;
 	case LEFT:
-		Position -= Right * celerity;
+		frustum.SetPos(frustum.Pos() - frustum.WorldRight() * celerity);
 		break;
 	case RIGHT:
-		Position += Right * celerity;
+		frustum.SetPos(frustum.Pos() + frustum.WorldRight() * celerity);
 		break;
 	case UP:
-		Position += WorldUp * celerity;
+		frustum.SetPos(frustum.Pos() + float3::unitY * celerity);
 		break;
 	case DOWN:
-		Position -= WorldUp * celerity;
+		frustum.SetPos(frustum.Pos() - float3::unitY * celerity);
 		break;
 	case PITCH_UP:
-		//oldPitch = Pitch; // Only needed if using RotateCamera
-		Pitch += RotationSpeed * celerity;
-		if (Pitch > 89.0f)
-			Pitch = 89.0f;
-		NewDirection();//RotateCamera(Right, Pitch - oldPitch);
+		RotateCamera(0, RotationSpeed * celerity);
 		break;
 	case PITCH_DOWN:
-		//oldPitch = Pitch; // Only needed if using RotateCamera
-		Pitch -= RotationSpeed * celerity;
-		if (Pitch < -89.0f)
-			Pitch = -89.0f;
-		NewDirection();//RotateCamera(Right, Pitch - oldPitch);
+		RotateCamera(0, -RotationSpeed * celerity);
 		break;
 	case YAW_LEFT:
-		Yaw -= RotationSpeed * celerity;
-		NewDirection();//RotateCamera(WorldUp, RotationSpeed * celerity);
+		RotateCamera(RotationSpeed * celerity, 0);
 		break;
 	case YAW_RIGHT:
-		Yaw += RotationSpeed * celerity;
-		NewDirection();//RotateCamera(WorldUp, -RotationSpeed * celerity);
+		RotateCamera(-RotationSpeed * celerity, 0);
 		break;
 	}
-	UpdateFrustum();
 }
 
 void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
@@ -114,27 +86,13 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
 
-	//float oldPitch = Pitch; // Only needed if using RotateCamera
-
-	Yaw += xoffset;
-	Pitch += yoffset;
-
-	// make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (Pitch > 89.0f)
-		Pitch = 89.0f;
-	if (Pitch < -89.0f)
-		Pitch = -89.0f;
-
-	NewDirection();
-	//RotateCamera(Right, Pitch-oldPitch);
-	//RotateCamera(WorldUp, -xoffset);
-	UpdateFrustum();
+	RotateCamera(-xoffset, yoffset);
 }
 
 void ModuleCamera::ProcessMouseScroll(float yoffset)
 {
-	Position += Front * yoffset;
-	UpdateFrustum();
+	//Position += Front * yoffset; // simulates zoom but it's actually moving
+	frustum.SetVerticalFovAndAspectRatio( frustum.VerticalFov() - yoffset * ZOOM, frustum.AspectRatio()); // actual zoom
 }
 
 void ModuleCamera::ProcessSpeed(float multiplier)
@@ -142,46 +100,46 @@ void ModuleCamera::ProcessSpeed(float multiplier)
 	MovementSpeed *= multiplier;
 }
 
+void ModuleCamera::ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre)
+{
+	float3 lookDirection = Quat::RotateAxisAngle(float3::unitY, xoffset * MouseSensitivity) * (frustum.Pos() - orbit_centre); // Another option would be to rotate around frustum.Up(), both appear to work for me
+	lookDirection = Quat::RotateAxisAngle(frustum.WorldRight(), yoffset * MouseSensitivity) * lookDirection;
+	frustum.SetPos(lookDirection + orbit_centre);
+
+	// Look
+	float3x3 look = float3x3::LookAt(frustum.Front(), (-lookDirection).Normalized(), frustum.Up(), float3::unitY);
+	frustum.SetFront(look.MulDir(frustum.Front()).Normalized());
+	frustum.SetUp(look.MulDir(frustum.Up()).Normalized());
+}
+
 void ModuleCamera::onResize(float aspect_ratio)
 {
-	aspectRatio = aspect_ratio;
-	UpdateFrustum();
+	frustum.SetVerticalFovAndAspectRatio(frustum.VerticalFov(), aspect_ratio);
 }
 
-void ModuleCamera::onCameraSettingsChanged()
+void ModuleCamera::onFocus(float3 center, float distance)
 {
-	UpdateFrustum();
+	// The effect is that it moves in a perpendicular way with respect the camera front and the backwards/forward a distance
+	frustum.SetPos(center);
+	frustum.SetPos(center - frustum.Front() * distance);
 }
 
-void ModuleCamera::UpdateFrustum()
+void ModuleCamera::RotateCamera(float yaw, float pitch)
 {
-	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	frustum.SetViewPlaneDistances(nearPlane, farPlane);
-	frustum.SetVerticalFovAndAspectRatio(VFOV, aspectRatio);
-	frustum.SetPos(Position);
-	frustum.SetFront(Front);
-	frustum.SetUp(Up);
-	HFOV = frustum.HorizontalFov();
-}
-
-void ModuleCamera::RotateCamera(float3& axis, float angle)
-{
-	Quat rotationMatrix = Quat(axis, DegToRad(angle));
-	Front = rotationMatrix * Front;
-	Right = rotationMatrix * Right; // 9 scalar products and 6 sums
-	Up = rotationMatrix * Up;
-}
-
-void ModuleCamera::NewDirection()
-{
-	// Gramm-Schmidt process, comment if using RotateCamera
-
-	// new front with simple trigonometry
-	float3 front;
-	front.x = cos(DegToRad(Yaw)) * cos(DegToRad(Pitch));
-	front.y = sin(DegToRad(Pitch));
-	front.z = sin(DegToRad(Yaw)) * cos(DegToRad(Pitch));
-	Front = front.Normalized();
-	Right = Cross(Front, WorldUp).Normalized(); // 6 scalar products and 3 subtractions + 3 scalar products, 2 sums and one sqrt
-	Up = Cross(Right, Front).Normalized();
+	
+	if (yaw != 0.f)
+	{
+		Quat yawRotation = Quat::RotateY(yaw);
+		frustum.SetFront(yawRotation.Mul(frustum.Front()).Normalized());
+		frustum.SetUp(yawRotation.Mul(frustum.Up()).Normalized());
+	}
+	if (pitch != 0.f)
+	{
+		Quat pitchRotation = Quat(frustum.WorldRight(), pitch);
+		float3 newUp = pitchRotation.Mul(frustum.Up()).Normalized();
+		if (newUp.y > 0) {
+			frustum.SetUp(newUp);
+			frustum.SetFront(pitchRotation.Mul(frustum.Front()).Normalized());
+		}
+	}
 }

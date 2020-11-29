@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "Leaks.h"
 
 ModuleWindow::ModuleWindow()
 {
@@ -19,7 +20,7 @@ bool ModuleWindow::Init()
 
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
-		LOG("SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
+		LOG("[error] SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 	else
@@ -32,8 +33,10 @@ bool ModuleWindow::Init()
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 		//Create window
-		width = SCREEN_WIDTH;
-		height = SCREEN_HEIGHT;
+		SDL_DisplayMode mode;
+		SDL_GetDesktopDisplayMode(0, &mode);
+		width = mode.w * 0.6;
+		height = mode.h * 0.6;
 		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
 		
 		if(FULLSCREEN == true)
@@ -47,7 +50,7 @@ bool ModuleWindow::Init()
 
 		if(window == NULL)
 		{
-			LOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+			LOG("[error] Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			ret = false;
 		}
 		else
@@ -77,7 +80,7 @@ bool ModuleWindow::CleanUp()
 	return true;
 }
 
-void ModuleWindow::SetFullscreen(const bool fullscreen)
+void ModuleWindow::SetFullscreen(bool fullscreen) const
 {
 	if (fullscreen)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
@@ -85,7 +88,7 @@ void ModuleWindow::SetFullscreen(const bool fullscreen)
 		SDL_SetWindowFullscreen(window, 0);
 }
 
-void ModuleWindow::SetBorderless(const bool borderless)
+void ModuleWindow::SetBorderless(bool borderless) const
 {
 	if (borderless)
 		SDL_SetWindowBordered(window, SDL_FALSE);
@@ -93,7 +96,7 @@ void ModuleWindow::SetBorderless(const bool borderless)
 		SDL_SetWindowBordered(window, SDL_TRUE);
 }
 
-void ModuleWindow::SetFulldesktop(const bool fulldesktop)
+void ModuleWindow::SetFulldesktop(bool fulldesktop) const
 {
 	if (fulldesktop)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -101,7 +104,7 @@ void ModuleWindow::SetFulldesktop(const bool fulldesktop)
 		SDL_SetWindowFullscreen(window, 0);
 }
 
-void ModuleWindow::SetResizable(const bool resizable)
+void ModuleWindow::SetResizable(bool resizable) const
 {
 	if (resizable)
 		SDL_SetWindowResizable(window, SDL_TRUE);
@@ -109,15 +112,18 @@ void ModuleWindow::SetResizable(const bool resizable)
 		SDL_SetWindowResizable(window, SDL_FALSE);
 }
 
-void ModuleWindow::SetWindowSize(const float width, const float height)
+void ModuleWindow::SetWindowSize() const
 {
-	this->width = width;
-	this->height = height;
 	SDL_SetWindowSize(window, width, height);
 }
 
-void ModuleWindow::SetBrightness(const float brightness)
+void ModuleWindow::SetBrightness(float brightness) const
 {
 	SDL_SetWindowBrightness(window, brightness);
+}
+
+void ModuleWindow::SetVsync(bool vsync) const
+{
+	SDL_GL_SetSwapInterval(vsync);
 }
 

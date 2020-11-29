@@ -26,8 +26,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	void Log(const char* input);
-	void ProcessFPS(const float deltaTime);
+	void Log(const char* input) const;
+	void ProcessFPS(const float deltaTime) const;
 
 public:
 	ModuleRender* renderer = nullptr;

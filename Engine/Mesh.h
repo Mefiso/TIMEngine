@@ -10,10 +10,10 @@
 class Mesh
 {
 public:
-	unsigned int VAO;
-	unsigned int num_vertices;
-	unsigned int num_indices;
-	unsigned int material_index;
+	unsigned int VAO = 0;
+	unsigned int num_vertices = 0;
+	unsigned int num_indices = 0;
+	unsigned int material_index = 0;
 public:
 	Mesh(const aiMesh* mesh, unsigned int index);
 	void Draw(unsigned int program, const std::vector<Texture*>& model_textures, float4x4 model);

@@ -14,7 +14,7 @@ public:
 	void Enable(bool active);
 
 	bool isEnabled() const { return active; }
-	inline const char* GetWindowName() { return name.c_str(); }
+	const char* GetWindowName() const { return name.c_str(); }
 protected:
 	bool active = true;
 	int ID = -1;

@@ -474,6 +474,8 @@
     <ClInclude Include="W_properties.h">
       <Filter>EditorWindows</Filter>
     </ClInclude>
+    <ClInclude Include="MSTimer.h" />
+    <ClInclude Include="uSTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

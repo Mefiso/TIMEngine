@@ -27,7 +27,7 @@ bool ModuleInput::Init()
 
 	if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 	{
-		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
+		LOG("[error] SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 	
@@ -64,6 +64,15 @@ update_status ModuleInput::PreUpdate()
 		}
 	}
 
+	for (int i = 0; i < NUM_MOUSE_BUTTONS; ++i)
+	{
+		if (mouse_buttons[i] == KEY_DOWN)
+			mouse_buttons[i] = KEY_REPEAT;
+
+		if (mouse_buttons[i] == KEY_UP)
+			mouse_buttons[i] = KEY_IDLE;
+	}
+
 	while (SDL_PollEvent(&sdlEvent) != 0)
 	{
 		
@@ -77,21 +86,32 @@ update_status ModuleInput::PreUpdate()
 			case SDL_WINDOWEVENT:
 				if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
 					return UPDATE_STOP;
-				if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED)// || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED) // sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED || 
 					App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
 				break;
 			case SDL_MOUSEMOTION:
-				if (GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
 					App->renderer->RotateCameraMouse(sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
+				}
+				else if (GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT) {
+					App->renderer->OrbitObject(-sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
+				}
 				break;
 			case SDL_MOUSEWHEEL:
 				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
 				break;
 			case SDL_DROPFILE:
-				LOG(sdlEvent.drop.file);
-				if (App->renderer->DropFile(sdlEvent.drop.file))
+				LOG(sdlEvent.drop.file); 
+				if (App->renderer->DropFile(sdlEvent.drop.file)) {
 					App->editor->SelectedModel(App->renderer->modelLoaded);
+				}
 				SDL_free(sdlEvent.drop.file);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				mouse_buttons[sdlEvent.button.button - 1] = KEY_DOWN;
+				break;
+			case SDL_MOUSEBUTTONUP:
+				mouse_buttons[sdlEvent.button.button - 1] = KEY_UP;
 				break;
 			}
 		}

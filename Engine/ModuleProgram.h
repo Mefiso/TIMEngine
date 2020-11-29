@@ -14,14 +14,14 @@ public:
 	ModuleProgram();
 	~ModuleProgram();
 
-	unsigned int CreateProgramFromFile(const char* vertexPath, const char* fragmentPath);
+	unsigned int CreateProgramFromFile(const char* vertexPath, const char* fragmentPath) const;
 
 	bool CleanUp();
 private:
-	char* LoadShaderSource(const char* shader_file_name);
-	unsigned CompileShader(unsigned type, const char* source);
-	unsigned CreateProgram(unsigned vtx_shader, unsigned frg_shader);
-	void checkCompileErrors(unsigned int shader, const char* type);
+	char* LoadShaderSource(const char* shader_file_name) const;
+	unsigned CompileShader(unsigned type, const char* source) const;
+	unsigned CreateProgram(unsigned vtx_shader, unsigned frg_shader) const;
+	void checkCompileErrors(unsigned int shader, const char* type) const;
 public:
     // activate the shader
     // ------------------------------------------------------------------------

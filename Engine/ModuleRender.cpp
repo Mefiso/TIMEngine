@@ -10,6 +10,7 @@
 #include "debugdraw.h"
 #include "Model.h"
 #include "SDL.h"
+#include "uSTimer.h"
 #include "Leaks.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -45,6 +46,7 @@ void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLe
 
 ModuleRender::ModuleRender()
 {
+	msTimer = MSTimer();
 }
 
 // Destructor
@@ -62,16 +64,16 @@ bool ModuleRender::Init()
 	//SDL_GL_MakeCurrent(App->window->window, context);
 	GLenum err = glewInit();
 	// c check for errors
-	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
+	LOG("[info] Using Glew %s", glewGetString(GLEW_VERSION));
 	// Should be 2.0
 
-	LOG("Vendor: %s", glGetString(GL_VENDOR));
-	LOG("Renderer: %s", glGetString(GL_RENDERER));
-	LOG("OpenGL version supported %s", glGetString(GL_VERSION));
-	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	LOG("[info] Vendor: %s", glGetString(GL_VENDOR));
+	LOG("[info] Renderer: %s", glGetString(GL_RENDERER));
+	LOG("[info] OpenGL version supported %s", glGetString(GL_VERSION));
+	LOG("[info] GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	// They are enabled inside ImGui_ImplOpenGL3_RenderDrawData so setting them here is useless
-	glEnable(GL_DEPTH_TEST); // Enable depth test
+	//glEnable(GL_DEPTH_TEST); // Enable depth test
 	//glEnable(GL_CULL_FACE); // Enable cull backward faces
 	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
 	//glDisable(GL_CULL_FACE);
@@ -82,19 +84,20 @@ bool ModuleRender::Init()
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
 #endif
 
-	defaultProgram = App->program->CreateProgramFromFile("shaders\\vertex_shader.glsl", "shaders\\fragment_shader.glsl");
+	defaultProgram = App->program->CreateProgramFromFile(".\\resources\\shaders\\vertex_shader.glsl", ".\\resources\\shaders\\fragment_shader.glsl");
 	// Load models
-	modelLoaded = new Model("models/baker_house/BakerHouse.fbx");
+	uSTimer test = uSTimer();
+	modelLoaded = new Model();
+	modelLoaded->Load("./resources/models/baker_house/BakerHouse.fbx");
+
+	msTimer.Start();
 
 	return true;
 }
 
 update_status ModuleRender::PreUpdate()
 {
-	float currentFrame = SDL_GetTicks()/1000.0f;
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
-	App->ProcessFPS(deltaTime);
+	App->ProcessFPS(msTimer.Stop() / 1000.0f);
 
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
@@ -102,22 +105,30 @@ update_status ModuleRender::PreUpdate()
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_UP) {
-		//SDL_CaptureMouse(SDL_FALSE);
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
 	if (eventOcurred) {
-		TranslateCamera(deltaTime);
-		RotateCameraKeys(deltaTime);
+		TranslateCamera(msTimer.Read() / 1000.0f);
+		RotateCameraKeys(msTimer.Read() / 1000.0f);
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
+			App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
+		}
 	}
-
+	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
 
 // Called every draw update
 update_status ModuleRender::Update()
 {
+	if (depthTest) glEnable(GL_DEPTH_TEST); // Enable depth test
+	else glDisable(GL_DEPTH_TEST);
+
+	if (cullFace) glEnable(GL_CULL_FACE); // Enable cull backward faces
+	else glDisable(GL_CULL_FACE);
+
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
 
@@ -156,31 +167,39 @@ void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 	App->camera->onResize((float) width / (float) height);
 }
 
-void ModuleRender::RotateCameraMouse(float xoffset, float yoffset)
+void ModuleRender::RotateCameraMouse(float xoffset, float yoffset) const
 {
 	if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
-		//SDL_CaptureMouse(SDL_TRUE);
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
 	App->camera->ProcessMouseMovement(xoffset, yoffset);
 }
 
-void ModuleRender::MouseWheel(float xoffset, float yoffset)
+void ModuleRender::MouseWheel(float xoffset, float yoffset) const
 {
 	App->camera->ProcessMouseScroll(yoffset);
 }
 
-bool ModuleRender::DropFile(const char* file)
+void ModuleRender::OrbitObject(float xoffset, float yoffset) const
 {
-	delete modelLoaded;
-	modelLoaded = new Model(file);
-	if (modelLoaded)
-		return true;
-	else
-		return false;
+	App->camera->ProcessOrbit(xoffset, yoffset, modelLoaded->enclosingSphere.pos);
 }
 
-void ModuleRender::TranslateCamera(float deltaTime)
+bool ModuleRender::DropFile(const std::string& file)
+{
+	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
+		modelLoaded->Load(file);
+		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
+		return true;
+	}
+	else {
+		// Replace all textures because we only have one per model
+		modelLoaded->ReloadTexture(file.c_str());
+		return false;
+	}
+}
+
+void ModuleRender::TranslateCamera(float deltaTime) const
 {
 	// Translate camera
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
@@ -205,7 +224,7 @@ void ModuleRender::TranslateCamera(float deltaTime)
 	}
 }
 
-void ModuleRender::RotateCameraKeys(float deltaTime)
+void ModuleRender::RotateCameraKeys(float deltaTime) const
 {
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);

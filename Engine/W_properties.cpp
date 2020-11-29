@@ -14,7 +14,7 @@ WProperties::~WProperties()
 
 void WProperties::Draw()
 {
-	ImGui::SetNextWindowSize(ImVec2(450, 530), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(450, 540), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
@@ -28,7 +28,7 @@ void WProperties::Draw()
 	ImGui::End();
 }
 
-void WProperties::SelectPropertiesFromModel(Model* model)
+void WProperties::SelectPropertiesFromModel(const Model* model)
 {
 	selected_textures = model->textures;
 	scale.x = model->transformation.Col3(0).Length();
@@ -44,7 +44,7 @@ void WProperties::SelectPropertiesFromModel(Model* model)
 	selected_meshes = model->meshes;
 }
 
-void WProperties::TransformationHeader()
+void WProperties::TransformationHeader() const
 {
 	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Transformation"))
@@ -93,7 +93,7 @@ void WProperties::TransformationHeader()
 	}
 }
 
-void WProperties::GeometryHeader()
+void WProperties::GeometryHeader() const
 {
 	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Geometry"))
@@ -115,7 +115,7 @@ void WProperties::GeometryHeader()
 	}
 }
 
-void WProperties::TexturesHeader()
+void WProperties::TexturesHeader() const
 {
 	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
 	if (ImGui::CollapsingHeader("Textures")) {
@@ -141,7 +141,7 @@ void WProperties::TexturesHeader()
 					ImGui::SameLine();
 					ImGui::TextColored(color, "%d", h);
 
-					// Texture wrap and filter
+					// Texture wrap and filter. This is repeated in Texture settings, so it can be deleted.
 					GLint wraps, wrapt, filtermag, filtermin;
 					glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &wraps);
 					glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, &wrapt);
@@ -214,6 +214,7 @@ void WProperties::TexturesHeader()
 						break;
 					}
 					ImGui::Separator();
+
 					ImTextureID texid = (ImTextureID)selected_textures[i]->id;
 					ImGui::Image(texid, ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().x * h / (float)w));
 					ImGui::EndTabItem();

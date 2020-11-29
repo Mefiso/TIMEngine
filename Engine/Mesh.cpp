@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "Leaks.h"
 
 Mesh::Mesh(const aiMesh* mesh, unsigned int index) : material_index(index)
 {
@@ -23,7 +24,13 @@ void Mesh::Draw(unsigned int program, const std::vector<Texture*>& model_texture
 	App->program->setMat4(program, "proj", App->camera->ProjectionMatrix());
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, model_textures[material_index]->id);
+	if (material_index < model_textures.size()) {
+		glBindTexture(GL_TEXTURE_2D, model_textures[material_index]->id);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, model_textures[material_index]->wraps);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, model_textures[material_index]->wrapt);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, model_textures[material_index]->minfilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, model_textures[material_index]->magfilter);
+	}
 	App->program->setInt(program, "diffuse", 0);
 
 	glBindVertexArray(VAO);
