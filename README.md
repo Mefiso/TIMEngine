@@ -34,8 +34,10 @@ Of course docking/resizing/moving the GUI windows can be performed freely.
 
 ## First assignment
 The first assignment delivery can be found on the release section, the Engine has all the functionalities specified on the requirements section of the assignment.
+
 _Note that the fox texture is a DDS file but the Totoro one is not due to the difficulty of finding models with DDS texture attached. Since the fox can be perfectly loaded is already proven that the specified requirement is met. You can also drag and drop DDS textures without any inconvenient._
 
 ## Author
 Name: **Pol Pérez Granero**
+
 Github username: [**Mefiso**](https://github.com/Mefiso)
