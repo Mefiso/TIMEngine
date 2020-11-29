@@ -12,6 +12,8 @@ WConsole::WConsole(std::string name, int ID) : Window(name, ID)
     
     Commands.push_back("HELP");
     Commands.push_back("CLEAR");
+    Commands.push_back("NAME");
+    Commands.push_back("TRUENAME");
     AutoScroll = true;
     ScrollToBottom = true;
     AddLog("Welcome to Engine!");
@@ -110,6 +112,7 @@ void    WConsole::Draw()
         bool has_color = false;
         if (strstr(item, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
         else if (strncmp(item, "[info]", 2) == 0) { color = ImVec4(0.6f, 0.8f, 0.6f, 1.0f); has_color = true; }
+        else if (strstr(item, "TIME")) { color = ImVec4(0.2f, 0.5f, 0.9f, 1.0f); has_color = true; }
         if (has_color)
             ImGui::PushStyleColor(ImGuiCol_Text, color);
         ImGui::TextUnformatted(item);
@@ -160,8 +163,16 @@ void    WConsole::ExecCommand(const char* command_line)
     else if (stricmp(command_line, "HELP") == 0)
     {
         AddLog("Commands:");
-        for (int i = 0; i < Commands.Size; i++)
+        for (int i = 0; i < Commands.Size - 1; i++)
             AddLog("- %s", Commands[i]);
+    }
+    else if (stricmp(command_line, "NAME") == 0)
+    {
+        AddLog("This Game Engine is titled TIME or TIMEngine, which stands for The Incredible Mefiso's Engine.   There's actually another command: TRUENAME");
+    }
+    else if (stricmp(command_line, "TRUENAME") == 0) 
+    {
+        AddLog("TIME: VGhlIEVuZ2luZSBuYW1lIGFjdHVhbGx5IHN0YW5kcyBmb3IgVHJlYWNoZXJvdXMgSW5mYW1vdXMgTWlzY3JlYW50IEVuZ2luZQkozL/iloDMv+KAv+KAicy/4paAzL8gzL8p");
     }
     else
     {
