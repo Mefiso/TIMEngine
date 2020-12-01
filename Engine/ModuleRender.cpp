@@ -99,9 +99,6 @@ update_status ModuleRender::PreUpdate()
 {
 	App->ProcessFPS(msTimer.Stop() / 1000.0f);
 
-	int w, h;
-	SDL_GetWindowSize(App->window->window, &w, &h);
-	glViewport(0, 0, w, h);
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -160,11 +157,26 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
+void ModuleRender::ReceiveEvent(const Event& event)
+{
+	switch (event.type)
+	{
+	case Event::window_resize:
+	case Event::window_fullscreen:
+		glViewport(0, 0, event.point2d.x, event.point2d.y);
+		WindowResized(event.point2d.x, event.point2d.y);
+		break;
+	case Event::file_dropped:
+		DropFile(event.string.ptr);
+		break;
+	}
+}
+
 void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 {
 	App->window->width = width;
 	App->window->height = height;
-	App->camera->onResize((float) width / (float) height);
+	App->camera->onResize(width / (float) height);
 }
 
 void ModuleRender::RotateCameraMouse(float xoffset, float yoffset) const

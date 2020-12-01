@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
+#include "Event.h"
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleEditor.h"
@@ -12,6 +13,7 @@ ModuleInput::ModuleInput() : Module()
 {
 	keyboard_state = new KeyState[MAX_KEYS];
 	memset(keyboard_state, KEY_IDLE, sizeof(KeyState) * MAX_KEYS);
+	memset(mouse_buttons, KEY_IDLE, sizeof(KeyState) * NUM_MOUSE_BUTTONS);
 }
 
 // Destructor
@@ -38,6 +40,8 @@ bool ModuleInput::Init()
 update_status ModuleInput::PreUpdate()
 {
 	SDL_Event sdlEvent;
+
+	memset(windowEvents, false, WE_COUNT * sizeof(bool));
 	ImGuiIO& io = ImGui::GetIO();
 	bool imguiHasInputs = io.WantCaptureMouse || io.WantCaptureKeyboard;
 
@@ -75,19 +79,40 @@ update_status ModuleInput::PreUpdate()
 
 	while (SDL_PollEvent(&sdlEvent) != 0)
 	{
-		
+
 		if (!imguiHasInputs)//sdlEvent.window.windowID == SDL_GetWindowID(App->window->window))
 		{
 			App->renderer->eventOcurred = true;
+
 			switch (sdlEvent.type)
 			{
 			case SDL_QUIT:
-				return UPDATE_STOP;
+				windowEvents[WE_QUIT] = true;
 			case SDL_WINDOWEVENT:
-				if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
-					return UPDATE_STOP;
-				if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED) // sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED || 
-					App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
+				switch (sdlEvent.window.event)
+				{
+					//case SDL_WINDOWEVENT_LEAVE:
+				case SDL_WINDOWEVENT_HIDDEN:
+				case SDL_WINDOWEVENT_MINIMIZED:
+				case SDL_WINDOWEVENT_FOCUS_LOST:
+					windowEvents[WE_HIDE] = true;
+					break;
+
+					//case SDL_WINDOWEVENT_ENTER:
+				case SDL_WINDOWEVENT_SHOWN:
+				case SDL_WINDOWEVENT_FOCUS_GAINED:
+				case SDL_WINDOWEVENT_MAXIMIZED:
+				case SDL_WINDOWEVENT_RESTORED:
+					windowEvents[WE_SHOW] = true;
+					break;
+				case SDL_WINDOWEVENT_RESIZED:
+				case SDL_WINDOWEVENT_SIZE_CHANGED:
+					Event ev(Event::window_resize);
+					ev.point2d.x = sdlEvent.window.data1;
+					ev.point2d.y = sdlEvent.window.data2;
+					App->BroadcastEvent(ev);
+					break;
+				}
 				break;
 			case SDL_MOUSEMOTION:
 				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
@@ -101,12 +126,15 @@ update_status ModuleInput::PreUpdate()
 				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
 				break;
 			case SDL_DROPFILE:
-				LOG(sdlEvent.drop.file); 
-				if (App->renderer->DropFile(sdlEvent.drop.file)) {
-					App->editor->SelectedModel(App->renderer->modelLoaded);
-				}
+			{
+				LOG("[info] A file has been dropped %s", sdlEvent.drop.file);
+				Event ev(Event::file_dropped);
+				ev.string.ptr = sdlEvent.drop.file;
+				App->BroadcastEvent(ev);
+				App->editor->SelectedModel(App->renderer->modelLoaded);
 				SDL_free(sdlEvent.drop.file);
-				break;
+				break; 
+			}
 			case SDL_MOUSEBUTTONDOWN:
 				mouse_buttons[sdlEvent.button.button - 1] = KEY_DOWN;
 				break;
@@ -121,6 +149,8 @@ update_status ModuleInput::PreUpdate()
 		}
 	}
 
+	if (GetWindowEvent(EventWindow::WE_QUIT) == true || (GetKey(SDL_SCANCODE_LALT) == KEY_DOWN && GetKey(SDL_SCANCODE_F4) == KEY_DOWN))
+		return UPDATE_STOP;
 
 	return UPDATE_CONTINUE;
 }

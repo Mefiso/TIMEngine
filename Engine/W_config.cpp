@@ -22,8 +22,8 @@ void WConfig::Draw()
 {
 	int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
-	ImGui::SetNextWindowPos(ImVec2(w+App->window->width, h), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(App->window->width*0.3, App->window->height*0.9), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2((float)w+App->window->width, (float)h), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(App->window->width*0.3f, App->window->height*0.9f), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
@@ -42,7 +42,7 @@ void WConfig::Draw()
 void WConfig::WindowHeader()
 {
 	if (ImGui::CollapsingHeader("Window")) {
-		if (ImGui::SliderFloat("Brightness", &brightness, 0.0f, 1.0f, "%.3f"))
+		/*if (ImGui::SliderFloat("Brightness", &brightness, 0.0f, 1.0f, "%.3f"))
 			App->window->SetBrightness(brightness);
 		if (!fullscreen && !fulldesktop) {
 
@@ -87,7 +87,7 @@ void WConfig::WindowHeader()
 				//this->UpdateWindowSizeSettings();
 			}
 			App->camera->onResize(App->window->width / (float)App->window->height);
-		}
+		}*/
 	}
 }
 
@@ -130,7 +130,7 @@ void WConfig::RendererHeader()
 
 		ImGui::InputFloat4("Background color", &App->renderer->backgroundColor[0]);
 		if (ImGui::Button("Default background"))
-			App->renderer->backgroundColor = { 0.1, 0.1, 0.1, 0.1 };
+			App->renderer->backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };
 		ImGui::Checkbox("Draw grid", &App->renderer->showGrid);
 	}
 }

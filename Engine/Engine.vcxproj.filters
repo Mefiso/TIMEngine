@@ -476,6 +476,7 @@
     </ClInclude>
     <ClInclude Include="MSTimer.h" />
     <ClInclude Include="uSTimer.h" />
+    <ClInclude Include="Event.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

@@ -22,6 +22,8 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	void ReceiveEvent(const Event& event);
+
 	// callback funcs
 	void WindowResized(unsigned int width, unsigned int height);
 	void RotateCameraMouse(float xoffset, float yoffset) const;

@@ -5,6 +5,14 @@
 #define NUM_MOUSE_BUTTONS 5
 typedef unsigned __int8 Uint8;
 
+enum EventWindow
+{
+	WE_QUIT = 0,
+	WE_HIDE = 1,
+	WE_SHOW = 2,
+	WE_COUNT
+};
+
 enum KeyState
 {
 	KEY_IDLE = 0,
@@ -33,7 +41,11 @@ public:
 		return mouse_buttons[id - 1];
 	}
 
+	// Check for window events last frame
+	bool GetWindowEvent(EventWindow ev) const { return windowEvents[ev]; }
+
 private:
+	bool		windowEvents[WE_COUNT];
 	const Uint8 *keyboard = NULL;
 	KeyState* keyboard_state = nullptr;
 	KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];

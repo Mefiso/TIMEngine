@@ -19,10 +19,10 @@ enum Camera_Movement {
 
 // Default values
 const float SPEED = 2.5f;
-const float ROTATION_SPEED = M_PI / 8.0f;
+const float ROTATION_SPEED = (float)(M_PI / 8.0f);
 const float SENSITIVITY = .005f;
 const float VERTICALFOV = DegToRad(60.f);
-const float ASPECTRATIO = (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT;
+const float ASPECTRATIO = SCREEN_WIDTH / (float) SCREEN_HEIGHT;
 const float ZOOM = .1f;
 
 class ModuleCamera : public Module

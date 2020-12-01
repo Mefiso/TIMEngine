@@ -2,6 +2,7 @@
 #include<vector>
 #include "Globals.h"
 #include "Module.h"
+#include "Event.h"
 
 class ModuleRender;
 class ModuleWindow;
@@ -25,6 +26,8 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+
+	void BroadcastEvent(const Event& event);
 
 	void Log(const char* input) const;
 	void ProcessFPS(const float deltaTime) const;

@@ -69,6 +69,12 @@ bool Application::CleanUp()
 	return ret;
 }
 
+void Application::BroadcastEvent(const Event& event)
+{
+	for (vector<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
+		(*it)->ReceiveEvent(event);
+}
+
 void Application::Log(const char* input) const
 {
 	editor->Log(input);

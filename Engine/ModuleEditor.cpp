@@ -17,7 +17,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
 	editorWindows.push_back(configuration = new WConfig("Configuration", 2));
 	editorWindows.push_back(about = new WAbout("About", 3));
-	editorWindows.push_back(properties = new WProperties("Properties", 4));
+	editorWindows.push_back(properties = new WProperties("Properties", 0));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -32,15 +32,15 @@ bool ModuleEditor::Init()
 	//io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-	io->ConfigViewportsNoAutoMerge = true;
+	//io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+	//io->ConfigViewportsNoAutoMerge = true;
 	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 	ImGuiStyle& style = ImGui::GetStyle();
-	if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	/*if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		style.WindowRounding = 0.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
+	}*/
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
 	ImGui_ImplOpenGL3_Init();
