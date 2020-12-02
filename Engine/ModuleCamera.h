@@ -28,13 +28,23 @@ const float ZOOM = .1f;
 class ModuleCamera : public Module
 {
 public:
+
+	// Camera options
+	float MovementSpeed;
+	float MouseSensitivity;
+	float RotationSpeed;
+	Frustum frustum;
+
+
+public:
 	ModuleCamera(float3 position = float3(0, 1, 7), float3 up = float3(0, 1, 0), float near_plane = 0.1f, float far_plane = 200.0f);
 	~ModuleCamera();
 
-	bool CleanUp();
+	//  ----- Module Functions ----- //
+	bool CleanUp() override;
+	void ReceiveEvent(const Event& event) override;
 
-	void ReceiveEvent(const Event& event);
-
+	// ---------- Getters ---------- //
 	float4x4 ViewMatrix();
 	float4x4 ProjectionMatrix();
 
@@ -47,12 +57,6 @@ public:
 	void onResize(float aspect_ratio);
 	void onFocus(float3 center, float distance);
 
-public:
-	// Camera options
-	float MovementSpeed;
-	float MouseSensitivity;
-	float RotationSpeed;
-	Frustum frustum;
 private:
 	void RotateCamera(float yaw, float pitch);
 };

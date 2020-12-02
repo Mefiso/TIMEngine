@@ -8,6 +8,7 @@ public:
 	~WViewport();
 
 	void Draw() override;
+
 	void SetColorbuffer(unsigned int _texid, unsigned int _width, unsigned int _height);
 
 	unsigned int GetWidth() { return width; }

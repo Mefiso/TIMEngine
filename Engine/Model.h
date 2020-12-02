@@ -14,6 +14,7 @@
 class Model
 {
 public:
+
 	std::vector<Mesh*> meshes;
 	// For the first assignment there's only when texture per model, but I put a vector thinking that in the future we'll have to support more
 	// In the future, when we have more than one texture per material, we should rethink this, maybe a vector of vector or the meshes contain their textures
@@ -21,6 +22,14 @@ public:
 	std::string directory;
 	float4x4 transformation = float4x4::identity; // in the future will be updated according to the transformation applied to the GameObject
 	Sphere enclosingSphere = Sphere(float3::zero, 1.f);
+
+private:
+
+	std::vector<Texture> loaded_textures;
+	struct aiLogStream stream;
+
+
+public:
 
 	Model();
 	~Model();
@@ -30,12 +39,9 @@ public:
 	void ReloadTexture(const char* path);
 	
 private:
+
 	void CleanUp();
 	void LoadMeshes(const aiScene* scene);
 	void LoadTextures(const aiScene* scene);
 	void DefineSphere(const aiScene* scene);
-
-private:
-	std::vector<Texture> loaded_textures;
-	struct aiLogStream stream;
 };

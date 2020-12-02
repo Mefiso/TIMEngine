@@ -16,7 +16,8 @@ public:
 
 	unsigned int CreateProgramFromFile(const char* vertexPath, const char* fragmentPath) const;
 
-	bool CleanUp();
+	bool CleanUp() override;
+
 private:
 	char* LoadShaderSource(const char* shader_file_name) const;
 	unsigned CompileShader(unsigned type, const char* source) const;
