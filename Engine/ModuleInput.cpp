@@ -129,11 +129,12 @@ update_status ModuleInput::PreUpdate()
 			break;
 		case SDL_MOUSEWHEEL:
 		{
-
-			Event ev(Event::wheel_event);
-			ev.point2d.x = sdlEvent.wheel.x;
-			ev.point2d.y = sdlEvent.wheel.y;
-			App->BroadcastEvent(ev);
+			if (App->editor->IsViewportHovered()) {
+				Event ev(Event::wheel_event);
+				ev.point2d.x = sdlEvent.wheel.x;
+				ev.point2d.y = sdlEvent.wheel.y;
+				App->BroadcastEvent(ev);
+			}
 			break;
 		}
 		case SDL_DROPFILE:

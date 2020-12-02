@@ -16,10 +16,10 @@ WProperties::~WProperties()
 
 void WProperties::Draw()
 {
-	/*int w, h;
+	int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
-	ImGui::SetNextWindowPos(ImVec2(w - App->window->width * 0.25, h), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.6), ImGuiCond_Once);
+	/*ImGui::SetNextWindowPos(ImVec2(w - App->window->width * 0.25, h), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.6), ImGuiCond_Once);*/
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
@@ -30,7 +30,7 @@ void WProperties::Draw()
 	GeometryHeader();
 	TexturesHeader();
 	
-	ImGui::End();*/
+	ImGui::End();
 }
 
 void WProperties::SelectPropertiesFromModel(const Model* model)

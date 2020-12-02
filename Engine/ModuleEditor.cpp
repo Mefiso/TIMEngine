@@ -16,10 +16,10 @@ ModuleEditor::ModuleEditor()
 {
 	editorWindows.push_back(viewport = new WViewport("Viewport"));
 	editorWindows.push_back(console = new WConsole("Console"));
-	//editorWindows.push_back(monitor = new WMonitor("Monitoring window"));
-	//editorWindows.push_back(configuration = new WConfig("Configuration"));
-	//editorWindows.push_back(about = new WAbout("About"));
-	//editorWindows.push_back(properties = new WProperties("Properties", 0));
+	editorWindows.push_back(monitor = new WMonitor("Monitoring window"));
+	editorWindows.push_back(configuration = new WConfig("Configuration"));
+	editorWindows.push_back(about = new WAbout("About"));
+	editorWindows.push_back(properties = new WProperties("Properties"));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -79,10 +79,11 @@ update_status ModuleEditor::Update()
 	CreateMainMenu();
 
 	CreateViewport();
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
-		ImGui::SetNextWindowDockID(dockspaceID, ImGuiCond_Once);
+		if (std::strcmp((*it)->GetWindowName(), "About"))
+			ImGui::SetNextWindowDockID(dockspaceID, ImGuiCond_FirstUseEver);
 		if ((*it)->isEnabled())
 			(*it)->Draw();
 	}
@@ -158,12 +159,12 @@ void ModuleEditor::Log(const char* input) const
 
 void ModuleEditor::ProcessFPS(float deltaTime) const
 {
-	//monitor->AddFPS(deltaTime);
+	monitor->AddFPS(deltaTime);
 }
 
 void ModuleEditor::SelectedModel(const Model* const model) const
 {
-	//properties->SelectPropertiesFromModel(model);
+	properties->SelectPropertiesFromModel(model);
 }
 
 

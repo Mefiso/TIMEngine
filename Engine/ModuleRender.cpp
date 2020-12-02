@@ -116,7 +116,6 @@ update_status ModuleRender::PreUpdate()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	deltatime = msTimer.Stop() / 1000.f;		// TODO: CAMERA MOVEMENTS ARE NOT FLUID!?
-	LOG("deltatime %f", deltatime);
 	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
