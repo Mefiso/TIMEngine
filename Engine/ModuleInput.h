@@ -42,8 +42,8 @@ public:
 	bool CleanUp() override;														// Clean memory allocated by this Module
 
 	// ---------- Getters ---------- //
-	KeyState GetKey(int id) const { return keyboard_state[id]; }
-	KeyState GetMouseButtonDown(int id) const { return mouse_buttons[id - 1]; }
-	bool GetWindowEvent(EventWindow ev) const { return windowEvents[ev]; }			// Gets the window events produced last frame
+	KeyState GetKey(int id) const { return keyboard_state[id]; }					// Returns the keyboard inputs produced last frame
+	KeyState GetMouseButtonDown(int id) const { return mouse_buttons[id - 1]; }		// Returns the mouse inputs produced last frame
+	bool GetWindowEvent(EventWindow ev) const { return windowEvents[ev]; }			// Returns the window events produced last frame
 
 };

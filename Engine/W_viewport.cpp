@@ -12,7 +12,8 @@ void WViewport::Draw()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(width, height), ImGuiCond_Once);
-	if (!ImGui::Begin(name.c_str(), &active, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar))
+	ImGui::SetNextWindowSize(ImVec2(200,200));
+	if (!ImGui::Begin(name.c_str(), &active, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove))
 	{
 		ImGui::End();
 		return;

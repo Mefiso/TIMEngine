@@ -52,7 +52,7 @@ char* ModuleProgram::LoadShaderSource(const char* shader_file_name) const
 
 }
 
-unsigned ModuleProgram::CompileShader(unsigned type, const char* source) const
+unsigned int ModuleProgram::CompileShader(unsigned int type, const char* source) const
 {
 	unsigned shader_id = glCreateShader(type);
 	glShaderSource(shader_id, 1, &source, 0);
@@ -63,7 +63,7 @@ unsigned ModuleProgram::CompileShader(unsigned type, const char* source) const
 	return shader_id;
 }
 
-unsigned ModuleProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader) const
+unsigned int ModuleProgram::CreateProgram(unsigned int vtx_shader, unsigned int frg_shader) const
 {
 	unsigned program_id = glCreateProgram();
 	glAttachShader(program_id, vtx_shader);

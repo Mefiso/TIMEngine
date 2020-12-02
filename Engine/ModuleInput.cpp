@@ -106,23 +106,25 @@ update_status ModuleInput::PreUpdate()
 			}
 			break;
 		case SDL_MOUSEMOTION:
-			if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
-				if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
-					SDL_SetRelativeMouseMode(SDL_TRUE);
+			if (App->editor->IsViewportHovered()) {
+				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
+						SDL_SetRelativeMouseMode(SDL_TRUE);
+					}
+					Event ev(Event::rotate_event);
+					ev.point2d.x = sdlEvent.motion.xrel;
+					ev.point2d.y = -sdlEvent.motion.yrel;
+					App->BroadcastEvent(ev);
 				}
-				Event ev(Event::rotate_event);
-				ev.point2d.x = sdlEvent.motion.xrel;
-				ev.point2d.y = -sdlEvent.motion.yrel;
-				App->BroadcastEvent(ev);
-			}
-			else if (GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT) {
-				if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
-					SDL_SetRelativeMouseMode(SDL_TRUE);
+				else if (GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT) {
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
+						SDL_SetRelativeMouseMode(SDL_TRUE);
+					}
+					Event ev(Event::orbit_event);
+					ev.point2d.x = -sdlEvent.motion.xrel;
+					ev.point2d.y = -sdlEvent.motion.yrel;
+					App->BroadcastEvent(ev);
 				}
-				Event ev(Event::orbit_event);
-				ev.point2d.x = -sdlEvent.motion.xrel;
-				ev.point2d.y = -sdlEvent.motion.yrel;
-				App->BroadcastEvent(ev);
 			}
 			break;
 		case SDL_MOUSEWHEEL:

@@ -45,6 +45,9 @@ public:
 	bool CleanUp() override;										// Clean memory allocated by this Module
 	void ReceiveEvent(const Event& event) override;					// Recieve events from App (that recieves events from other Modules)
 
+	const bool IsViewportHovered() const;							// 
+
+
 	void SendEvent(const SDL_Event& event) const;					// Processes all ImGui events
 
 	// Windows methods

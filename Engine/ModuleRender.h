@@ -14,25 +14,28 @@ class ModuleRender : public Module
 {
 public:
 
-	bool depthTest = true;
-	bool cullFace = true;
-	void* context = nullptr;
-	bool eventOcurred = false;
-	bool showGrid = true;
+	void* context = nullptr;										// Context of the SDL_GL configuration
 
-	float4 backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };
+	bool depthTest = true;											// Set if depth test is performed
+	bool cullFace = true;											// Set if face culling is performed
+	bool showGrid = true;											// Set if the grid is rendered
 
-	unsigned int defaultProgram = 0;
+	float4 backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };			// Base color of the viewport window
+
+	unsigned int defaultProgram = 0;								// ID of the Shading program
 
 	// Models
 	Model* modelLoaded = nullptr;
 
+	
+
 private:
 
-	int viewport_width = 0, viewport_height = 0;
-	unsigned int FBO = 0, textureColorbuffer = 0, RBO = 0;
-	MSTimer msTimer;
-	float deltatime;
+	int viewport_width = 0, viewport_height = 0;					// Initial size of Viewport window
+	unsigned int FBO = 0, textureColorbuffer = 0, RBO = 0;			// IDs of the Viewport buffer objects and texture
+	
+	MSTimer msTimer;												// Timer object
+	float deltatime;												// Time between each frame, in milliseconds
 
 
 public:
@@ -59,7 +62,7 @@ public:
 	// callback funcs
 	void WindowResized(unsigned int width, unsigned int height);	// Called upon recieving a Resizing event. Forwards the new aspect ratio to the application Camera
 	bool DropFile(const std::string& file);							// Called upon recieving a Drag&Drop event. Replaces the current Model for the new one if 'file' is an .fbx.
-	void ProcessViewportEvents();
+	void ProcessViewportEvents();									// Called from ModuleEditor, when an input is recieved inside the viewport. Perfoms the necessary operations for the corresponding input. This allows the control of the actions performed when the input is captured inside the viewport.
 
 private:
 	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables

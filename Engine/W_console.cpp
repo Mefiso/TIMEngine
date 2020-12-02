@@ -9,8 +9,6 @@ WConsole::WConsole(std::string name) : Window(name)
 {
     ClearLog();
     memset(InputBuf, 0, sizeof(InputBuf));
-    //HistoryPos = -1;
-
     
     Commands.push_back("HELP");
     Commands.push_back("CLEAR");

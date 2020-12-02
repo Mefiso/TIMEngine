@@ -21,20 +21,20 @@ WMonitor::~WMonitor()
 
 void WMonitor::Draw()
 {
-	/*int w, h;
+	int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
-	ImGui::SetNextWindowPos(ImVec2(w-App->window->width*0.25, h+App->window->height*0.6), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.4), ImGuiCond_Once);
+	//ImGui::SetNextWindowPos(ImVec2(w-App->window->width*0.25, h+App->window->height*0.6), ImGuiCond_FirstUseEver);
+	//ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.4), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
 		return;
 	}
 
-	sprintf_s(title, 37, "Averaged FPS %.1f\nInstant FPS %.1f", frames / elapsedTime, fps_log[fps_log.size() - 1]);
+	/*sprintf_s(title, 37, "Averaged FPS %.1f\nInstant FPS %.1f", frames / elapsedTime, fps_log[fps_log.size() - 1]);
 	ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
 	sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
-	ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
+	ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));*/
 	
 	if (ImGui::CollapsingHeader("Software and Hardware"))
 	{
@@ -43,7 +43,7 @@ void WMonitor::Draw()
 		ShowHardware();
 	}
 
-	ImGui::End();*/
+	ImGui::End();
 }
 
 void WMonitor::AddFPS(float deltaTime)

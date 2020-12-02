@@ -115,7 +115,8 @@ update_status ModuleRender::PreUpdate()
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	deltatime = msTimer.Stop() / 1000.f;
+	deltatime = msTimer.Stop() / 1000.f;		// TODO: CAMERA MOVEMENTS ARE NOT FLUID!?
+	LOG("deltatime %f", deltatime);
 	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
@@ -139,7 +140,7 @@ update_status ModuleRender::Update()
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glClearColor(0.f, 0.f, 0.f, 0.f);			// TODO: AIXO FA FALTA?
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	return UPDATE_CONTINUE;

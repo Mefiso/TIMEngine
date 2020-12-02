@@ -15,10 +15,10 @@
 ModuleEditor::ModuleEditor()
 {
 	editorWindows.push_back(viewport = new WViewport("Viewport"));
-	//editorWindows.push_back(console = new WConsole("Console"));
-	//editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
-	//editorWindows.push_back(configuration = new WConfig("Configuration", 2));
-	//editorWindows.push_back(about = new WAbout("About", 3));
+	editorWindows.push_back(console = new WConsole("Console"));
+	//editorWindows.push_back(monitor = new WMonitor("Monitoring window"));
+	//editorWindows.push_back(configuration = new WConfig("Configuration"));
+	//editorWindows.push_back(about = new WAbout("About"));
 	//editorWindows.push_back(properties = new WProperties("Properties", 0));
 }
 
@@ -64,7 +64,6 @@ update_status ModuleEditor::PreUpdate()
 		App->renderer->ProcessViewportEvents();
 		viewport->viewportIsHovered = false;
 	}
-
 	// Send event window Resize to Renderer
 	if (viewport->viewportResized) {
 		App->renderer->WindowResized(viewport->GetWidth(), viewport->GetHeight());
@@ -76,13 +75,14 @@ update_status ModuleEditor::PreUpdate()
 
 update_status ModuleEditor::Update()
 {
-	//ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+	ImGuiID dockspaceID = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	CreateMainMenu();
 
 	CreateViewport();
 	ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
+		ImGui::SetNextWindowDockID(dockspaceID, ImGuiCond_Once);
 		if ((*it)->isEnabled())
 			(*it)->Draw();
 	}
@@ -135,6 +135,11 @@ void ModuleEditor::ReceiveEvent(const Event& event)
 	}
 }
 
+const bool ModuleEditor::IsViewportHovered() const
+{
+	return viewport->viewportIsHovered;
+}
+
 void ModuleEditor::SendEvent(const SDL_Event& event) const
 {
 	ImGui_ImplSDL2_ProcessEvent(&event);
@@ -147,8 +152,8 @@ void ModuleEditor::CreateViewport()
 
 void ModuleEditor::Log(const char* input) const
 {
-//	if (console)
-//		console->AddLog(input);
+	if (console)
+		console->AddLog(input);
 }
 
 void ModuleEditor::ProcessFPS(float deltaTime) const

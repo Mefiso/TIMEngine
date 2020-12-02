@@ -20,10 +20,10 @@ WConfig::~WConfig()
 
 void WConfig::Draw()
 {
-	/*int w, h;
+	int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
-	ImGui::SetNextWindowPos(ImVec2((float)w+App->window->width, (float)h), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(App->window->width*0.3f, App->window->height*0.9f), ImGuiCond_Once);
+	//ImGui::SetNextWindowPos(ImVec2((float)w+App->window->width, (float)h), ImGuiCond_FirstUseEver);
+	//ImGui::SetNextWindowSize(ImVec2(App->window->width*0.3f, App->window->height*0.9f), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
@@ -35,7 +35,7 @@ void WConfig::Draw()
 	TextureHeader();
 	CameraHeader();
 	
-	ImGui::End();*/
+	ImGui::End();
 
 }
 
