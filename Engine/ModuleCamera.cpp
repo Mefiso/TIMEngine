@@ -136,7 +136,7 @@ void ModuleCamera::onResize(float aspect_ratio)
 
 void ModuleCamera::onFocus(float3 center, float distance)
 {
-	// The effect is that it moves in a perpendicular way with respect the camera front and the backwards/forward a distance
+	// The effect is that it moves in a perpendicular way with respect the camera front and then backwards/forward a distance
 	frustum.SetPos(center);
 	frustum.SetPos(center - frustum.Front() * distance);
 }

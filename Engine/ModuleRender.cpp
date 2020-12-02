@@ -163,7 +163,7 @@ bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
 
-	delete modelLoaded;
+	RELEASE(modelLoaded);
 	glDeleteProgram(defaultProgram);
 	
 	//Destroy window

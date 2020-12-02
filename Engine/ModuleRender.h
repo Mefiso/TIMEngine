@@ -27,6 +27,8 @@ public:
 	unsigned int GetTextureColorbuffer() { return textureColorbuffer; }
 	unsigned int GetViewportWidth() { return viewport_width; }
 	unsigned int GetViewportHeight() { return viewport_height; }
+	void SetViewportWidth(unsigned int _width) { viewport_width = _width; }
+	void SetViewportHeight(unsigned int _height) { viewport_height = _height; }
 
 	// callback funcs
 	void WindowResized(unsigned int width, unsigned int height);

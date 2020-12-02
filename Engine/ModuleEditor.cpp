@@ -47,6 +47,8 @@ bool ModuleEditor::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
 	ImGui_ImplOpenGL3_Init();
 
+	CreateViewport();
+
 	SelectedModel(App->renderer->modelLoaded);
 	
 	return true;
@@ -90,6 +92,8 @@ update_status ModuleEditor::Update()
 		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 	}
 	
+	App->renderer->WindowResized(viewport->GetWidth(), viewport->GetHeight());
+
 	if (should_quit) return UPDATE_STOP;
 	return UPDATE_CONTINUE;
 }
@@ -104,10 +108,9 @@ bool ModuleEditor::CleanUp()
 	
 	LOG("Destroying Editor");
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
-		delete (*it);
+		RELEASE(*it);
+
 	editorWindows.clear();
-	
-	console = nullptr;
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();

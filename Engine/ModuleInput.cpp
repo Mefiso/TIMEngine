@@ -107,10 +107,10 @@ update_status ModuleInput::PreUpdate()
 					break;
 				case SDL_WINDOWEVENT_RESIZED:
 				case SDL_WINDOWEVENT_SIZE_CHANGED:
-					Event ev(Event::window_resize);
+					/*Event ev(Event::window_resize);
 					ev.point2d.x = sdlEvent.window.data1;
 					ev.point2d.y = sdlEvent.window.data2;
-					App->BroadcastEvent(ev);
+					App->BroadcastEvent(ev);*/
 					break;
 				}
 				break;
@@ -178,7 +178,7 @@ bool ModuleInput::CleanUp()
 {
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
-	delete keyboard_state;
+	RELEASE(keyboard_state);
 
 	return true;
 }
