@@ -105,24 +105,17 @@ bool ModuleRender::Init()
 update_status ModuleRender::PreUpdate()
 {
 	// Modify this
-	App->ProcessFPS(msTimer.Stop() / 1000.0f);
+	//App->ProcessFPS(msTimer.Stop() / 1000.0f);
 
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
-
-	if (eventOcurred) {
-		TranslateCamera(msTimer.Read() / 1000.0f);
-		RotateCameraKeys(msTimer.Read() / 1000.0f);
-		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-			App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
-		}
-	}
-
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	deltatime = msTimer.Stop() / 1000.f;
 	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
@@ -184,6 +177,14 @@ void ModuleRender::ReceiveEvent(const Event& event)
 	case Event::file_dropped:
 		DropFile(event.string.ptr);
 		break;
+	}
+}
+
+void ModuleRender::ProcessViewportEvents() {
+	TranslateCamera(deltatime);
+	RotateCameraKeys(deltatime);
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
+		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
 	}
 }
 

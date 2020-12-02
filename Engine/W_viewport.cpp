@@ -17,14 +17,23 @@ void WViewport::Draw()
 		ImGui::End();
 		return;
 	}
+
+	// Set viewport size if Resized
 	ImVec2 win_size = ImGui::GetContentRegionAvail();
-	width = win_size.x;
-	height = win_size.y,
+	if (win_size.x != width || win_size.y != height) {
+		width = win_size.x;
+		height = win_size.y;
+		viewportResized = true;
+	}
+
+	if (ImGui::IsWindowHovered()) {
+		viewportIsHovered = true;
+	}
+	
 	ImGui::Image((ImTextureID) texid, win_size, ImVec2(0.f,1.f), ImVec2(1.f,0.f));
 	ImGui::End();
 	ImGui::PopStyleVar(1);
 
-	
 
 }
 

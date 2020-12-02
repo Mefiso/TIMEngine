@@ -32,6 +32,7 @@ private:
 	int viewport_width = 0, viewport_height = 0;
 	unsigned int FBO = 0, textureColorbuffer = 0, RBO = 0;
 	MSTimer msTimer;
+	float deltatime;
 
 
 public:
@@ -58,11 +59,11 @@ public:
 	// callback funcs
 	void WindowResized(unsigned int width, unsigned int height);	// Called upon recieving a Resizing event. Forwards the new aspect ratio to the application Camera
 	bool DropFile(const std::string& file);							// Called upon recieving a Drag&Drop event. Replaces the current Model for the new one if 'file' is an .fbx.
+	void ProcessViewportEvents();
 
 private:
 	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables
 	void TranslateCamera(float deltaTime) const;					// Moves the application camera if an Input event has occurred
 	void RotateCameraKeys(float deltaTime) const;					// Rotates the application camera if an Input event has occurred
-
 
 };

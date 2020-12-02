@@ -4,6 +4,17 @@
 class WViewport : public Window
 {
 public:
+
+	bool viewportResized = false;
+	bool viewportIsHovered = false;
+
+private:
+
+	unsigned int texid = 0;
+	unsigned int width = 0, height = 0;
+
+
+public:
 	WViewport(std::string name);
 	~WViewport();
 
@@ -13,8 +24,4 @@ public:
 
 	unsigned int GetWidth() { return width; }
 	unsigned int GetHeight() { return height; }
-
-private:
-	unsigned int texid = 0;
-	unsigned int width = 0, height = 0;
 };

@@ -89,9 +89,7 @@ int main(int argc, char ** argv)
 		}
 
 	}
-
 	RELEASE(App);
 	LOG("Bye :)\n");
-	_CrtDumpMemoryLeaks(); // show leaks with file and line where allocation was made
 	return main_return;
 }

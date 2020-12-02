@@ -51,11 +51,11 @@ void    WConsole::Draw()
     SDL_GetWindowPosition(App->window->window, &w, &h);
     ImGui::SetNextWindowPos(ImVec2(w + 10, h+App->window->height*0.8), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(App->window->width*0.9, App->window->height*0.4), ImGuiCond_Once);
-    if (!ImGui::Begin(name.c_str(), &active))
+    */if (!ImGui::Begin(name.c_str(), &active))
     {
         ImGui::End();
         return;
-    }*/
+    }
 
     // As a specific feature guaranteed by the library, after calling Begin() the last Item represent the title bar.
     // So e.g. IsItemHovered() will return true when hovering the title bar.

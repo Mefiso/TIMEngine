@@ -15,7 +15,7 @@
 ModuleEditor::ModuleEditor()
 {
 	editorWindows.push_back(viewport = new WViewport("Viewport"));
-	//editorWindows.push_back(console = new WConsole("Console", 0));
+	//editorWindows.push_back(console = new WConsole("Console"));
 	//editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
 	//editorWindows.push_back(configuration = new WConfig("Configuration", 2));
 	//editorWindows.push_back(about = new WAbout("About", 3));
@@ -60,6 +60,17 @@ update_status ModuleEditor::PreUpdate()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
+	if (viewport->viewportIsHovered) {
+		App->renderer->ProcessViewportEvents();
+		viewport->viewportIsHovered = false;
+	}
+
+	// Send event window Resize to Renderer
+	if (viewport->viewportResized) {
+		App->renderer->WindowResized(viewport->GetWidth(), viewport->GetHeight());
+		viewport->viewportResized = false;
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -69,7 +80,7 @@ update_status ModuleEditor::Update()
 	CreateMainMenu();
 
 	CreateViewport();
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
 		if ((*it)->isEnabled())
@@ -91,8 +102,6 @@ update_status ModuleEditor::Update()
 		ImGui::RenderPlatformWindowsDefault();
 		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 	}
-	
-	App->renderer->WindowResized(viewport->GetWidth(), viewport->GetHeight());
 
 	if (should_quit) return UPDATE_STOP;
 	return UPDATE_CONTINUE;
@@ -139,7 +148,7 @@ void ModuleEditor::CreateViewport()
 void ModuleEditor::Log(const char* input) const
 {
 //	if (console)
-	//	console->AddLog(input);
+//		console->AddLog(input);
 }
 
 void ModuleEditor::ProcessFPS(float deltaTime) const
