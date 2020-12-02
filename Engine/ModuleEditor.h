@@ -54,10 +54,9 @@ public:
 	void CreateViewport();											// Sends the definition (FBO, RBO, colorBuffer) of the viewport from ModuleRender to W_Viewport
 	void Log(const char* input) const;								// Sends LOG inputs from the log function to W_Console
 	void ProcessFPS(float deltaTime) const;							// DO IT WITH BROADCAST? OR CHANGE TO ImguiFrameRATE
-	void SelectedModel(const Model* const model) const;				// Sends the information of the loaded model in the render to W_properties (THIS MIGHT BE DEPRECATED)
 
 private:
-
+	void SelectedModel() const;				// Sends the information of the loaded model in the render to W_properties (THIS MIGHT BE DEPRECATED)
 	void CreateMainMenu();											// Generates the main menu using ImGui
 
 };
