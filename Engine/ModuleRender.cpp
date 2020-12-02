@@ -194,11 +194,6 @@ void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 	App->camera->onResize(width / (float) height);
 }
 
-/*void ModuleRender::MouseWheel(float xoffset, float yoffset) const
-{
-	App->camera->ProcessMouseScroll(yoffset);
-}*/
-
 bool ModuleRender::DropFile(const std::string& file)
 {
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
