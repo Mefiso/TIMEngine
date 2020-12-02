@@ -8,7 +8,7 @@
 #include "Leaks.h"
 
 
-WConfig::WConfig(std::string name, int ID) : Window(name, ID),
+WConfig::WConfig(std::string name) : Window(name),
 brightness(1.0f), width(SCREEN_WIDTH), height(SCREEN_HEIGHT), fullscreen(FULLSCREEN), resizable(RESIZABLE), borderless(false), fulldesktop(false), vsync(VSYNC)
 {
 	
@@ -20,7 +20,7 @@ WConfig::~WConfig()
 
 void WConfig::Draw()
 {
-	int w, h;
+	/*int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
 	ImGui::SetNextWindowPos(ImVec2((float)w+App->window->width, (float)h), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(App->window->width*0.3f, App->window->height*0.9f), ImGuiCond_Once);
@@ -35,7 +35,7 @@ void WConfig::Draw()
 	TextureHeader();
 	CameraHeader();
 	
-	ImGui::End();
+	ImGui::End();*/
 
 }
 

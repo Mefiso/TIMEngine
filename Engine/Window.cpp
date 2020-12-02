@@ -1,6 +1,6 @@
 #include "Window.h"
 
-Window::Window(std::string name, int ID) : ID(ID), name(name)
+Window::Window(std::string name) : name(name)
 {
 }
 

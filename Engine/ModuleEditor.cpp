@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ImGUI/imgui_impl_sdl.h"
 #include "ImGUI/imgui_impl_opengl3.h"
+#include "W_viewport.h"
 #include "W_console.h"
 #include "W_monitor.h"
 #include "W_config.h"
@@ -13,11 +14,12 @@
 
 ModuleEditor::ModuleEditor()
 {
-	editorWindows.push_back(console = new WConsole("Console", 0));
-	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
-	editorWindows.push_back(configuration = new WConfig("Configuration", 2));
-	editorWindows.push_back(about = new WAbout("About", 3));
-	editorWindows.push_back(properties = new WProperties("Properties", 0));
+	editorWindows.push_back(viewport = new WViewport("Viewport"));
+	//editorWindows.push_back(console = new WConsole("Console", 0));
+	//editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
+	//editorWindows.push_back(configuration = new WConfig("Configuration", 2));
+	//editorWindows.push_back(about = new WAbout("About", 3));
+	//editorWindows.push_back(properties = new WProperties("Properties", 0));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -64,6 +66,7 @@ update_status ModuleEditor::Update()
 	//ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	CreateMainMenu();
 
+	CreateViewport();
 	//ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
@@ -113,26 +116,39 @@ bool ModuleEditor::CleanUp()
 	return true;
 }
 
+void ModuleEditor::ReceiveEvent(const Event& event)
+{
+	switch (event.type)
+	{
+	}
+}
+
 void ModuleEditor::SendEvent(const SDL_Event& event) const
 {
 	ImGui_ImplSDL2_ProcessEvent(&event);
 }
 
+void ModuleEditor::CreateViewport()
+{
+	viewport->SetColorbuffer(App->renderer->GetTextureColorbuffer(), App->renderer->GetViewportWidth(), App->renderer->GetViewportHeight());
+}
+
 void ModuleEditor::Log(const char* input) const
 {
-	if (console)
-		console->AddLog(input);
+//	if (console)
+	//	console->AddLog(input);
 }
 
 void ModuleEditor::ProcessFPS(float deltaTime) const
 {
-	monitor->AddFPS(deltaTime);
+	//monitor->AddFPS(deltaTime);
 }
 
 void ModuleEditor::SelectedModel(const Model* const model) const
 {
-	properties->SelectPropertiesFromModel(model);
+	//properties->SelectPropertiesFromModel(model);
 }
+
 
 void ModuleEditor::CreateMainMenu()
 {

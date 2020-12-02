@@ -28,7 +28,7 @@ private:
 	float elapsedTime = 0.0f;
 
 public:
-	WMonitor(std::string name, int ID);
+	WMonitor(std::string name);
 	~WMonitor();
 
 	void Draw() override;

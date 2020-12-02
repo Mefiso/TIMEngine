@@ -33,13 +33,15 @@ public:
 
 	bool CleanUp();
 
+	void ReceiveEvent(const Event& event);
+
 	float4x4 ViewMatrix();
 	float4x4 ProjectionMatrix();
 
 	// Process movement
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 	void ProcessMouseMovement(float xoffset, float yoffset);
-	void ProcessMouseScroll(float yoffset);
+	void ProcessMouseScroll(float xoffset, float yoffset);
 	void ProcessSpeed(float multiplier);
 	void ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre);
 	void onResize(float aspect_ratio);

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "Leaks.h"
 
-WConsole::WConsole(std::string name, int ID) : Window(name, ID)
+WConsole::WConsole(std::string name) : Window(name)
 {
     ClearLog();
     memset(InputBuf, 0, sizeof(InputBuf));
@@ -47,7 +47,7 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 
 void    WConsole::Draw()
 {
-    int w, h;
+    /*int w, h;
     SDL_GetWindowPosition(App->window->window, &w, &h);
     ImGui::SetNextWindowPos(ImVec2(w + 10, h+App->window->height*0.8), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(App->window->width*0.9, App->window->height*0.4), ImGuiCond_Once);
@@ -55,7 +55,7 @@ void    WConsole::Draw()
     {
         ImGui::End();
         return;
-    }
+    }*/
 
     // As a specific feature guaranteed by the library, after calling Begin() the last Item represent the title bar.
     // So e.g. IsItemHovered() will return true when hovering the title bar.
@@ -116,7 +116,7 @@ void    WConsole::Draw()
         ImVec4 color;
         bool has_color = false;
         if (strstr(item, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
-        else if (strncmp(item, "[info]", 2) == 0) { color = ImVec4(0.6f, 0.8f, 0.6f, 1.0f); has_color = true; }
+        else if (strstr(item, "[info]")) { color = ImVec4(0.6f, 0.8f, 0.6f, 1.0f); has_color = true; }
         else if (strstr(item, "TIME")) { color = ImVec4(0.2f, 0.5f, 0.9f, 1.0f); has_color = true; }
         if (has_color)
             ImGui::PushStyleColor(ImGuiCol_Text, color);

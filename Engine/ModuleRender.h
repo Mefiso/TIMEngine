@@ -24,11 +24,12 @@ public:
 
 	void ReceiveEvent(const Event& event);
 
+	unsigned int GetTextureColorbuffer() { return textureColorbuffer; }
+	unsigned int GetViewportWidth() { return viewport_width; }
+	unsigned int GetViewportHeight() { return viewport_height; }
+
 	// callback funcs
 	void WindowResized(unsigned int width, unsigned int height);
-	void RotateCameraMouse(float xoffset, float yoffset) const;
-	void MouseWheel(float xoffset, float yoffset) const;
-	void OrbitObject(float xoffset, float yoffset) const;
 	bool DropFile(const std::string& file);
 public:
 	bool depthTest = true;
@@ -45,9 +46,12 @@ public:
 	Model* modelLoaded = nullptr;
 
 private:
+	void InitFramebuffer();
 	void TranslateCamera(float deltaTime) const;
 	void RotateCameraKeys(float deltaTime) const;
 
 private:
+	int viewport_width = 0, viewport_height = 0;
+	unsigned int FBO = 0, textureColorbuffer = 0, RBO = 0;
 	MSTimer msTimer;
 };

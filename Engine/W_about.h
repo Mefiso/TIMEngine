@@ -12,7 +12,7 @@ private:
 	std::string license = engineName + " is licensed under the GNU GPLv3, see LICENSE for more information.";
 	std::string version = "v0.0.1";
 public:
-	WAbout(std::string name, int ID);
+	WAbout(std::string name);
 	~WAbout();
 
 	void Draw() override;

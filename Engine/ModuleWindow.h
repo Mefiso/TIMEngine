@@ -21,6 +21,12 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	void ReceiveEvent(const Event& event);
+
+	// Getters
+	int GetWindowWidth() { return width; }
+	int GetWindowHeight() { return height; }
+
 	void SetFullscreen(bool fullscreen) const;
 	void SetBorderless(bool borderless) const;
 	void SetFulldesktop(bool fulldesktop) const;
@@ -29,13 +35,15 @@ public:
 	void SetBrightness(float brightness) const;
 	void SetVsync(bool vsync);
 public:
-	int width, height;
 	float brightness = 1.0f;
 	//The window we'll be rendering to
 	SDL_Window* window = NULL;
 
 	//The surface contained by the window
 	SDL_Surface* screen_surface = NULL;
+
+private:
+	int width, height;
 };
 
 #endif // __ModuleWindow_H__

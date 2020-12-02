@@ -1,6 +1,6 @@
 #include "W_about.h"
 
-WAbout::WAbout(std::string name, int ID) : Window(name, ID)
+WAbout::WAbout(std::string name) : Window(name)
 {
 	libraries["glew"] = "2.1.0";
 	libraries["SDL2"] = "2.0.12";

@@ -35,19 +35,27 @@ bool ModuleWindow::Init()
 		//Create window
 		SDL_DisplayMode mode;
 		SDL_GetDesktopDisplayMode(0, &mode);
-		width = mode.w * 0.6;
-		height = mode.h * 0.6;
+		width = mode.w;
+		height = mode.h;
 		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
 		
 		if(FULLSCREEN == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
+		if (MAXIMIZED == true)
+		{
+			flags |= SDL_WINDOW_MAXIMIZED;
+		}
 		if (RESIZABLE == true)
 			flags |= SDL_WINDOW_RESIZABLE;
 
 		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
+		int w, h;
+		SDL_GetWindowSize(window, &w, &h);
+		height = h;
+		
 		if(window == NULL)
 		{
 			LOG("[error] Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -78,6 +86,17 @@ bool ModuleWindow::CleanUp()
 	//Quit SDL subsystems
 	SDL_Quit();
 	return true;
+}
+
+void ModuleWindow::ReceiveEvent(const Event& event)
+{
+	switch (event.type)
+	{
+	case Event::window_resize:
+		width = event.point2d.x;
+		height = event.point2d.y;
+		break;
+	}
 }
 
 void ModuleWindow::SetFullscreen(bool fullscreen) const

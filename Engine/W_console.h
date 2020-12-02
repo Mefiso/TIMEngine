@@ -14,7 +14,7 @@ private:
     bool                  ScrollToBottom;
 
 public:
-    WConsole(std::string name, int ID);
+    WConsole(std::string name);
     ~WConsole();
 
     static void  Strtrim(char* s) { char* str_end = s + strlen(s); while (str_end > s && str_end[-1] == ' ') str_end--; *str_end = 0; }

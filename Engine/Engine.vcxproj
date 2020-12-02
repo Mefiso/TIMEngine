@@ -236,7 +236,6 @@
     <ClInclude Include="ModuleProgram.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleEditor.h" />
-    <ClInclude Include="ModuleRenderExercise.h" />
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="MSTimer.h" />
@@ -247,6 +246,7 @@
     <ClInclude Include="W_console.h" />
     <ClInclude Include="W_monitor.h" />
     <ClInclude Include="W_properties.h" />
+    <ClInclude Include="W_viewport.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -308,7 +308,6 @@
     <ClCompile Include="ModuleProgram.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
-    <ClCompile Include="ModuleRenderExercise.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -317,6 +316,7 @@
     <ClCompile Include="W_console.cpp" />
     <ClCompile Include="W_monitor.cpp" />
     <ClCompile Include="W_properties.cpp" />
+    <ClCompile Include="W_viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\emscripten\library_system.js" />

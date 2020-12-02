@@ -32,6 +32,22 @@ bool ModuleCamera::CleanUp()
 	return true;
 }
 
+void ModuleCamera::ReceiveEvent(const Event& event)
+{
+	switch (event.type)
+	{
+	case Event::rotate_event:
+		ProcessMouseMovement(event.point2d.x, event.point2d.y);
+		break;
+	case Event::orbit_event:
+		ProcessOrbit(event.point2d.x, event.point2d.y, float3::zero);
+		break;
+	case Event::wheel_event:
+		ProcessMouseScroll(event.point2d.x, event.point2d.y);
+		break;
+	}
+}
+
 float4x4 ModuleCamera::ViewMatrix()
 {
 	float4x4 viewModelGL = frustum.ViewMatrix();
@@ -89,10 +105,11 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	RotateCamera(-xoffset, yoffset);
 }
 
-void ModuleCamera::ProcessMouseScroll(float yoffset)
+void ModuleCamera::ProcessMouseScroll(float xoffset, float yoffset)
 {
-	//Position += Front * yoffset; // simulates zoom but it's actually moving
-	frustum.SetVerticalFovAndAspectRatio( frustum.VerticalFov() - yoffset * ZOOM, frustum.AspectRatio()); // actual zoom
+	frustum.SetPos(frustum.Pos() + frustum.Front() * yoffset); // simulates zoom but it's actually moving
+	frustum.SetPos(frustum.Pos() + frustum.WorldRight() * xoffset);
+	//frustum.SetVerticalFovAndAspectRatio( frustum.VerticalFov() - yoffset * ZOOM, frustum.AspectRatio()); // actual zoom
 }
 
 void ModuleCamera::ProcessSpeed(float multiplier)

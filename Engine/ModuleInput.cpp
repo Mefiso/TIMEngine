@@ -80,7 +80,7 @@ update_status ModuleInput::PreUpdate()
 	while (SDL_PollEvent(&sdlEvent) != 0)
 	{
 
-		if (!imguiHasInputs)//sdlEvent.window.windowID == SDL_GetWindowID(App->window->window))
+		if (!imguiHasInputs)
 		{
 			App->renderer->eventOcurred = true;
 
@@ -116,15 +116,33 @@ update_status ModuleInput::PreUpdate()
 				break;
 			case SDL_MOUSEMOTION:
 				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
-					App->renderer->RotateCameraMouse(sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
+						SDL_SetRelativeMouseMode(SDL_TRUE);
+					}
+					Event ev(Event::rotate_event);
+					ev.point2d.x = sdlEvent.motion.xrel;
+					ev.point2d.y = -sdlEvent.motion.yrel;
+					App->BroadcastEvent(ev);
 				}
 				else if (GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT) {
-					App->renderer->OrbitObject(-sdlEvent.motion.xrel, -sdlEvent.motion.yrel);
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
+						SDL_SetRelativeMouseMode(SDL_TRUE);
+					}
+					Event ev(Event::orbit_event);
+					ev.point2d.x = -sdlEvent.motion.xrel;
+					ev.point2d.y = -sdlEvent.motion.yrel;
+					App->BroadcastEvent(ev);
 				}
 				break;
 			case SDL_MOUSEWHEEL:
-				App->renderer->MouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
+			{
+
+				Event ev(Event::wheel_event);
+				ev.point2d.x = sdlEvent.wheel.x;
+				ev.point2d.y = sdlEvent.wheel.y;
+				App->BroadcastEvent(ev);
 				break;
+			}
 			case SDL_DROPFILE:
 			{
 				LOG("[info] A file has been dropped %s", sdlEvent.drop.file);

@@ -6,6 +6,7 @@
 #include <vector>
 
 class Window;
+class WViewport;
 class WConsole;
 class WMonitor;
 class WConfig;
@@ -24,10 +25,12 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
+	void ReceiveEvent(const Event& event);
 
 	void SendEvent(const SDL_Event& event) const;
 
 	// Windows methods
+	void CreateViewport();
 	void Log(const char* input) const;
 	void ProcessFPS(float deltaTime) const;
 	void SelectedModel(const Model* const model) const;
@@ -37,6 +40,7 @@ private:
 	bool should_quit = false;
 	ImGuiIO* io = nullptr;
 	
+	WViewport* viewport = nullptr;
 	WConsole* console = nullptr;
 	WMonitor* monitor = nullptr;
 	WConfig* configuration = nullptr;

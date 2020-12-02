@@ -16,7 +16,7 @@ private:
 	float3 translation = float3::zero;
 	std::vector<Mesh*> selected_meshes;
 public:
-	WProperties(std::string name, int ID);
+	WProperties(std::string name);
 	~WProperties();
 
 	void Draw();

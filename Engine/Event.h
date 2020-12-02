@@ -8,6 +8,10 @@ struct Event
 		window_resize,
 		window_fullscreen,
 		file_dropped,
+		keyboard_event,
+		rotate_event,
+		orbit_event,
+		wheel_event,
 	} type;
 
 	union
@@ -21,6 +25,7 @@ struct Event
 		{
 			int x, y;
 		} point2d;
+
 	};
 
 	Event(EventType type) : type(type)

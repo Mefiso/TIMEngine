@@ -6,7 +6,7 @@
 class Window
 {
 public:
-	Window(std::string name, int ID);
+	Window(std::string name);
 	virtual ~Window();
 
 	virtual void Draw() = 0;
@@ -17,7 +17,6 @@ public:
 	const char* GetWindowName() const { return name.c_str(); }
 protected:
 	bool active = true;
-	int ID = -1;
 	std::string name;
 };
 

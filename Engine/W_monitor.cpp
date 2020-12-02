@@ -5,7 +5,7 @@
 #include "IL/il.h"
 #include "Leaks.h"
 
-WMonitor::WMonitor(std::string name, int ID) : Window(name, ID)
+WMonitor::WMonitor(std::string name) : Window(name)
 {
 	SDL_VERSION(&hardware.compiled);
 	hardware.CPU_count = SDL_GetCPUCount();
@@ -21,7 +21,7 @@ WMonitor::~WMonitor()
 
 void WMonitor::Draw()
 {
-	int w, h;
+	/*int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
 	ImGui::SetNextWindowPos(ImVec2(w-App->window->width*0.25, h+App->window->height*0.6), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.4), ImGuiCond_Once);
@@ -43,7 +43,7 @@ void WMonitor::Draw()
 		ShowHardware();
 	}
 
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void WMonitor::AddFPS(float deltaTime)

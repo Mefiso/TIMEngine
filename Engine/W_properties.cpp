@@ -5,7 +5,7 @@
 #include "Model.h"
 #include "Leaks.h"
 
-WProperties::WProperties(std::string name, int ID) : Window(name, ID)
+WProperties::WProperties(std::string name) : Window(name)
 {
 
 }
@@ -16,7 +16,7 @@ WProperties::~WProperties()
 
 void WProperties::Draw()
 {
-	int w, h;
+	/*int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
 	ImGui::SetNextWindowPos(ImVec2(w - App->window->width * 0.25, h), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.6), ImGuiCond_Once);
@@ -30,7 +30,7 @@ void WProperties::Draw()
 	GeometryHeader();
 	TexturesHeader();
 	
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void WProperties::SelectPropertiesFromModel(const Model* model)
