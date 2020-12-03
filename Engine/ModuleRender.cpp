@@ -112,7 +112,7 @@ update_status ModuleRender::PreUpdate()
 	}
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	deltatime = msTimer.Stop() / 1000.f;		// TODO: CAMERA MOVEMENTS ARE NOT FLUID!?
@@ -130,7 +130,7 @@ update_status ModuleRender::Update()
 	else glDisable(GL_CULL_FACE);
 
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
-	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
+	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 	
 	glViewport(0, 0, viewport_width, viewport_height);
 	modelLoaded->Draw(defaultProgram);
@@ -193,11 +193,6 @@ void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 	
 	App->camera->onResize(width / (float) height);
 }
-
-/*void ModuleRender::MouseWheel(float xoffset, float yoffset) const
-{
-	App->camera->ProcessMouseScroll(yoffset);
-}*/
 
 bool ModuleRender::DropFile(const std::string& file)
 {

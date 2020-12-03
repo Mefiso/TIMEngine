@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "Math/float4.h"
+#include "Math/float3.h"
 #include "MSTimer.h"
 
 class Model;
@@ -20,13 +20,13 @@ public:
 	bool cullFace = true;											// Set if face culling is performed
 	bool showGrid = true;											// Set if the grid is rendered
 
-	float4 backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };			// Base color of the viewport window
+	float3 backgroundColor = { 0.1f, 0.1f, 0.1f };					// Base color of the viewport window
+	float3 gridColor = { 1.f, 1.f, 1.f };							// Base color of the world Grid
 
 	unsigned int defaultProgram = 0;								// ID of the Shading program
 
 	// Models
 	Model* modelLoaded = nullptr;
-
 	
 
 private:

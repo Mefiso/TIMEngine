@@ -22,8 +22,6 @@ void WConfig::Draw()
 {
 	int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
-	//ImGui::SetNextWindowPos(ImVec2((float)w+App->window->width, (float)h), ImGuiCond_FirstUseEver);
-	//ImGui::SetNextWindowSize(ImVec2(App->window->width*0.3f, App->window->height*0.9f), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
@@ -42,18 +40,18 @@ void WConfig::Draw()
 void WConfig::WindowHeader()
 {
 	if (ImGui::CollapsingHeader("Window")) {
-		/*if (ImGui::SliderFloat("Brightness", &brightness, 0.0f, 1.0f, "%.3f"))
+		if (ImGui::SliderFloat("Brightness", &brightness, 0.0f, 1.0f, "%.3f"))
 			App->window->SetBrightness(brightness);
 		if (!fullscreen && !fulldesktop) {
 
-			if (ImGui::SliderInt("Width", &App->window->width, 0, 2560)) {
+			/*if (ImGui::SliderInt("Width", &App->window->GetWindowWidth(), 0, 2560)) {
 				App->window->SetWindowSize();
-				App->camera->onResize(App->window->width / (float)App->window->height);
+				App->camera->onResize(App->window->GetWindowWidth() / (float)App->window->GetWindowHeight());
 			}
-			if (ImGui::SliderInt("Height", &App->window->height, 0, 1440)) {
+			if (ImGui::SliderInt("Height", &App->window->GetWindowHeight(), 0, 1440)) {
 				App->window->SetWindowSize();
-				App->camera->onResize(App->window->width / (float)App->window->height);
-			}
+				App->camera->onResize(App->window->GetWindowWidth() / (float)App->window->GetWindowHeight());
+			}*/
 		}
 
 		SDL_DisplayMode mode;
@@ -73,21 +71,21 @@ void WConfig::WindowHeader()
 		ImGui::SameLine();
 		if (ImGui::Checkbox("Full Desktop", &fulldesktop)) {
 			App->window->SetFulldesktop(fulldesktop);
-			if (fulldesktop) {
-				width = App->window->width;
-				height = App->window->height;
+			/*if (fulldesktop) {
+				width = App->window->GetWindowWidth();
+				height = App->window->GetWindowHeight();
 
 				SDL_GetWindowDisplayMode(App->window->window, &mode);
-				App->window->width = mode.w;
-				App->window->height = mode.h;
+				App->window->GetWindowWidth() = mode.w;
+				App->window->GetWindowHeight() = mode.h;
 			}
 			else {
-				App->window->width = width;
-				App->window->height = height;
+				App->window->GetWindowWidth() = width;
+				App->window->GetWindowHeight() = height;
 				//this->UpdateWindowSizeSettings();
-			}
-			App->camera->onResize(App->window->width / (float)App->window->height);
-		}*/
+			}*/
+			App->camera->onResize(App->window->GetWindowWidth() / (float)App->window->GetWindowHeight());
+		}
 	}
 }
 
@@ -128,10 +126,14 @@ void WConfig::RendererHeader()
 		ImGui::Checkbox("Enable Depth testing", &App->renderer->depthTest);
 		ImGui::Checkbox("Enable Face culling", &App->renderer->cullFace);
 
-		ImGui::InputFloat4("Background color", &App->renderer->backgroundColor[0]);
-		if (ImGui::Button("Default background"))
-			App->renderer->backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };
 		ImGui::Checkbox("Draw grid", &App->renderer->showGrid);
+		ImGui::ColorEdit3("Set Grid Color", &App->renderer->gridColor[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
+		ImGui::SameLine(); if (ImGui::Button("Reset Default"))
+			App->renderer->gridColor = { 0.1f, 0.1f, 0.1f };
+
+		ImGui::ColorEdit3("Set Background Color", &App->renderer->backgroundColor[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
+		ImGui::SameLine(); if (ImGui::Button("Reset Default"))
+			App->renderer->backgroundColor = { 1.f, 1.f, 1.f };
 	}
 }
 

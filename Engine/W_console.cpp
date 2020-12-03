@@ -45,11 +45,7 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 
 void    WConsole::Draw()
 {
-    /*int w, h;
-    SDL_GetWindowPosition(App->window->window, &w, &h);
-    ImGui::SetNextWindowPos(ImVec2(w + 10, h+App->window->height*0.8), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(App->window->width*0.9, App->window->height*0.4), ImGuiCond_Once);
-    */if (!ImGui::Begin(name.c_str(), &active))
+   if (!ImGui::Begin(name.c_str(), &active))
     {
         ImGui::End();
         return;
@@ -65,15 +61,7 @@ void    WConsole::Draw()
         ImGui::EndPopup();
     }
 
-    ImGui::TextWrapped(
-        "Basic console log with filtering and copy functions.");
-
-    if (ImGui::SmallButton("Clear")) { ClearLog(); }
-    ImGui::SameLine();
-    bool copy_to_clipboard = ImGui::SmallButton("Copy");
-    //static float t = 0.0f; if (ImGui::GetTime() - t > 0.02f) { t = ImGui::GetTime(); AddLog("Spam %f", t); }
-
-    ImGui::Separator();
+    //ImGui::Separator();
 
     // Options menu
     if (ImGui::BeginPopup("Options"))
@@ -86,7 +74,14 @@ void    WConsole::Draw()
     if (ImGui::Button("Options"))
         ImGui::OpenPopup("Options");
     ImGui::SameLine();
-    Filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
+    Filter.Draw("Filter: (\"incl,-excl\") (\"error\") (\"-warning\")", 180);
+    //ImGui::SameLine();
+    //if (ImGui::GetWindowWidth() > 500)
+    ImGui::Indent(ImGui::GetWindowWidth() - 100.f);
+    if (ImGui::SmallButton("Clear")) { ClearLog(); }
+    ImGui::SameLine();
+    bool copy_to_clipboard = ImGui::SmallButton("Copy");
+    ImGui::Unindent(ImGui::GetWindowWidth() - 100.f);
     ImGui::Separator();
 
 

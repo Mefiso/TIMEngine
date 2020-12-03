@@ -119,8 +119,14 @@ bool ModuleEditor::CleanUp()
 	LOG("Destroying Editor");
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 		RELEASE(*it);
-
 	editorWindows.clear();
+
+	viewport = nullptr;
+	console = nullptr;
+	monitor = nullptr;
+	configuration = nullptr;
+	properties = nullptr;
+	about = nullptr;
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
