@@ -5,7 +5,6 @@ class WViewport : public Window
 {
 public:
 
-	bool viewportResized = false;					// Checks if a resize event has occurred on the Viewport, to forward the required actions to other Modules
 	bool viewportIsHovered = false;					// Checks if the Viewport is hovered, to check if input events have to be applied to the camera or scene
 
 private:

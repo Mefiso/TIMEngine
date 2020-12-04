@@ -91,6 +91,7 @@ bool ModuleRender::Init()
 	viewport_width = mode.w * 0.6f;
 	viewport_height = mode.h * 0.6f;
 	InitFramebuffer();
+	glViewport(0, 0, viewport_width, viewport_height);
 
 	// Load models
 	uSTimer test = uSTimer();
@@ -129,7 +130,7 @@ update_status ModuleRender::Update()
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 	
-	glViewport(0, 0, viewport_width, viewport_height);
+	//glViewport(0, 0, viewport_width, viewport_height);
 	modelLoaded->Draw(defaultProgram);
 
 	if (showGrid)
@@ -166,8 +167,7 @@ void ModuleRender::ReceiveEvent(const Event& event)
 	{
 	case Event::window_resize:
 	case Event::window_fullscreen:
-		glViewport(0, 0, event.point2d.x, event.point2d.y);
-		WindowResized(event.point2d.x, event.point2d.y);
+		//glViewport(0, 0, event.point2d.x, event.point2d.y);
 		break;
 	case Event::file_dropped:
 		DropFile(event.string.ptr);
@@ -183,9 +183,11 @@ void ModuleRender::ProcessViewportEvents() {
 	}
 }
 
-void ModuleRender::WindowResized(unsigned int width, unsigned int height)
+void ModuleRender::SetViewport(unsigned int _width, unsigned int _height)
 {
-	App->camera->onResize(width / (float) height);
+	viewport_width = _width;
+	viewport_height = _height;
+	glViewport(0, 0, viewport_width, viewport_height);
 }
 
 bool ModuleRender::DropFile(const std::string& file)

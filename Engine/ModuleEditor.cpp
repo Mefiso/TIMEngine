@@ -58,16 +58,6 @@ update_status ModuleEditor::PreUpdate()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
-	if (viewport->viewportIsHovered) {
-		App->renderer->ProcessViewportEvents();
-		viewport->viewportIsHovered = false;
-	}
-	// Send event window Resize to Renderer
-	if (viewport->viewportResized) {
-		App->renderer->WindowResized(viewport->GetWidth(), viewport->GetHeight());
-		viewport->viewportResized = false;
-	}
-
 	return UPDATE_CONTINUE;
 }
 
@@ -76,7 +66,7 @@ update_status ModuleEditor::Update()
 	ImGuiID dockspaceID = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	CreateMainMenu();
 
-	CreateViewport();
+	//CreateViewport();
 	//ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
