@@ -143,7 +143,6 @@ update_status ModuleInput::PreUpdate()
 			Event ev(Event::file_dropped);
 			ev.string.ptr = sdlEvent.drop.file;
 			App->BroadcastEvent(ev);
-			App->editor->SelectedModel(App->renderer->modelLoaded);
 			SDL_free(sdlEvent.drop.file);
 			break; 
 		}

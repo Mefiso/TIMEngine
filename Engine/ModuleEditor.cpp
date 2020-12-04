@@ -49,7 +49,7 @@ bool ModuleEditor::Init()
 
 	CreateViewport();
 
-	SelectedModel(App->renderer->modelLoaded);
+	SelectedModel();
 	
 	return true;
 }
@@ -139,6 +139,9 @@ void ModuleEditor::ReceiveEvent(const Event& event)
 {
 	switch (event.type)
 	{
+	case Event::file_dropped:
+		SelectedModel();
+		break;
 	}
 }
 
@@ -168,9 +171,9 @@ void ModuleEditor::ProcessFPS(float deltaTime) const
 	monitor->AddFPS(deltaTime);
 }
 
-void ModuleEditor::SelectedModel(const Model* const model) const
+void ModuleEditor::SelectedModel() const
 {
-	properties->SelectPropertiesFromModel(model);
+	properties->SelectPropertiesFromModel(App->renderer->modelLoaded);
 }
 
 
