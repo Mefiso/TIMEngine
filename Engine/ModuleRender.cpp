@@ -165,10 +165,6 @@ void ModuleRender::ReceiveEvent(const Event& event)
 {
 	switch (event.type)
 	{
-	case Event::window_resize:
-	case Event::window_fullscreen:
-		//glViewport(0, 0, event.point2d.x, event.point2d.y);
-		break;
 	case Event::file_dropped:
 		DropFile(event.string.ptr);
 		break;
@@ -181,13 +177,6 @@ void ModuleRender::ProcessViewportEvents() {
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
 		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
 	}
-}
-
-void ModuleRender::SetViewport(unsigned int _width, unsigned int _height)
-{
-	viewport_width = _width;
-	viewport_height = _height;
-	glViewport(0, 0, viewport_width, viewport_height);
 }
 
 bool ModuleRender::DropFile(const std::string& file)

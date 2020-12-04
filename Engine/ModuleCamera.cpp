@@ -45,10 +45,6 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	case Event::wheel_event:
 		ProcessMouseScroll(event.point2d.x, event.point2d.y);
 		break;
-	case Event::window_resize:
-	case Event::window_fullscreen:
-		//onResize(event.point2d.x / (float) event.point2d.y);
-		break;
 	}
 }
 

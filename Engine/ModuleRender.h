@@ -56,9 +56,6 @@ public:
 	unsigned int GetViewportHeight() { return viewport_height; }
 
 	// ---------- Setters ---------- //
-	void SetViewportWidth(unsigned int _width) { viewport_width = _width; }
-	void SetViewportHeight(unsigned int _height) { viewport_height = _height; }
-	void SetViewport(unsigned int _width, unsigned int _height);
 
 	// callback funcs
 	bool DropFile(const std::string& file);							// Called upon recieving a Drag&Drop event. Replaces the current Model for the new one if 'file' is an .fbx.
