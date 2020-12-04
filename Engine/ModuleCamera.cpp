@@ -9,7 +9,7 @@
 
 
 ModuleCamera::ModuleCamera(float3 position, float3 up, float near_plane, float far_plane) : Module(),
-	MovementSpeed(SPEED), RotationSpeed(ROTATION_SPEED), MouseSensitivity(SENSITIVITY)
+	MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetViewPlaneDistances(near_plane, far_plane);
@@ -61,38 +61,38 @@ float4x4 ModuleCamera::ProjectionMatrix()
 
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
-	float celerity = MovementSpeed * deltaTime;
+	float MoveCelerity = MovementSpeed * deltaTime;
 	switch (direction)
 	{
 	case FORWARD:
-		frustum.SetPos(frustum.Pos() + frustum.Front() * celerity);
+		frustum.SetPos(frustum.Pos() + frustum.Front() * MoveCelerity);
 		break;
 	case BACKWARD:
-		frustum.SetPos(frustum.Pos() - frustum.Front() * celerity);
+		frustum.SetPos(frustum.Pos() - frustum.Front() * MoveCelerity);
 		break;
 	case LEFT:
-		frustum.SetPos(frustum.Pos() - frustum.WorldRight() * celerity);
+		frustum.SetPos(frustum.Pos() - frustum.WorldRight() * MoveCelerity);
 		break;
 	case RIGHT:
-		frustum.SetPos(frustum.Pos() + frustum.WorldRight() * celerity);
+		frustum.SetPos(frustum.Pos() + frustum.WorldRight() * MoveCelerity);
 		break;
 	case UP:
-		frustum.SetPos(frustum.Pos() + float3::unitY * celerity);
+		frustum.SetPos(frustum.Pos() + float3::unitY * MoveCelerity);
 		break;
 	case DOWN:
-		frustum.SetPos(frustum.Pos() - float3::unitY * celerity);
+		frustum.SetPos(frustum.Pos() - float3::unitY * MoveCelerity);
 		break;
 	case PITCH_UP:
-		RotateCamera(0, RotationSpeed * celerity);
+		RotateCamera(0, MoveCelerity/3);
 		break;
 	case PITCH_DOWN:
-		RotateCamera(0, -RotationSpeed * celerity);
+		RotateCamera(0, -MoveCelerity/3);
 		break;
 	case YAW_LEFT:
-		RotateCamera(RotationSpeed * celerity, 0);
+		RotateCamera(MoveCelerity/3, 0);
 		break;
 	case YAW_RIGHT:
-		RotateCamera(-RotationSpeed * celerity, 0);
+		RotateCamera(-MoveCelerity/3, 0);
 		break;
 	}
 }

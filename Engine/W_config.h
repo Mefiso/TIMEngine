@@ -29,6 +29,4 @@ private:
 	void RendererHeader();
 	void TextureHeader();
 	void CameraHeader();
-	int width;
-	int height;
 };

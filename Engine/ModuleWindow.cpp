@@ -98,15 +98,8 @@ void ModuleWindow::ReceiveEvent(const Event& event)
 	}
 }
 
-void ModuleWindow::SetFullscreen(bool fullscreen) const
-{
-	if (fullscreen)
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-	else
-		SDL_SetWindowFullscreen(window, 0);
-}
 
-void ModuleWindow::SetBorderless(bool borderless) const
+void ModuleWindow::ToggleBorderless(bool borderless) const
 {
 	if (borderless)
 		SDL_SetWindowBordered(window, SDL_FALSE);
@@ -114,7 +107,7 @@ void ModuleWindow::SetBorderless(bool borderless) const
 		SDL_SetWindowBordered(window, SDL_TRUE);
 }
 
-void ModuleWindow::SetFulldesktop(bool fulldesktop) const
+void ModuleWindow::ToggleFulldesktop(bool fulldesktop) const
 {
 	if (fulldesktop)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -122,7 +115,7 @@ void ModuleWindow::SetFulldesktop(bool fulldesktop) const
 		SDL_SetWindowFullscreen(window, 0);
 }
 
-void ModuleWindow::SetResizable(bool resizable) const
+void ModuleWindow::ToggleResizable(bool resizable) const
 {
 	if (resizable)
 		SDL_SetWindowResizable(window, SDL_TRUE);

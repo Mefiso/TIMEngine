@@ -32,7 +32,6 @@ public:
 	// Camera options
 	float MovementSpeed;
 	float MouseSensitivity;
-	float RotationSpeed;
 	Frustum frustum;
 
 

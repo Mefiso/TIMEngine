@@ -18,12 +18,12 @@ struct Event
 	{
 		struct
 		{
-			const char* ptr;
+			const char* ptr = nullptr;
 		} string;
 
 		struct
 		{
-			int x, y;
+			int x = 0, y = 0;
 		} point2d;
 
 	};

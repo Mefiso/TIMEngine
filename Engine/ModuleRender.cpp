@@ -190,7 +190,6 @@ void ModuleRender::ProcessViewportEvents() {
 
 void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 {
-	
 	App->camera->onResize(width / (float) height);
 }
 
