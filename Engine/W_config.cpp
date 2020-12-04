@@ -9,7 +9,7 @@
 
 
 WConfig::WConfig(std::string name) : Window(name),
-brightness(1.0f), fullscreen(FULLSCREEN), resizable(RESIZABLE), borderless(false), fulldesktop(false), vsync(VSYNC)
+brightness(1.0f), resizable(RESIZABLE), borderless(false), fulldesktop(false), vsync(VSYNC)
 {
 	
 }
