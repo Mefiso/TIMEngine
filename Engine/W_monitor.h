@@ -19,25 +19,26 @@ struct Hardware {
 class WMonitor : public Window
 {
 private:
-	char title[37];
-	int log_size = 100;
-	std::vector<float> fps_log;
-	std::vector<float> ms_log;
-	Hardware hardware;
-	int frames = 0;
-	float elapsedTime = 0.0f;
-	float fpsNow = 0.f;
-	const unsigned int histNumElements = 50u;
+
+	Hardware hardware;								// System hardware Information
+	float fpsNow = 0.f;								// Framerate calculated of the current frame
+	int frames = 0;									// Total frames elapsed since the start of the Application
+	float elapsedTime = 0.0f;						// Total time elapsed since the satart of the Application
+	char title[75];									// Title of the Framerate Histogram
+	std::vector<float> fps_log;						// Vector of deltatimes that will be represented in the Framerate Histogram
+	const unsigned int histNumElements = 50u;		// Maximum number of elements represented in the Framerate Histogram
+
 
 public:
-	WMonitor(std::string name);
-	~WMonitor();
 
-	void Draw() override;
-	void AddFPS(float deltaTime);
+	WMonitor(std::string name);						// Constructor
+	~WMonitor();									// Destructor
+	void Draw() override;							// Operations performed when Rendering this window
+
 private:
-	void InputHeader();
-	void ShowSoftware() const;
-	void ShowHardware() const;
+
+	void InputHeader();								// Prints the Information of the inputs performed at each frame
+	void ShowSoftware() const;						// Prints the Information of the Software used to build this Application
+	void ShowHardware() const;						// Prints the Information of the iHardware of your Computer
 
 };

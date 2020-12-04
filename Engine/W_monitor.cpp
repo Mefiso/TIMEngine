@@ -16,7 +16,6 @@ WMonitor::WMonitor(std::string name) : Window(name)
 WMonitor::~WMonitor()
 {
 	fps_log.clear();
-	ms_log.clear();
 }
 
 void WMonitor::Draw()
@@ -36,7 +35,6 @@ void WMonitor::Draw()
 	frames++;
 	elapsedTime += 1.f / fpsNow;
 
-	char title[75];
 	sprintf_s(title, 75, "%.3f ms/frame (%.1f FPS). Averaged FPS %.1f", 1000.0 / fpsNow, fpsNow, frames / elapsedTime);
 	// Remove the 1st element when we have more than 'histNumElements' values in the FPS vector
 	if (fps_log.size() > histNumElements)
@@ -55,26 +53,6 @@ void WMonitor::Draw()
 	}
 
 	ImGui::End();
-}
-
-void WMonitor::AddFPS(float deltaTime)
-{
-	if (fps_log.size() == log_size) {
-		for (int i = 1; i < fps_log.size(); ++i) {
-			ms_log[i - 1] = ms_log[i];
-			fps_log[i - 1] = fps_log[i];
-		}
-		ms_log[ms_log.size() - 1] = deltaTime * 1000.0f;
-		fps_log[fps_log.size() - 1] = 1 / deltaTime;
-	}
-	else {
-		ms_log.push_back(deltaTime * 1000.0f);
-		fps_log.push_back(1 / deltaTime);
-	}
-
-	
-	++frames;
-	elapsedTime += deltaTime;
 }
 
 void WMonitor::InputHeader()
