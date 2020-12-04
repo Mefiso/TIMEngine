@@ -33,23 +33,17 @@ void WMonitor::Draw()
 		// Update FPS buffer
 	fpsNow = ImGui::GetIO().Framerate;
 	fps_log.push_back(fpsNow);
+	frames++;
+	elapsedTime += 1.f / fpsNow;
 
-	char title[55];
-	sprintf_s(title, 55, "Application average %.3f ms/frame (%.1f FPS)", 1000.0 / fpsNow, fpsNow);
-
+	char title[75];
+	sprintf_s(title, 75, "%.3f ms/frame (%.1f FPS). Averaged FPS %.1f", 1000.0 / fpsNow, fpsNow, frames / elapsedTime);
 	// Remove the 1st element when we have more than 'histNumElements' values in the FPS vector
 	if (fps_log.size() > histNumElements)
 		fps_log.erase(fps_log.begin());
 
 	// Plot Hist
-	ImGui::PlotHistogram("##Histogram", &fps_log[0], histNumElements, 0, title, 0.0f, 300, ImVec2(330, 50));
-
-
-
-	/*sprintf_s(title, 37, "Averaged FPS %.1f\nInstant FPS %.1f", frames / elapsedTime, fps_log[fps_log.size() - 1]);
-	ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-	sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
-	ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));*/
+	ImGui::PlotHistogram("##Histogram", &fps_log[0], histNumElements, 0, title, 0.0f, 300, ImVec2(400, 50));
 
 	InputHeader();
 
