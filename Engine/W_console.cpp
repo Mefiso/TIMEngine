@@ -5,12 +5,10 @@
 #include <stdio.h>
 #include "Leaks.h"
 
-WConsole::WConsole(std::string name, int ID) : Window(name, ID)
+WConsole::WConsole(std::string name) : Window(name)
 {
     ClearLog();
     memset(InputBuf, 0, sizeof(InputBuf));
-    //HistoryPos = -1;
-
     
     Commands.push_back("HELP");
     Commands.push_back("CLEAR");
@@ -42,16 +40,21 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
     vsnprintf(buf, IM_ARRAYSIZE(buf), fmt, args);
     buf[IM_ARRAYSIZE(buf) - 1] = 0;
     va_end(args);
-    Items.push_back(strdup(buf));
+    
+    bool alreadyIn = false;
+    for (unsigned int i = Items.size() - 4; i < Items.size(); ++i) {
+        if (strcmp(buf, Items[i]) == 0) {
+            alreadyIn = true;
+            break;
+        }
+    }
+    if (!alreadyIn)
+        Items.push_back(strdup(buf));
 }
 
 void    WConsole::Draw()
 {
-    int w, h;
-    SDL_GetWindowPosition(App->window->window, &w, &h);
-    ImGui::SetNextWindowPos(ImVec2(w + 10, h+App->window->height*0.8), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(App->window->width*0.9, App->window->height*0.4), ImGuiCond_Once);
-    if (!ImGui::Begin(name.c_str(), &active))
+   if (!ImGui::Begin(name.c_str(), &active))
     {
         ImGui::End();
         return;
@@ -67,15 +70,7 @@ void    WConsole::Draw()
         ImGui::EndPopup();
     }
 
-    ImGui::TextWrapped(
-        "Basic console log with filtering and copy functions.");
-
-    if (ImGui::SmallButton("Clear")) { ClearLog(); }
-    ImGui::SameLine();
-    bool copy_to_clipboard = ImGui::SmallButton("Copy");
-    //static float t = 0.0f; if (ImGui::GetTime() - t > 0.02f) { t = ImGui::GetTime(); AddLog("Spam %f", t); }
-
-    ImGui::Separator();
+    //ImGui::Separator();
 
     // Options menu
     if (ImGui::BeginPopup("Options"))
@@ -88,7 +83,14 @@ void    WConsole::Draw()
     if (ImGui::Button("Options"))
         ImGui::OpenPopup("Options");
     ImGui::SameLine();
-    Filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
+    Filter.Draw("Filter: (\"incl,-excl\") (\"error\") (\"-warning\")", 180);
+    //ImGui::SameLine();
+    //if (ImGui::GetWindowWidth() > 500)
+    ImGui::Indent(ImGui::GetWindowWidth() - 100.f);
+    if (ImGui::SmallButton("Clear")) { ClearLog(); }
+    ImGui::SameLine();
+    bool copy_to_clipboard = ImGui::SmallButton("Copy");
+    ImGui::Unindent(ImGui::GetWindowWidth() - 100.f);
     ImGui::Separator();
 
 
@@ -116,7 +118,7 @@ void    WConsole::Draw()
         ImVec4 color;
         bool has_color = false;
         if (strstr(item, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
-        else if (strncmp(item, "[info]", 2) == 0) { color = ImVec4(0.6f, 0.8f, 0.6f, 1.0f); has_color = true; }
+        else if (strstr(item, "[info]")) { color = ImVec4(0.6f, 0.8f, 0.6f, 1.0f); has_color = true; }
         else if (strstr(item, "TIME")) { color = ImVec4(0.2f, 0.5f, 0.9f, 1.0f); has_color = true; }
         if (has_color)
             ImGui::PushStyleColor(ImGuiCol_Text, color);

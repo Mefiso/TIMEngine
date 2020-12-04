@@ -171,7 +171,6 @@
     </ClCompile>
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleDebugDraw.cpp" />
-    <ClCompile Include="ModuleRenderExercise.cpp" />
     <ClCompile Include="Model.cpp">
       <Filter>Model</Filter>
     </ClCompile>
@@ -179,6 +178,9 @@
       <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="W_properties.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="W_viewport.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
   </ItemGroup>
@@ -463,7 +465,6 @@
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="debug_draw.hpp" />
     <ClInclude Include="ModuleDebugDraw.h" />
-    <ClInclude Include="ModuleRenderExercise.h" />
     <ClInclude Include="Leaks.h" />
     <ClInclude Include="Model.h">
       <Filter>Model</Filter>
@@ -476,6 +477,10 @@
     </ClInclude>
     <ClInclude Include="MSTimer.h" />
     <ClInclude Include="uSTimer.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="W_viewport.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

@@ -5,7 +5,7 @@
 #include "Model.h"
 #include "Leaks.h"
 
-WProperties::WProperties(std::string name, int ID) : Window(name, ID)
+WProperties::WProperties(std::string name) : Window(name)
 {
 
 }
@@ -16,10 +16,6 @@ WProperties::~WProperties()
 
 void WProperties::Draw()
 {
-	int w, h;
-	SDL_GetWindowPosition(App->window->window, &w, &h);
-	ImGui::SetNextWindowPos(ImVec2(w - App->window->width * 0.25, h), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.6), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
@@ -221,7 +217,8 @@ void WProperties::TexturesHeader() const
 					ImGui::Separator();
 
 					ImTextureID texid = (ImTextureID)selected_textures[i]->id;
-					ImGui::Image(texid, ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().x * h / (float)w));
+					float sizeX = ImGui::GetWindowSize().x > 350.f ? 350.f : ImGui::GetWindowSize().x;
+					ImGui::Image(texid, ImVec2(sizeX, sizeX * h / (float)w));
 					ImGui::EndTabItem();
 				}
 

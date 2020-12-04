@@ -2,6 +2,7 @@
 #include<vector>
 #include "Globals.h"
 #include "Module.h"
+#include "Event.h"
 
 class ModuleRender;
 class ModuleWindow;
@@ -18,18 +19,6 @@ class ModuleTexture;
 class Application
 {
 public:
-
-	Application();
-	~Application();
-
-	bool Init();
-	update_status Update();
-	bool CleanUp();
-
-	void Log(const char* input) const;
-	void ProcessFPS(const float deltaTime) const;
-
-public:
 	ModuleRender* renderer = nullptr;
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
@@ -44,6 +33,19 @@ private:
 
 	std::vector<Module*> modules;
 
+
+public:
+
+	Application();
+	~Application();
+
+	bool Init();
+	update_status Update();
+	bool CleanUp();
+
+	void BroadcastEvent(const Event& event);
+
+	void Log(const char* input) const;
 };
 
 extern Application* App;

@@ -5,27 +5,32 @@
 #include <string>
 
 struct Texture {
-	unsigned int id;
-	std::string type;
-	std::string path;
-	int wraps;
-	int wrapt;
-	int minfilter;
-	int magfilter;
+	unsigned int id;	// identifier
+	std::string type;	// type of texture
+	std::string path;	// path to the file on your drive
+	int wraps;			// Identifier of the Horizontal Wrapping of the texture. Select from W_config -> wrap[].
+	int wrapt;			// Identifier of the Vertical Wrapping of the texture. Select from W_config -> wrap[].
+	int minfilter;		// Identifier of the Minification filter applied to the specified Texture. Mipmap option only applies if the Mipmap generation is activated. Select from W_config -> filterm[].
+	int magfilter;		// Identifier of the Magnification filter applied to the specified Texture. Select from W_config -> filterM[].
 
 };
 
 class ModuleTexture : public Module
 {
 public:
-	ModuleTexture();
-	~ModuleTexture();
 
-	bool Init();
-	bool CleanUp();
+	bool mipmap;									// Activates Mipmap generation for the following loaded models
+	bool force_flip;								// Activates the flipping of the Difuse Texture loaded with the next model
 
-	unsigned int LoadTexture(std::string path);
+
 public:
-	bool mipmap;
-	bool force_flip;
+	ModuleTexture();								// Constructor
+	~ModuleTexture();								// Destructor
+
+	//  ----- Module Functions ----- //
+	bool Init() override;							// Initialise ModuleWindow
+	bool CleanUp() override;						// Clean memory allocated by this Module
+
+	unsigned int LoadTexture(std::string path);		// Loads an image file and attaches it to a GL_TEXTURE_2D
+
 };

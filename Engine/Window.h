@@ -6,19 +6,18 @@
 class Window
 {
 public:
-	Window(std::string name, int ID);
+	Window(std::string name);
 	virtual ~Window();
 
 	virtual void Draw() = 0;
 
-	void Enable(bool active);
+	void Enable(bool active);		// Toggles the visibility of an ImGui Window
 
 	bool isEnabled() const { return active; }
 	const char* GetWindowName() const { return name.c_str(); }
 protected:
-	bool active = true;
-	int ID = -1;
-	std::string name;
+	bool active = true;				// Indicates if the ImGui Window is visible
+	std::string name;				// Name of the ImGui Window
 };
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.

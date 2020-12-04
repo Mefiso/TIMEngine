@@ -85,6 +85,13 @@ bool ModuleRender::Init()
 #endif
 
 	defaultProgram = App->program->CreateProgramFromFile(".\\resources\\shaders\\vertex_shader.glsl", ".\\resources\\shaders\\fragment_shader.glsl");
+	
+	SDL_DisplayMode mode;
+	SDL_GetDesktopDisplayMode(0, &mode);
+	viewport_width = mode.w * 0.6f;
+	viewport_height = mode.h * 0.6f;
+	InitFramebuffer();
+
 	// Load models
 	uSTimer test = uSTimer();
 	modelLoaded = new Model();
@@ -97,25 +104,15 @@ bool ModuleRender::Init()
 
 update_status ModuleRender::PreUpdate()
 {
-	App->ProcessFPS(msTimer.Stop() / 1000.0f);
-
-	int w, h;
-	SDL_GetWindowSize(App->window->window, &w, &h);
-	glViewport(0, 0, w, h);
-	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (eventOcurred) {
-		TranslateCamera(msTimer.Read() / 1000.0f);
-		RotateCameraKeys(msTimer.Read() / 1000.0f);
-		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-			App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
-		}
-	}
+	deltatime = msTimer.Stop() / 1000.f;		// TODO: CAMERA MOVEMENTS ARE NOT FLUID!?
 	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
@@ -130,12 +127,15 @@ update_status ModuleRender::Update()
 	else glDisable(GL_CULL_FACE);
 
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
-	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
-
+	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
+	
+	glViewport(0, 0, viewport_width, viewport_height);
 	modelLoaded->Draw(defaultProgram);
 
 	if (showGrid)
-		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
+		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	return UPDATE_CONTINUE;
 }
@@ -151,7 +151,7 @@ bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
 
-	delete modelLoaded;
+	RELEASE(modelLoaded);
 	glDeleteProgram(defaultProgram);
 	
 	//Destroy window
@@ -160,29 +160,32 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
+void ModuleRender::ReceiveEvent(const Event& event)
+{
+	switch (event.type)
+	{
+	case Event::window_resize:
+	case Event::window_fullscreen:
+		glViewport(0, 0, event.point2d.x, event.point2d.y);
+		WindowResized(event.point2d.x, event.point2d.y);
+		break;
+	case Event::file_dropped:
+		DropFile(event.string.ptr);
+		break;
+	}
+}
+
+void ModuleRender::ProcessViewportEvents() {
+	TranslateCamera(deltatime);
+	RotateCameraKeys(deltatime);
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
+		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
+	}
+}
+
 void ModuleRender::WindowResized(unsigned int width, unsigned int height)
 {
-	App->window->width = width;
-	App->window->height = height;
-	App->camera->onResize((float) width / (float) height);
-}
-
-void ModuleRender::RotateCameraMouse(float xoffset, float yoffset) const
-{
-	if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
-		SDL_SetRelativeMouseMode(SDL_TRUE);
-	}
-	App->camera->ProcessMouseMovement(xoffset, yoffset);
-}
-
-void ModuleRender::MouseWheel(float xoffset, float yoffset) const
-{
-	App->camera->ProcessMouseScroll(yoffset);
-}
-
-void ModuleRender::OrbitObject(float xoffset, float yoffset) const
-{
-	App->camera->ProcessOrbit(xoffset, yoffset, modelLoaded->enclosingSphere.pos);
+	App->camera->onResize(width / (float) height);
 }
 
 bool ModuleRender::DropFile(const std::string& file)
@@ -197,6 +200,28 @@ bool ModuleRender::DropFile(const std::string& file)
 		modelLoaded->ReloadTexture(file.c_str());
 		return false;
 	}
+}
+
+void ModuleRender::InitFramebuffer()
+{
+	glGenFramebuffers(1, &FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	// create a color attachment texture
+	glGenTextures(1, &textureColorbuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, viewport_width, viewport_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+	// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
+	glGenRenderbuffers(1, &RBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, viewport_width, viewport_height); // use a single renderbuffer object for both a depth AND stencil buffer.
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO); // now actually attach it
+	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		LOG("[error] FRAMEBUFFER:: Framebuffer is not complete!");
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void ModuleRender::TranslateCamera(float deltaTime) const

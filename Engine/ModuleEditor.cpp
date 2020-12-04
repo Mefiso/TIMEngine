@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ImGUI/imgui_impl_sdl.h"
 #include "ImGUI/imgui_impl_opengl3.h"
+#include "W_viewport.h"
 #include "W_console.h"
 #include "W_monitor.h"
 #include "W_config.h"
@@ -13,11 +14,12 @@
 
 ModuleEditor::ModuleEditor()
 {
-	editorWindows.push_back(console = new WConsole("Console", 0));
-	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
-	editorWindows.push_back(configuration = new WConfig("Configuration", 2));
-	editorWindows.push_back(about = new WAbout("About", 3));
-	editorWindows.push_back(properties = new WProperties("Properties", 4));
+	editorWindows.push_back(viewport = new WViewport("Viewport"));
+	editorWindows.push_back(console = new WConsole("Console"));
+	editorWindows.push_back(monitor = new WMonitor("Monitoring window"));
+	editorWindows.push_back(configuration = new WConfig("Configuration"));
+	editorWindows.push_back(about = new WAbout("About"));
+	editorWindows.push_back(properties = new WProperties("Properties"));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -29,23 +31,23 @@ bool ModuleEditor::Init()
 {
 	ImGui::CreateContext();
 	io = &ImGui::GetIO();
-	//io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-	io->ConfigViewportsNoAutoMerge = true;
+	//io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+	//io->ConfigViewportsNoAutoMerge = true;
 	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-	ImGuiStyle& style = ImGui::GetStyle();
-	if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	//ImGuiStyle& style = ImGui::GetStyle();
+	/*if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		style.WindowRounding = 0.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
+	}*/
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
 	ImGui_ImplOpenGL3_Init();
 
-	SelectedModel(App->renderer->modelLoaded);
+	CreateViewport();
+
+	SelectedModel();
 	
 	return true;
 }
@@ -56,17 +58,30 @@ update_status ModuleEditor::PreUpdate()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
+	if (viewport->viewportIsHovered) {
+		App->renderer->ProcessViewportEvents();
+		viewport->viewportIsHovered = false;
+	}
+	// Send event window Resize to Renderer
+	if (viewport->viewportResized) {
+		App->renderer->WindowResized(viewport->GetWidth(), viewport->GetHeight());
+		viewport->viewportResized = false;
+	}
+
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleEditor::Update()
 {
-	//ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+	ImGuiID dockspaceID = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	CreateMainMenu();
 
+	CreateViewport();
 	//ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
+		if (std::strcmp((*it)->GetWindowName(), "About"))
+			ImGui::SetNextWindowDockID(dockspaceID, ImGuiCond_FirstUseEver);
 		if ((*it)->isEnabled())
 			(*it)->Draw();
 	}
@@ -78,15 +93,15 @@ update_status ModuleEditor::Update()
 	// Update and Render additional Platform Windows
 	   // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
 	   //  For this specific demo app we could also call SDL_GL_MakeCurrent(window, gl_context) directly)
-	if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	/*if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
 		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
 		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
-	}
-	
+	}*/
+
 	if (should_quit) return UPDATE_STOP;
 	return UPDATE_CONTINUE;
 }
@@ -101,10 +116,15 @@ bool ModuleEditor::CleanUp()
 	
 	LOG("Destroying Editor");
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
-		delete (*it);
+		RELEASE(*it);
 	editorWindows.clear();
-	
+
+	viewport = nullptr;
 	console = nullptr;
+	monitor = nullptr;
+	configuration = nullptr;
+	properties = nullptr;
+	about = nullptr;
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
@@ -113,9 +133,29 @@ bool ModuleEditor::CleanUp()
 	return true;
 }
 
+void ModuleEditor::ReceiveEvent(const Event& event)
+{
+	switch (event.type)
+	{
+	case Event::file_dropped:
+		SelectedModel();
+		break;
+	}
+}
+
+const bool ModuleEditor::IsViewportHovered() const
+{
+	return viewport->viewportIsHovered;
+}
+
 void ModuleEditor::SendEvent(const SDL_Event& event) const
 {
 	ImGui_ImplSDL2_ProcessEvent(&event);
+}
+
+void ModuleEditor::CreateViewport()
+{
+	viewport->SetColorbuffer(App->renderer->GetTextureColorbuffer(), App->renderer->GetViewportWidth(), App->renderer->GetViewportHeight());
 }
 
 void ModuleEditor::Log(const char* input) const
@@ -124,15 +164,11 @@ void ModuleEditor::Log(const char* input) const
 		console->AddLog(input);
 }
 
-void ModuleEditor::ProcessFPS(float deltaTime) const
+void ModuleEditor::SelectedModel() const
 {
-	monitor->AddFPS(deltaTime);
+	properties->SelectPropertiesFromModel(App->renderer->modelLoaded);
 }
 
-void ModuleEditor::SelectedModel(const Model* const model) const
-{
-	properties->SelectPropertiesFromModel(model);
-}
 
 void ModuleEditor::CreateMainMenu()
 {

@@ -89,9 +89,7 @@ int main(int argc, char ** argv)
 		}
 
 	}
-
-	delete App;
-	App = nullptr;
+	RELEASE(App);
 	LOG("Bye :)\n");
 	return main_return;
 }

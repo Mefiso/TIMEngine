@@ -10,32 +10,37 @@ class ModuleWindow : public Module
 {
 public:
 
-	ModuleWindow();
+	float brightness = 1.0f;						// Gamma value of the screen
+	SDL_Window* window = NULL;						// The window we'll be rendering to
+	SDL_Surface* screen_surface = NULL;				// The surface contained by the window
 
-	// Destructor
-	virtual ~ModuleWindow();
+private:
 
-	// Called before quitting
-	bool Init();
+	int width, height;								// Size of the application Window
 
-	// Called before quitting
-	bool CleanUp();
 
-	void SetFullscreen(bool fullscreen) const;
-	void SetBorderless(bool borderless) const;
-	void SetFulldesktop(bool fulldesktop) const;
-	void SetResizable(bool resizable) const;
-	void SetWindowSize() const;
-	void SetBrightness(float brightness) const;
-	void SetVsync(bool vsync) const;
 public:
-	int width, height;
-	float brightness = 1.0f;
-	//The window we'll be rendering to
-	SDL_Window* window = NULL;
+	ModuleWindow();									// Constructor
+	virtual ~ModuleWindow();						// Destructor
 
-	//The surface contained by the window
-	SDL_Surface* screen_surface = NULL;
+	//  ----- Module Functions ----- //
+	bool Init() override;							// Initialise ModuleWindow
+	bool CleanUp() override;						// Clean memory allocated by this Module
+	void ReceiveEvent(const Event& event) override;	// Recieve events from App (that recieves events from other Modules)
+
+	// ---------- Getters ---------- //
+	int GetWindowWidth() { return width; }
+	int* GetWindowWidthPtr() { return &width; }
+	int GetWindowHeight() { return height; }
+	int* GetWindowHeightPtr() { return &height; }
+
+	// ---------- Setters ---------- //
+	void ToggleBorderless(bool borderless) const;		// Toggles the Borderless mode of the application Window
+	void ToggleFulldesktop(bool fulldesktop) const;	// Toggles the Fulldesktop mode of the application Window (resizes the window to maximum screen resolution)
+	void ToggleResizable(bool resizable) const;		// Toggles the Resizable option of the application Window
+	void SetWindowSize() const;						// Sets the application Window size to the values specified by 'width' and 'height' variables
+	void SetBrightness(float brightness) const;		// Sets the gamma value of the screen
+	void SetVsync(bool vsync);						// Toggles the VSync of the application Window
 };
 
 #endif // __ModuleWindow_H__

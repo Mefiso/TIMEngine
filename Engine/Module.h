@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Globals.h"
+#include "Event.h"
 
 class Application;
 
@@ -40,4 +41,6 @@ public:
 	{ 
 		return true; 
 	}
+
+	virtual void ReceiveEvent(const Event& event) { }
 };

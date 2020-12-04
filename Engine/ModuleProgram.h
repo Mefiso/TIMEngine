@@ -11,17 +11,20 @@
 class ModuleProgram : public Module
 {
 public:
-	ModuleProgram();
-	~ModuleProgram();
+	ModuleProgram();													                                // Constructor
+	~ModuleProgram();												                                    // Destructor
 
-	unsigned int CreateProgramFromFile(const char* vertexPath, const char* fragmentPath) const;
+    bool CleanUp() override;										                                    // Clean memory allocated by this Module
 
-	bool CleanUp();
+	unsigned int CreateProgramFromFile(const char* vertexPath, const char* fragmentPath) const;         // Creates a Shading Program from the path of the Vertex and Fragment shader files
+	
+
 private:
-	char* LoadShaderSource(const char* shader_file_name) const;
-	unsigned CompileShader(unsigned type, const char* source) const;
-	unsigned CreateProgram(unsigned vtx_shader, unsigned frg_shader) const;
-	void checkCompileErrors(unsigned int shader, const char* type) const;
+	char* LoadShaderSource(const char* shader_file_name) const;                                         // Reads a shader file and stores the text in a char* buffer
+	unsigned int CompileShader(unsigned int type, const char* source) const;                            // Compiles a shader written in GLSL, from the text stored in a char* buffer
+	unsigned int CreateProgram(unsigned int vtx_shader, unsigned int frg_shader) const;                 // Generates a shading program from the compiled Vertex and Fragment shaders
+	void checkCompileErrors(unsigned int shader, const char* type) const;                               // Checks for shader compilation/linking errors.
+
 public:
     // activate the shader
     // ------------------------------------------------------------------------

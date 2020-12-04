@@ -19,10 +19,11 @@ Application::Application()
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(program = new ModuleProgram());
 	modules.push_back(renderer = new ModuleRender());
+	modules.push_back(debugdraw = new ModuleDebugDraw());
 	modules.push_back(editor = new ModuleEditor());
 	modules.push_back(textureLoader = new ModuleTexture());
 	modules.push_back(camera = new ModuleCamera());
-	modules.push_back(debugdraw = new ModuleDebugDraw());
+	
 }
 
 Application::~Application()
@@ -69,12 +70,13 @@ bool Application::CleanUp()
 	return ret;
 }
 
+void Application::BroadcastEvent(const Event& event)
+{
+	for (vector<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
+		(*it)->ReceiveEvent(event);
+}
+
 void Application::Log(const char* input) const
 {
 	editor->Log(input);
-}
-
-void Application::ProcessFPS(const float deltaTime) const
-{
-	editor->ProcessFPS(deltaTime);
 }

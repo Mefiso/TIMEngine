@@ -18,39 +18,45 @@ enum Camera_Movement {
 };
 
 // Default values
-const float SPEED = 2.5f;
-const float ROTATION_SPEED = M_PI / 8.0f;
-const float SENSITIVITY = .005f;
-const float VERTICALFOV = DegToRad(60.f);
-const float ASPECTRATIO = (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT;
-const float ZOOM = .1f;
+const float SPEED = 2.5f;													// Base value of MovementSpeed
+const float SENSITIVITY = .005f;											// Base value of MouseSensitivity
+const float VERTICALFOV = DegToRad(60.f);									// Initial Vertical FOV of the camera
+const float ASPECTRATIO = SCREEN_WIDTH / (float) SCREEN_HEIGHT;				// Initial Aspect ratio of the camera Frustrum
+//const float ZOOM = .1f;											
 
 class ModuleCamera : public Module
 {
 public:
-	ModuleCamera(float3 position = float3(0, 1, 7), float3 up = float3(0, 1, 0), float near_plane = 0.1f, float far_plane = 200.0f);
-	~ModuleCamera();
 
-	bool CleanUp();
+	// Camera options
+	float MovementSpeed;													// Multiplier of the Camera movement speed when using the keyboard
+	float MouseSensitivity;													// Multiplier of the Mouse sensitivity
+	Frustum frustum;														// Identifier of the Camera frustrum Object
 
-	float4x4 ViewMatrix();
-	float4x4 ProjectionMatrix();
-
-	// Process movement
-	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
-	void ProcessMouseMovement(float xoffset, float yoffset);
-	void ProcessMouseScroll(float yoffset);
-	void ProcessSpeed(float multiplier);
-	void ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre);
-	void onResize(float aspect_ratio);
-	void onFocus(float3 center, float distance);
 
 public:
-	// Camera options
-	float MovementSpeed;
-	float MouseSensitivity;
-	float RotationSpeed;
-	Frustum frustum;
+	ModuleCamera(float3 position = float3(0, 1, 7), float3 up = float3(0, 1, 0), float near_plane = 0.1f, float far_plane = 200.0f);	// Constructor
+	~ModuleCamera();														// Destructor
+
+	//  ----- Module Functions ----- //
+	bool CleanUp() override;												// Clean memory allocated by this Module
+	void ReceiveEvent(const Event& event) override;							// Recieve events from App (that recieves events from other Modules)
+
+	// ---------- Getters ---------- //
+	float4x4 ViewMatrix();													// Returns the View matrix of the Camera
+	float4x4 ProjectionMatrix();											// Returns the Projection matrix of the Camera
+
+	// Process movement
+	void ProcessKeyboard(Camera_Movement direction, float deltaTime);		// Applies the corresponding changes when an input from keyboard is detected and the Viewport is hovered. (Editor.PreUpdate > Rendered.ProcessViewportEvents) 
+	void ProcessSpeed(float multiplier);									// Multiplies the current MovementSpeed by a factor
+	void onResize(float aspect_ratio);										// Sets the camera FOV and aspectratio when resizing the application Window
+	void onFocus(float3 center, float distance);							// Moves the camera to Focus the selected object, and places it at a suitable distance
+
 private:
-	void RotateCamera(float yaw, float pitch);
+	void RotateCamera(float yaw, float pitch);								// Auxiliar function of ProcessKeyboard() when rotation is needed
+
+	// Process movement
+	void ProcessMouseMovement(float xoffset, float yoffset);				// Applies the corresponding changes when recieving a Event::rotate_event from ModuleInput
+	void ProcessMouseScroll(float xoffset, float yoffset);					// Applies the corresponding changes when recieving a Event::wheel_event from ModuleInput
+	void ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre);	// Applies the corresponding changes when recieving a Event::orbit_event from ModuleInput
 };

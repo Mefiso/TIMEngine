@@ -10,7 +10,7 @@ public:
 	void Start() {
 		start = SDL_GetTicks();
 		stopped = false;
-		elapsed = 0;
+		elapsed = 0u;
 	}
 	unsigned int Read() const {
 		return stopped ? elapsed : SDL_GetTicks() - start;
@@ -21,7 +21,7 @@ public:
 	}
 
 private:
-	unsigned int start = 0;
-	unsigned int elapsed = 0;
+	unsigned int start = 0u;
+	unsigned int elapsed = 0u;
 	bool stopped = true;
 };

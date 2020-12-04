@@ -9,7 +9,7 @@
 Mesh::Mesh(const aiMesh* mesh, unsigned int index) : material_index(index)
 {
 	num_vertices = mesh->mNumVertices;
-	num_indices = mesh->mNumFaces * 3;
+	num_indices = mesh->mNumFaces * 3u;
 	LoadVBO(mesh);
 	LoadEBO(mesh);
 	CreateVAO();
@@ -54,7 +54,7 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	glBufferData(GL_ARRAY_BUFFER, buff_size, nullptr, GL_STATIC_DRAW);
 	
 	unsigned int data_offset = 0;
-	for (unsigned i = 0; i < num_vertices; ++i)
+	for (unsigned i = 0u; i < num_vertices; ++i)
 	{
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset, sizeof(float) * 3, &mesh->mVertices[i]);
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 3, sizeof(float) * 2, &mesh->mTextureCoords[0][i]);
@@ -72,7 +72,7 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, nullptr, GL_STATIC_DRAW);
 	unsigned int* indices = (unsigned int*)(glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY));
 
-	for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
+	for (unsigned int i = 0u; i < mesh->mNumFaces; ++i)
 	{
 		assert(mesh->mFaces[i].mNumIndices == 3);
 
