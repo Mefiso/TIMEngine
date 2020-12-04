@@ -45,7 +45,7 @@ public:
 	bool CleanUp() override;										// Clean memory allocated by this Module
 	void ReceiveEvent(const Event& event) override;					// Recieve events from App (that recieves events from other Modules)
 
-	const bool IsViewportHovered() const;							// 
+	const bool IsViewportHovered() const;							// Checks if the W_Viewport is hovered to allow the process of mouse inputs. Called from ModuleInput
 
 
 	void SendEvent(const SDL_Event& event) const;					// Processes all ImGui events
@@ -55,7 +55,8 @@ public:
 	void Log(const char* input) const;								// Sends LOG inputs from the log function to W_Console
 
 private:
-	void SelectedModel() const;				// Sends the information of the loaded model in the render to W_properties (THIS MIGHT BE DEPRECATED)
+	void SelectedModel() const;										// Sends the information of the loaded model in the render to W_properties (THIS MIGHT BE DEPRECATED)
 	void CreateMainMenu();											// Generates the main menu using ImGui
+	void ShowMenuFile();
 
 };

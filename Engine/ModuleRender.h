@@ -56,11 +56,8 @@ public:
 	unsigned int GetViewportHeight() { return viewport_height; }
 
 	// ---------- Setters ---------- //
-	void SetViewportWidth(unsigned int _width) { viewport_width = _width; }
-	void SetViewportHeight(unsigned int _height) { viewport_height = _height; }
 
 	// callback funcs
-	void WindowResized(unsigned int width, unsigned int height);	// Called upon recieving a Resizing event. Forwards the new aspect ratio to the application Camera
 	bool DropFile(const std::string& file);							// Called upon recieving a Drag&Drop event. Replaces the current Model for the new one if 'file' is an .fbx.
 	void ProcessViewportEvents();									// Called from ModuleEditor, when an input is recieved inside the viewport. Perfoms the necessary operations for the corresponding input. This allows the control of the actions performed when the input is captured inside the viewport.
 

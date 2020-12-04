@@ -1,4 +1,7 @@
 #include "W_viewport.h"
+#include "Application.h"
+#include "ModuleRender.h"
+#include "ModuleCamera.h"
 
 WViewport::WViewport(std::string name) : Window(name)
 {
@@ -11,7 +14,6 @@ WViewport::~WViewport()
 void WViewport::Draw()
 {
 	ImGui::SetNextWindowSize(ImVec2(width, height), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(200,200), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove))
 	{
 		ImGui::End();
@@ -20,22 +22,24 @@ void WViewport::Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
 	// Set viewport size if Resized
-	ImVec2 win_size = ImGui::GetContentRegionAvail();
+	ImVec2 win_size = ImGui::GetWindowSize();
 	if (win_size.x != width || win_size.y != height) {
-		width = win_size.x;
-		height = win_size.y;
-		viewportResized = true;
+		width = (unsigned int) win_size.x;
+		height = (unsigned int) win_size.y;
+		App->camera->onResize(width / (float) height);
 	}
 
 	if (ImGui::IsWindowHovered()) {
+		App->renderer->ProcessViewportEvents();
 		viewportIsHovered = true;
+	}
+	else {
+		viewportIsHovered = false;
 	}
 	
 	ImGui::Image((ImTextureID) texid, win_size, ImVec2(0.f,1.f), ImVec2(1.f,0.f));
 	ImGui::PopStyleVar();
 	ImGui::End();
-	
-
 
 }
 
