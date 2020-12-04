@@ -25,7 +25,6 @@ public:
 	
 private:
 	void WindowHeader();
-	void InputHeader();
 	void RendererHeader();
 	void TextureHeader();
 	void CameraHeader();

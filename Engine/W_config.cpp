@@ -28,7 +28,6 @@ void WConfig::Draw()
 		return;
 	}
 	WindowHeader();
-	InputHeader();
 	RendererHeader();
 	TextureHeader();
 	CameraHeader();
@@ -102,36 +101,6 @@ void WConfig::WindowHeader()
 		}
 		if (ImGui::Checkbox("VSYNC", &vsync))
 			App->window->SetVsync(vsync);
-	}
-}
-
-void WConfig::InputHeader()
-{
-	if (ImGui::CollapsingHeader("Input"))
-	{
-		ImGuiIO& io = ImGui::GetIO();
-
-		if (ImGui::IsMousePosValid())
-			ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
-		else
-			ImGui::Text("Mouse pos: <INVALID>");
-		ImGui::Text("Mouse delta: (%g, %g)", io.MouseDelta.x, io.MouseDelta.y);
-
-		ImGui::Text("Mouse down:");     
-		for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
-		{
-			if (io.MouseDownDuration[i] >= 0.0f) {
-				ImGui::SameLine(); ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]);
-			}
-		}
-		ImGui::Text("Keys down:");      
-		for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++)
-		{
-			if (io.KeysDownDuration[i] >= 0.0f) {
-				ImGui::SameLine();
-				ImGui::Text("%d (0x%X) (%.02f secs)", i, i, io.KeysDownDuration[i]);
-			}
-		}
 	}
 }
 

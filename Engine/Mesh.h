@@ -11,10 +11,10 @@ class Mesh
 {
 public:
 
-	unsigned int VAO = 0;
-	unsigned int num_vertices = 0;
-	unsigned int num_indices = 0;
-	unsigned int material_index = 0;
+	unsigned int VAO = 0u;
+	unsigned int num_vertices = 0u;
+	unsigned int num_indices = 0u;
+	unsigned int material_index = 0u;
 
 private:
 

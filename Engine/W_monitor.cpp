@@ -23,19 +23,36 @@ void WMonitor::Draw()
 {
 	int w, h;
 	SDL_GetWindowPosition(App->window->window, &w, &h);
-	//ImGui::SetNextWindowPos(ImVec2(w-App->window->width*0.25, h+App->window->height*0.6), ImGuiCond_FirstUseEver);
-	//ImGui::SetNextWindowSize(ImVec2(App->window->width * 0.25, App->window->height * 0.4), ImGuiCond_Once);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
 		return;
 	}
 
+	// ----- RESOURCE USAGE ----- //
+		// Update FPS buffer
+	fpsNow = ImGui::GetIO().Framerate;
+	fps_log.push_back(fpsNow);
+
+	char title[55];
+	sprintf_s(title, 55, "Application average %.3f ms/frame (%.1f FPS)", 1000.0 / fpsNow, fpsNow);
+
+	// Remove the 1st element when we have more than 'histNumElements' values in the FPS vector
+	if (fps_log.size() > histNumElements)
+		fps_log.erase(fps_log.begin());
+
+	// Plot Hist
+	ImGui::PlotHistogram("##Histogram", &fps_log[0], histNumElements, 0, title, 0.0f, 300, ImVec2(330, 50));
+
+
+
 	/*sprintf_s(title, 37, "Averaged FPS %.1f\nInstant FPS %.1f", frames / elapsedTime, fps_log[fps_log.size() - 1]);
 	ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
 	sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
 	ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));*/
-	
+
+	InputHeader();
+
 	if (ImGui::CollapsingHeader("Software and Hardware"))
 	{
 		
@@ -64,6 +81,36 @@ void WMonitor::AddFPS(float deltaTime)
 	
 	++frames;
 	elapsedTime += deltaTime;
+}
+
+void WMonitor::InputHeader()
+{
+	if (ImGui::CollapsingHeader("Input"))
+	{
+		ImGuiIO& io = ImGui::GetIO();
+
+		if (ImGui::IsMousePosValid())
+			ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
+		else
+			ImGui::Text("Mouse pos: <INVALID>");
+		ImGui::Text("Mouse delta: (%g, %g)", io.MouseDelta.x, io.MouseDelta.y);
+
+		ImGui::Text("Mouse down:");
+		for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
+		{
+			if (io.MouseDownDuration[i] >= 0.0f) {
+				ImGui::SameLine(); ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]);
+			}
+		}
+		ImGui::Text("Keys down:");
+		for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++)
+		{
+			if (io.KeysDownDuration[i] >= 0.0f) {
+				ImGui::SameLine();
+				ImGui::Text("%d (0x%X) (%.02f secs)", i, i, io.KeysDownDuration[i]);
+			}
+		}
+	}
 }
 
 void WMonitor::ShowSoftware() const

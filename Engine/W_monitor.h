@@ -26,6 +26,8 @@ private:
 	Hardware hardware;
 	int frames = 0;
 	float elapsedTime = 0.0f;
+	float fpsNow = 0.f;
+	const unsigned int histNumElements = 50u;
 
 public:
 	WMonitor(std::string name);
@@ -34,6 +36,7 @@ public:
 	void Draw() override;
 	void AddFPS(float deltaTime);
 private:
+	void InputHeader();
 	void ShowSoftware() const;
 	void ShowHardware() const;
 
