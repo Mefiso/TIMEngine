@@ -40,7 +40,16 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
     vsnprintf(buf, IM_ARRAYSIZE(buf), fmt, args);
     buf[IM_ARRAYSIZE(buf) - 1] = 0;
     va_end(args);
-    Items.push_back(strdup(buf));
+    
+    bool alreadyIn = false;
+    for (unsigned int i = Items.size() - 4; i < Items.size(); ++i) {
+        if (strcmp(buf, Items[i]) == 0) {
+            alreadyIn = true;
+            break;
+        }
+    }
+    if (!alreadyIn)
+        Items.push_back(strdup(buf));
 }
 
 void    WConsole::Draw()

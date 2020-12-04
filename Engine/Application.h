@@ -46,8 +46,6 @@ public:
 	void BroadcastEvent(const Event& event);
 
 	void Log(const char* input) const;
-	void ProcessFPS(const float deltaTime) const;
-
 };
 
 extern Application* App;

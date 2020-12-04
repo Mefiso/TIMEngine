@@ -80,8 +80,3 @@ void Application::Log(const char* input) const
 {
 	editor->Log(input);
 }
-
-void Application::ProcessFPS(const float deltaTime) const
-{
-	editor->ProcessFPS(deltaTime);
-}

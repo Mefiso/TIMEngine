@@ -38,6 +38,7 @@ public:
 
 	//  ----- Module Functions ----- //
 	bool Init() override;															// Initialise ModuleWindow
+	// Operations that must be performed just before each frame
 	update_status PreUpdate() override;												// Operations that must be performed just before each frame
 	bool CleanUp() override;														// Clean memory allocated by this Module
 
