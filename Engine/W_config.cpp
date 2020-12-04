@@ -51,42 +51,6 @@ void WConfig::WindowHeader()
 		ImGui::PushItemWidth(100.f);
 		if (ImGui::SliderFloat("Brightness", &brightness, 0.0f, 1.0f, "%.3f"))
 			App->window->SetBrightness(brightness);
-		// TODO ? : Screen Resize
-		/*if (!fullscreen && !fulldesktop) {
-			//ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.20f);
-			ImGui::TextUnformatted("Window Size:");
-			ImGui::SameLine(); 
-			static int winWidth = App->window->GetWindowWidth();
-			static int winHeight = App->window->GetWindowHeight();
-			if (ImGui::DragFloat("Width", &winWidth, 0.005f, +FLT_MAX, +FLT_MAX, "%.2f", ImGuiSliderFlags_None)) {
-				App->window->SetWindowSize();
-				App->camera->onResize(winWidth / (float)App->window->GetWindowHeight());
-			}
-			ImGui::SameLine();
-			
-			if (ImGui::DragFloat("Width", &winHeight, 0.005f, +FLT_MAX, +FLT_MAX, "%.2f", ImGuiSliderFlags_None)) {
-				App->window->SetWindowSize();
-				App->camera->onResize(App->window->GetWindowWidth() / winHeight);
-			}
-			App->window->SetWindowSize();
-			App->camera->onResize(winWidth / winHeight);*/
-
-			/*if (ImGui::SliderInt("Width", &winWidth, 15, 2560)) {
-				Event ev(Event::window_resize);
-				ev.point2d.x = winWidth;
-				ev.point2d.y = winHeight;
-				App->BroadcastEvent(ev);
-			}*/
-			/*if (ImGui::SliderInt("Width", App->window->GetWindowWidthPtr(), 0, 1536)) {
-				
-				App->camera->onResize(App->window->GetWindowWidth() / (float)App->window->GetWindowHeight());
-				App->window->SetWindowSize();
-			}
-			if (ImGui::SliderInt("Height", &winHeight, 15, 809)) {
-				App->window->SetWindowSize();
-				App->camera->onResize(App->window->GetWindowWidth() / (float)winHeight);
-			}
-		}*/
 
 		if (ImGui::Checkbox("FullScreen", &fulldesktop))
 			App->window->ToggleFulldesktop(fulldesktop);
