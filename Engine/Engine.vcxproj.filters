@@ -172,16 +172,25 @@
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleDebugDraw.cpp" />
     <ClCompile Include="Model.cpp">
-      <Filter>Model</Filter>
+      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Model</Filter>
+      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="W_properties.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
     <ClCompile Include="W_viewport.cpp">
       <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CTransform.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CMesh.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -467,10 +476,10 @@
     <ClInclude Include="ModuleDebugDraw.h" />
     <ClInclude Include="Leaks.h" />
     <ClInclude Include="Model.h">
-      <Filter>Model</Filter>
+      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>Model</Filter>
+      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="W_properties.h">
       <Filter>EditorWindows</Filter>
@@ -480,6 +489,15 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="W_viewport.h">
       <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CTransform.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CMesh.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -507,7 +525,7 @@
     <Filter Include="EditorWindows">
       <UniqueIdentifier>{38666de9-9d7a-4166-aca2-67bc73a9f8a8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Model">
+    <Filter Include="Components">
       <UniqueIdentifier>{b1276430-e03e-47f5-acb9-30cb31f378aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

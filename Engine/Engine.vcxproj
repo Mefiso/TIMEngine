@@ -138,6 +138,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="CMesh.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="CTransform.h" />
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="debug_draw.hpp" />
     <ClInclude Include="Event.h" />
@@ -250,6 +253,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="CMesh.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CTransform.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_demo.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
