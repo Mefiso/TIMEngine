@@ -81,7 +81,7 @@ void Model::ReloadTexture(const char* path)
 			Texture texture;
 			texture.id = App->textureLoader->LoadTexture(path);
 			if (texture.id) {
-				texture.type = "texture_diffuse";
+				texture.type = "diffuse";
 				texture.path = path;
 				texture.wraps = GL_REPEAT;
 				texture.wrapt = GL_REPEAT;
@@ -151,7 +151,7 @@ void Model::LoadTextures(const aiScene* scene)
 					texture.path = file.C_Str();
 				}
 				LOG("[info] Texture loaded.");
-				texture.type = "texture_diffuse";
+				texture.type = "diffuse";
 				texture.wraps = GL_REPEAT;
 				texture.wrapt = GL_REPEAT;
 				texture.minfilter = GL_LINEAR_MIPMAP_LINEAR;
