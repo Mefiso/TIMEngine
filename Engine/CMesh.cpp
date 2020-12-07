@@ -26,12 +26,12 @@ CMesh::~CMesh()
 
 void CMesh::Update()
 {
-	App->program->use(program);
+	ModuleProgram::use(program);
 
 	//float4x4 model = owner->GetTransform();
 	//App->program->setMat4(program, "model", model);
-	App->program->setMat4(program, "view", App->camera->ViewMatrix());
-	App->program->setMat4(program, "model", App->camera->ProjectionMatrix());
+	ModuleProgram::setMat4(program, "view", App->camera->ViewMatrix());
+	ModuleProgram::setMat4(program, "model", App->camera->ProjectionMatrix());
 	
 	
 	// CMaterial material = owner->GetMaterial();
