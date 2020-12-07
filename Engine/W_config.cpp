@@ -102,8 +102,8 @@ void WConfig::TextureHeader()
 	if (ImGui::CollapsingHeader("Texture"))
 	{
 		HelpMarker("For this options to be applied reload the model.");
-		ImGui::Checkbox("Mipmap", &App->textureLoader->mipmap);
-		ImGui::Checkbox("Force flip", &App->textureLoader->force_flip);
+		ImGui::Checkbox("Mipmap", &ModuleTexture::mipmap);
+		ImGui::Checkbox("Force flip", &ModuleTexture::force_flip);
 
 		ImGui::Separator();
 

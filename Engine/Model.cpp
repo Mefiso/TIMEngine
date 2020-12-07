@@ -79,7 +79,7 @@ void Model::ReloadTexture(const char* path)
 		if (!skip)
 		{
 			Texture texture;
-			texture.id = App->textureLoader->LoadTexture(path);
+			texture.id = ModuleTexture::LoadTexture(path);
 			if (texture.id) {
 				texture.type = "diffuse";
 				texture.path = path;
@@ -125,16 +125,16 @@ void Model::LoadTextures(const aiScene* scene)
 			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS) {
 				Texture texture;
 				LOG("[info] Trying to find texture on the path specified by the fbx: %s", file.C_Str());
-				texture.id = App->textureLoader->LoadTexture(file.C_Str());
+				texture.id = ModuleTexture::LoadTexture(file.C_Str());
 				if (!texture.id) {
 					LOG("[info] Failed to load textures.");
 					LOG("[info] Trying to find texture on the same folder as fbx: %s", (directory + '/' + file.C_Str()).c_str());
-					texture.id = App->textureLoader->LoadTexture(directory + '/' + file.C_Str());
+					texture.id = ModuleTexture::LoadTexture(directory + '/' + file.C_Str());
 					
 					if (!texture.id) {
 						LOG("[info] Failed to load textures.");
 						LOG("[info] Trying to find texture on the textures folder.");
-						texture.id = App->textureLoader->LoadTexture(std::string("./resources/textures/") + file.C_Str());
+						texture.id = ModuleTexture::LoadTexture(std::string("./resources/textures/") + file.C_Str());
 						if (!texture.id) {
 							LOG("[error] Texture not found.");
 							return;

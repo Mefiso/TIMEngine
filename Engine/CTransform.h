@@ -5,7 +5,7 @@
 
 class CTransform : public Component
 {
-public:
+private:
 	float3 scale;
 	float3 rotation;
 	float3 position;

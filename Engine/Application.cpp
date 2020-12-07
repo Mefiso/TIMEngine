@@ -20,7 +20,7 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(debugdraw = new ModuleDebugDraw());
 	modules.push_back(editor = new ModuleEditor());
-	modules.push_back(textureLoader = new ModuleTexture());
+	//modules.push_back(textureLoader = new ModuleTexture());
 	modules.push_back(camera = new ModuleCamera());
 	
 }
@@ -39,6 +39,8 @@ bool Application::Init()
 
 	for(vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
+	if (ret)
+		ret = ModuleTexture::Init();
 
 	return ret;
 }
