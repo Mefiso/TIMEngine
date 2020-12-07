@@ -150,7 +150,7 @@ void WConfig::CameraHeader()
 	
 	if (ImGui::CollapsingHeader("Camera")) {
 		static bool posModified = false;
-		static float3 pos = App->camera->frustum.Pos();
+		float3 pos = App->camera->frustum.Pos();
 		ImGui::BulletText("Camera Position:");
 		ImGui::PushItemWidth(50.f);
 		if (ImGui::DragFloat("x", &pos.x, 0.005f, -FLT_MAX, +FLT_MAX, "%.2f", ImGuiSliderFlags_None)) posModified = true;
