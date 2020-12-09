@@ -19,7 +19,7 @@ private:
 	unsigned int program = 0u;
 
 public:
-	CMesh(GameObject* _owner, const aiMesh* mesh, unsigned int mindex);
+	CMesh(GameObject* _owner, const aiMesh* mesh);
 	~CMesh();
 
 	void Update() override;

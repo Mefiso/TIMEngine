@@ -4,15 +4,15 @@
 #include <assimp/postprocess.h>
 #include "Leaks.h"
 
-void AssimpLog(const char* msg, char* user) {
+/*void AssimpLog(const char* msg, char* user) {
 	if (msg) 
 		LOG("[info] Assimp Log: %s", msg);
-}
+}*/
 
 Model::Model()
 {
-	stream.callback = AssimpLog;
-	aiAttachLogStream(&stream);
+	//stream.callback = AssimpLog;
+	//aiAttachLogStream(&stream);
 }
 
 Model::~Model()

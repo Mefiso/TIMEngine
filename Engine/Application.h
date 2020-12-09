@@ -4,11 +4,11 @@
 #include "Module.h"
 #include "Event.h"
 
+class ModuleScene;
 class ModuleRender;
 class ModuleWindow;
 class ModuleTextures;
 class ModuleInput;
-class ModuleRenderExercise;
 class ModuleCamera;
 //class ModuleProgram;
 class ModuleEditor;
@@ -18,6 +18,7 @@ class ModuleDebugDraw;
 class Application
 {
 public:
+	ModuleScene* scene = nullptr;
 	ModuleRender* renderer = nullptr;
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;

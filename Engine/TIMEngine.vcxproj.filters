@@ -195,6 +195,11 @@
     <ClCompile Include="CMaterial.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleScene.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="W_hierarchy.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -504,6 +509,11 @@
     </ClInclude>
     <ClInclude Include="CMaterial.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleScene.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="W_hierarchy.h">
+      <Filter>EditorWindows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

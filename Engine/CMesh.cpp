@@ -3,12 +3,14 @@
 #include "Application.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "GameObject.h"
+#include "CMaterial.h"
 
 #include <string>
 
 #include "Leaks.h"
 
-CMesh::CMesh(GameObject* _owner, const aiMesh* mesh, unsigned int mindex) : Component(MESH, _owner)
+CMesh::CMesh(GameObject* _owner, const aiMesh* mesh) : Component(MESH, _owner)
 {
 	numVertices = mesh->mNumVertices;
 	numIndices = mesh->mNumFaces * 3u;
@@ -28,45 +30,45 @@ void CMesh::Update()
 {
 	ModuleProgram::use(program);
 
-	//float4x4 model = owner->GetTransform();
-	//App->program->setMat4(program, "model", model);
+	float4x4* model = owner->GetModelMatrix();
+	ModuleProgram::setMat4(program, "model", *model);
 	ModuleProgram::setMat4(program, "view", App->camera->ViewMatrix());
-	ModuleProgram::setMat4(program, "model", App->camera->ProjectionMatrix());
+	ModuleProgram::setMat4(program, "projection", App->camera->ProjectionMatrix());
 	
 	
-	// CMaterial material = owner->GetMaterial();
-	/*
+	CMaterial* material = owner->GetMaterial();
+	
 	// bind appropriate textures
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
 	unsigned int normalNr = 1;
 	unsigned int heightNr = 1;
-	for (unsigned int = 0; i < material->textures.size(); i++)
+	for (int i = 0; i < material->textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit
-		string number;
-		strin name = material->textures[i].type
+		std::string number;
+		std::string name = material->textures[i]->type;
 		if (name == "diffuse")
 			number = std::to_string(diffuseNr++);
-		else if (name == "texture_specular")
+		else if (name == "specular")
 			number = std::to_string(specularNr++); // transfer unsigned int to stream
-		else if (name == "texture_normal")
+		/*else if (name == "normal")
 			number = std::to_string(normalNr++); // transfer unsigned int to stream
-		else if (name == "texture_height")
+		else if (name == "height")
 			number = std::to_string(heightNr++); // transfer unsigned int to stream
-
-		App->program->SetInt(program, (name + number).c_str(), i);
-		glBindTexture(GL_TEXTURE_2D, material->textures[i].id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, material->textures[i].wraps);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, material->textures[i].wrapt);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material->textures[i].minfilter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, material->textures[i].magfilter);
+		*/
+		ModuleProgram::setInt(program, (name + number).c_str(), i);
+		glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, material->textures[i]->wraps);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, material->textures[i]->wrapt);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material->textures[i]->minfilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, material->textures[i]->magfilter);
 	}
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 	glActiveTexture(GL_TEXTURE0);
-	*/
+	
 }
 
 void CMesh::LoadVBO(const aiMesh* mesh)

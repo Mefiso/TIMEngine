@@ -145,6 +145,7 @@
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="debug_draw.hpp" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Leaks.h" />
     <ClInclude Include="Mesh.h" />
@@ -240,6 +241,7 @@
     <ClInclude Include="ModuleProgram.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleEditor.h" />
+    <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="MSTimer.h" />
@@ -248,6 +250,7 @@
     <ClInclude Include="W_about.h" />
     <ClInclude Include="W_config.h" />
     <ClInclude Include="W_console.h" />
+    <ClInclude Include="W_hierarchy.h" />
     <ClInclude Include="W_monitor.h" />
     <ClInclude Include="W_properties.h" />
     <ClInclude Include="W_viewport.h" />
@@ -258,6 +261,7 @@
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CTransform.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_demo.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
@@ -316,12 +320,14 @@
     <ClCompile Include="ModuleProgram.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
+    <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="W_about.cpp" />
     <ClCompile Include="W_config.cpp" />
     <ClCompile Include="W_console.cpp" />
+    <ClCompile Include="W_hierarchy.cpp" />
     <ClCompile Include="W_monitor.cpp" />
     <ClCompile Include="W_properties.cpp" />
     <ClCompile Include="W_viewport.cpp" />

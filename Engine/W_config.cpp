@@ -29,7 +29,7 @@ void WConfig::Draw()
 	}
 	WindowHeader();
 	RendererHeader();
-	TextureHeader();
+	//TextureHeader();
 	CameraHeader();
 	
 	ImGui::End();
