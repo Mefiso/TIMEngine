@@ -19,7 +19,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(monitor = new WMonitor("Monitoring window"));
 	editorWindows.push_back(configuration = new WConfig("Configuration"));
 	editorWindows.push_back(about = new WAbout("About"));
-	editorWindows.push_back(properties = new WProperties("Properties"));
+	//editorWindows.push_back(properties = new WProperties("Properties"));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -38,7 +38,7 @@ bool ModuleEditor::Init()
 
 	CreateViewport();
 
-	SelectedModel();
+	//SelectedModel();
 	
 	return true;
 }

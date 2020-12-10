@@ -47,7 +47,7 @@ void WProperties::SelectPropertiesFromModel(const Model* model)
 
 void WProperties::TransformationHeader() const
 {
-	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
+	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
 		ImGui::TextUnformatted("Translation");
@@ -96,7 +96,7 @@ void WProperties::TransformationHeader() const
 
 void WProperties::GeometryHeader() const
 {
-	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
+	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	if (ImGui::CollapsingHeader("Geometry"))
 	{
 		ImGui::TextUnformatted("Num meshes:");
@@ -118,7 +118,7 @@ void WProperties::GeometryHeader() const
 
 void WProperties::TexturesHeader() const
 {
-	ImVec4 color = { 0.0, 0.3, 1.0, 1.0 };
+	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	if (ImGui::CollapsingHeader("Textures")) {
 		// This is read-only the texture properties, but in would be interesting to be able to change them
 		if (ImGui::BeginTabBar("Textures"))

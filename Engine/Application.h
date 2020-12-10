@@ -4,30 +4,28 @@
 #include "Module.h"
 #include "Event.h"
 
-class ModuleRender;
 class ModuleWindow;
-class ModuleTextures;
 class ModuleInput;
-class ModuleRenderExercise;
-class ModuleCamera;
-class ModuleProgram;
-//class ModuleRenderExercise;
-class ModuleEditor;
+//class ModuleProgram;
+class ModuleScene;
+class ModuleRender;
 class ModuleDebugDraw;
-class ModuleTexture;
+class ModuleEditor;
+//class ModuleTexture;
+class ModuleCamera;
 
 class Application
 {
 public:
-	ModuleRender* renderer = nullptr;
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
-	ModuleCamera* camera = nullptr;
-	ModuleProgram* program = nullptr;
-	ModuleEditor* editor = nullptr;
-	//ModuleRenderExercise* exercise = nullptr;
+	//ModuleProgram* program = nullptr;
+	ModuleScene* scene = nullptr;
+	ModuleRender* renderer = nullptr;
 	ModuleDebugDraw* debugdraw = nullptr;
-	ModuleTexture* textureLoader = nullptr;
+	ModuleEditor* editor = nullptr;
+	//ModuleTexture* textureLoader = nullptr;
+	ModuleCamera* camera = nullptr;
 
 private:
 
