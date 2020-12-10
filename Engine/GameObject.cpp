@@ -12,6 +12,11 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
+	CleanUp();
+}
+
+void GameObject::CleanUp()
+{
 	// Clean components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -22,6 +27,7 @@ GameObject::~GameObject()
 	// Clean childs
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
+		(*it)->CleanUp();
 		RELEASE(*it);
 	}
 	children.clear();
@@ -63,40 +69,46 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	components.push_back(newComp);
 }
 
-void GameObject::RemoveComponent(unsigned int _cID)
+void GameObject::RemoveComponent(int _cID)
 {
 	int toRemove = -1;
-	unsigned int i;
 
-	for (i = 0u; i<components.size(); ++i )
+	for (unsigned int i = 0u; i<components.size(); ++i )
 		if (components[i]->ID == _cID) {
-			toRemove = i;
+			toRemove = (int)i;
 			break;
 		}	
 	if (toRemove >= 0) {
-		RELEASE(components[i]);
-		components.erase(components.begin() + i);
+		RELEASE(components[toRemove]);
+		components.erase(components.begin() + toRemove);
 	}
 }
 
 void GameObject::AddChild(GameObject* _newChild)
 {
-	_newChild->SetParent(this);
 	children.push_back(_newChild);
 }
 
-void GameObject::RemoveChild(int i)
+void GameObject::RemoveChild(int childID)
 {
-	children.erase(children.begin()+i);
+	int toRemove = -1;
+	for (unsigned int i = 0u; i < children.size(); ++i) {
+		if (children[i]->uID == childID) {
+			toRemove = (int)i;
+			break;
+		}
+	}
+	if (toRemove >= 0)
+		children.erase(children.begin() + toRemove);
 }
 
-CMaterial* GameObject::GetMaterial()
+CMaterial* GameObject::GetMaterial() const
 {
-	bool matFound = false;
+	for (unsigned int i = 0u; i < components.size(); ++i) {
+		if (components[i]->GetType() == MATERIAL)
+			return (CMaterial*)components[i];
+	}
 
-	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
-		if ((*it)->GetType() == MATERIAL)
-			return (CMaterial*) (*it);
 	return nullptr;
 }
 
@@ -111,6 +123,14 @@ float4x4* GameObject::GetModelMatrix() const
 	}
 	else
 		return nullptr;
+}
+
+void GameObject::SetParent(GameObject* _newParent)
+{
+	if (parent)
+		parent->RemoveChild(this->uID);
+	parent = _newParent;
+	parent->AddChild(this);
 }
 
 void GameObject::SetProgram(unsigned int program)

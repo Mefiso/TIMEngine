@@ -24,7 +24,7 @@ void WHierarchy::Draw()
         for (int n = 0; n < 5; n++)
         {
             char buf[32];
-            sprintf(buf, "Object %d", n);
+            sprintf_s(buf, "Object %d", n);
             if (ImGui::Selectable(buf, selection[n]))
             {
                 if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held

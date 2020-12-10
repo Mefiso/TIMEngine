@@ -25,7 +25,7 @@ void WAbout::Draw()
 		return;
 	}
 
-	ImVec4 color = { 0.2, 0.5, 1.0, 1.0 };
+	ImVec4 color = { 0.2f, 0.5f, 1.0f, 1.0f };
 	ImGui::TextColored(color, "%s %s", engineName.c_str(), version.c_str());
 	ImGui::Separator();
 	ImGui::TextWrapped(description.c_str());

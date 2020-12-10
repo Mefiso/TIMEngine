@@ -42,10 +42,12 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
     va_end(args);
     
     bool alreadyIn = false;
-    for (unsigned int i = Items.size() - 4; i < Items.size(); ++i) {
-        if (strcmp(buf, Items[i]) == 0) {
-            alreadyIn = true;
-            break;
+    if (Items.size() > 4) {
+        for (int i = Items.size() - 4; i < Items.size(); ++i) {
+            if (strcmp(buf, Items[i]) == 0) {
+                alreadyIn = true;
+                break;
+            }
         }
     }
     if (!alreadyIn)

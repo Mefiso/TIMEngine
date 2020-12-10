@@ -85,7 +85,7 @@ void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* ob
 	{
 		GameObject* newChild = new GameObject();
 		ProcessNode(node->mChildren[i], scene, newChild);
-		object->AddChild(newChild);
+		newChild->SetParent(object);
 	}
 }
 

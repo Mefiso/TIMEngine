@@ -43,7 +43,7 @@ void CMesh::Update()
 	unsigned int specularNr = 1;
 	unsigned int normalNr = 1;
 	unsigned int heightNr = 1;
-	for (int i = 0; i < material->textures.size(); i++)
+	for (unsigned int i = 0u; i < material->textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit
 		std::string number;

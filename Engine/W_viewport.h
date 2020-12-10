@@ -10,7 +10,7 @@ public:
 private:
 
 	unsigned int texid = 0;							// ID of the Texture of the loaded model
-	unsigned int width = 0, height = 0;				// Size of the viewport
+	float width = 0, height = 0;					// Size of the viewport
 
 
 public:
