@@ -37,13 +37,13 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	switch (event.type)
 	{
 	case Event::rotate_event:
-		ProcessMouseMovement(event.point2d.x, event.point2d.y);
+		ProcessMouseMovement((float)event.point2d.x, (float)event.point2d.y);
 		break;
 	case Event::orbit_event:
-		ProcessOrbit(event.point2d.x, event.point2d.y, float3::zero);
+		ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
 		break;
 	case Event::wheel_event:
-		ProcessMouseScroll(event.point2d.x, event.point2d.y);
+		ProcessMouseScroll((float)event.point2d.x, (float)event.point2d.y);
 		break;
 	}
 }

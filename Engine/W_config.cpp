@@ -29,7 +29,7 @@ void WConfig::Draw()
 	}
 	WindowHeader();
 	RendererHeader();
-	TextureHeader();
+	//TextureHeader();
 	CameraHeader();
 	
 	ImGui::End();
@@ -102,8 +102,8 @@ void WConfig::TextureHeader()
 	if (ImGui::CollapsingHeader("Texture"))
 	{
 		HelpMarker("For this options to be applied reload the model.");
-		ImGui::Checkbox("Mipmap", &App->textureLoader->mipmap);
-		ImGui::Checkbox("Force flip", &App->textureLoader->force_flip);
+		ImGui::Checkbox("Mipmap", &ModuleTexture::mipmap);
+		ImGui::Checkbox("Force flip", &ModuleTexture::force_flip);
 
 		ImGui::Separator();
 
@@ -150,7 +150,7 @@ void WConfig::CameraHeader()
 	
 	if (ImGui::CollapsingHeader("Camera")) {
 		static bool posModified = false;
-		static float3 pos = App->camera->frustum.Pos();
+		float3 pos = App->camera->frustum.Pos();
 		ImGui::BulletText("Camera Position:");
 		ImGui::PushItemWidth(50.f);
 		if (ImGui::DragFloat("x", &pos.x, 0.005f, -FLT_MAX, +FLT_MAX, "%.2f", ImGuiSliderFlags_None)) posModified = true;

@@ -115,7 +115,7 @@ void WMonitor::ShowHardware() const
 	ImGui::TextColored(color, "%.1fGb", hardware.RAM);
 	ImGui::TextUnformatted("Caps:");
 	ImGui::SameLine();
-	for (int i = 0; i < hardware.caps.size(); ++i) {
+	for (unsigned int i = 0u; i < hardware.caps.size(); ++i) {
 		if (hardware.has_caps[i]) {
 			ImGui::TextColored(color, "%s,", hardware.caps[i]);
 			ImGui::SameLine();

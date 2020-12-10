@@ -1,13 +1,16 @@
 #pragma once
 #include "Application.h"
 #include "ModuleWindow.h"
-#include "ModuleRender.h"
 #include "ModuleInput.h"
-#include "ModuleCamera.h"
-#include "ModuleProgram.h"
-#include "ModuleEditor.h"
+//#include "ModuleProgram.h"
+#include "ModuleScene.h"
+#include "ModuleRender.h"
 #include "ModuleDebugDraw.h"
+#include "ModuleEditor.h"
+#include "ModuleCamera.h"
+
 #include "ModuleTexture.h"
+
 #include "Leaks.h"
 
 using namespace std;
@@ -17,11 +20,12 @@ Application::Application()
 	// Order matters: they will Init/start/update in this order
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(input = new ModuleInput());
-	modules.push_back(program = new ModuleProgram());
+	//modules.push_back(program = new ModuleProgram());
+	modules.push_back(scene = new ModuleScene());
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(debugdraw = new ModuleDebugDraw());
 	modules.push_back(editor = new ModuleEditor());
-	modules.push_back(textureLoader = new ModuleTexture());
+	//modules.push_back(textureLoader = new ModuleTexture());
 	modules.push_back(camera = new ModuleCamera());
 	
 }
@@ -40,6 +44,11 @@ bool Application::Init()
 
 	for(vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
+	if (ret)
+		ret = ModuleTexture::Init();
+
+	for (vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+		ret = (*it)->Start();
 
 	return ret;
 }

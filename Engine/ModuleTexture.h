@@ -1,6 +1,5 @@
 #pragma once
 #include "Globals.h"
-#include "Module.h"
 #include <vector>
 #include <string>
 
@@ -15,22 +14,19 @@ struct Texture {
 
 };
 
-class ModuleTexture : public Module
+class ModuleTexture
 {
 public:
 
-	bool mipmap;									// Activates Mipmap generation for the following loaded models
-	bool force_flip;								// Activates the flipping of the Difuse Texture loaded with the next model
+	static bool mipmap;									// Activates Mipmap generation for the following loaded models
+	static bool force_flip;								// Activates the flipping of the Difuse Texture loaded with the next model
 
 
 public:
-	ModuleTexture();								// Constructor
-	~ModuleTexture();								// Destructor
 
 	//  ----- Module Functions ----- //
-	bool Init() override;							// Initialise ModuleWindow
-	bool CleanUp() override;						// Clean memory allocated by this Module
+	static bool Init();									// Initialise ModuleWindow
 
-	unsigned int LoadTexture(std::string path);		// Loads an image file and attaches it to a GL_TEXTURE_2D
+	static unsigned int LoadTexture(std::string path);		// Loads an image file and attaches it to a GL_TEXTURE_2D
 
 };

@@ -7,6 +7,8 @@
 #include "ModuleInput.h"
 #include "ModuleProgram.h"
 #include "ModuleDebugDraw.h"
+#include "ModuleScene.h"
+#include "GameObject.h"
 #include "debugdraw.h"
 #include "Model.h"
 #include "SDL.h"
@@ -84,22 +86,31 @@ bool ModuleRender::Init()
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
 #endif
 
-	defaultProgram = App->program->CreateProgramFromFile(".\\resources\\shaders\\vertex_shader.glsl", ".\\resources\\shaders\\fragment_shader.glsl");
+	defaultProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\vertex_shader.glsl", ".\\resources\\shaders\\fragment_shader.glsl");
 	
 	SDL_DisplayMode mode;
 	SDL_GetDesktopDisplayMode(0, &mode);
-	viewport_width = mode.w * 0.6f;
-	viewport_height = mode.h * 0.6f;
+	viewport_width = (int)(mode.w * 0.6f);
+	viewport_height = (int)(mode.h * 0.6f);
 	InitFramebuffer();
 	glViewport(0, 0, viewport_width, viewport_height);
 
+
 	// Load models
 	uSTimer test = uSTimer();
-	modelLoaded = new Model();
-	modelLoaded->Load("./resources/models/baker_house/BakerHouse.fbx");
+	//modelLoaded = new Model();
+	//modelLoaded->Load("./resources/models/baker_house/BakerHouse.fbx");
 
 	msTimer.Start();
 
+	return true;
+}
+
+bool ModuleRender::Start()
+{
+	for (std::vector<GameObject*>::const_iterator it = App->scene->GetRoot().begin(); it != App->scene->GetRoot().end(); ++it) {
+		(*it)->SetProgram(defaultProgram);
+	}
 	return true;
 }
 
@@ -131,7 +142,11 @@ update_status ModuleRender::Update()
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 	
 	//glViewport(0, 0, viewport_width, viewport_height);
-	modelLoaded->Draw(defaultProgram);
+	//modelLoaded->Draw(defaultProgram);
+	for (std::vector<GameObject*>::const_iterator it = App->scene->GetRoot().begin(); it != App->scene->GetRoot().end(); ++it)
+	{
+		(*it)->Update();
+	}
 
 	if (showGrid)
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
@@ -161,7 +176,7 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-void ModuleRender::ReceiveEvent(const Event& event)
+/*void ModuleRender::ReceiveEvent(const Event& event)
 {
 	switch (event.type)
 	{
@@ -169,7 +184,7 @@ void ModuleRender::ReceiveEvent(const Event& event)
 		DropFile(event.string.ptr);
 		break;
 	}
-}
+}*/
 
 void ModuleRender::ProcessViewportEvents() {
 	TranslateCamera(deltatime);
@@ -179,7 +194,7 @@ void ModuleRender::ProcessViewportEvents() {
 	}
 }
 
-bool ModuleRender::DropFile(const std::string& file)
+/*bool ModuleRender::DropFile(const std::string& file)
 {
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
 		modelLoaded->Load(file);
@@ -191,7 +206,7 @@ bool ModuleRender::DropFile(const std::string& file)
 		modelLoaded->ReloadTexture(file.c_str());
 		return false;
 	}
-}
+}*/
 
 void ModuleRender::InitFramebuffer()
 {

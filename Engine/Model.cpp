@@ -4,15 +4,15 @@
 #include <assimp/postprocess.h>
 #include "Leaks.h"
 
-void AssimpLog(const char* msg, char* user) {
+/*void AssimpLog(const char* msg, char* user) {
 	if (msg) 
 		LOG("[info] Assimp Log: %s", msg);
-}
+}*/
 
 Model::Model()
 {
-	stream.callback = AssimpLog;
-	aiAttachLogStream(&stream);
+	//stream.callback = AssimpLog;
+	//aiAttachLogStream(&stream);
 }
 
 Model::~Model()
@@ -79,9 +79,9 @@ void Model::ReloadTexture(const char* path)
 		if (!skip)
 		{
 			Texture texture;
-			texture.id = App->textureLoader->LoadTexture(path);
+			texture.id = ModuleTexture::LoadTexture(path);
 			if (texture.id) {
-				texture.type = "texture_diffuse";
+				texture.type = "diffuse";
 				texture.path = path;
 				texture.wraps = GL_REPEAT;
 				texture.wrapt = GL_REPEAT;
@@ -125,16 +125,16 @@ void Model::LoadTextures(const aiScene* scene)
 			if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS) {
 				Texture texture;
 				LOG("[info] Trying to find texture on the path specified by the fbx: %s", file.C_Str());
-				texture.id = App->textureLoader->LoadTexture(file.C_Str());
+				texture.id = ModuleTexture::LoadTexture(file.C_Str());
 				if (!texture.id) {
 					LOG("[info] Failed to load textures.");
 					LOG("[info] Trying to find texture on the same folder as fbx: %s", (directory + '/' + file.C_Str()).c_str());
-					texture.id = App->textureLoader->LoadTexture(directory + '/' + file.C_Str());
+					texture.id = ModuleTexture::LoadTexture(directory + '/' + file.C_Str());
 					
 					if (!texture.id) {
 						LOG("[info] Failed to load textures.");
 						LOG("[info] Trying to find texture on the textures folder.");
-						texture.id = App->textureLoader->LoadTexture(std::string("./resources/textures/") + file.C_Str());
+						texture.id = ModuleTexture::LoadTexture(std::string("./resources/textures/") + file.C_Str());
 						if (!texture.id) {
 							LOG("[error] Texture not found.");
 							return;
@@ -151,7 +151,7 @@ void Model::LoadTextures(const aiScene* scene)
 					texture.path = file.C_Str();
 				}
 				LOG("[info] Texture loaded.");
-				texture.type = "texture_diffuse";
+				texture.type = "diffuse";
 				texture.wraps = GL_REPEAT;
 				texture.wrapt = GL_REPEAT;
 				texture.minfilter = GL_LINEAR_MIPMAP_LINEAR;

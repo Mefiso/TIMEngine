@@ -4,13 +4,8 @@
 #include "IL/devil_cpp_wrapper.hpp"
 #include "Leaks.h"
 
-ModuleTexture::ModuleTexture() : mipmap(true), force_flip(false)
-{
-}
-
-ModuleTexture::~ModuleTexture()
-{
-}
+bool ModuleTexture::mipmap = true;
+bool ModuleTexture::force_flip = false;
 
 bool ModuleTexture::Init()
 {
@@ -21,11 +16,6 @@ bool ModuleTexture::Init()
 	ilInit();
 	iluInit();
 
-	return true;
-}
-
-bool ModuleTexture::CleanUp()
-{
 	return true;
 }
 
