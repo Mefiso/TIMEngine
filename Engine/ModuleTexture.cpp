@@ -27,10 +27,10 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 
 	unsigned int textureId;
 
-	ilGenImages(1, &imgId); /* Generation of one image name */
-	ilBindImage(imgId); /* Binding of image name */
-	success = ilLoadImage(path.c_str()); /* Loading of image "image.jpg" */
-	if (success) /* If no error occured: */
+	ilGenImages(1, &imgId);								/* Generation of one image name */
+	ilBindImage(imgId);									/* Binding of image name */
+	success = ilLoadImage(path.c_str());				/* Loading of image "image.jpg" */
+	if (success)										/* If no error occured: */
 	{
 		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 		if (!success)
@@ -45,12 +45,12 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 		if (force_flip)
 			iluFlipImage();
 
-		glGenTextures(1, &textureId); /* Texture name generation */
-		glBindTexture(GL_TEXTURE_2D, textureId); /* Binding of texture name */
+		glGenTextures(1, &textureId);				/* Texture name generation */
+		glBindTexture(GL_TEXTURE_2D, textureId);	/* Binding of texture name */
 		
 		glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), ilGetInteger(IL_IMAGE_WIDTH),
 			ilGetInteger(IL_IMAGE_HEIGHT), 0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE,
-			ilGetData()); /* Texture specification */
+			ilGetData());							/* Texture specification */
 		
 		if (mipmap)
 			glGenerateMipmap(GL_TEXTURE_2D);

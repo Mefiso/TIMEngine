@@ -10,7 +10,6 @@
 #include "ModuleScene.h"
 #include "GameObject.h"
 #include "debugdraw.h"
-#include "Model.h"
 #include "SDL.h"
 #include "uSTimer.h"
 #include "Leaks.h"
@@ -63,7 +62,6 @@ bool ModuleRender::Init()
 	
 	// Create an OpenGL context associated with the window.
 	context = SDL_GL_CreateContext(App->window->window);
-	//SDL_GL_MakeCurrent(App->window->window, context);
 	GLenum err = glewInit();
 	// c check for errors
 	LOG("[info] Using Glew %s", glewGetString(GLEW_VERSION));
@@ -74,11 +72,6 @@ bool ModuleRender::Init()
 	LOG("[info] OpenGL version supported %s", glGetString(GL_VERSION));
 	LOG("[info] GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-	// They are enabled inside ImGui_ImplOpenGL3_RenderDrawData so setting them here is useless
-	//glEnable(GL_DEPTH_TEST); // Enable depth test
-	//glEnable(GL_CULL_FACE); // Enable cull backward faces
-	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
-	//glDisable(GL_CULL_FACE);
 #ifdef _DEBUG
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -95,11 +88,7 @@ bool ModuleRender::Init()
 	InitFramebuffer();
 	glViewport(0, 0, viewport_width, viewport_height);
 
-
-	// Load models
 	uSTimer test = uSTimer();
-	//modelLoaded = new Model();
-	//modelLoaded->Load("./resources/models/baker_house/BakerHouse.fbx");
 
 	msTimer.Start();
 
@@ -120,7 +109,7 @@ update_status ModuleRender::PreUpdate()
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	deltatime = msTimer.Stop() / 1000.f;		// TODO: CAMERA MOVEMENTS ARE NOT FLUID!?
+	deltatime = msTimer.Stop() / 1000.f;
 	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
@@ -137,8 +126,7 @@ update_status ModuleRender::Update()
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 	
-	//glViewport(0, 0, viewport_width, viewport_height);
-	//modelLoaded->Draw(defaultProgram);
+	// Render all GameObjects
 	for (std::vector<GameObject*>::const_iterator it = App->scene->GetRoot().begin(); it != App->scene->GetRoot().end(); ++it)
 	{
 		(*it)->Update();
@@ -162,8 +150,6 @@ update_status ModuleRender::PostUpdate()
 bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
-
-	RELEASE(modelLoaded);
 	glDeleteProgram(defaultProgram);
 	
 	//Destroy window
@@ -186,7 +172,7 @@ void ModuleRender::ProcessViewportEvents() {
 	TranslateCamera(deltatime);
 	RotateCameraKeys(deltatime);
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
+		//App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
 	}
 }
 

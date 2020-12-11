@@ -123,11 +123,6 @@ void ModuleWindow::ToggleResizable(bool resizable) const
 		SDL_SetWindowResizable(window, SDL_FALSE);
 }
 
-void ModuleWindow::SetWindowSize() const
-{
-	SDL_SetWindowSize(window, width, height);
-}
-
 void ModuleWindow::SetBrightness(float brightness) const
 {
 	SDL_SetWindowBrightness(window, brightness);

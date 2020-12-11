@@ -4,7 +4,6 @@
 #include "ModuleTexture.h"
 #include "ModuleRender.h"
 #include "ModuleCamera.h"
-#include "Model.h"
 #include "Leaks.h"
 
 
@@ -110,7 +109,7 @@ void WConfig::TextureHeader()
 		if (ImGui::BeginTabBar("Current model textures"))
 		{
 			std::string label;
-			for (unsigned int i = 0; i < App->renderer->modelLoaded->textures.size(); ++i)
+			/*for (unsigned int i = 0; i < App->renderer->modelLoaded->textures.size(); ++i)
 			{
 				label = "Texture " + std::to_string(i);
 				ImGui::PushItemWidth(100);
@@ -139,7 +138,7 @@ void WConfig::TextureHeader()
 						App->renderer->modelLoaded->textures[i]->magfilter = filtermode[4+indexFM];
 					ImGui::EndTabItem();
 				}
-			}
+			}*/
 			ImGui::EndTabBar();
 		}
 	}

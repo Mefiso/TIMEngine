@@ -25,10 +25,6 @@ public:
 
 	unsigned int defaultProgram = 0;								// ID of the Shading program
 
-	// Models
-	Model* modelLoaded = nullptr;
-	
-
 private:
 
 	int viewport_width = 0, viewport_height = 0;					// Initial size of Viewport window
@@ -65,5 +61,4 @@ private:
 	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables
 	void TranslateCamera(float deltaTime) const;					// Moves the application camera if an Input event has occurred
 	void RotateCameraKeys(float deltaTime) const;					// Rotates the application camera if an Input event has occurred
-
 };

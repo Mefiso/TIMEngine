@@ -2,7 +2,6 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "GL/glew.h"
-#include "Model.h"
 #include "Leaks.h"
 
 WProperties::WProperties(std::string name) : Window(name)
@@ -31,7 +30,7 @@ void WProperties::Draw()
 
 void WProperties::SelectPropertiesFromModel(const Model* model)
 {
-	selected_textures = model->textures;
+	/*selected_textures = model->textures;
 	scale.x = model->transformation.Col3(0).Length();
 	scale.y = model->transformation.Col3(1).Length();
 	scale.z = model->transformation.Col3(2).Length();
@@ -42,7 +41,7 @@ void WProperties::SelectPropertiesFromModel(const Model* model)
 
 	translation = model->transformation.Col3(3);
 
-	selected_meshes = model->meshes;
+	selected_meshes = model->meshes;*/
 }
 
 void WProperties::TransformationHeader() const
@@ -101,18 +100,18 @@ void WProperties::GeometryHeader() const
 	{
 		ImGui::TextUnformatted("Num meshes:");
 		ImGui::SameLine();
-		ImGui::TextColored(color, "%d", selected_meshes.size());
+		//ImGui::TextColored(color, "%d", selected_meshes.size());
 		ImGui::TextUnformatted("Num textures:");
 		ImGui::SameLine();
 		ImGui::TextColored(color, "%d", selected_textures.size());
 
-		for (unsigned int i = 0; i < selected_meshes.size(); ++i)
+		/*for (unsigned int i = 0; i < selected_meshes.size(); ++i)
 		{
 			ImGui::Separator();
 			ImGui::Text("Mesh %d", i);
 			ImGui::Text("Num vertices: %d", selected_meshes[i]->num_vertices);
 			ImGui::Text("Num triangles: %d", selected_meshes[i]->num_indices / 3);
-		}
+		}*/
 	}
 }
 

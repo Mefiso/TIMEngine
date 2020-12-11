@@ -12,7 +12,7 @@ class CMaterial;
 class GameObject
 {
 private:
-	static int objectCount;																				// Counter of number of GameObjects. Used to set the uID of each new instance of GameObject.
+	static int objectCount;																				// GLobal counter of number of GameObjects. Used to set the uID of each new instance of GameObject.
 
 public:
 
@@ -25,7 +25,7 @@ private:
 	std::vector<GameObject*> children;																	// Vector of pointers to GameObjects that are child of this GameObject
 	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
 	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
-	CTransform* transform;																				// Direct pointer to the Transform Component
+	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
 	bool hasTransform = false;																			// Indicates if this GameObject has a Transform COmponent // THIS SHOULD BE CONTROLLED IN CONSTRUCTOR and act accordignly
 
 public:

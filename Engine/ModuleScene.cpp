@@ -96,8 +96,4 @@ void ModuleScene::DropFile(const std::string& file)
 		// What if new scene has no transform?
 		//App->camera->onFocus((*root.end())->GetModelMatrix().Col3(3), 50);
 	}
-	else {
-		// Replace all textures because we only have one per model
-		//modelLoaded->ReloadTexture(file.c_str());
-	}
 }

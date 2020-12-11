@@ -37,8 +37,6 @@ bool ModuleEditor::Init()
 	ImGui_ImplOpenGL3_Init();
 
 	CreateViewport();
-
-	//SelectedModel();
 	
 	return true;
 }
@@ -107,7 +105,6 @@ void ModuleEditor::ReceiveEvent(const Event& event)
 	switch (event.type)
 	{
 	case Event::file_dropped:
-		//SelectedModel();
 		break;
 	}
 }
@@ -132,12 +129,6 @@ void ModuleEditor::Log(const char* input) const
 	if (console)
 		console->AddLog(input);
 }
-
-void ModuleEditor::SelectedModel() const
-{
-	properties->SelectPropertiesFromModel(App->renderer->modelLoaded);
-}
-
 
 void ModuleEditor::CreateMainMenu()
 {

@@ -53,10 +53,12 @@ public:
 	void onFocus(float3 center, float distance);							// Moves the camera to Focus the selected object, and places it at a suitable distance
 
 private:
+	// Process Camera Rotations
 	void RotateCamera(float yaw, float pitch);								// Auxiliar function of ProcessKeyboard() when rotation is needed
+	void ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre);	// Applies the corresponding changes when recieving a Event::orbit_event from ModuleInput
 
-	// Process movement
+	// Process Camera Movements
 	void ProcessMouseMovement(float xoffset, float yoffset);				// Applies the corresponding changes when recieving a Event::rotate_event from ModuleInput
 	void ProcessMouseScroll(float xoffset, float yoffset);					// Applies the corresponding changes when recieving a Event::wheel_event from ModuleInput
-	void ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre);	// Applies the corresponding changes when recieving a Event::orbit_event from ModuleInput
+	
 };

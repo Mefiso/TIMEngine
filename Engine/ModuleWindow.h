@@ -35,10 +35,9 @@ public:
 	int* GetWindowHeightPtr() { return &height; }
 
 	// ---------- Setters ---------- //
-	void ToggleBorderless(bool borderless) const;		// Toggles the Borderless mode of the application Window
+	void ToggleBorderless(bool borderless) const;	// Toggles the Borderless mode of the application Window
 	void ToggleFulldesktop(bool fulldesktop) const;	// Toggles the Fulldesktop mode of the application Window (resizes the window to maximum screen resolution)
 	void ToggleResizable(bool resizable) const;		// Toggles the Resizable option of the application Window
-	void SetWindowSize() const;						// Sets the application Window size to the values specified by 'width' and 'height' variables
 	void SetBrightness(float brightness) const;		// Sets the gamma value of the screen
 	void SetVsync(bool vsync);						// Toggles the VSync of the application Window
 };

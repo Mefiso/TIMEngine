@@ -12,7 +12,7 @@ private:
 
 	// Should it be a pointer to a vector?
 	std::vector<Texture*> selected_textures;				// Retrieves the Textures loaded in a model
-	std::vector<Mesh*> selected_meshes;						// Retrieves the Meshes loaded in a model
+	//std::vector<Mesh*> selected_meshes;						// Retrieves the Meshes loaded in a model
 	float3 scale = float3::zero;							// Gets the scale transforma of a Model
 	float3 rotation = float3::zero;							// Gets the rotation transforma of a Model
 	float3 translation = float3::zero;						// Gets the translation transform of a Model

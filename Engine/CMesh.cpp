@@ -46,17 +46,17 @@ void CMesh::Update()
 		unsigned int heightNr = 1;
 		for (unsigned int i = 0u; i < material->textures.size(); i++)
 		{
-			glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit
+			glActiveTexture(GL_TEXTURE0 + i);					// activate proper texture unit
 			std::string number;
 			std::string name = material->textures[i]->type;
 			if (name == "diffuse")
 				number = std::to_string(diffuseNr++);
 			else if (name == "specular")
-				number = std::to_string(specularNr++); // transfer unsigned int to stream
+				number = std::to_string(specularNr++);			// transfer unsigned int to stream
 			/*else if (name == "normal")
-				number = std::to_string(normalNr++); // transfer unsigned int to stream
+				number = std::to_string(normalNr++);			// transfer unsigned int to stream
 			else if (name == "height")
-				number = std::to_string(heightNr++); // transfer unsigned int to stream
+				number = std::to_string(heightNr++);			// transfer unsigned int to stream
 			*/
 			ModuleProgram::setInt(program, (name + number).c_str(), i);
 			glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);

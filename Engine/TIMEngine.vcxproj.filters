@@ -171,12 +171,6 @@
     </ClCompile>
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleDebugDraw.cpp" />
-    <ClCompile Include="Model.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="W_properties.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
@@ -483,12 +477,6 @@
     <ClInclude Include="debug_draw.hpp" />
     <ClInclude Include="ModuleDebugDraw.h" />
     <ClInclude Include="Leaks.h" />
-    <ClInclude Include="Model.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="W_properties.h">
       <Filter>EditorWindows</Filter>
     </ClInclude>
