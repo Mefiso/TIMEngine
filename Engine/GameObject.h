@@ -25,9 +25,8 @@ private:
 	std::vector<GameObject*> children;																	// Vector of pointers to GameObjects that are child of this GameObject
 	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
 	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
-	bool hasTransform = true;																			// Indicates if this GameObject has a Transform COmponent // THIS SHOULD BE CONTROLLED IN CONSTRUCTOR and act accordignly
 	CTransform* transform;																				// Direct pointer to the Transform Component
-
+	bool hasTransform = false;																			// Indicates if this GameObject has a Transform COmponent // THIS SHOULD BE CONTROLLED IN CONSTRUCTOR and act accordignly
 
 public:
 		
@@ -44,14 +43,16 @@ public:
 
 	// ---------- Getters ---------- //
 	char* GetName() { return name; }
-	CMaterial* GetMaterial() const;																			// Returns the Material Component of this GameObject, if there is one. If not, returns nullptr
+	CMaterial* GetMaterial() const;																		// Returns the Material Component of this GameObject, if there is one. If not, returns nullptr
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
 	// A getter for each kind of Component?
+	const bool HasTransform() const { return hasTransform; }
 
 	// ---------- Setters ---------- //
 	void ChangeName(char* _newName) { name = _newName; }
 	void SetTransform();
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
+	void SetHasTransform(bool _hasTransform) { hasTransform = _hasTransform; }
 
 };

@@ -116,10 +116,6 @@ bool ModuleRender::Start()
 
 update_status ModuleRender::PreUpdate()
 {
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-	}
-	
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

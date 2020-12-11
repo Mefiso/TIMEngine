@@ -74,6 +74,7 @@ void ModuleScene::LoadScene(std::string const& path)
 void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* object)
 {
 	object->AddComponent(TRANSFORM, nullptr);
+	object->SetHasTransform(true);
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -94,7 +95,7 @@ void ModuleScene::DropFile(const std::string& file)
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
 		LoadScene(file);
 		// What if new scene has no transform?
-		//App->camera->onFocus((*root.end())->GetModelMatrix()->Col3(3), 50);
+		App->camera->onFocus((*root.end())->GetModelMatrix().Col3(3), 50);
 	}
 	else {
 		// Replace all textures because we only have one per model

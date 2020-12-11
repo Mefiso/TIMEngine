@@ -107,7 +107,7 @@ void ModuleEditor::ReceiveEvent(const Event& event)
 	switch (event.type)
 	{
 	case Event::file_dropped:
-		SelectedModel();
+		//SelectedModel();
 		break;
 	}
 }

@@ -39,6 +39,10 @@ bool ModuleInput::Init()
 
 update_status ModuleInput::PreUpdate()
 {
+	if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
+
 	SDL_Event sdlEvent;
 
 	memset(windowEvents, false, WE_COUNT * sizeof(bool));
@@ -104,7 +108,7 @@ update_status ModuleInput::PreUpdate()
 		case SDL_MOUSEMOTION:
 			if (App->editor->IsViewportHovered()) {
 				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
-					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {																							// REIEW THIS MEEEEEEN
 						SDL_SetRelativeMouseMode(SDL_TRUE);
 					}
 					Event ev(Event::rotate_event);

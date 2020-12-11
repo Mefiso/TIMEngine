@@ -29,7 +29,7 @@ void WViewport::Draw()
 		height = win_size.y;
 		App->camera->onResize(width / height);
 	}
-
+	
 	if (ImGui::IsWindowHovered()) {
 		App->renderer->ProcessViewportEvents();
 		viewportIsHovered = true;
