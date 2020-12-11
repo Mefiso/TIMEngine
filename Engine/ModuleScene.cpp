@@ -33,8 +33,8 @@ bool ModuleScene::Start()
 
 bool ModuleScene::CleanUp()
 {
-	for (std::vector<Texture>::iterator it = loadedTextures.begin(), end = loadedTextures.end(); it != end; ++it)
-		glDeleteTextures(1, &(it->id));
+	for (std::vector<Texture*>::iterator it = loadedTextures.begin(), end = loadedTextures.end(); it != end; ++it)
+		glDeleteTextures(1, &((*it)->id));
 	loadedTextures.clear();
 	
 	return true;
@@ -67,7 +67,6 @@ void ModuleScene::LoadScene(std::string const& path)
 		GameObject* newModel = new GameObject();
 		root.push_back(newModel);
 		ProcessNode(scene->mRootNode, scene, newModel);
-
 	}
 }
 
@@ -95,7 +94,7 @@ void ModuleScene::DropFile(const std::string& file)
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
 		LoadScene(file);
 		// What if new scene has no transform?
-		App->camera->onFocus((*root.end())->GetModelMatrix().Col3(3), 50);
+		//App->camera->onFocus((*root.end())->GetModelMatrix().Col3(3), 50);
 	}
 	else {
 		// Replace all textures because we only have one per model

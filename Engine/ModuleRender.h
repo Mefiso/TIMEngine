@@ -49,7 +49,7 @@ public:
 	update_status Update() override;								// Operations performed at each frame
 	update_status PostUpdate() override;							// Operations that must be performed just after each frame
 	bool CleanUp() override;										// Clean memory allocated by this Module
-	//void ReceiveEvent(const Event& event) override;					// Recieve events from App (that recieves events from other Modules)
+	void ReceiveEvent(const Event& event) override;					// Recieve events from App (that recieves events from other Modules)
 
 	// ---------- Getters ---------- //
 	unsigned int GetTextureColorbuffer() { return textureColorbuffer; }
@@ -59,7 +59,6 @@ public:
 	// ---------- Setters ---------- //
 
 	// callback funcs
-	//bool DropFile(const std::string& file);							// Called upon recieving a Drag&Drop event. Replaces the current Model for the new one if 'file' is an .fbx.
 	void ProcessViewportEvents();									// Called from ModuleEditor, when an input is recieved inside the viewport. Perfoms the necessary operations for the corresponding input. This allows the control of the actions performed when the input is captured inside the viewport.
 
 private:

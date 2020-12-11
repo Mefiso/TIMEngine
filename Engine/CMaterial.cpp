@@ -31,9 +31,9 @@ std::vector<Texture*>& CMaterial::LoadMaterialTextures(const aiMaterial* materia
 			bool skip = false;
 			for (unsigned j = 0; j < App->scene->loadedTextures.size(); ++j)
 			{
-				if (std::strcmp(App->scene->loadedTextures[j].path.data(), file.C_Str()) == 0)
+				if (std::strcmp(App->scene->loadedTextures[j]->path.data(), file.C_Str()) == 0)
 				{
-					matTextures->push_back(&App->scene->loadedTextures[j]);
+					matTextures->push_back(App->scene->loadedTextures[j]);
 					skip = true;
 					break;
 				}
@@ -41,19 +41,19 @@ std::vector<Texture*>& CMaterial::LoadMaterialTextures(const aiMaterial* materia
 			if (!skip)
 			{
 				bool texFound = true;
-				Texture texture;
+				Texture* texture = new Texture();
 				LOG("[info] Trying to find texture on the path specified by the fbx: %s", file.C_Str());
-				texture.id = ModuleTexture::LoadTexture(file.C_Str());
-				if (!texture.id) {
+				texture->id = ModuleTexture::LoadTexture(file.C_Str());
+				if (!texture->id) {
 					LOG("[info] Failed to load textures.");
 					LOG("[info] Trying to find texture on the same folder as fbx: %s", (path + '/' + file.C_Str()).c_str());
-					texture.id = ModuleTexture::LoadTexture(path + '/' + file.C_Str());
+					texture->id = ModuleTexture::LoadTexture(path + '/' + file.C_Str());
 
-					if (!texture.id) {
+					if (!texture->id) {
 						LOG("[info] Failed to load textures.");
 						LOG("[info] Trying to find texture on the textures folder.");
-						texture.id = ModuleTexture::LoadTexture(std::string("./resources/textures/") + file.C_Str());
-						if (!texture.id) {
+						texture->id = ModuleTexture::LoadTexture(std::string("./resources/textures/") + file.C_Str());
+						if (!texture->id) {
 							LOG("[error] Texture %s not found.", file.C_Str());
 							texFound = false;
 						}
@@ -61,14 +61,14 @@ std::vector<Texture*>& CMaterial::LoadMaterialTextures(const aiMaterial* materia
 				}
 				if (texFound) {
 					LOG("[info] Texture loaded.");
-					texture.path = file.C_Str();
-					texture.type = "diffuse";
-					texture.wraps = GL_REPEAT;
-					texture.wrapt = GL_REPEAT;
-					texture.minfilter = GL_LINEAR_MIPMAP_LINEAR;
-					texture.magfilter = GL_LINEAR;
+					texture->path = file.C_Str();
+					texture->type = "diffuse";
+					texture->wraps = GL_REPEAT;
+					texture->wrapt = GL_REPEAT;
+					texture->minfilter = GL_LINEAR_MIPMAP_LINEAR;
+					texture->magfilter = GL_LINEAR;
 					App->scene->loadedTextures.push_back(texture);
-					matTextures->push_back(&App->scene->loadedTextures[App->scene->loadedTextures.size() - 1]);
+					matTextures->push_back(App->scene->loadedTextures[App->scene->loadedTextures.size() - 1]);
 				}
 			}
 		}

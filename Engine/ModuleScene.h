@@ -12,7 +12,7 @@ struct Texture;
 class ModuleScene : public Module
 {
 public:
-	std::vector<Texture> loadedTextures;
+	std::vector<Texture*> loadedTextures;
 
 private:
 	std::vector<GameObject*> root;

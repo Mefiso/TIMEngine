@@ -172,15 +172,15 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-/*void ModuleRender::ReceiveEvent(const Event& event)
+void ModuleRender::ReceiveEvent(const Event& event)
 {
 	switch (event.type)
 	{
 	case Event::file_dropped:
-		DropFile(event.string.ptr);
+		App->scene->GetRoot()[App->scene->GetRoot().size() - 1]->SetProgram(defaultProgram);
 		break;
 	}
-}*/
+}
 
 void ModuleRender::ProcessViewportEvents() {
 	TranslateCamera(deltatime);
@@ -189,20 +189,6 @@ void ModuleRender::ProcessViewportEvents() {
 		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
 	}
 }
-
-/*bool ModuleRender::DropFile(const std::string& file)
-{
-	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
-		modelLoaded->Load(file);
-		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
-		return true;
-	}
-	else {
-		// Replace all textures because we only have one per model
-		modelLoaded->ReloadTexture(file.c_str());
-		return false;
-	}
-}*/
 
 void ModuleRender::InitFramebuffer()
 {
