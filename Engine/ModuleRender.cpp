@@ -172,7 +172,7 @@ void ModuleRender::ProcessViewportEvents() {
 	TranslateCamera(deltatime);
 	RotateCameraKeys(deltatime);
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-		//App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
+		App->camera->onFocus(App->scene->GetRoot()[App->scene->GetRoot().size() - 1]->GetModelMatrix().Col3(3), 10); // TODO: WE NEED THE ABILITY TO SELECT A GAMEOBJECT
 	}
 }
 
