@@ -94,7 +94,7 @@ void ModuleScene::DropFile(const std::string& file)
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
 		LoadScene(file);
 		// What if new scene has no transform?
-		App->camera->onFocus((*root.end())->GetModelMatrix()->Col3(3), 50);
+		//App->camera->onFocus((*root.end())->GetModelMatrix()->Col3(3), 50);
 	}
 	else {
 		// Replace all textures because we only have one per model

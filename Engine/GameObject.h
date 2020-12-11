@@ -45,7 +45,7 @@ public:
 	// ---------- Getters ---------- //
 	char* GetName() { return name; }
 	CMaterial* GetMaterial() const;																			// Returns the Material Component of this GameObject, if there is one. If not, returns nullptr
-	float4x4* GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
+	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
 	// A getter for each kind of Component?
 
 	// ---------- Setters ---------- //

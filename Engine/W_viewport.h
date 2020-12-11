@@ -21,6 +21,6 @@ public:
 
 	void SetColorbuffer(unsigned int _texid, unsigned int _width, unsigned int _height);
 
-	unsigned int GetWidth() { return width; }
-	unsigned int GetHeight() { return height; }
+	float GetWidth() { return width; }
+	float GetHeight() { return height; }
 };

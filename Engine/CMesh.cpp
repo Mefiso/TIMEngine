@@ -30,10 +30,10 @@ void CMesh::Update()
 {
 	ModuleProgram::use(program);
 
-	float4x4* model = owner->GetModelMatrix();
-	ModuleProgram::setMat4(program, "model", *model);
+	float4x4 model = owner->GetModelMatrix();
+	ModuleProgram::setMat4(program, "model", model);
 	ModuleProgram::setMat4(program, "view", App->camera->ViewMatrix());
-	ModuleProgram::setMat4(program, "projection", App->camera->ProjectionMatrix());
+	ModuleProgram::setMat4(program, "proj", App->camera->ProjectionMatrix());
 	
 	
 	CMaterial* material = owner->GetMaterial();

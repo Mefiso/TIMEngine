@@ -112,17 +112,15 @@ CMaterial* GameObject::GetMaterial() const
 	return nullptr;
 }
 
-float4x4* GameObject::GetModelMatrix() const
+float4x4 GameObject::GetModelMatrix() const
 {
-	if (hasTransform)
-	{
+	//if (hasTransform)
+	//{
 		if (parent && parent->hasTransform)
-			return &(*parent->GetModelMatrix() * this->transform->GetTransformationMatrix());
+			return (parent->GetModelMatrix() * this->transform->GetTransformationMatrix());
 		else
-			return  &this->transform->GetTransformationMatrix();
-	}
-	else
-		return nullptr;
+			return  this->transform->GetTransformationMatrix();
+	//}
 }
 
 void GameObject::SetParent(GameObject* _newParent)

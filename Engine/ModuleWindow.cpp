@@ -35,8 +35,8 @@ bool ModuleWindow::Init()
 		//Create window
 		SDL_DisplayMode mode;
 		SDL_GetDesktopDisplayMode(0, &mode);
-		width = mode.w;
-		height = mode.h;
+		width = (int)(mode.w*0.6);
+		height = (int)(mode.h*0.6);
 		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
 		
 		if(FULLSCREEN == true)
