@@ -24,7 +24,7 @@ enum main_states
 
 Application* App = NULL;
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
 	atexit(DumpLeaks);
 	int main_return = EXIT_FAILURE;
@@ -70,7 +70,7 @@ int main(int argc, char ** argv)
 			if (update_return == UPDATE_STOP)
 				state = MAIN_FINISH;
 		}
-			break;
+		break;
 
 		case MAIN_FINISH:
 
@@ -85,9 +85,7 @@ int main(int argc, char ** argv)
 			state = MAIN_EXIT;
 
 			break;
-
 		}
-
 	}
 	RELEASE(App);
 	LOG("Bye :)\n");

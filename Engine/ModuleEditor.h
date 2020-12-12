@@ -22,7 +22,7 @@ private:
 	ImGuiIO* io = nullptr;											// Pointer to the inputs/outputs setting of ImGui
 
 	//  ------ ImGui Windows ------- //
-	WViewport* viewport = nullptr;									
+	WViewport* viewport = nullptr;
 	WConsole* console = nullptr;
 	WMonitor* monitor = nullptr;
 	WConfig* configuration = nullptr;
@@ -30,7 +30,6 @@ private:
 	WAbout* about = nullptr;
 
 	std::vector<Window*> editorWindows;								// Vector containig the references to each ImGui window
-
 
 public:
 
@@ -46,7 +45,6 @@ public:
 	void ReceiveEvent(const Event& event) override;					// Recieve events from App (that recieves events from other Modules)
 
 	const bool IsViewportHovered() const;							// Checks if the W_Viewport is hovered to allow the process of mouse inputs. Called from ModuleInput
-
 
 	void SendEvent(const SDL_Event& event) const;					// Processes all ImGui events
 

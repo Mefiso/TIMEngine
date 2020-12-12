@@ -7,9 +7,8 @@
 #include "Math/float3x3.h"
 #include "Leaks.h"
 
-
 ModuleCamera::ModuleCamera(float3 position, float3 up, float near_plane, float far_plane) : Module(),
-	MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
+MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetViewPlaneDistances(near_plane, far_plane);
@@ -83,16 +82,16 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 		frustum.SetPos(frustum.Pos() - float3::unitY * MoveCelerity);
 		break;
 	case PITCH_UP:
-		RotateCamera(0, MoveCelerity/3);
+		RotateCamera(0, MoveCelerity / 3);
 		break;
 	case PITCH_DOWN:
-		RotateCamera(0, -MoveCelerity/3);
+		RotateCamera(0, -MoveCelerity / 3);
 		break;
 	case YAW_LEFT:
-		RotateCamera(MoveCelerity/3, 0);
+		RotateCamera(MoveCelerity / 3, 0);
 		break;
 	case YAW_RIGHT:
-		RotateCamera(-MoveCelerity/3, 0);
+		RotateCamera(-MoveCelerity / 3, 0);
 		break;
 	}
 }
@@ -143,7 +142,6 @@ void ModuleCamera::onFocus(float3 center, float distance)
 
 void ModuleCamera::RotateCamera(float yaw, float pitch)
 {
-	
 	if (yaw != 0.f)
 	{
 		Quat yawRotation = Quat::RotateY(yaw);

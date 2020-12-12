@@ -59,7 +59,7 @@ ModuleRender::~ModuleRender()
 bool ModuleRender::Init()
 {
 	LOG("Creating Renderer context");
-	
+
 	// Create an OpenGL context associated with the window.
 	context = SDL_GL_CreateContext(App->window->window);
 	GLenum err = glewInit();
@@ -80,7 +80,7 @@ bool ModuleRender::Init()
 #endif
 
 	defaultProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\vertex_shader.glsl", ".\\resources\\shaders\\fragment_shader.glsl");
-	
+
 	SDL_DisplayMode mode;
 	SDL_GetDesktopDisplayMode(0, &mode);
 	viewport_width = (int)(mode.w * 0.6f);
@@ -125,7 +125,7 @@ update_status ModuleRender::Update()
 
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
-	
+
 	// Render all GameObjects
 	for (std::vector<GameObject*>::const_iterator it = App->scene->GetRoot().begin(); it != App->scene->GetRoot().end(); ++it)
 	{
@@ -151,7 +151,7 @@ bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
 	glDeleteProgram(defaultProgram);
-	
+
 	//Destroy window
 	SDL_GL_DeleteContext(context);
 
@@ -216,7 +216,7 @@ void ModuleRender::TranslateCamera(float deltaTime) const
 
 	// Speed increase/decrease
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
-		App->camera->ProcessSpeed(2);	
+		App->camera->ProcessSpeed(2);
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
 		App->camera->ProcessSpeed(0.5f);
@@ -234,4 +234,3 @@ void ModuleRender::RotateCameraKeys(float deltaTime) const
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		App->camera->ProcessKeyboard(YAW_RIGHT, deltaTime);
 }
-

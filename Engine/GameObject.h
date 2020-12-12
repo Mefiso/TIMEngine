@@ -29,7 +29,7 @@ private:
 	bool hasTransform = false;																			// Indicates if this GameObject has a Transform COmponent // THIS SHOULD BE CONTROLLED IN CONSTRUCTOR and act accordignly
 
 public:
-		
+
 	GameObject();																						// Constructor
 	~GameObject();																						// Destructor
 
@@ -39,7 +39,6 @@ public:
 	void RemoveComponent(int _cID);																		// Detach a component from this GameObject
 	void RemoveChild(int childID);																		// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
 	void AddChild(GameObject* _newChild);																// Subfunction of SetParent(). Places another GameObject as a child of this one
-	
 
 	// ---------- Getters ---------- //
 	char* GetName() { return name; }
@@ -54,5 +53,4 @@ public:
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
 	void SetHasTransform(bool _hasTransform) { hasTransform = _hasTransform; }
-
 };

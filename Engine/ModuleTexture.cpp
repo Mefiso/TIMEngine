@@ -47,25 +47,24 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 
 		glGenTextures(1, &textureId);				/* Texture name generation */
 		glBindTexture(GL_TEXTURE_2D, textureId);	/* Binding of texture name */
-		
+
 		glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), ilGetInteger(IL_IMAGE_WIDTH),
 			ilGetInteger(IL_IMAGE_HEIGHT), 0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE,
 			ilGetData());							/* Texture specification */
-		
+
 		if (mipmap)
 			glGenerateMipmap(GL_TEXTURE_2D);
-		
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		
 	}
 	else
 	{
 		/* Error occured */
 		LOG("[error] Could not Load image %s", path.c_str())
-		return false;
+			return false;
 	}
 	ilDeleteImages(1, &imgId);
 

@@ -13,7 +13,7 @@ public:
 		elapsed = 0u;
 	}
 	unsigned int Read() const {
-		return stopped ? elapsed / (float) freq : (SDL_GetPerformanceCounter() - start) / (float) freq;
+		return stopped ? elapsed / (float)freq : (SDL_GetPerformanceCounter() - start) / (float)freq;
 	}
 	unsigned int Stop() {
 		elapsed = SDL_GetPerformanceCounter() - start;

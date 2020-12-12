@@ -29,10 +29,9 @@ private:
 
 	int viewport_width = 0, viewport_height = 0;					// Initial size of Viewport window
 	unsigned int FBO = 0, textureColorbuffer = 0, RBO = 0;			// IDs of the Viewport buffer objects and texture
-	
+
 	MSTimer msTimer;												// Timer object
 	float deltatime;												// Time between each frame, in milliseconds
-
 
 public:
 	ModuleRender();													// Constructor
