@@ -34,8 +34,14 @@ bool ModuleScene::Start()
 bool ModuleScene::CleanUp()
 {
 	for (std::vector<Texture*>::iterator it = loadedTextures.begin(), end = loadedTextures.end(); it != end; ++it)
+	{
 		glDeleteTextures(1, &((*it)->id));
+		RELEASE(*it);
+	}
 	loadedTextures.clear();
+
+	for (std::vector<GameObject*>::iterator it = root.begin(), end = root.end(); it != end; ++it)
+		RELEASE(*it);
 
 	return true;
 }

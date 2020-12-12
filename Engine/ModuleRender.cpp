@@ -83,8 +83,8 @@ bool ModuleRender::Init()
 
 	SDL_DisplayMode mode;
 	SDL_GetDesktopDisplayMode(0, &mode);
-	viewport_width = (int)(mode.w * 0.6f);
-	viewport_height = (int)(mode.h * 0.6f);
+	viewport_width = (int)(mode.w * 0.8f);
+	viewport_height = (int)(mode.h * 0.8f);
 	InitFramebuffer();
 	glViewport(0, 0, viewport_width, viewport_height);
 
