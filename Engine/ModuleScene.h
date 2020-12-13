@@ -32,6 +32,7 @@ public:
 	const std::vector<GameObject*>& GetRoot() const { return root; }
 
 private:
+
 	void LoadScene(std::string const& path);									// Loads a model from a file indicated by _path, and creates the corresponding GameObjects and Components
 	void ProcessNode(aiNode* node, const aiScene* scene, GameObject* object);	// Subfuction of LoadScene. Processes an Assimp Node from the loaded model and creates the corresponding GameObjects and Components from the node and its childs recursively
 	void DropFile(const std::string& file);										// Called when a Drop File event is recieved. Calls Load Scene.

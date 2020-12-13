@@ -6,6 +6,7 @@
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "W_viewport.h"
 #include "W_console.h"
+#include "W_hierarchy.h"
 #include "W_monitor.h"
 #include "W_config.h"
 #include "W_about.h"
@@ -18,6 +19,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(console = new WConsole("Console"));
 	editorWindows.push_back(monitor = new WMonitor("Monitoring window"));
 	editorWindows.push_back(configuration = new WConfig("Configuration"));
+	editorWindows.push_back(hierarchy = new WHierarchy("Hierarchy"));
 	editorWindows.push_back(about = new WAbout("About"));
 	//editorWindows.push_back(properties = new WProperties("Properties"));
 }
@@ -56,7 +58,7 @@ update_status ModuleEditor::Update()
 	CreateMainMenu();
 
 	//CreateViewport();
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
 		if (std::strcmp((*it)->GetWindowName(), "About"))
