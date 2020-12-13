@@ -8,6 +8,7 @@
 class Window;
 class WViewport;
 class WConsole;
+class WHierarchy;
 class WMonitor;
 class WConfig;
 class WProperties;
@@ -24,6 +25,7 @@ private:
 	//  ------ ImGui Windows ------- //
 	WViewport* viewport = nullptr;
 	WConsole* console = nullptr;
+	WHierarchy* hierarchy = nullptr;
 	WMonitor* monitor = nullptr;
 	WConfig* configuration = nullptr;
 	WProperties* properties = nullptr;
