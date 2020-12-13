@@ -56,16 +56,16 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	{
 	case TRANSFORM:
 		newComp = new CTransform(this);
-		transform = (CTransform*) newComp;
+		transform = (CTransform*)newComp;
 		break;
 	case MESH:
-		newComp = new CMesh(this, (aiMesh*) arg);
+		newComp = new CMesh(this, (aiMesh*)arg);
 		break;
 	case MATERIAL:
-		newComp = new CMaterial(this, (aiMaterial*) arg, path);
+		newComp = new CMaterial(this, (aiMaterial*)arg, path);
 		break;
 	}
-	
+
 	components.push_back(newComp);
 }
 
@@ -73,11 +73,11 @@ void GameObject::RemoveComponent(int _cID)
 {
 	int toRemove = -1;
 
-	for (unsigned int i = 0u; i<components.size(); ++i )
+	for (unsigned int i = 0u; i < components.size(); ++i)
 		if (components[i]->ID == _cID) {
 			toRemove = (int)i;
 			break;
-		}	
+		}
 	if (toRemove >= 0) {
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);

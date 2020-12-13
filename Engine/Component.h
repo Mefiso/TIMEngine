@@ -26,11 +26,10 @@ protected:
 
 	GameObject* owner = nullptr;							// Pointer to the GameObject this Component belongs
 
-
 public:
-	
+
 	Component(ComponentType _type, GameObject* _owner);		// Constructor
-	~Component();											// Destructor
+	virtual ~Component();									// Destructor
 
 	virtual void Update() {}								// Processes all modifications made to this Component each frame
 

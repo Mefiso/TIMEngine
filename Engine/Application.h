@@ -27,7 +27,6 @@ private:
 
 	std::vector<Module*> modules;
 
-
 public:
 
 	Application();

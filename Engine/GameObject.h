@@ -32,7 +32,7 @@ private:
 
 
 public:
-		
+
 	GameObject();																						// Constructor
 	~GameObject();																						// Destructor
 

@@ -34,9 +34,15 @@ bool ModuleScene::Start()
 bool ModuleScene::CleanUp()
 {
 	for (std::vector<Texture*>::iterator it = loadedTextures.begin(), end = loadedTextures.end(); it != end; ++it)
+	{
 		glDeleteTextures(1, &((*it)->id));
+		RELEASE(*it);
+	}
 	loadedTextures.clear();
-	
+
+	for (std::vector<GameObject*>::iterator it = root.begin(), end = root.end(); it != end; ++it)
+		RELEASE(*it);
+
 	return true;
 }
 
@@ -50,7 +56,6 @@ void ModuleScene::ReceiveEvent(const Event& event)
 	}
 }
 
-
 void ModuleScene::LoadScene(std::string const& path)
 {
 	Assimp::Importer importer;
@@ -63,7 +68,7 @@ void ModuleScene::LoadScene(std::string const& path)
 	{
 		directory = path.substr(0, path.find_last_of('/')).size() == path.size() ?
 			path.substr(0, path.find_last_of('\\')) : path.substr(0, path.find_last_of('/'));
-		
+
 		GameObject* newModel = new GameObject();
 		root.push_back(newModel);
 		ProcessNode(scene->mRootNode, scene, newModel);
@@ -77,9 +82,9 @@ void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* ob
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		object->AddComponent(MESH, (void*) mesh);
+		object->AddComponent(MESH, (void*)mesh);
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		object->AddComponent(MATERIAL, (void*) material, directory); 
+		object->AddComponent(MATERIAL, (void*)material, directory);
 	}
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
 	{
@@ -94,6 +99,6 @@ void ModuleScene::DropFile(const std::string& file)
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
 		LoadScene(file);
 		// What if new scene has no transform?
-		App->camera->onFocus(root[root.size()-1]->GetModelMatrix().Col3(3), 10);
+		App->camera->onFocus(root[root.size() - 1]->GetModelMatrix().Col3(3), 10);
 	}
 }

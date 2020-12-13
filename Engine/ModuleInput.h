@@ -30,9 +30,8 @@ private:
 	KeyState* keyboard_state = nullptr;												// Pointer to an array that stores the KeyState for each key on 'keyboard'
 	KeyState mouse_buttons[NUM_MOUSE_BUTTONS];										// Array that stores the KeyState for each mouse button
 
-
 public:
-	
+
 	ModuleInput();																	// Constructor
 	~ModuleInput();																	// Destructor
 
@@ -46,5 +45,4 @@ public:
 	KeyState GetKey(int id) const { return keyboard_state[id]; }					// Returns the keyboard inputs produced last frame
 	KeyState GetMouseButtonDown(int id) const { return mouse_buttons[id - 1]; }		// Returns the mouse inputs produced last frame
 	bool GetWindowEvent(EventWindow ev) const { return windowEvents[ev]; }			// Returns the window events produced last frame
-
 };

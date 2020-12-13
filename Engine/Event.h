@@ -1,6 +1,5 @@
 #pragma once
 
-
 struct Event
 {
 	enum EventType
@@ -25,7 +24,6 @@ struct Event
 		{
 			int x = 0, y = 0;
 		} point2d;
-
 	};
 
 	Event(EventType type) : type(type)

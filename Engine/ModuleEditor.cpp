@@ -26,7 +26,6 @@ ModuleEditor::ModuleEditor()
 
 ModuleEditor::~ModuleEditor()
 {
-	
 }
 
 bool ModuleEditor::Init()
@@ -39,7 +38,7 @@ bool ModuleEditor::Init()
 	ImGui_ImplOpenGL3_Init();
 
 	CreateViewport();
-	
+
 	return true;
 }
 
@@ -82,7 +81,6 @@ update_status ModuleEditor::PostUpdate()
 
 bool ModuleEditor::CleanUp()
 {
-	
 	LOG("Destroying Editor");
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 		RELEASE(*it);

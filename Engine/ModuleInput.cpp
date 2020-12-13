@@ -32,10 +32,9 @@ bool ModuleInput::Init()
 		LOG("[error] SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
-	
+
 	return ret;
 }
-
 
 update_status ModuleInput::PreUpdate()
 {
@@ -144,7 +143,7 @@ update_status ModuleInput::PreUpdate()
 			ev.string.ptr = sdlEvent.drop.file;
 			App->BroadcastEvent(ev);
 			SDL_free(sdlEvent.drop.file);
-			break; 
+			break;
 		}
 		case SDL_MOUSEBUTTONDOWN:
 			mouse_buttons[sdlEvent.button.button - 1] = KEY_DOWN;

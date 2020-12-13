@@ -18,7 +18,6 @@ private:
 
 	int width, height;								// Size of the application Window
 
-
 public:
 	ModuleWindow();									// Constructor
 	virtual ~ModuleWindow();						// Destructor

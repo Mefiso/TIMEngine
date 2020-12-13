@@ -12,5 +12,5 @@ public:
 	CMaterial(GameObject* _owner, const aiMaterial* material, const std::string& path);
 	~CMaterial();
 
-	std::vector<Texture*>& LoadMaterialTextures(const aiMaterial* material, aiTextureType type, const std::string& name, const std::string& path);
+	std::vector<Texture*>* LoadMaterialTextures(const aiMaterial* material, aiTextureType type, const std::string& name, const std::string& path);
 };

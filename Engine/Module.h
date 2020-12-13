@@ -17,9 +17,9 @@ public:
 	{
 	}
 
-	virtual bool Init() 
+	virtual bool Init()
 	{
-		return true; 
+		return true;
 	}
 
 	virtual bool Start()
@@ -42,9 +42,9 @@ public:
 		return UPDATE_CONTINUE;
 	}
 
-	virtual bool CleanUp() 
-	{ 
-		return true; 
+	virtual bool CleanUp()
+	{
+		return true;
 	}
 
 	virtual void ReceiveEvent(const Event& event) { }

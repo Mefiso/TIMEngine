@@ -9,17 +9,20 @@
 
 CMaterial::CMaterial(GameObject* _owner, const aiMaterial* material, const std::string& path) : Component(MATERIAL, _owner)
 {
-	std::vector<Texture*> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse", path);
-	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-	std::vector<Texture*> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "specular", path);
-	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+	std::vector<Texture*>* diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse", path);
+	textures.insert(textures.end(), diffuseMaps->begin(), diffuseMaps->end());
+	std::vector<Texture*>* specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "specular", path);
+	textures.insert(textures.end(), specularMaps->begin(), specularMaps->end());
+	RELEASE(diffuseMaps);
+	RELEASE(specularMaps);
 }
 
 CMaterial::~CMaterial()
 {
+	textures.clear();
 }
 
-std::vector<Texture*>& CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType type, const std::string& name, const std::string& path)
+std::vector<Texture*>* CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType type, const std::string& name, const std::string& path)
 {
 	std::vector<Texture*>* matTextures = new std::vector<Texture*>();
 	matTextures->reserve(material->GetTextureCount(type));
@@ -73,5 +76,5 @@ std::vector<Texture*>& CMaterial::LoadMaterialTextures(const aiMaterial* materia
 			}
 		}
 	}
-	return *matTextures;
+	return matTextures;
 }

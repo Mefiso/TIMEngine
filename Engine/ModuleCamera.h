@@ -21,8 +21,8 @@ enum Camera_Movement {
 const float SPEED = 2.5f;													// Base value of MovementSpeed
 const float SENSITIVITY = .005f;											// Base value of MouseSensitivity
 const float VERTICALFOV = DegToRad(60.f);									// Initial Vertical FOV of the camera
-const float ASPECTRATIO = SCREEN_WIDTH / (float) SCREEN_HEIGHT;				// Initial Aspect ratio of the camera Frustrum
-//const float ZOOM = .1f;											
+const float ASPECTRATIO = SCREEN_WIDTH / (float)SCREEN_HEIGHT;				// Initial Aspect ratio of the camera Frustrum
+//const float ZOOM = .1f;
 
 class ModuleCamera : public Module
 {
@@ -32,7 +32,6 @@ public:
 	float MovementSpeed;													// Multiplier of the Camera movement speed when using the keyboard
 	float MouseSensitivity;													// Multiplier of the Mouse sensitivity
 	Frustum frustum;														// Identifier of the Camera frustrum Object
-
 
 public:
 	ModuleCamera(float3 position = float3(0, 1, 7), float3 up = float3(0, 1, 0), float near_plane = 0.1f, float far_plane = 200.0f);	// Constructor
@@ -47,7 +46,7 @@ public:
 	float4x4 ProjectionMatrix();											// Returns the Projection matrix of the Camera
 
 	// Process movement
-	void ProcessKeyboard(Camera_Movement direction, float deltaTime);		// Applies the corresponding changes when an input from keyboard is detected and the Viewport is hovered. (Editor.PreUpdate > Rendered.ProcessViewportEvents) 
+	void ProcessKeyboard(Camera_Movement direction, float deltaTime);		// Applies the corresponding changes when an input from keyboard is detected and the Viewport is hovered. (Editor.PreUpdate > Rendered.ProcessViewportEvents)
 	void ProcessSpeed(float multiplier);									// Multiplies the current MovementSpeed by a factor
 	void onResize(float aspect_ratio);										// Sets the camera FOV and aspectratio when resizing the application Window
 	void onFocus(float3 center, float distance);							// Moves the camera to Focus the selected object, and places it at a suitable distance
@@ -60,5 +59,4 @@ private:
 	// Process Camera Movements
 	void ProcessMouseMovement(float xoffset, float yoffset);				// Applies the corresponding changes when recieving a Event::rotate_event from ModuleInput
 	void ProcessMouseScroll(float xoffset, float yoffset);					// Applies the corresponding changes when recieving a Event::wheel_event from ModuleInput
-	
 };

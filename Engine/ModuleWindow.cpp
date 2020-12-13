@@ -18,7 +18,7 @@ bool ModuleWindow::Init()
 	LOG("Init SDL window & surface");
 	bool ret = true;
 
-	if(SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		LOG("[error] SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
@@ -35,11 +35,11 @@ bool ModuleWindow::Init()
 		//Create window
 		SDL_DisplayMode mode;
 		SDL_GetDesktopDisplayMode(0, &mode);
-		width = (int)(mode.w*0.6);
-		height = (int)(mode.h*0.6);
-		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
-		
-		if(FULLSCREEN == true)
+		width = (int)(mode.w * 0.6);
+		height = (int)(mode.h * 0.6);
+		Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+
+		if (FULLSCREEN == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
@@ -55,8 +55,8 @@ bool ModuleWindow::Init()
 		int w, h;
 		SDL_GetWindowSize(window, &w, &h);
 		height = h;
-		
-		if(window == NULL)
+
+		if (window == NULL)
 		{
 			LOG("[error] Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			ret = false;
@@ -77,7 +77,7 @@ bool ModuleWindow::CleanUp()
 	LOG("Destroying SDL window and quitting all SDL systems");
 
 	//Destroy window
-	if(window != NULL)
+	if (window != NULL)
 	{
 		SDL_DestroyWindow(window);
 	}
@@ -97,7 +97,6 @@ void ModuleWindow::ReceiveEvent(const Event& event)
 		break;
 	}
 }
-
 
 void ModuleWindow::ToggleBorderless(bool borderless) const
 {
@@ -132,4 +131,3 @@ void ModuleWindow::SetVsync(bool vsync)
 {
 	SDL_GL_SetSwapInterval(vsync);
 }
-
