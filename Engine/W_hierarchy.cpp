@@ -35,7 +35,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*> _gameObjList)
 {
     static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 
-    for (int i = 0; i < _gameObjList.size(); ++i)
+    for (unsigned int i = 0u; i < _gameObjList.size(); ++i)
     {
        
         ImGuiTreeNodeFlags node_flags = base_flags;
@@ -69,7 +69,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*> _gameObjList)
 
 void WHierarchy::DeselectAll(std::vector<GameObject*> goRoots)
 {
-    for (int i = 0; i < goRoots.size(); ++i)
+    for (unsigned int i = 0u; i < goRoots.size(); ++i)
     {
         goRoots[i]->isSelected = false;
         std::vector<GameObject*> goChildren = goRoots[i]->GetChildren();

@@ -13,16 +13,16 @@ public:
 		elapsed = 0u;
 	}
 	unsigned int Read() const {
-		return stopped ? elapsed / (float)freq : (SDL_GetPerformanceCounter() - start) / (float)freq;
+		return (unsigned int)(stopped ? elapsed / (float)freq : (SDL_GetPerformanceCounter() - start) / (float)freq);
 	}
 	unsigned int Stop() {
 		elapsed = SDL_GetPerformanceCounter() - start;
-		return elapsed;
+		return (unsigned int)elapsed;
 	}
 
 private:
-	unsigned int start = 0u;
-	unsigned int elapsed = 0u;
+	Uint64 start = 0u;
+	Uint64 elapsed = 0u;
 	bool stopped = true;
-	unsigned int freq = SDL_GetPerformanceFrequency() * 1000000;
+	Uint64 freq = SDL_GetPerformanceFrequency() * 1000000;
 };

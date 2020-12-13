@@ -51,7 +51,7 @@ void    WConsole::AddLog(const char* fmt, ...) IM_FMTARGS(2)
         }
     }
     if (!alreadyIn)
-        Items.push_back(strdup(buf));
+        Items.push_back(_strdup(buf));
 }
 
 void    WConsole::Draw()
@@ -148,7 +148,7 @@ void    WConsole::Draw()
         Strtrim(s);
         if (s[0])
             ExecCommand(s);
-        strcpy(s, "");
+        strcpy_s(s, 1, "");
         reclaim_focus = true;
     }
 
@@ -165,21 +165,21 @@ void    WConsole::ExecCommand(const char* command_line)
     AddLog("# %s\n", command_line);
 
     // Process command
-    if (stricmp(command_line, "CLEAR") == 0)
+    if (_stricmp(command_line, "CLEAR") == 0)
     {
         ClearLog();
     }
-    else if (stricmp(command_line, "HELP") == 0)
+    else if (_stricmp(command_line, "HELP") == 0)
     {
         AddLog("Commands:");
         for (int i = 0; i < Commands.Size - 1; i++)
             AddLog("- %s", Commands[i]);
     }
-    else if (stricmp(command_line, "NAME") == 0)
+    else if (_stricmp(command_line, "NAME") == 0)
     {
         AddLog("This Game Engine is titled TIME or TIMEngine, which stands for The Incredible Mefiso's Engine.   There's actually another command: TRUENAME");
     }
-    else if (stricmp(command_line, "TRUENAME") == 0) 
+    else if (_stricmp(command_line, "TRUENAME") == 0) 
     {
         AddLog("TIME: VGhlIEVuZ2luZSBuYW1lIGFjdHVhbGx5IHN0YW5kcyBmb3IgVHJlYWNoZXJvdXMgSW5mYW1vdXMgTWlzY3JlYW50IEVuZ2luZQkozL/iloDMv+KAv+KAicy/4paAzL8gzL8p");
     }
