@@ -37,7 +37,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*> _gameObjList)
 
     for (unsigned int i = 0u; i < _gameObjList.size(); ++i)
     {
-       
+
         ImGuiTreeNodeFlags node_flags = base_flags;
 
         bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)_gameObjList[i]->GetUID(),

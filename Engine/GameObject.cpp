@@ -120,6 +120,18 @@ float4x4 GameObject::GetModelMatrix() const
 		return  this->transform->GetTransformationMatrix();
 }
 
+CTransform* GameObject::GetTransform() const
+{
+	return transform;
+}
+
+void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _translation)
+{
+	transform->SetPos(_translation);
+	transform->SetRotation(_rotation);
+	transform->SetScale(_scale);
+}
+
 void GameObject::SetParent(GameObject* _newParent)
 {
 	if (parent)

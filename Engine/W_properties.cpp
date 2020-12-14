@@ -1,12 +1,13 @@
 #include "W_properties.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "GameObject.h"
+#include "CTransform.h"
 #include "GL/glew.h"
 #include "Leaks.h"
 
-WProperties::WProperties(std::string name) : Window(name)
+WProperties::WProperties(std::string _name) : Window(_name)
 {
-
 }
 
 WProperties::~WProperties()
@@ -20,16 +21,17 @@ void WProperties::Draw()
 		ImGui::End();
 		return;
 	}
-	
+
 	TransformationHeader();
-	GeometryHeader();
+	/*GeometryHeader();
 	TexturesHeader();
-	
+	*/
 	ImGui::End();
 }
 
-void WProperties::SelectPropertiesFromModel(const Model* model)
+void WProperties::SetInspectedObject(GameObject* _object)
 {
+	selectedObject = _object;
 	/*selected_textures = model->textures;
 	scale.x = model->transformation.Col3(0).Length();
 	scale.y = model->transformation.Col3(1).Length();
@@ -46,50 +48,35 @@ void WProperties::SelectPropertiesFromModel(const Model* model)
 
 void WProperties::TransformationHeader() const
 {
+	CTransform* transform = selectedObject->GetTransform();
+
+	float3 scale = transform->GetScale();
+	float3 rotation = transform->GetRotation();
+	float3 position = transform->GetPos();
+
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
-	if (ImGui::CollapsingHeader("Transformation"))
+	if (ImGui::CollapsingHeader("Transform"))
 	{
-		ImGui::TextUnformatted("Translation");
-		ImGui::TextUnformatted("x:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f", translation.x);
-		ImGui::SameLine();
-		ImGui::TextUnformatted("y:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f", translation.y);
-		ImGui::SameLine();
-		ImGui::TextUnformatted("z:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f", translation.z);
-		ImGui::Separator();
+		ImGui::PushItemWidth(70.f);
+		bool modified = false;
+		ImGui::TextUnformatted("Position");
+		if (ImGui::DragFloat("X##1", &position.x, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
+		ImGui::SameLine(); if (ImGui::DragFloat("Y##1", &position.y, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
+		ImGui::SameLine(); if (ImGui::DragFloat("Z##1", &position.z, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
 
 		ImGui::TextUnformatted("Rotation");
-		ImGui::TextUnformatted("X-axis:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f°", rotation.x);
-		ImGui::SameLine();
-		ImGui::TextUnformatted("Y-axis:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f°", rotation.y);
-		ImGui::SameLine();
-		ImGui::TextUnformatted("Z-axis:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f°", rotation.z);
-		ImGui::Separator();
+		if (ImGui::SliderAngle("X##2", &rotation.x)) modified = true;
+		ImGui::SameLine(); if (ImGui::SliderAngle("Y##2", &rotation.y)) modified = true;
+		ImGui::SameLine(); if (ImGui::SliderAngle("Z##2", &rotation.z)) modified = true;
 
 		ImGui::TextUnformatted("Scale");
-		ImGui::TextUnformatted("x:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f", scale.x);
-		ImGui::SameLine();
-		ImGui::TextUnformatted("y:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f", scale.y);
-		ImGui::SameLine();
-		ImGui::TextUnformatted("z:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%.1f", scale.z);
-		ImGui::Separator();
+		if (ImGui::DragFloat("X##3", &scale.x, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
+		ImGui::SameLine(); if (ImGui::DragFloat("Y##3", &scale.y, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
+		ImGui::SameLine(); if (ImGui::DragFloat("Z##3", &scale.z, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
+
+		if (modified)
+			selectedObject->SetTransform(scale, rotation, position);
+
 	}
 }
 
@@ -103,7 +90,7 @@ void WProperties::GeometryHeader() const
 		//ImGui::TextColored(color, "%d", selected_meshes.size());
 		ImGui::TextUnformatted("Num textures:");
 		ImGui::SameLine();
-		ImGui::TextColored(color, "%d", selected_textures.size());
+		ImGui::TextColored(color, "%d", selectedTextures.size());
 
 		/*for (unsigned int i = 0; i < selected_meshes.size(); ++i)
 		{
@@ -123,13 +110,12 @@ void WProperties::TexturesHeader() const
 		if (ImGui::BeginTabBar("Textures"))
 		{
 			std::string label;
-			for (unsigned int i = 0; i < selected_textures.size(); ++i)
+			for (unsigned int i = 0; i < selectedTextures.size(); ++i)
 			{
 				label = "Texture " + std::to_string(i);
 				if (ImGui::BeginTabItem(label.c_str()))
 				{
-
-					glBindTexture(GL_TEXTURE_2D, selected_textures[i]->id);
+					glBindTexture(GL_TEXTURE_2D, selectedTextures[i]->id);
 					// Texture size
 					int w, h;
 					glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
@@ -215,12 +201,11 @@ void WProperties::TexturesHeader() const
 					}
 					ImGui::Separator();
 
-					ImTextureID texid = (ImTextureID)selected_textures[i]->id;
+					ImTextureID texid = (ImTextureID)selectedTextures[i]->id;
 					float sizeX = ImGui::GetWindowSize().x > 350.f ? 350.f : ImGui::GetWindowSize().x;
 					ImGui::Image(texid, ImVec2(sizeX, sizeX * h / (float)w));
 					ImGui::EndTabItem();
 				}
-
 			}
 			ImGui::EndTabBar();
 		}

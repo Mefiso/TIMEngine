@@ -5,26 +5,26 @@
 
 class Model;
 class Mesh;
+class GameObject;
 
 class WProperties : public Window
 {
 private:
 
 	// Should it be a pointer to a vector?
-	std::vector<Texture*> selected_textures;				// Retrieves the Textures loaded in a model
-	//std::vector<Mesh*> selected_meshes;						// Retrieves the Meshes loaded in a model
-	float3 scale = float3::zero;							// Gets the scale transforma of a Model
-	float3 rotation = float3::zero;							// Gets the rotation transforma of a Model
+	std::vector<Texture*> selectedTextures;					// Retrieves the Textures loaded in a model
+	GameObject* selectedObject;								// Retrieves the Meshes loaded in a model
+	float3 scale = float3::zero;							// Gets the scale transform of a Model
+	float3 rotation = float3::zero;							// Gets the rotation transform of a Model
 	float3 translation = float3::zero;						// Gets the translation transform of a Model
-	
 
 public:
 
-	WProperties(std::string name);							// Constructor
+	WProperties(std::string _name);							// Constructor
 	~WProperties();											// Destructor
 
 	void Draw();											// Operations performed when Rendering this window
-	void SelectPropertiesFromModel(const Model* model);		// Loads the information to display of a Model given
+	void SetInspectedObject(GameObject* _object);		// Loads the information to display of a Model given
 
 private:
 
