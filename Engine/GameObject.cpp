@@ -124,8 +124,6 @@ void GameObject::SetParent(GameObject* _newParent)
 {
 	if (parent)
 		parent->RemoveChild(this->uID);
-	/*else
-		App->scene->RemoveChild();*/
 	parent = _newParent;
 	parent->AddChild(this);
 }
