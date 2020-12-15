@@ -8,6 +8,8 @@ class WHierarchy : public Window
 {
 public:
 
+private:
+	GameObject* dragged = nullptr;
 public:
 	WHierarchy(std::string name);							// Constructor
 	~WHierarchy();											// Destructor

@@ -98,7 +98,6 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
     for (unsigned int i = 0u; i < _gameObjList.size(); ++i)
     {
         ImGuiTreeNodeFlags node_flags = base_flags;
-
         bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)_gameObjList[i]->GetUID(),
             node_flags | (_gameObjList[i]->GetChildren().empty() ? ImGuiTreeNodeFlags_Leaf : 0) | (_gameObjList[i]->isSelected ? ImGuiTreeNodeFlags_Selected : 0),
             "%s", _gameObjList[i]->GetName());
@@ -110,20 +109,25 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
             _gameObjList[i]->isSelected = !_gameObjList[i]->isSelected;
         }
 
+        ImGui::PushID(&_gameObjList[i]);
+
         if (ImGui::BeginDragDropSource())
         {
-            ImGui::SetDragDropPayload("_HIERARCHYNODES", _gameObjList[i], sizeof(GameObject*));
+           
+            ImGui::SetDragDropPayload("HIERARCHYNODES", NULL, 0);
+            dragged = _gameObjList[i];
             ImGui::Text("%s", _gameObjList[i]->GetName());
             ImGui::EndDragDropSource();
             LOG("%x", _gameObjList[i]);
+            
         }
+        ImGui::PopID();
 
         if (ImGui::BeginDragDropTarget())
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_HIERARCHYNODES"))
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
             {
-                IM_ASSERT(payload->DataSize == sizeof(GameObject*));
-                GameObject* selectedGO = (GameObject*)payload->Data;
+                GameObject* selectedGO = dragged;
                 LOG("%s", selectedGO->GetName());
                 
                 selectedGO->SetParent(_gameObjList[i]);
