@@ -88,6 +88,8 @@ void WConfig::RendererHeader()
 	}
 }
 
+// --- DEPRECATED --- //
+/*
 // Texture
 const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
 const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
@@ -105,7 +107,7 @@ void WConfig::TextureHeader()
 		if (ImGui::BeginTabBar("Current model textures"))
 		{
 			std::string label;
-			/*for (unsigned int i = 0; i < App->renderer->modelLoaded->textures.size(); ++i)
+			for (unsigned int i = 0; i < App->renderer->modelLoaded->textures.size(); ++i)
 			{
 				label = "Texture " + std::to_string(i);
 				ImGui::PushItemWidth(100);
@@ -134,12 +136,12 @@ void WConfig::TextureHeader()
 						App->renderer->modelLoaded->textures[i]->magfilter = filtermode[4+indexFM];
 					ImGui::EndTabItem();
 				}
-			}*/
+			}
 			ImGui::EndTabBar();
 		}
 	}
 }
-
+*/
 void WConfig::CameraHeader()
 {
 	if (ImGui::CollapsingHeader("Camera")) {
