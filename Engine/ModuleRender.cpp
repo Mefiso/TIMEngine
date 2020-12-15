@@ -97,7 +97,7 @@ bool ModuleRender::Init()
 
 bool ModuleRender::Start()
 {
-	for (std::vector<GameObject*>::const_iterator it = App->scene->GetRoot().begin(); it != App->scene->GetRoot().end(); ++it) {
+	for (std::vector<GameObject*>::const_iterator it = App->scene->GetRoot()->GetChildren().begin(); it != App->scene->GetRoot()->GetChildren().end(); ++it) {
 		(*it)->SetProgram(defaultProgram);
 	}
 	return true;
@@ -127,10 +127,7 @@ update_status ModuleRender::Update()
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 
 	// Render all GameObjects
-	for (std::vector<GameObject*>::const_iterator it = App->scene->GetRoot().begin(); it != App->scene->GetRoot().end(); ++it)
-	{
-		(*it)->Update();
-	}
+	App->scene->GetRoot()->Update();
 
 	if (showGrid)
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
@@ -163,7 +160,7 @@ void ModuleRender::ReceiveEvent(const Event& event)
 	switch (event.type)
 	{
 	case Event::file_dropped:
-		App->scene->GetRoot()[App->scene->GetRoot().size() - 1]->SetProgram(defaultProgram);
+		App->scene->GetRoot()->GetChildren()[App->scene->GetRoot()->GetChildren().size() - 1]->SetProgram(defaultProgram);
 		break;
 	}
 }
@@ -172,7 +169,7 @@ void ModuleRender::ProcessViewportEvents() {
 	TranslateCamera(deltatime);
 	RotateCameraKeys(deltatime);
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-		App->camera->onFocus(App->scene->GetRoot()[App->scene->GetRoot().size() - 1]->GetModelMatrix().Col3(3), 10); // TODO: WE NEED THE ABILITY TO SELECT A GAMEOBJECT
+		App->camera->onFocus(App->scene->GetRoot()->GetChildren()[App->scene->GetRoot()->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10); // TODO: WE NEED THE ABILITY TO SELECT A GAMEOBJECT
 	}
 }
 

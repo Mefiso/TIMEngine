@@ -57,7 +57,7 @@ update_status ModuleEditor::Update()
 	CreateMainMenu();
 
 	//CreateViewport();
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
 		if (std::strcmp((*it)->GetWindowName(), "About"))

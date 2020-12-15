@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "GameObject.h"
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <vector>
@@ -15,7 +16,7 @@ public:
 	std::vector<Texture*> loadedTextures;
 
 private:
-	std::vector<GameObject*> root;
+	GameObject* root = new GameObject();										// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children
 	struct aiLogStream stream;
 	std::string directory = "";
 
@@ -29,10 +30,9 @@ public:
 	void ReceiveEvent(const Event& event) override;								// Recieve events from App (that recieves events from other Modules)
 
 	// ---------- Getters ---------- //
-	const std::vector<GameObject*>& GetRoot() const { return root; }
+	GameObject* GetRoot() { return root; }
 
 private:
-
 	void LoadScene(std::string const& path);									// Loads a model from a file indicated by _path, and creates the corresponding GameObjects and Components
 	void ProcessNode(aiNode* node, const aiScene* scene, GameObject* object);	// Subfuction of LoadScene. Processes an Assimp Node from the loaded model and creates the corresponding GameObjects and Components from the node and its childs recursively
 	void DropFile(const std::string& file);										// Called when a Drop File event is recieved. Calls Load Scene.
