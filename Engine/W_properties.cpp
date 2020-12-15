@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "GameObject.h"
 #include "CTransform.h"
+#include "CMesh.h"
 #include "GL/glew.h"
 #include "Leaks.h"
 
@@ -22,10 +23,22 @@ void WProperties::Draw()
 		return;
 	}
 
-	TransformationHeader();
-	/*GeometryHeader();
-	TexturesHeader();
-	*/
+	if (selectedObject)
+	{
+		for (std::vector<Component*>::iterator it = selectedObject->GetComponents().begin(), end = selectedObject->GetComponents().end(); it != end; ++it)
+		{
+			switch ((*it)->GetType())
+			{
+			case TRANSFORM:
+				TransformationHeader();
+				break;
+			case MESH:
+				MeshHeader((CMesh*)(*it));
+				break;
+				//TexturesHeader();
+			}
+		}
+	}
 	ImGui::End();
 }
 
@@ -80,25 +93,15 @@ void WProperties::TransformationHeader() const
 	}
 }
 
-void WProperties::GeometryHeader() const
+void WProperties::MeshHeader(CMesh* mesh) const
 {
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
-	if (ImGui::CollapsingHeader("Geometry"))
+	if (ImGui::CollapsingHeader("Mesh"))
 	{
-		ImGui::TextUnformatted("Num meshes:");
-		ImGui::SameLine();
-		//ImGui::TextColored(color, "%d", selected_meshes.size());
-		ImGui::TextUnformatted("Num textures:");
-		ImGui::SameLine();
-		ImGui::TextColored(color, "%d", selectedTextures.size());
-
-		/*for (unsigned int i = 0; i < selected_meshes.size(); ++i)
-		{
-			ImGui::Separator();
-			ImGui::Text("Mesh %d", i);
-			ImGui::Text("Num vertices: %d", selected_meshes[i]->num_vertices);
-			ImGui::Text("Num triangles: %d", selected_meshes[i]->num_indices / 3);
-		}*/
+		ImGui::TextUnformatted("Num vertices:"); ImGui::SameLine();
+		ImGui::TextColored(color, "%d", mesh->numVertices);
+		ImGui::TextUnformatted("Num indices:"); ImGui::SameLine();
+		ImGui::TextColored(color, "%d", mesh->numIndices);
 	}
 }
 

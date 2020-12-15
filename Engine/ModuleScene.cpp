@@ -6,7 +6,6 @@
 
 #include "ModuleTexture.h"
 #include "ModuleCamera.h"
-#include "ModuleEditor.h" // This should be removed
 #include "Component.h"
 #include "GameObject.h"
 #include "Leaks.h"
@@ -31,7 +30,6 @@ ModuleScene::~ModuleScene()
 bool ModuleScene::Start()
 {
 	LoadScene("./resources/models/baker_house/BakerHouse.fbx");
-	App->editor->InspectObject(root[0]->GetChildren()[1]);
 	return true;
 }
 
