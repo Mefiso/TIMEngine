@@ -19,6 +19,8 @@ ModuleScene::ModuleScene()
 {
 	stream.callback = AssimpLog;
 	aiAttachLogStream(&stream);
+
+	root->ChangeName("Scene 1");
 }
 
 ModuleScene::~ModuleScene()
@@ -40,8 +42,7 @@ bool ModuleScene::CleanUp()
 	}
 	loadedTextures.clear();
 
-	for (std::vector<GameObject*>::iterator it = root.begin(), end = root.end(); it != end; ++it)
-		RELEASE(*it);
+	RELEASE(root);
 
 	return true;
 }
@@ -70,7 +71,7 @@ void ModuleScene::LoadScene(std::string const& path)
 			path.substr(0, path.find_last_of('\\')) : path.substr(0, path.find_last_of('/'));
 
 		GameObject* newModel = new GameObject();
-		root.push_back(newModel);
+		newModel->SetParent(root);
 		ProcessNode(scene->mRootNode, scene, newModel);
 	}
 }
@@ -98,7 +99,7 @@ void ModuleScene::DropFile(const std::string& file)
 {
 	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
 		LoadScene(file);
-		// What if new scene has no transform?
-		App->camera->onFocus(root[root.size() - 1]->GetModelMatrix().Col3(3), 10);
+		// TODO: What if new scene has no transform? (could it be possible?)
+		App->camera->onFocus(root->GetChildren()[root->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10);
 	}
 }

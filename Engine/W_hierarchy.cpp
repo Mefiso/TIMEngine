@@ -2,6 +2,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleScene.h"
+#include "ModuleEditor.h"
+//#include "W_properties.h"
 
 WHierarchy::WHierarchy(std::string name) : Window(name)
 {
@@ -13,82 +15,31 @@ WHierarchy::~WHierarchy()
 
 void WHierarchy::Draw()
 {
-
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
 		return;
 	}
 
-    if (ImGui::TreeNode("SCENE N"))
+    ImGui::SetNextItemOpen(true);
+    if (ImGui::TreeNode(App->scene->GetRoot()->GetName()))
     {
-        DrawTree(App->scene->GetRoot());
+        // Process Draging objects into Scene.root
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
+            {
+                dragged->SetParent(App->scene->GetRoot());
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        // Draw Hierachy tree
+        DrawTree(App->scene->GetRoot()->GetChildren());
+
         ImGui::TreePop();
     }
-
-    const int COUNT = 5;
-    static const char* items_data[COUNT] = { "Item One", "Item Two", "Item Three", "Item Four", "Item Five" };
-    static int items_list[COUNT] = { 0, 1, 2, 3, 4 };
-
-    // Render + dragging
-    for (int n = 0; n < COUNT; n++)
-    {
-        int item_no = items_list[n];
-        ImGui::Selectable(items_data[item_no]);
-
-        if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
-        {
-            float drag_dy = ImGui::GetMouseDragDelta(0).y;
-            if (drag_dy < 0.0f && n > 0)
-            {
-                // Swap
-                items_list[n] = items_list[n - 1];
-                items_list[n - 1] = item_no;
-                ImGui::ResetMouseDragDelta();
-            }
-            else if (drag_dy > 0.0f && n < COUNT - 1)
-            {
-                items_list[n] = items_list[n + 1];
-                items_list[n + 1] = item_no;
-                ImGui::ResetMouseDragDelta();
-            }
-        }
-    }
-
-   /* int[] butnum;
-    for (int i = 1; i< 16; ++i)
-        butnum[i] = i
-
-    local anchor = {}
-    function GL.imgui()
-
-    for (int i = 1; i < 16; ++i)
-
-        ig.Button("but"..butnum[i].."###"..i, ig.ImVec2(50, 50))
-
-        if ig.BeginDragDropSource() then
-            anchor.data = ffi.new("int[1]", i)
-            ig.SetDragDropPayload("ITEMN", anchor.data, ffi.sizeof"int")--, C.ImGuiCond_Once);
-            ig.Button("drag"..butnum[i], ig.ImVec2(50, 50));
-            ig.EndDragDropSource();
-            end
-                if ig.BeginDragDropTarget() then
-                    local payload = ig.AcceptDragDropPayload("ITEMN")
-                    if (payload~= nil) then
-                        assert(payload.DataSize == ffi.sizeof"int");
-            local num = ffi.cast("int*", payload.Data)[0]
-                local tmp = butnum[num]
-                table.remove(butnum, num)
-                table.insert(butnum, i, tmp)
-                end
-                ig.EndDragDropTarget();
-            end
-                if (((i - 1) % 4) < 3) then ig.SameLine() end
-                    end
-                    end*/
-
 	ImGui::End();
-
 }
 
 void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
@@ -102,39 +53,37 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
             node_flags | (_gameObjList[i]->GetChildren().empty() ? ImGuiTreeNodeFlags_Leaf : 0) | (_gameObjList[i]->isSelected ? ImGuiTreeNodeFlags_Selected : 0),
             "%s", _gameObjList[i]->GetName());
 
+        // Process Selection of Items
         if (ImGui::IsItemClicked()) {
-            if (!ImGui::GetIO().KeyCtrl)
-                DeselectAll(App->scene->GetRoot());
-                // TODO: send the selected to w_properties
-            _gameObjList[i]->isSelected = !_gameObjList[i]->isSelected;
+            if (!ImGui::GetIO().KeyCtrl) {
+                DeselectAll(App->scene->GetRoot()->GetChildren());
+                //App->editor->SendSelectedGO(_gameObjList[i]);   // send the selected GO to w_properties
+            }
+            _gameObjList[i]->isSelected = true;
         }
 
-        ImGui::PushID(&_gameObjList[i]);
-
+        // Process Dragging items and changing parents
         if (ImGui::BeginDragDropSource())
         {
-           
             ImGui::SetDragDropPayload("HIERARCHYNODES", NULL, 0);
             dragged = _gameObjList[i];
             ImGui::Text("%s", _gameObjList[i]->GetName());
-            ImGui::EndDragDropSource();
-            LOG("%x", _gameObjList[i]);
-            
+            ImGui::EndDragDropSource();            
         }
-        ImGui::PopID();
 
         if (ImGui::BeginDragDropTarget())
         {
+            
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
             {
-                GameObject* selectedGO = dragged;
-                LOG("%s", selectedGO->GetName());
-                
-                selectedGO->SetParent(_gameObjList[i]);
+                // TODO: Multiple dragging
+                // TODO: Reordering
+                dragged->SetParent(_gameObjList[i]);
             }
             ImGui::EndDragDropTarget();
         }
 
+        // Process recusive tree
         if (node_open)
         {
             std::vector<GameObject*> goChildren = _gameObjList[i]->GetChildren();
