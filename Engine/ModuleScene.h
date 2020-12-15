@@ -29,7 +29,7 @@ public:
 	void ReceiveEvent(const Event& event) override;								// Recieve events from App (that recieves events from other Modules)
 
 	// ---------- Getters ---------- //
-	const std::vector<GameObject*>& GetRoot() const { return root; }
+	std::vector<GameObject*>& GetRoot() { return root; }
 
 private:
 

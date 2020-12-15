@@ -17,11 +17,11 @@ private:
 
 public:
 
-	char* name = "New GameObject";
 	bool isSelected = false;
 
 private:
 
+	char* name = "New GameObject";
 	const int uID = objectCount;																		// Unique identifier of each GameObject instance
 	GameObject* parent = nullptr;																		// Pointer to the parent of this GameObject
 	std::vector<GameObject*> children;																	// Vector of pointers to GameObjects that are child of this GameObject
@@ -46,7 +46,7 @@ public:
 	// ---------- Getters ---------- //
 	char* GetName() const { return name; }
 	const int GetUID() const { return uID; }
-	std::vector<GameObject*> GetChildren() const { return children; }
+	std::vector<GameObject*>& GetChildren() { return children; }
 	const bool HasTransform() const { return hasTransform; }
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
 	CMaterial* GetMaterial() const;																		// Returns the Material Component of this GameObject, if there is one. If not, returns nullptr
