@@ -73,7 +73,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
+			if (ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
 			{
 				// TODO: Multiple dragging
 				// TODO: Reordering

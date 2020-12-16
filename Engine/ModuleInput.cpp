@@ -107,7 +107,7 @@ update_status ModuleInput::PreUpdate()
 		case SDL_MOUSEMOTION:
 			if (App->editor->IsViewportHovered()) {
 				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
-					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {																							// REIEW THIS MEEEEEEN
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {																							// REVIEW THIS MEEEEEEN
 						SDL_SetRelativeMouseMode(SDL_TRUE);
 					}
 					Event ev(Event::rotate_event);

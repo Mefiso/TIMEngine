@@ -56,7 +56,7 @@ public:
 	// ---------- Setters ---------- //
 	void ChangeName(char* _newName) { name = _newName; }
 	void SetTransform(float3& _scale, float3& _rotation, float3& _translation);
-	void SetTransform(float4x4& _newTransform);
+	void SetTransform(float4x4& _newTransform, GameObject* _newParent);
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
 	void SetHasTransform(bool _hasTransform) { hasTransform = _hasTransform; }

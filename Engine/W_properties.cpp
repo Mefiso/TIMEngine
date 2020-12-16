@@ -64,7 +64,7 @@ void WProperties::TransformationHeader() const
 		ImGui::PushItemWidth(70.f);
 		bool modified = false;
 		ImGui::TextUnformatted("Position");
-		if (ImGui::DragFloat("X##1", &position.x, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
+		if (ImGui::SliderFloat("X##1", &position.x, -FLT_MAX / 2.0f , FLT_MAX / 2.0f, "%.2f")) modified = true;
 		ImGui::SameLine(); if (ImGui::DragFloat("Y##1", &position.y, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
 		ImGui::SameLine(); if (ImGui::DragFloat("Z##1", &position.z, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
 
