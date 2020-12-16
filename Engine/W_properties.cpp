@@ -80,7 +80,6 @@ void WProperties::TransformationHeader() const
 
 		if (modified)
 			selectedObject->SetTransform(scale, rotation, position);
-
 	}
 }
 
@@ -95,7 +94,6 @@ void WProperties::MeshHeader(CMesh* mesh) const
 		ImGui::TextColored(color, "%d", mesh->numIndices);
 	}
 }
-
 
 // Texture
 const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
