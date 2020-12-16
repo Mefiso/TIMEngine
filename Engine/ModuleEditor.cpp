@@ -21,7 +21,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(configuration = new WConfig("Configuration"));
 	editorWindows.push_back(hierarchy = new WHierarchy("Hierarchy"));
 	editorWindows.push_back(about = new WAbout("About"));
-	//editorWindows.push_back(properties = new WProperties("Properties"));
+	editorWindows.push_back(properties = new WProperties("Properties"));
 }
 
 ModuleEditor::~ModuleEditor()
@@ -128,6 +128,12 @@ void ModuleEditor::Log(const char* input) const
 {
 	if (console)
 		console->AddLog(input);
+}
+
+void ModuleEditor::InspectObject(GameObject* _object)
+{
+	if (properties)
+		properties->SetInspectedObject(_object);
 }
 
 void ModuleEditor::CreateMainMenu()

@@ -30,7 +30,6 @@ private:
 	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
 	bool hasTransform = false;																			// Indicates if this GameObject has a Transform COmponent // THIS SHOULD BE CONTROLLED IN CONSTRUCTOR and act accordignly
 
-
 public:
 
 	GameObject();																						// Constructor
@@ -47,14 +46,17 @@ public:
 	char* GetName() const { return name; }
 	const int GetUID() const { return uID; }
 	std::vector<GameObject*>& GetChildren() { return children; }
+	std::vector<Component*>& GetComponents() { return components; }
 	const bool HasTransform() const { return hasTransform; }
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
+	CTransform* GetTransform() const;																	// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
 	CMaterial* GetMaterial() const;																		// Returns the Material Component of this GameObject, if there is one. If not, returns nullptr
 	// A getter for each kind of Component?
 
 	// ---------- Setters ---------- //
 	void ChangeName(char* _newName) { name = _newName; }
-	void SetTransform();
+	void SetTransform(float3& _scale, float3& _rotation, float3& _translation);
+	void SetTransform(float4x4& _newTransform);
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
 	void SetHasTransform(bool _hasTransform) { hasTransform = _hasTransform; }

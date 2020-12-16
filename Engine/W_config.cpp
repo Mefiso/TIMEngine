@@ -6,11 +6,9 @@
 #include "ModuleCamera.h"
 #include "Leaks.h"
 
-
 WConfig::WConfig(std::string name) : Window(name),
 brightness(1.0f), resizable(RESIZABLE), borderless(false), fulldesktop(false), vsync(VSYNC)
 {
-	
 }
 
 WConfig::~WConfig()
@@ -30,14 +28,12 @@ void WConfig::Draw()
 	RendererHeader();
 	//TextureHeader();
 	CameraHeader();
-	
-	ImGui::End();
 
+	ImGui::End();
 }
 
 void WConfig::WindowHeader()
 {
-
 	if (ImGui::CollapsingHeader("Window")) {
 		SDL_DisplayMode mode;
 		SDL_GetWindowDisplayMode(App->window->window, &mode);
@@ -76,15 +72,15 @@ void WConfig::RendererHeader()
 
 		ImGui::Checkbox("Draw grid", &App->renderer->showGrid);
 		ImGui::ColorEdit3("Set Grid Color", &App->renderer->gridColor[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
-		
-		ImGui::SameLine(); 
+
+		ImGui::SameLine();
 		ImGui::Indent(ImGui::GetWindowWidth() - 70);
 		if (ImGui::Button("Reset##1"))
 			App->renderer->gridColor = { 1.f, 1.f, 1.f };
 		ImGui::Unindent(ImGui::GetWindowWidth() - 70);
 
 		ImGui::ColorEdit3("Set Background Color", &App->renderer->backgroundColor[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
-		ImGui::SameLine(); 
+		ImGui::SameLine();
 		ImGui::Indent(ImGui::GetWindowWidth() - 70);
 		if (ImGui::Button("Reset##2"))
 			App->renderer->backgroundColor = { 0.1f, 0.1f, 0.1f };
@@ -92,6 +88,8 @@ void WConfig::RendererHeader()
 	}
 }
 
+// --- DEPRECATED --- //
+/*
 // Texture
 const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
 const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
@@ -109,7 +107,7 @@ void WConfig::TextureHeader()
 		if (ImGui::BeginTabBar("Current model textures"))
 		{
 			std::string label;
-			/*for (unsigned int i = 0; i < App->renderer->modelLoaded->textures.size(); ++i)
+			for (unsigned int i = 0; i < App->renderer->modelLoaded->textures.size(); ++i)
 			{
 				label = "Texture " + std::to_string(i);
 				ImGui::PushItemWidth(100);
@@ -121,7 +119,7 @@ void WConfig::TextureHeader()
 					int indexWS = it - wrapmode.begin();
 					if (ImGui::Combo("Wrap (S dir)", &indexWS, wrap, IM_ARRAYSIZE(wrap)))
 						App->renderer->modelLoaded->textures[i]->wraps = wrapmode[indexWS];
-					
+
 					it = std::find(wrapmode.begin(), wrapmode.end(), App->renderer->modelLoaded->textures[i]->wrapt);
 					int indexWT = it - wrapmode.begin();
 					if (ImGui::Combo("Wrap (T dir)", &indexWT, wrap, IM_ARRAYSIZE(wrap)))
@@ -138,15 +136,14 @@ void WConfig::TextureHeader()
 						App->renderer->modelLoaded->textures[i]->magfilter = filtermode[4+indexFM];
 					ImGui::EndTabItem();
 				}
-			}*/
+			}
 			ImGui::EndTabBar();
 		}
 	}
 }
-
+*/
 void WConfig::CameraHeader()
 {
-	
 	if (ImGui::CollapsingHeader("Camera")) {
 		static bool posModified = false;
 		float3 pos = App->camera->frustum.Pos();
@@ -161,7 +158,7 @@ void WConfig::CameraHeader()
 		}
 
 		ImGui::Separator();
-		
+
 		ImGui::TextUnformatted("Movement Speed");
 		ImGui::PushItemWidth(100.f);
 		ImGui::DragFloat("Using Keys", &App->camera->MovementSpeed, 0.5f, 0.5f, 50.f, "%.2f", ImGuiSliderFlags_None);
@@ -175,7 +172,7 @@ void WConfig::CameraHeader()
 		if (ImGui::InputFloat("Near Plane", &nearPlane, 0.1f, 1.0f, "%.3f")) {
 			App->camera->frustum.SetViewPlaneDistances(nearPlane, App->camera->frustum.FarPlaneDistance());
 		}
-		
+
 		if (ImGui::InputFloat("Far Plane", &farPlane, 5.f, 20.0f, "%.3f")) {
 			App->camera->frustum.SetViewPlaneDistances(App->camera->frustum.NearPlaneDistance(), farPlane);
 		}
@@ -185,5 +182,4 @@ void WConfig::CameraHeader()
 			App->camera->frustum.SetVerticalFovAndAspectRatio(VFOV, App->camera->frustum.AspectRatio());
 		}
 	}
-	
 }

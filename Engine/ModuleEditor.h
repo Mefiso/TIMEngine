@@ -15,6 +15,8 @@ class WProperties;
 class WAbout;
 class Model;
 
+class GameObject;
+
 class ModuleEditor : public Module
 {
 private:
@@ -53,6 +55,7 @@ public:
 	// Windows methods
 	void CreateViewport();											// Sends the definition (FBO, RBO, colorBuffer) of the viewport from ModuleRender to W_Viewport
 	void Log(const char* input) const;								// Sends LOG inputs from the log function to W_Console
+	void InspectObject(GameObject* _object);						// Sends the currently selected GameObject in the hierarchy to the properties inspector window WProperties
 
 private:
 

@@ -47,7 +47,6 @@ void WMonitor::Draw()
 
 	if (ImGui::CollapsingHeader("Software and Hardware"))
 	{
-		
 		ShowSoftware();
 		ShowHardware();
 	}

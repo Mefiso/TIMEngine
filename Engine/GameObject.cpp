@@ -86,6 +86,13 @@ void GameObject::RemoveComponent(int _cID)
 
 void GameObject::AddChild(GameObject* _newChild)
 {
+	if (_newChild->hasTransform)
+	{
+		float4x4 worldTransform = _newChild->GetModelMatrix();
+		float4x4 thisTransform = this->hasTransform ? this->GetModelMatrix() : float4x4::identity;
+		thisTransform.InverseOrthonormal();
+		_newChild->SetTransform(thisTransform * worldTransform);
+	}
 	children.push_back(_newChild);
 }
 
@@ -120,12 +127,37 @@ float4x4 GameObject::GetModelMatrix() const
 		return  this->transform->GetTransformationMatrix();
 }
 
+CTransform* GameObject::GetTransform() const
+{
+	return transform;
+}
+
+void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _translation)
+{
+	transform->SetPos(_translation);
+	transform->SetRotation(_rotation);
+	transform->SetScale(_scale);
+}
+
+void GameObject::SetTransform(float4x4& _newTransform)
+{
+	transform->SetPos((float3) (_newTransform.Col3(3)));
+	transform->SetScale(float3(_newTransform.Col3(0).Length(),
+							   _newTransform.Col3(1).Length(),
+							   _newTransform.Col3(2).Length()));
+	float3 rotation;
+	rotation.x = -atan2(_newTransform.Col3(2)[1], _newTransform.Col3(2)[2]);
+	rotation.y = -atan2(-_newTransform.Col3(2)[0], sqrt(_newTransform.Col3(2)[1]*_newTransform.Col3(2)[1]+_newTransform.Col3(2)[2]*_newTransform.Col3(2)[2]));
+	rotation.z = -atan2(_newTransform.Col3(1)[0], _newTransform.Col3(0)[0]);
+	transform->SetRotation(rotation);
+}
+
 void GameObject::SetParent(GameObject* _newParent)
 {
+	_newParent->AddChild(this);
 	if (parent)
 		parent->RemoveChild(this->uID);
 	parent = _newParent;
-	parent->AddChild(this);
 }
 
 void GameObject::SetProgram(unsigned int program)
