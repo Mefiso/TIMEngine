@@ -146,9 +146,9 @@ void GameObject::SetTransform(float4x4& _newTransform)
 							   _newTransform.Col3(1).Length(),
 							   _newTransform.Col3(2).Length()));
 	float3 rotation;
-	rotation.x = atan2(_newTransform[2][1], _newTransform[2][2]);
-	rotation.y = atan2(-_newTransform[2][0], sqrt(_newTransform[2][1]*_newTransform[2][1]+_newTransform[2][2]*_newTransform[2][2]));
-	rotation.z = atan2(_newTransform[1][0], _newTransform[0][0]);
+	rotation.x = -atan2(_newTransform.Col3(2)[1], _newTransform.Col3(2)[2]);
+	rotation.y = -atan2(-_newTransform.Col3(2)[0], sqrt(_newTransform.Col3(2)[1]*_newTransform.Col3(2)[1]+_newTransform.Col3(2)[2]*_newTransform.Col3(2)[2]));
+	rotation.z = -atan2(_newTransform.Col3(1)[0], _newTransform.Col3(0)[0]);
 	transform->SetRotation(rotation);
 }
 
