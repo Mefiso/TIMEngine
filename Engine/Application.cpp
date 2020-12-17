@@ -11,6 +11,8 @@
 #include "ModuleTexture.h"
 
 #include "Leaks.h"
+#include "Brofiler.h"
+
 
 using namespace std;
 
