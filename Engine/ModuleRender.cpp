@@ -106,7 +106,7 @@ bool ModuleRender::Start()
 
 update_status ModuleRender::PreUpdate()
 {
-	BROFILER_CATEGORY("PreUpdateLogic", Profiler::Color::Orchid);
+	BROFILER_CATEGORY("PreUpdateRenderer", Profiler::Color::Orchid);
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -119,7 +119,7 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	BROFILER_CATEGORY("UpdateLogic", Profiler::Color::Orchid);
+	BROFILER_CATEGORY("UpdateRenderer", Profiler::Color::Orchid);
 	if (depthTest) glEnable(GL_DEPTH_TEST); // Enable depth test
 	else glDisable(GL_DEPTH_TEST);
 
@@ -142,7 +142,7 @@ update_status ModuleRender::Update()
 
 update_status ModuleRender::PostUpdate()
 {
-	BROFILER_CATEGORY("PostUpdateLogic", Profiler::Color::Orchid);
+	BROFILER_CATEGORY("PostUpdateRenderer", Profiler::Color::Orchid);
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }

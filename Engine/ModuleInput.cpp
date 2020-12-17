@@ -6,6 +6,7 @@
 #include "ModuleEditor.h"
 #include "SDL/include/SDL.h"
 #include "Leaks.h"
+#include "Brofiler.h"
 
 #define MAX_KEYS 300
 
@@ -38,6 +39,8 @@ bool ModuleInput::Init()
 
 update_status ModuleInput::PreUpdate()
 {
+	BROFILER_CATEGORY("PreUpdateInput", Profiler::Color::Orchid);
+
 	if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}

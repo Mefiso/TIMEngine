@@ -12,6 +12,7 @@
 #include "W_about.h"
 #include "W_properties.h"
 #include "Leaks.h"
+#include "Brofiler.h"
 
 ModuleEditor::ModuleEditor()
 {
@@ -44,6 +45,8 @@ bool ModuleEditor::Init()
 
 update_status ModuleEditor::PreUpdate()
 {
+	BROFILER_CATEGORY("PreUpdateEditor", Profiler::Color::Orchid);
+
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
@@ -53,6 +56,7 @@ update_status ModuleEditor::PreUpdate()
 
 update_status ModuleEditor::Update()
 {
+	BROFILER_CATEGORY("UpdateEditor", Profiler::Color::Orchid);
 	ImGuiID dockspaceID = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	CreateMainMenu();
 
