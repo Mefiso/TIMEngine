@@ -74,13 +74,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./assimp/include;.\DevIL\include;./ImGUI;./MathGeoLib;./glew-2.1.0/include;./SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Brofiler;./assimp/include;.\DevIL\include;./ImGUI;./MathGeoLib;./glew-2.1.0/include;./SDL/include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>.\assimp\lib;./DevIL/lib/;./glew-2.1.0/lib/lib/Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc141-mt.lib;DevIL.lib;Ilu.lib;Ilut.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>./Brofiler;.\assimp\lib;./DevIL/lib/;./glew-2.1.0/lib/lib/Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ProfilerCore32.lib;assimp-vc141-mt.lib;DevIL.lib;Ilu.lib;Ilut.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,15 +106,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./assimp/include;.\DevIL\include;./ImGUI;./MathGeoLib;./glew-2.1.0/include;./SDL/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Brofiler;./assimp/include;.\DevIL\include;./ImGUI;./MathGeoLib;./glew-2.1.0/include;./SDL/include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>.\assimp\lib;./DevIL/lib/;./glew-2.1.0/lib/Release/32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc141-mt.lib;DevIL.lib;Ilu.lib;Ilut.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>./Brofiler;.\assimp\lib;./DevIL/lib/;./glew-2.1.0/lib/Release/32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ProfilerCore32.lib;assimp-vc141-mt.lib;DevIL.lib;Ilu.lib;Ilut.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Brofiler\Brofiler.h" />
     <ClInclude Include="CMaterial.h" />
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="Component.h" />
