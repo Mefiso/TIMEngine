@@ -12,4 +12,3 @@ void Window::Enable(bool active)
 {
 	this->active = active;
 }
-

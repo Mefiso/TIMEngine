@@ -44,5 +44,3 @@ void WAbout::Draw()
 	ImGui::TextWrapped(license.c_str());
 	ImGui::End();
 }
-
-
