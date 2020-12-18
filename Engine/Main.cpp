@@ -4,6 +4,8 @@
 #include "Globals.h"
 #include "Leaks.h"
 
+#include "Brofiler.h"
+
 #include "SDL.h"
 #pragma comment( lib, "SDL/lib/x86/SDL2.lib" )
 #pragma comment( lib, "SDL/lib/x86/SDL2main.lib" )
@@ -26,6 +28,8 @@ Application* App = NULL;
 
 int main(int argc, char** argv)
 {
+	
+	
 	atexit(DumpLeaks);
 	int main_return = EXIT_FAILURE;
 	main_states state = MAIN_CREATION;
@@ -59,6 +63,7 @@ int main(int argc, char** argv)
 
 		case MAIN_UPDATE:
 		{
+			BROFILER_FRAME("TIMEngine Toguapo men");
 			int update_return = App->Update();
 
 			if (update_return == UPDATE_ERROR)
