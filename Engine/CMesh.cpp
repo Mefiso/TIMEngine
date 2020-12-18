@@ -37,6 +37,14 @@ void CMesh::Update()
 		ModuleProgram::setMat4(program, "view", App->camera->ViewMatrix());
 		ModuleProgram::setMat4(program, "proj", App->camera->ProjectionMatrix());
 
+		// Lighting
+		ModuleProgram::setVec3(program, "lightDir", float3(0.5, 1.0, 1.3));
+		ModuleProgram::setVec3(program, "lightColor", float3(1.0));
+
+		// Camera
+		ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum.Pos());
+		ModuleProgram::setFloat(program, "shininess", 300.0f);
+
 		CMaterial* material = owner->GetMaterial();
 
 		// bind appropriate textures
@@ -77,7 +85,7 @@ void CMesh::LoadVBO(const aiMesh* mesh)
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	unsigned vertex_size = (sizeof(float) * 3 + sizeof(float) * 2);
+	unsigned vertex_size = (sizeof(float) * 8);
 	unsigned buff_size = vertex_size * numVertices;
 	glBufferData(GL_ARRAY_BUFFER, buff_size, nullptr, GL_STATIC_DRAW);
 
@@ -85,7 +93,8 @@ void CMesh::LoadVBO(const aiMesh* mesh)
 	for (unsigned i = 0u; i < numVertices; ++i)
 	{
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset, sizeof(float) * 3, &mesh->mVertices[i]);
-		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 3, sizeof(float) * 2, &mesh->mTextureCoords[0][i]);
+		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 3, sizeof(float) * 3, &mesh->mNormals[i]);
+		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 6, sizeof(float) * 2, &mesh->mTextureCoords[0][i]);
 		data_offset += vertex_size;
 	}
 }
@@ -121,10 +130,13 @@ void CMesh::CreateVAO()
 
 	// vertex positions
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)0);
-	// vertex texture coords
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
+	// vertex normals
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(sizeof(float) * 3));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
+	// vertex texture coords
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
 
 	glBindVertexArray(0);
 }

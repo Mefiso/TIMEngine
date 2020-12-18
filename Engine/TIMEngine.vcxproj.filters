@@ -580,6 +580,9 @@
     <Filter Include="UtilityModules">
       <UniqueIdentifier>{a664269e-372f-495c-b5fb-3f0e84622b78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{d61a06fd-f119-414e-834a-812c1fb4228a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\emscripten\library_system.js">
@@ -605,6 +608,24 @@
     </None>
     <None Include="MathGeoLib\Math\Matrix.inl">
       <Filter>MathGeoLib\Math</Filter>
+    </None>
+    <None Include="Game\resources\shaders\bdrfPhong.fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Game\resources\shaders\bdrfPhong.vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Game\resources\shaders\phong.fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Game\resources\shaders\phong.vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Game\resources\shaders\vanilla.fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Game\resources\shaders\vanilla.vs.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -329,6 +329,12 @@
     <ClCompile Include="W_viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Game\resources\shaders\bdrfPhong.fs.glsl" />
+    <None Include="Game\resources\shaders\bdrfPhong.vs.glsl" />
+    <None Include="Game\resources\shaders\phong.fs.glsl" />
+    <None Include="Game\resources\shaders\phong.vs.glsl" />
+    <None Include="Game\resources\shaders\vanilla.fs.glsl" />
+    <None Include="Game\resources\shaders\vanilla.vs.glsl" />
     <None Include="MathGeoLib\emscripten\library_system.js" />
     <None Include="MathGeoLib\Geometry\KDTree.inl" />
     <None Include="MathGeoLib\Geometry\QuadTree.inl" />
