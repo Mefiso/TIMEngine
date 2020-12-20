@@ -2,8 +2,8 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
-#include "ImGUI/imgui_impl_sdl.h"
-#include "ImGUI/imgui_impl_opengl3.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
 #include "W_viewport.h"
 #include "W_console.h"
 #include "W_hierarchy.h"
@@ -16,13 +16,14 @@
 
 ModuleEditor::ModuleEditor()
 {
-	editorWindows.push_back(viewport = new WViewport("Viewport"));
-	editorWindows.push_back(console = new WConsole("Console"));
-	editorWindows.push_back(monitor = new WMonitor("Monitoring window"));
 	editorWindows.push_back(configuration = new WConfig("Configuration"));
+	editorWindows.push_back(console = new WConsole("Console"));
 	editorWindows.push_back(hierarchy = new WHierarchy("Hierarchy"));
-	editorWindows.push_back(about = new WAbout("About"));
+	editorWindows.push_back(monitor = new WMonitor("Monitoring"));
 	editorWindows.push_back(properties = new WProperties("Properties"));
+	editorWindows.push_back(viewport = new WViewport("Viewport"));
+	editorWindows.push_back(about = new WAbout("About"));
+
 }
 
 ModuleEditor::~ModuleEditor()
@@ -58,7 +59,7 @@ update_status ModuleEditor::Update()
 {
 	BROFILER_CATEGORY("UpdateEditor", Profiler::Color::Orchid);
 	ImGuiID dockspaceID = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-	CreateMainMenu();
+	DrawMainMenu();
 
 	//CreateViewport();
 	//ImGui::ShowDemoWindow();
@@ -140,7 +141,7 @@ void ModuleEditor::InspectObject(GameObject* _object)
 		properties->SetInspectedObject(_object);
 }
 
-void ModuleEditor::CreateMainMenu()
+void ModuleEditor::DrawMainMenu()
 {
 	if (ImGui::BeginMainMenuBar())
 	{

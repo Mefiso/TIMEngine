@@ -141,3 +141,10 @@ void WHierarchy::DeselectAll(std::vector<GameObject*> goRoots)
 		  ImGuiDragDropFlags_AcceptPeekOnly               = ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect  // For peeking ahead and inspecting the payload before delivery.
 
 	  */
+
+
+/*
+https://github.com/ocornut/imgui/issues/1896
+
+https://github.com/ocornut/imgui/issues/1931
+*/

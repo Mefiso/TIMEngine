@@ -47,17 +47,6 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	}
 }
 
-float4x4 ModuleCamera::ViewMatrix()
-{
-	float4x4 viewModelGL = frustum.ViewMatrix();
-	return viewModelGL;// .Transposed();
-}
-
-float4x4 ModuleCamera::ProjectionMatrix()
-{
-	return frustum.ProjectionMatrix();// .Transposed();
-}
-
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
 	float MoveCelerity = MovementSpeed * deltaTime;

@@ -9,9 +9,11 @@
 
 CMaterial::CMaterial(GameObject* _owner, const aiMaterial* material, const std::string& path) : Component(MATERIAL, _owner)
 {
-	std::vector<Texture*>* diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse", path);
+	std::vector<Texture*>* diffuseMaps = new std::vector<Texture*>();
+	LoadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse", path, diffuseMaps);
 	textures.insert(textures.end(), diffuseMaps->begin(), diffuseMaps->end());
-	std::vector<Texture*>* specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "specular", path);
+	std::vector<Texture*>* specularMaps = new std::vector<Texture*>();
+	LoadMaterialTextures(material, aiTextureType_SPECULAR, "specular", path, specularMaps);
 	textures.insert(textures.end(), specularMaps->begin(), specularMaps->end());
 	RELEASE(diffuseMaps);
 	RELEASE(specularMaps);
@@ -22,10 +24,9 @@ CMaterial::~CMaterial()
 	textures.clear();
 }
 
-std::vector<Texture*>* CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType type, const std::string& name, const std::string& path)
+void CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType type, const std::string& name, const std::string& path, std::vector<Texture*>* _matTextures)
 {
-	std::vector<Texture*>* matTextures = new std::vector<Texture*>();
-	matTextures->reserve(material->GetTextureCount(type));
+	_matTextures->reserve(material->GetTextureCount(type));
 	for (unsigned int i = 0; i < material->GetTextureCount(type); ++i)
 	{
 		aiString file;
@@ -36,7 +37,7 @@ std::vector<Texture*>* CMaterial::LoadMaterialTextures(const aiMaterial* materia
 			{
 				if (std::strcmp(App->scene->loadedTextures[j]->path.data(), file.C_Str()) == 0)
 				{
-					matTextures->push_back(App->scene->loadedTextures[j]);
+					_matTextures->push_back(App->scene->loadedTextures[j]);
 					skip = true;
 					break;
 				}
@@ -71,10 +72,9 @@ std::vector<Texture*>* CMaterial::LoadMaterialTextures(const aiMaterial* materia
 					texture->minfilter = GL_LINEAR_MIPMAP_LINEAR;
 					texture->magfilter = GL_LINEAR;
 					App->scene->loadedTextures.push_back(texture);
-					matTextures->push_back(App->scene->loadedTextures[App->scene->loadedTextures.size() - 1]);
+					_matTextures->push_back(App->scene->loadedTextures[App->scene->loadedTextures.size() - 1]);
 				}
 			}
 		}
 	}
-	return matTextures;
 }

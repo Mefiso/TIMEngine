@@ -43,8 +43,10 @@ void WMonitor::Draw()
 	// Plot Hist
 	ImGui::PlotHistogram("##Histogram", &fps_log[0], histNumElements, 0, title, 0.0f, 300, ImVec2(400, 50));
 
-	InputHeader();
+	// Input
+	DrawInputHeader();
 
+	// Caps
 	if (ImGui::CollapsingHeader("Software and Hardware"))
 	{
 		ShowSoftware();
@@ -54,7 +56,7 @@ void WMonitor::Draw()
 	ImGui::End();
 }
 
-void WMonitor::InputHeader()
+void WMonitor::DrawInputHeader()
 {
 	if (ImGui::CollapsingHeader("Input"))
 	{

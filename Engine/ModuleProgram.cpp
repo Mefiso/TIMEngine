@@ -15,7 +15,7 @@ unsigned int ModuleProgram::CreateProgramFromFile(const char* vertexPath, const 
 }
 
 // activate the shader
-	// ------------------------------------------------------------------------
+// ------------------------------------------------------------------------
 void ModuleProgram::use(unsigned int ID)
 {
 	glUseProgram(ID);
