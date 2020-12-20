@@ -37,13 +37,16 @@ void CMesh::Draw()
 		ModuleProgram::setMat4(program, "view", App->camera->ViewMatrix());
 		ModuleProgram::setMat4(program, "proj", App->camera->ProjectionMatrix());
 
+		// This should be set from other parameters not hardcoded
 		// Lighting
 		ModuleProgram::setVec3(program, "lightDir", float3(0.5f, 1.0f, 1.3f));
 		ModuleProgram::setVec3(program, "lightColor", float3(1.0));
 
+		// This should be set from other parameters not hardcoded
 		// Camera
 		ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum.Pos());
-		ModuleProgram::setFloat(program, "shininess", 32.0f);
+		ModuleProgram::setVec3(program, "material.ambient", float3(0.05, 0.05, 0.05));
+		ModuleProgram::setFloat(program, "material.shininess", 64.0f);
 
 		CMaterial* material = owner->GetComponent<CMaterial>();
 
@@ -66,6 +69,7 @@ void CMesh::Draw()
 			else if (name == "height")
 				number = std::to_string(heightNr++);			// transfer unsigned int to stream
 			*/
+			ModuleProgram::setInt(program, ("material." + name + number).c_str(), i);
 			glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
 			ModuleProgram::setInt(program, (name + number).c_str(), i);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, material->textures[i]->wraps);
@@ -73,6 +77,13 @@ void CMesh::Draw()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material->textures[i]->minfilter);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, material->textures[i]->magfilter);
 		}
+		ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr-1);
+		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
+		if (specularNr == 1) {
+			ModuleProgram::setVec3(program, "material.specular", float3(0.08));
+			//ModuleProgram::setInt(program, "material.shininessAlpha", 1);
+		}
+
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
@@ -94,7 +105,8 @@ void CMesh::LoadVBO(const aiMesh* mesh)
 	{
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset, sizeof(float) * 3, &mesh->mVertices[i]);
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 3, sizeof(float) * 3, &mesh->mNormals[i]);
-		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 6, sizeof(float) * 2, &mesh->mTextureCoords[0][i]);
+		if (mesh->mTextureCoords[0] != NULL)
+			glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 6, sizeof(float) * 2, &mesh->mTextureCoords[0][i]);
 		data_offset += vertex_size;
 	}
 }

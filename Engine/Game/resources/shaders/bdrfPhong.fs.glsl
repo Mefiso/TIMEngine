@@ -11,25 +11,52 @@ uniform vec3 lightColor;
 
 uniform vec3 cameraPos;
 
-uniform float shininess;
+struct Material
+{
+	vec3 ambient;
+	vec3 diffuse;
+	sampler2D diffuse1;
+	vec3 specular;
+	sampler2D specular1;
+	float shininess;
 
-uniform sampler2D diffuse1;
-uniform sampler2D specular1;
+	int hasDiffuseMap;
+	int hasSpecularMap;
+	int shininessAlpha;
+};
+
+uniform Material material;
 
 void main()
 {
 	// Ambient
-	float ambientStrength = 0.1;
-	vec3 ambient = ambientStrength * lightColor;
+	vec3 ambient = material.ambient * lightColor;
 
 	// Diffuse
-	vec3 colorDiffuse = texture(diffuse1, fragUV).xyz;
+	vec3 colorDiffuse;
+	if(material.hasDiffuseMap > 0)
+	{
+		colorDiffuse = texture(material.diffuse1, fragUV).rgb;
+	}
+	else
+	{
+		colorDiffuse = material.diffuse;
+	}
 	vec3 normal = normalize(fragNormal);
 	vec3 lightDir = normalize(lightDir);
 	float NdotL = max(dot(normal, -lightDir), 0.0);
 
 	// Specular
-	vec3 specularMap = texture(specular1, fragUV).xyz;
+	vec3 specularMap;
+	if (material.hasSpecularMap > 0)
+	{
+		specularMap = texture(material.specular1, fragUV).rgb;
+	}
+	else
+	{
+		specularMap = material.specular;
+	}
+	float shininess = material.shininessAlpha > 0 ?  texture(material.specular1, fragUV).a : material.shininess;
 	vec3 viewDir = normalize(cameraPos-worldPos);
 	vec3 reflected = reflect(lightDir, normal);
 	float spec = pow(max(dot(viewDir, reflected), 0.0), shininess);
@@ -38,5 +65,9 @@ void main()
 	vec3 Rf0 = vec3(0.08,0.08,0.08); //this should come as parameter
 	vec3 Rfi = Rf0 + (1-Rf0) * pow((1-NdotL),5);
 
-	color = vec4(ambient * colorDiffuse + (colorDiffuse*(1-Rf0) + (shininess+2)/2 * Rfi * spec * specularMap) * lightColor * NdotL, 1.0);
+	vec3 Fcolor = ambient * colorDiffuse + (colorDiffuse*(1-Rf0) + (shininess+2)/2 * Rfi * spec * specularMap) * lightColor * NdotL;
+	// Gamma correction
+	Fcolor = pow(Fcolor, vec3(1/2.2));
+
+	color = vec4(Fcolor, 1.0);
 }
