@@ -80,7 +80,7 @@ bool ModuleRender::Init()
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
 #endif
 
-	defaultProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\bdrfPhong.vs.glsl", ".\\resources\\shaders\\bdrfPhong.fs.glsl");
+	defaultProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\phong.vs.glsl", ".\\resources\\shaders\\phong.fs.glsl");
 
 	SDL_DisplayMode mode;
 	SDL_GetDesktopDisplayMode(0, &mode);

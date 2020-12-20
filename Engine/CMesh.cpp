@@ -37,13 +37,16 @@ void CMesh::Update()
 		ModuleProgram::setMat4(program, "view", App->camera->ViewMatrix());
 		ModuleProgram::setMat4(program, "proj", App->camera->ProjectionMatrix());
 
+		// This should be set from other parameters not hardcoded
 		// Lighting
 		ModuleProgram::setVec3(program, "lightDir", float3(0.5, 1.0, 1.3));
 		ModuleProgram::setVec3(program, "lightColor", float3(1.0));
 
+		// This should be set from other parameters not hardcoded
 		// Camera
 		ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum.Pos());
-		ModuleProgram::setFloat(program, "shininess", 300.0f);
+		ModuleProgram::setVec3(program, "material.ambient", float3(0.05, 0.05, 0.05));
+		ModuleProgram::setFloat(program, "material.shininess", 300.0f);
 
 		CMaterial* material = owner->GetMaterial();
 
@@ -66,13 +69,16 @@ void CMesh::Update()
 			else if (name == "height")
 				number = std::to_string(heightNr++);			// transfer unsigned int to stream
 			*/
-			ModuleProgram::setInt(program, (name + number).c_str(), i);
+			ModuleProgram::setInt(program, ("material." + name + number).c_str(), i);
 			glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, material->textures[i]->wraps);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, material->textures[i]->wrapt);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material->textures[i]->minfilter);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, material->textures[i]->magfilter);
 		}
+		ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr-1);
+		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
+
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
