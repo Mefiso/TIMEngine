@@ -33,5 +33,9 @@ void main()
 	float spec = pow(max(dot(viewDir, reflected), 0.0), shininess);
 	vec3 specular = spec * lightColor;
 
-	color = vec4((ambient + 0.5 * diff) * colorDiffuse +  0.5 * specular, 1.0);
+	vec3 Fcolor = (ambient + 0.5 * diff) * colorDiffuse +  0.5 * specular;
+	// gamma correction
+	Fcolor = pow(Fcolor, vec3(1/2.2));
+
+	color = vec4(Fcolor, 1.0);
 }
