@@ -5,7 +5,7 @@
 #include "Leaks.h"
 
 bool ModuleTexture::mipmap = true;
-bool ModuleTexture::force_flip = true;
+bool ModuleTexture::force_flip = false;
 
 bool ModuleTexture::Init()
 {
