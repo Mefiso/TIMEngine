@@ -46,7 +46,7 @@ void CMesh::Update()
 		// Camera
 		ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum.Pos());
 		ModuleProgram::setVec3(program, "material.ambient", float3(0.05, 0.05, 0.05));
-		ModuleProgram::setFloat(program, "material.shininess", 300.0f);
+		ModuleProgram::setFloat(program, "material.shininess", 64.0f);
 
 		CMaterial* material = owner->GetMaterial();
 
@@ -78,6 +78,10 @@ void CMesh::Update()
 		}
 		ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr-1);
 		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
+		if (specularNr == 1) {
+			ModuleProgram::setVec3(program, "material.specular", float3(0.08));
+			//ModuleProgram::setInt(program, "material.shininessAlpha", 1);
+		}
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);

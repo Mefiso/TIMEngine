@@ -65,7 +65,7 @@ std::vector<Texture*>* CMaterial::LoadMaterialTextures(const aiMaterial* materia
 				if (texFound) {
 					LOG("[info] Texture loaded.");
 					texture->path = file.C_Str();
-					texture->type = "diffuse";
+					texture->type = name;
 					texture->wraps = GL_REPEAT;
 					texture->wrapt = GL_REPEAT;
 					texture->minfilter = GL_LINEAR_MIPMAP_LINEAR;
