@@ -2,7 +2,6 @@
 #include<vector>
 #include "Globals.h"
 #include "Module.h"
-#include "Event.h"
 
 class ModuleWindow;
 class ModuleInput;
@@ -11,10 +10,12 @@ class ModuleRender;
 class ModuleDebugDraw;
 class ModuleEditor;
 class ModuleCamera;
+struct Event;
 
 class Application
 {
 public:
+	// ---- Application Modules ---- //
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
 	ModuleScene* scene = nullptr;
@@ -24,21 +25,18 @@ public:
 	ModuleCamera* camera = nullptr;
 
 private:
-
-	std::vector<Module*> modules;
+	std::vector<Module*> modules;				// Vector containig the references to each App Module
 
 public:
+	Application();								// Constructor
+	~Application();								// Destructor
 
-	Application();
-	~Application();
+	bool Init();								// Call Init() for each Module
+	update_status Update();						// Call Update() for each Module
+	bool CleanUp();								// Call CleanUp() for each Module
+	void BroadcastEvent(const Event& event);	// Call ReceiveEvent() for each Module
 
-	bool Init();
-	update_status Update();
-	bool CleanUp();
-
-	void BroadcastEvent(const Event& event);
-
-	void Log(const char* input) const;
+	void Log(const char* input) const;			// Forward a LOG output to the Editor, then to W_Console
 };
 
 extern Application* App;

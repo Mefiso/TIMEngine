@@ -23,7 +23,7 @@ struct Event
 		struct
 		{
 			int x = 0, y = 0;
-		} point2d;
+		} point2d = { 0, 0 };
 	};
 
 	Event(EventType type) : type(type)

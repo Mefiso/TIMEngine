@@ -31,13 +31,13 @@ void WProperties::Draw()
 			switch ((*it)->GetType())
 			{
 			case TRANSFORM:
-				TransformationHeader();
+				DrawTransformationHeader();
 				break;
 			case MESH:
-				MeshHeader((CMesh*)(*it));
+				DrawMeshHeader((CMesh*)(*it));
 				break;
 			case MATERIAL:
-				MaterialHeader((CMaterial*)(*it));
+				DrawMaterialHeader((CMaterial*)(*it));
 				break;
 			}
 		}
@@ -50,7 +50,7 @@ void WProperties::SetInspectedObject(GameObject* _object)
 	selectedObject = _object;
 }
 
-void WProperties::TransformationHeader() const
+void WProperties::DrawTransformationHeader() const
 {
 	CTransform* transform = selectedObject->GetTransform();
 
@@ -83,7 +83,7 @@ void WProperties::TransformationHeader() const
 	}
 }
 
-void WProperties::MeshHeader(CMesh* mesh) const
+void WProperties::DrawMeshHeader(CMesh* mesh) const
 {
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	if (ImGui::CollapsingHeader("Mesh"))
@@ -99,7 +99,7 @@ void WProperties::MeshHeader(CMesh* mesh) const
 const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
 const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
 const char* filterM[] = { "Linear", "Nearest" };
-void WProperties::MaterialHeader(CMaterial* material) const
+void WProperties::DrawMaterialHeader(CMaterial* material) const
 {
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	if (ImGui::CollapsingHeader("Material")) {

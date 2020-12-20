@@ -1,23 +1,24 @@
 #pragma once
 #include "Globals.h"
-#include "ImGUI/imgui.h"
+#include "imgui.h"
 #include <string>
 
 class Window
 {
+protected:
+	std::string name;					// Name of the ImGui Window
+	bool active = true;					// Indicates if the ImGui Window is visible
+
 public:
-	Window(std::string name);
-	virtual ~Window();
+	Window(std::string name);			// Constructor
+	virtual ~Window();					// Destructor
 
-	virtual void Draw() = 0;
+	virtual void Draw() = 0;			// Call Draw() for each Window
+	void Enable(bool active);			// Toggles the visibility of an ImGui Window
 
-	void Enable(bool active);		// Toggles the visibility of an ImGui Window
-
+	// ---------- Getters ---------- //
 	bool isEnabled() const { return active; }
 	const char* GetWindowName() const { return name.c_str(); }
-protected:
-	bool active = true;				// Indicates if the ImGui Window is visible
-	std::string name;				// Name of the ImGui Window
 };
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.

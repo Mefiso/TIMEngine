@@ -33,17 +33,17 @@ void GameObject::CleanUp()
 	children.clear();
 }
 
-void GameObject::Update()
+void GameObject::Draw()
 {
 	// update components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
-		(*it)->Update();
+		(*it)->Draw();
 	}
 	//update children accordingly
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
-		(*it)->Update();
+		(*it)->Draw();
 	}
 }
 
@@ -64,6 +64,8 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	case MATERIAL:
 		newComp = new CMaterial(this, (aiMaterial*)arg, path);
 		break;
+	default:
+		newComp = new Component(INVALID, this);
 	}
 
 	components.push_back(newComp);
@@ -74,22 +76,46 @@ void GameObject::RemoveComponent(int _cID)
 	int toRemove = -1;
 
 	for (unsigned int i = 0u; i < components.size(); ++i)
-		if (components[i]->ID == _cID) {
+		if (components[i]->ID == _cID)
+		{
 			toRemove = (int)i;
 			break;
 		}
-	if (toRemove >= 0) {
+	if (toRemove >= 0)
+	{
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
 	}
 }
 
+void GameObject::SetParent(GameObject* _newParent)
+{
+	// Check if _newParent if a child of this GameObject
+	bool isChild = false;
+	for (unsigned int i = 0; i < this->GetChildren().size(); ++i)
+	{
+		if (this->children[i]->GetUID() == _newParent->GetUID())
+		{
+			isChild = true;
+			break;
+		}
+	}
+	// Change parents (only if the parent was not one of its childs)
+	if (!isChild)
+	{
+		_newParent->AddChild(this);
+		if (parent)
+			parent->RemoveChild(this->uID);
+		parent = _newParent;
+	}
+}
+
 void GameObject::AddChild(GameObject* _newChild)
 {
-	if (_newChild->hasTransform && _newChild->parent != nullptr)
+	if (_newChild->transform && _newChild->parent != nullptr)
 	{
-		float4x4 worldTransform = _newChild->GetModelMatrix(); // antic pare * antiga tranform del fill =  nou pare * nova fill
-		float4x4 thisTransform = this->hasTransform ? this->GetModelMatrix() : float4x4::identity;
+		float4x4 worldTransform = _newChild->GetModelMatrix();
+		float4x4 thisTransform = this->transform ? this->GetModelMatrix() : float4x4::identity;
 		thisTransform.InverseOrthonormal();
 		_newChild->SetTransform(thisTransform * worldTransform, this);
 	}
@@ -99,8 +125,10 @@ void GameObject::AddChild(GameObject* _newChild)
 void GameObject::RemoveChild(int childID)
 {
 	int toRemove = -1;
-	for (unsigned int i = 0u; i < children.size(); ++i) {
-		if (children[i]->uID == childID) {
+	for (unsigned int i = 0u; i < children.size(); ++i)
+	{
+		if (children[i]->uID == childID)
+		{
 			toRemove = (int)i;
 			break;
 		}
@@ -109,44 +137,31 @@ void GameObject::RemoveChild(int childID)
 		children.erase(children.begin() + toRemove);
 }
 
-CMaterial* GameObject::GetMaterial() const
-{
-	for (unsigned int i = 0u; i < components.size(); ++i) {
-		if (components[i]->GetType() == MATERIAL)
-			return (CMaterial*)components[i];
-	}
-
-	return nullptr;
-}
-
 float4x4 GameObject::GetModelMatrix() const
 {
-	if (parent && parent->hasTransform)
+	if (parent && parent->transform)
 		return (parent->GetModelMatrix() * this->transform->GetTransformationMatrix());
 	else
 		return  this->transform->GetTransformationMatrix();
 }
 
-CTransform* GameObject::GetTransform() const
-{
-	return transform;
-}
 
 void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _translation)
 {
 	transform->SetPos(_translation);
 	transform->SetRotation(_rotation);
 	transform->SetScale(_scale);
+	transform->UpdateTransformMatrix();
 }
 
 void GameObject::SetTransform(float4x4& _newTransform, GameObject* _newParent)
 {
 	transform->SetPos((float3)(_newTransform.Col3(3)));
 
-	float3 oldParentScale = parent->hasTransform ? parent->transform->GetScale() : float3::one;
+	float3 oldParentScale = parent->transform ? parent->transform->GetScale() : float3::one;
 	float3 oldScaleChild = transform->GetScale();
 	float3 totalScale = oldParentScale.Mul(oldScaleChild);
-	float3 newChildScale = totalScale.Div(_newParent->transform->GetScale());
+	float3 newChildScale = totalScale.Div(_newParent->transform ? _newParent->transform->GetScale() : float3::one);
 	transform->SetScale(newChildScale);
 
 	float3 rotation;
@@ -154,14 +169,6 @@ void GameObject::SetTransform(float4x4& _newTransform, GameObject* _newParent)
 	rotation.y = -atan2(-_newTransform.Col3(2)[0], sqrt(_newTransform.Col3(2)[1] * _newTransform.Col3(2)[1] + _newTransform.Col3(2)[2] * _newTransform.Col3(2)[2]));
 	rotation.z = -atan2(_newTransform.Col3(1)[0], _newTransform.Col3(0)[0]);
 	transform->SetRotation(rotation);
-}
-
-void GameObject::SetParent(GameObject* _newParent)
-{
-	_newParent->AddChild(this);
-	if (parent)
-		parent->RemoveChild(this->uID);
-	parent = _newParent;
 }
 
 void GameObject::SetProgram(unsigned int program)

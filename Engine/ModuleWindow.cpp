@@ -97,37 +97,3 @@ void ModuleWindow::ReceiveEvent(const Event& event)
 		break;
 	}
 }
-
-void ModuleWindow::ToggleBorderless(bool borderless) const
-{
-	if (borderless)
-		SDL_SetWindowBordered(window, SDL_FALSE);
-	else
-		SDL_SetWindowBordered(window, SDL_TRUE);
-}
-
-void ModuleWindow::ToggleFulldesktop(bool fulldesktop) const
-{
-	if (fulldesktop)
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-	else
-		SDL_SetWindowFullscreen(window, 0);
-}
-
-void ModuleWindow::ToggleResizable(bool resizable) const
-{
-	if (resizable)
-		SDL_SetWindowResizable(window, SDL_TRUE);
-	else
-		SDL_SetWindowResizable(window, SDL_FALSE);
-}
-
-void ModuleWindow::SetBrightness(float brightness) const
-{
-	SDL_SetWindowBrightness(window, brightness);
-}
-
-void ModuleWindow::SetVsync(bool vsync)
-{
-	SDL_GL_SetSwapInterval(vsync);
-}

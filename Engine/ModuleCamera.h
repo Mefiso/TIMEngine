@@ -37,13 +37,13 @@ public:
 	ModuleCamera(float3 position = float3(0, 1, 7), float3 up = float3(0, 1, 0), float near_plane = 0.1f, float far_plane = 200.0f);	// Constructor
 	~ModuleCamera();														// Destructor
 
-	//  ----- Module Functions ----- //
+	// ------ Module Functions ----- //
 	bool CleanUp() override;												// Clean memory allocated by this Module
 	void ReceiveEvent(const Event& event) override;							// Recieve events from App (that recieves events from other Modules)
 
 	// ---------- Getters ---------- //
-	float4x4 ViewMatrix();													// Returns the View matrix of the Camera
-	float4x4 ProjectionMatrix();											// Returns the Projection matrix of the Camera
+	float4x4 ViewMatrix() const { return frustum.ViewMatrix(); }			// Returns the View matrix of the Camera frustrum
+	float4x4 ProjectionMatrix() const { return frustum.ProjectionMatrix(); }// Returns the Projection matrix of the Camera
 
 	// Process movement
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);		// Applies the corresponding changes when an input from keyboard is detected and the Viewport is hovered. (Editor.PreUpdate > Rendered.ProcessViewportEvents)

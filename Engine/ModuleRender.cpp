@@ -80,8 +80,6 @@ bool ModuleRender::Init()
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
 #endif
 
-	defaultProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\bdrfPhong.vs.glsl", ".\\resources\\shaders\\bdrfPhong.fs.glsl");
-
 	SDL_DisplayMode mode;
 	SDL_GetDesktopDisplayMode(0, &mode);
 	viewport_width = (int)(mode.w * 0.8f);
@@ -93,14 +91,6 @@ bool ModuleRender::Init()
 
 	msTimer.Start();
 
-	return true;
-}
-
-bool ModuleRender::Start()
-{
-	for (std::vector<GameObject*>::const_iterator it = App->scene->GetRoot()->GetChildren().begin(); it != App->scene->GetRoot()->GetChildren().end(); ++it) {
-		(*it)->SetProgram(defaultProgram);
-	}
 	return true;
 }
 
@@ -130,7 +120,7 @@ update_status ModuleRender::Update()
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 
 	// Render all GameObjects
-	App->scene->GetRoot()->Update();
+	App->scene->GetRoot()->Draw();
 
 	if (showGrid)
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
@@ -151,22 +141,10 @@ update_status ModuleRender::PostUpdate()
 bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
-	glDeleteProgram(defaultProgram);
-
 	//Destroy window
 	SDL_GL_DeleteContext(context);
 
 	return true;
-}
-
-void ModuleRender::ReceiveEvent(const Event& event)
-{
-	switch (event.type)
-	{
-	case Event::file_dropped:
-		App->scene->GetRoot()->GetChildren()[App->scene->GetRoot()->GetChildren().size() - 1]->SetProgram(defaultProgram);
-		break;
-	}
 }
 
 void ModuleRender::ProcessViewportEvents() {

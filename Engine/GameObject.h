@@ -28,7 +28,6 @@ private:
 	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
 	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
 	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
-	bool hasTransform = false;																			// Indicates if this GameObject has a Transform COmponent // THIS SHOULD BE CONTROLLED IN CONSTRUCTOR and act accordignly
 
 public:
 
@@ -36,7 +35,7 @@ public:
 	~GameObject();																						// Destructor
 
 	void CleanUp();
-	void Update();																						// Update this GameObject with the transformations applied to it. SHOULD THIS GO IN PREUPDATE STEP?
+	void Draw();																						// Update this GameObject with the transformations applied to it. SHOULD THIS GO IN PREUPDATE STEP?
 	void AddComponent(ComponentType _type, void* arg = nullptr, const std::string& path = "");			// Create and attach a new Component to this GameObject
 	void RemoveComponent(int _cID);																		// Detach a component from this GameObject
 	void AddChild(GameObject* _newChild);																// Subfunction of SetParent(). Places another GameObject as a child of this one
@@ -44,14 +43,19 @@ public:
 
 	// ---------- Getters ---------- //
 	char* GetName() const { return name; }
-	const int GetUID() const { return uID; }
+	int GetUID() const { return uID; }
 	std::vector<GameObject*>& GetChildren() { return children; }
 	std::vector<Component*>& GetComponents() { return components; }
-	const bool HasTransform() const { return hasTransform; }
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
-	CTransform* GetTransform() const;																	// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
-	CMaterial* GetMaterial() const;																		// Returns the Material Component of this GameObject, if there is one. If not, returns nullptr
-	// A getter for each kind of Component?
+	CTransform* GetTransform() const { return transform; }												// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
+	
+	template<typename T>
+	T* GetComponent()																					// Get a component of type T, or null if it does not exist on this GameObject
+	{
+		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) return c; }
+		return nullptr;
+	}
+	// TODO: Get a list of various materials of same type
 
 	// ---------- Setters ---------- //
 	void ChangeName(char* _newName) { name = _newName; }
@@ -59,5 +63,4 @@ public:
 	void SetTransform(float4x4& _newTransform, GameObject* _newParent);
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
-	void SetHasTransform(bool _hasTransform) { hasTransform = _hasTransform; }
 };

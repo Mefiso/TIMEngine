@@ -18,8 +18,9 @@ public:
 
 	void Draw() override;							// Operations performed when Rendering this window
 
-	void SetColorbuffer(unsigned int _texid, unsigned int _width, unsigned int _height);
+	void SetColorbuffer(unsigned int _texid, unsigned int _width, unsigned int _height); // Called on Initialisation, sets this Window size and the image to display from the ColorBuffer and Viewport settings in the Render
 
+	// ---------- Getters ---------- //
 	float GetWidth() { return width; }
 	float GetHeight() { return height; }
 };

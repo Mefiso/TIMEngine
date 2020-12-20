@@ -26,9 +26,9 @@ CMesh::~CMesh()
 	glDeleteBuffers(1, &VBO);
 }
 
-void CMesh::Update()
+void CMesh::Draw()
 {
-	if (owner->HasTransform())
+	if (owner->GetTransform())
 	{
 		ModuleProgram::use(program);
 
@@ -38,23 +38,23 @@ void CMesh::Update()
 		ModuleProgram::setMat4(program, "proj", App->camera->ProjectionMatrix());
 
 		// Lighting
-		ModuleProgram::setVec3(program, "lightDir", float3(0.5, 1.0, 1.3));
+		ModuleProgram::setVec3(program, "lightDir", float3(0.5f, 1.0f, 1.3f));
 		ModuleProgram::setVec3(program, "lightColor", float3(1.0));
 
 		// Camera
 		ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum.Pos());
-		ModuleProgram::setFloat(program, "shininess", 300.0f);
+		ModuleProgram::setFloat(program, "shininess", 32.0f);
 
-		CMaterial* material = owner->GetMaterial();
+		CMaterial* material = owner->GetComponent<CMaterial>();
 
-		// bind appropriate textures
+		// Bind appropriate textures
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
 		unsigned int normalNr = 1;
 		unsigned int heightNr = 1;
 		for (unsigned int i = 0u; i < material->textures.size(); i++)
 		{
-			glActiveTexture(GL_TEXTURE0 + i);					// activate proper texture unit
+			glActiveTexture(GL_TEXTURE0 + i);					// Activate proper texture unit
 			std::string number;
 			std::string name = material->textures[i]->type;
 			if (name == "diffuse")
@@ -66,8 +66,8 @@ void CMesh::Update()
 			else if (name == "height")
 				number = std::to_string(heightNr++);			// transfer unsigned int to stream
 			*/
-			ModuleProgram::setInt(program, (name + number).c_str(), i);
 			glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
+			ModuleProgram::setInt(program, (name + number).c_str(), i);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, material->textures[i]->wraps);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, material->textures[i]->wrapt);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material->textures[i]->minfilter);

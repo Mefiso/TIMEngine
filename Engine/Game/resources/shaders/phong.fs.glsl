@@ -12,7 +12,7 @@ uniform vec3 lightColor;
 uniform vec3 cameraPos;
 
 uniform float shininess;
-uniform sampler2D diffuse;
+uniform sampler2D diffuse1;
 
 void main()
 {
@@ -22,7 +22,7 @@ void main()
 
 	// Diffuse
 	vec3 lightDir = normalize(lightDir);
-	vec3 colorDiffuse = texture(diffuse, fragUV).xyz;
+	vec3 colorDiffuse = texture(diffuse1, fragUV).xyz;
 	vec3 normal = normalize(fragNormal);
 	float NdotL = max(dot(normal, -lightDir), 0.0);
 	vec3 diff = NdotL * lightColor;

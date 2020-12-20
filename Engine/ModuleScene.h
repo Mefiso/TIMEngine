@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "GameObject.h"
+
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <vector>
@@ -13,12 +14,18 @@ struct Texture;
 class ModuleScene : public Module
 {
 public:
-	std::vector<Texture*> loadedTextures;
+	std::vector<Texture*> loadedTextures;										// A vector containing All the texures loaded
 
 private:
 	GameObject* root = new GameObject();										// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children
-	struct aiLogStream stream;
-	std::string directory = "";
+	struct aiLogStream stream;													// Assimp logs are registered in this variable
+	std::string directory = "";													// The path of the scene file we are loading, without filename
+
+	//  ----- Shading Programs ----- //
+	unsigned int defaultProgram = 0u;											// ID of the default Shading program that will be used to render the scene. One of the following  Programs will be assigned as default
+	unsigned int vanillaProgram = 0u;											// ID of the basic Shading program
+	unsigned int phongProgram = 0u;												// ID of the Shading program using Phong
+	unsigned int pbrProgram = 0u;												// ID of the Shading program using BDRF Phong and Fresnel
 
 public:
 	ModuleScene();

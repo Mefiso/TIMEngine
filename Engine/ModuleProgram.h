@@ -9,11 +9,12 @@
 
 namespace ModuleProgram
 {
-	unsigned int CreateProgramFromFile(const char* vertexPath, const char* fragmentPath);        // Creates a Shading Program from the path of the Vertex and Fragment shader files
+	unsigned int CreateProgramFromFile(const char* vertexPath, const char* fragmentPath);	// Creates a Shading Program from the path of the Vertex and Fragment shader files
 
 	namespace
 	{
-		void checkCompileErrors(unsigned int shader, const char* type)                                // Checks for shader compilation/linking errors.
+		// Check for shader compilation/linking errors.
+		void checkCompileErrors(unsigned int shader, const char* type)
 		{
 			int success;
 			if (type != "PROGRAM")
@@ -52,7 +53,8 @@ namespace ModuleProgram
 			}
 		}
 
-		char* LoadShaderSource(const char* shader_file_name)                                        // Reads a shader file and stores the text in a char* buffer
+		// Read a file and store the text in a char* buffer
+		char* LoadShaderSource(const char* shader_file_name)
 		{
 			char* data = nullptr;
 			FILE* file = nullptr;
@@ -71,7 +73,9 @@ namespace ModuleProgram
 				LOG("[error] Can't read file %s", shader_file_name);
 			return data;
 		}
-		unsigned int CompileShader(unsigned int type, const char* source)                            // Compiles a shader written in GLSL, from the text stored in a char* buffer
+
+		// Compile a shader written in GLSL, from the text stored in a char* buffer
+		unsigned int CompileShader(unsigned int type, const char* source)
 		{
 			unsigned shader_id = glCreateShader(type);
 			glShaderSource(shader_id, 1, &source, 0);
@@ -81,7 +85,9 @@ namespace ModuleProgram
 
 			return shader_id;
 		}
-		unsigned int CreateProgram(unsigned int vtx_shader, unsigned int frg_shader)                  // Generates a shading program from the compiled Vertex and Fragment shaders
+
+		// Generate a shading program from the compiled Vertex and Fragment shaders
+		unsigned int CreateProgram(unsigned int vtx_shader, unsigned int frg_shader)
 		{
 			unsigned program_id = glCreateProgram();
 			glAttachShader(program_id, vtx_shader);
