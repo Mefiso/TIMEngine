@@ -38,5 +38,9 @@ void main()
 	vec3 Rf0 = vec3(0.08,0.08,0.08); //this should come as parameter
 	vec3 Rfi = Rf0 + (1-Rf0) * pow((1-NdotL),5);
 
-	color = vec4(ambient * colorDiffuse + (colorDiffuse*(1-Rf0) + (shininess+2)/2 * Rfi * spec * specularMap) * lightColor * NdotL, 1.0);
+	vec3 Fcolor = ambient * colorDiffuse + (colorDiffuse*(1-Rf0) + (shininess+2)/2 * Rfi * spec * specularMap) * lightColor * NdotL;
+	// Gamma correction
+	Fcolor = pow(Fcolor, vec3(1/2.2));
+
+	color = vec4(Fcolor, 1.0);
 }

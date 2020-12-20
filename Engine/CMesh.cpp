@@ -94,7 +94,8 @@ void CMesh::LoadVBO(const aiMesh* mesh)
 	{
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset, sizeof(float) * 3, &mesh->mVertices[i]);
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 3, sizeof(float) * 3, &mesh->mNormals[i]);
-		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 6, sizeof(float) * 2, &mesh->mTextureCoords[0][i]);
+		if (mesh->mTextureCoords[0] != NULL)
+			glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 6, sizeof(float) * 2, &mesh->mTextureCoords[0][i]);
 		data_offset += vertex_size;
 	}
 }

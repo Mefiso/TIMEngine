@@ -97,7 +97,7 @@ void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* ob
 
 void ModuleScene::DropFile(const std::string& file)
 {
-	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
+	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0 || file.substr(file.find_last_of('.'), file.size()).compare(".FBX") == 0) {
 		LoadScene(file);
 		// TODO: What if new scene has no transform? (could it be possible?)
 		App->camera->onFocus(root->GetChildren()[root->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10);
