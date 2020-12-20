@@ -6,8 +6,6 @@
 
 class WHierarchy : public Window
 {
-public:
-
 private:
 
 	GameObject* dragged = nullptr;							// Pointer to the GameObject that is being dragged (from BeginDragDropSource() ).

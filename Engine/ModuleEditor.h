@@ -1,8 +1,6 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include <SDL.h>
-#include "ImGUI/imgui.h"
 #include <vector>
 
 class Window;
@@ -14,8 +12,9 @@ class WConfig;
 class WProperties;
 class WAbout;
 class Model;
-
 class GameObject;
+struct ImGuiIO;
+union SDL_Event;
 
 class ModuleEditor : public Module
 {
@@ -59,6 +58,6 @@ public:
 
 private:
 
-	void CreateMainMenu();											// Generates the main menu using ImGui
+	void DrawMainMenu();											// Generates the main menu using ImGui
 	void ShowMenuFile();											// Subfunction of CreateMainMenu. Generates the File menu
 };

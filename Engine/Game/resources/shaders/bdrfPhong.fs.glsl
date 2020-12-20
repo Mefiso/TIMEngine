@@ -13,8 +13,8 @@ uniform vec3 cameraPos;
 
 uniform float shininess;
 
-uniform sampler2D diffuse;
-uniform sampler2D specular;
+uniform sampler2D diffuse1;
+uniform sampler2D specular1;
 
 void main()
 {
@@ -23,13 +23,13 @@ void main()
 	vec3 ambient = ambientStrength * lightColor;
 
 	// Diffuse
-	vec3 colorDiffuse = texture(diffuse, fragUV).xyz;
+	vec3 colorDiffuse = texture(diffuse1, fragUV).xyz;
 	vec3 normal = normalize(fragNormal);
 	vec3 lightDir = normalize(lightDir);
 	float NdotL = max(dot(normal, -lightDir), 0.0);
 
 	// Specular
-	vec3 specularMap = texture(specular, fragUV).xyz;
+	vec3 specularMap = texture(specular1, fragUV).xyz;
 	vec3 viewDir = normalize(cameraPos-worldPos);
 	vec3 reflected = reflect(lightDir, normal);
 	float spec = pow(max(dot(viewDir, reflected), 0.0), shininess);

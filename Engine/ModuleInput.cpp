@@ -4,7 +4,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleEditor.h"
-#include "SDL/include/SDL.h"
+#include "SDL.h"
 #include "Leaks.h"
 #include "Brofiler.h"
 

@@ -6,6 +6,8 @@
 
 #include "ModuleTexture.h"
 #include "ModuleCamera.h"
+#include "ModuleProgram.h"
+
 #include "Component.h"
 #include "GameObject.h"
 #include "Leaks.h"
@@ -29,6 +31,11 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Start()
 {
+	vanillaProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\vanilla.vs.glsl", ".\\resources\\shaders\\vanilla.fs.glsl");
+	phongProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\phong.vs.glsl", ".\\resources\\shaders\\phong.fs.glsl");
+	pbrProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\bdrfPhong.vs.glsl", ".\\resources\\shaders\\bdrfPhong.fs.glsl");
+	defaultProgram = pbrProgram;
+
 	LoadScene("./resources/models/baker_house/BakerHouse.fbx");
 	return true;
 }
@@ -44,6 +51,9 @@ bool ModuleScene::CleanUp()
 
 	RELEASE(root);
 
+	glDeleteProgram(vanillaProgram);
+	glDeleteProgram(phongProgram);
+	glDeleteProgram(pbrProgram);
 	return true;
 }
 
@@ -73,13 +83,18 @@ void ModuleScene::LoadScene(std::string const& path)
 		GameObject* newModel = new GameObject();
 		newModel->SetParent(root);
 		ProcessNode(scene->mRootNode, scene, newModel);
+
+		// Set default shading program
+		newModel->SetProgram(defaultProgram);
+		for (std::vector<GameObject*>::const_iterator it = newModel->GetChildren().begin(); it != newModel->GetChildren().end(); ++it) {
+			(*it)->SetProgram(defaultProgram);
+		}
 	}
 }
 
 void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* object)
 {
 	object->AddComponent(TRANSFORM, nullptr);
-	object->SetHasTransform(true);
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -97,7 +112,7 @@ void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* ob
 
 void ModuleScene::DropFile(const std::string& file)
 {
-	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
+	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0 || file.substr(file.find_last_of('.'), file.size()).compare(".FBX") == 0 || file.substr(file.find_last_of('.'), file.size()).compare(".obj") == 0) {
 		LoadScene(file);
 		// TODO: What if new scene has no transform? (could it be possible?)
 		App->camera->onFocus(root->GetChildren()[root->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10);

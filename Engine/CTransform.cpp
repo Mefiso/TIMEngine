@@ -9,9 +9,9 @@ CTransform::~CTransform()
 {
 }
 
-float4x4 CTransform::GetTransformationMatrix() const
+void CTransform::UpdateTransformMatrix()
 {
-	return float4x4::FromTRS(position,
-		Quat::FromEulerXYZ(rotation.x, rotation.y, rotation.z),
-		scale);
+	transformMatrix = float4x4::FromTRS(position,
+										Quat::FromEulerXYZ(rotation.x, rotation.y, rotation.z),
+										scale);
 }

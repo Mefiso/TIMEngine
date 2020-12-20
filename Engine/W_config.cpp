@@ -24,15 +24,14 @@ void WConfig::Draw()
 		ImGui::End();
 		return;
 	}
-	WindowHeader();
-	RendererHeader();
-	//TextureHeader();
-	CameraHeader();
+	DrawWindowHeader();
+	DrawRendererHeader();
+	DrawCameraHeader();
 
 	ImGui::End();
 }
 
-void WConfig::WindowHeader()
+void WConfig::DrawWindowHeader()
 {
 	if (ImGui::CollapsingHeader("Window")) {
 		SDL_DisplayMode mode;
@@ -63,7 +62,7 @@ void WConfig::WindowHeader()
 	}
 }
 
-void WConfig::RendererHeader()
+void WConfig::DrawRendererHeader()
 {
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
@@ -88,61 +87,7 @@ void WConfig::RendererHeader()
 	}
 }
 
-// --- DEPRECATED --- //
-/*
-// Texture
-const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
-const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
-const char* filterM[] = { "Linear", "Nearest" };
-void WConfig::TextureHeader()
-{
-	if (ImGui::CollapsingHeader("Texture"))
-	{
-		HelpMarker("For this options to be applied reload the model.");
-		ImGui::Checkbox("Mipmap", &ModuleTexture::mipmap);
-		ImGui::Checkbox("Force flip", &ModuleTexture::force_flip);
-
-		ImGui::Separator();
-
-		if (ImGui::BeginTabBar("Current model textures"))
-		{
-			std::string label;
-			for (unsigned int i = 0; i < App->renderer->modelLoaded->textures.size(); ++i)
-			{
-				label = "Texture " + std::to_string(i);
-				ImGui::PushItemWidth(100);
-				if (ImGui::BeginTabItem(label.c_str()))
-				{
-					glBindTexture(GL_TEXTURE_2D, App->renderer->modelLoaded->textures[i]->id);
-
-					auto it = std::find(wrapmode.begin(), wrapmode.end(), App->renderer->modelLoaded->textures[i]->wraps);
-					int indexWS = it - wrapmode.begin();
-					if (ImGui::Combo("Wrap (S dir)", &indexWS, wrap, IM_ARRAYSIZE(wrap)))
-						App->renderer->modelLoaded->textures[i]->wraps = wrapmode[indexWS];
-
-					it = std::find(wrapmode.begin(), wrapmode.end(), App->renderer->modelLoaded->textures[i]->wrapt);
-					int indexWT = it - wrapmode.begin();
-					if (ImGui::Combo("Wrap (T dir)", &indexWT, wrap, IM_ARRAYSIZE(wrap)))
-						App->renderer->modelLoaded->textures[i]->wrapt = wrapmode[indexWT];
-
-					it = std::find(filtermode.begin(), filtermode.end() - 2, App->renderer->modelLoaded->textures[i]->minfilter);
-					int indexFm = it - filtermode.begin();
-					if (ImGui::Combo("Minification", &indexFm, filterm, IM_ARRAYSIZE(filterm)))
-						App->renderer->modelLoaded->textures[i]->minfilter = filtermode[indexFm];
-
-					it = std::find(filtermode.end() - 2, filtermode.end(), App->renderer->modelLoaded->textures[i]->magfilter);
-					int indexFM = it - (filtermode.end()-2);
-					if (ImGui::Combo("Magnification", &indexFM, filterM, IM_ARRAYSIZE(filterM)))
-						App->renderer->modelLoaded->textures[i]->magfilter = filtermode[4+indexFM];
-					ImGui::EndTabItem();
-				}
-			}
-			ImGui::EndTabBar();
-		}
-	}
-}
-*/
-void WConfig::CameraHeader()
+void WConfig::DrawCameraHeader()
 {
 	if (ImGui::CollapsingHeader("Camera")) {
 		static bool posModified = false;

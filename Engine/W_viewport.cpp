@@ -40,6 +40,8 @@ void WViewport::Draw()
 
 	// TODO: why need -20 to vertical size good?
 	ImGui::Image((ImTextureID)texid, ImVec2(win_size.x, win_size.y - 20), ImVec2(0.f, 1.f), ImVec2(1.f, 0.f));
+	//ImgUi::Overlap
+	//lskfdsdlkfjdsñ
 	ImGui::PopStyleVar();
 	ImGui::End();
 }
