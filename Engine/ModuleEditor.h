@@ -19,7 +19,6 @@ union SDL_Event;
 class ModuleEditor : public Module
 {
 private:
-
 	bool should_quit = false;										// Boolean setted by the 'Quit' option in the main menu. When TRUE, the application closes
 	ImGuiIO* io = nullptr;											// Pointer to the inputs/outputs setting of ImGui
 
@@ -35,7 +34,6 @@ private:
 	std::vector<Window*> editorWindows;								// Vector containig the references to each ImGui window
 
 public:
-
 	ModuleEditor();													// Constructor
 	~ModuleEditor();												// Destructor
 
@@ -57,7 +55,7 @@ public:
 	void InspectObject(GameObject* _object);						// Sends the currently selected GameObject in the hierarchy to the properties inspector window WProperties
 
 private:
-
 	void DrawMainMenu();											// Generates the main menu using ImGui
 	void ShowMenuFile();											// Subfunction of CreateMainMenu. Generates the File menu
+	void ShowMenuGameObject();										// Subfunction of CreateMainMenu. Generates the GameObject menu
 };

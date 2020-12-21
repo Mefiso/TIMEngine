@@ -21,23 +21,26 @@ void WHierarchy::Draw()
 		return;
 	}
 
-	ImGui::SetNextItemOpen(true);
-	if (ImGui::TreeNode(App->scene->GetRoot()->GetName()))
+	if (App->scene->GetRoot())
 	{
-		// Process Draging objects into Scene.root
-		if (ImGui::BeginDragDropTarget())
+		ImGui::SetNextItemOpen(true);
+		if (ImGui::TreeNode(App->scene->GetRoot()->GetName()))
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
+			// Process Draging objects into Scene.root
+			if (ImGui::BeginDragDropTarget())
 			{
-				dragged->SetParent(App->scene->GetRoot());
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
+				{
+					dragged->SetParent(App->scene->GetRoot());
+				}
+				ImGui::EndDragDropTarget();
 			}
-			ImGui::EndDragDropTarget();
+
+			// Draw Hierachy tree
+			DrawTree(App->scene->GetRoot()->GetChildren());
+
+			ImGui::TreePop();
 		}
-
-		// Draw Hierachy tree
-		DrawTree(App->scene->GetRoot()->GetChildren());
-
-		ImGui::TreePop();
 	}
 	ImGui::End();
 }
@@ -53,7 +56,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 			node_flags | (_gameObjList[i]->GetChildren().empty() ? ImGuiTreeNodeFlags_Leaf : 0) | (_gameObjList[i]->isSelected ? ImGuiTreeNodeFlags_Selected : 0),
 			"%s", _gameObjList[i]->GetName());
 
-		// Process Selection of Items
+		// On item clicked - Process Selection of Items
 		if (ImGui::IsItemClicked()) {
 			if (!ImGui::GetIO().KeyCtrl) {
 				DeselectAll(App->scene->GetRoot()->GetChildren());
@@ -82,7 +85,21 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 			ImGui::EndDragDropTarget();
 		}
 
-		// Process recusive tree
+		// On item right-clicked - show Context menu with options
+		if (ImGui::BeginPopupContextItem())
+		{
+
+			if (ImGui::MenuItem("Delete"))
+			{
+				DeselectAll(App->scene->GetRoot()->GetChildren());
+				App->editor->InspectObject(nullptr);				// Reset selection (needed for avoiding pointer derreferenced memory)
+				toDelete = _gameObjList[i];
+			}
+
+			ImGui::EndPopup();
+		}
+
+		// Process recusive tree when opening the node
 		if (node_open)
 		{
 			std::vector<GameObject*> goChildren = _gameObjList[i]->GetChildren();

@@ -45,7 +45,7 @@ void CMesh::Draw()
 		// This should be set from other parameters not hardcoded
 		// Camera
 		ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum.Pos());
-		ModuleProgram::setVec3(program, "material.ambient", float3(0.05, 0.05, 0.05));
+		ModuleProgram::setVec3(program, "material.ambient", float3(0.05f, 0.05f, 0.05f));
 		ModuleProgram::setFloat(program, "material.shininess", 64.0f);
 
 		CMaterial* material = owner->GetComponent<CMaterial>();
@@ -80,7 +80,7 @@ void CMesh::Draw()
 		ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr-1);
 		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
 		if (specularNr == 1) {
-			ModuleProgram::setVec3(program, "material.specular", float3(0.08));
+			ModuleProgram::setVec3(program, "material.specular", float3(0.08f));
 			//ModuleProgram::setInt(program, "material.shininessAlpha", 1);
 		}
 

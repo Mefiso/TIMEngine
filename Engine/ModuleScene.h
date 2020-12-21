@@ -39,6 +39,8 @@ public:
 	// ---------- Getters ---------- //
 	GameObject* GetRoot() { return root; }
 
+	void CreateEmptyGameObject();												// Creates a new GameObject, and adds it as a child of 'root'
+
 private:
 	void LoadScene(std::string const& path);									// Loads a model from a file indicated by _path, and creates the corresponding GameObjects and Components
 	void ProcessNode(aiNode* node, const aiScene* scene, GameObject* object);	// Subfuction of LoadScene. Processes an Assimp Node from the loaded model and creates the corresponding GameObjects and Components from the node and its childs recursively

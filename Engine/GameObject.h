@@ -32,9 +32,10 @@ private:
 public:
 
 	GameObject();																						// Constructor
+	GameObject(char* _name);																			// Constructor (name as param)
 	~GameObject();																						// Destructor
 
-	void CleanUp();
+	void CleanUp();																						// Clears all memory stored by this GameObject
 	void Draw();																						// Update this GameObject with the transformations applied to it. SHOULD THIS GO IN PREUPDATE STEP?
 	void AddComponent(ComponentType _type, void* arg = nullptr, const std::string& path = "");			// Create and attach a new Component to this GameObject
 	void RemoveComponent(int _cID);																		// Detach a component from this GameObject
@@ -44,6 +45,7 @@ public:
 	// ---------- Getters ---------- //
 	char* GetName() const { return name; }
 	int GetUID() const { return uID; }
+	GameObject* GetParent() const { return parent; }
 	std::vector<GameObject*>& GetChildren() { return children; }
 	std::vector<Component*>& GetComponents() { return components; }
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents

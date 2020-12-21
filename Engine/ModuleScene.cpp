@@ -27,6 +27,7 @@ ModuleScene::ModuleScene()
 
 ModuleScene::~ModuleScene()
 {
+	RELEASE(root);
 }
 
 bool ModuleScene::Start()
@@ -65,6 +66,12 @@ void ModuleScene::ReceiveEvent(const Event& event)
 		DropFile(event.string.ptr);
 		break;
 	}
+}
+
+void ModuleScene::CreateEmptyGameObject()
+{
+	GameObject* newEmpty = new GameObject("Empty GameObj");
+	newEmpty->SetParent(root);
 }
 
 void ModuleScene::LoadScene(std::string const& path)

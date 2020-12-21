@@ -2,6 +2,7 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
+#include "ModuleScene.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "W_viewport.h"
@@ -81,6 +82,15 @@ update_status ModuleEditor::Update()
 
 update_status ModuleEditor::PostUpdate()
 {
+	GameObject* toDelete = hierarchy->GetToDelete();
+	if (toDelete) {
+		//if(properties.se)
+
+		if (toDelete->GetParent())
+			toDelete->GetParent()->RemoveChild(toDelete->GetUID());
+		RELEASE(toDelete);
+		hierarchy->SetToDelete(nullptr);
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -159,6 +169,12 @@ void ModuleEditor::DrawMainMenu()
 			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
 			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("GameObject"))
+		{
+			ShowMenuGameObject();
 			ImGui::EndMenu();
 		}
 
@@ -248,4 +264,12 @@ void ModuleEditor::ShowMenuFile()
 
 	if (ImGui::MenuItem("Quit Application", "Alt+F4"))
 		should_quit = true;
+}
+
+void ModuleEditor::ShowMenuGameObject()
+{
+	if (ImGui::MenuItem("Create Empty GameObject"))
+	{
+		App->scene->CreateEmptyGameObject();
+	}
 }

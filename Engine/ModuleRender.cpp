@@ -120,7 +120,8 @@ update_status ModuleRender::Update()
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 
 	// Render all GameObjects
-	App->scene->GetRoot()->Draw();
+	if (App->scene->GetRoot())
+		App->scene->GetRoot()->Draw();
 
 	if (showGrid)
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);

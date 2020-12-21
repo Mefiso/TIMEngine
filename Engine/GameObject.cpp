@@ -7,7 +7,12 @@ int GameObject::objectCount = 0;
 
 GameObject::GameObject()
 {
-	objectCount++;
+	++objectCount;
+}
+
+GameObject::GameObject(char* _name) : name(_name)
+{
+	++objectCount;
 }
 
 GameObject::~GameObject()
@@ -17,6 +22,9 @@ GameObject::~GameObject()
 
 void GameObject::CleanUp()
 {
+	/*if (parent)
+		parent->RemoveChild(this->uID);*/
+
 	// Clean components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -27,7 +35,6 @@ void GameObject::CleanUp()
 	// Clean childs
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
-		(*it)->CleanUp();
 		RELEASE(*it);
 	}
 	children.clear();
