@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
+#include "ModuleInput.h"
 #include "Math/Quat.h"
 #include "Math/float3x3.h"
 #include "Leaks.h"
@@ -44,6 +45,14 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	case Event::wheel_event:
 		ProcessMouseScroll((float)event.point2d.x, (float)event.point2d.y);
 		break;
+	}
+}
+
+void ModuleCamera::ProcessViewportEvents() {
+	TranslateCamera(deltatime);
+	RotateCameraKeys(deltatime);
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
+		//App->camera->onFocus(App->scene->GetRoot()->GetChildren()[App->scene->GetRoot()->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10); // TODO: WE NEED THE ABILITY TO SELECT A GAMEOBJECT
 	}
 }
 
@@ -146,4 +155,41 @@ void ModuleCamera::RotateCamera(float yaw, float pitch)
 			frustum.SetFront(pitchRotation.Mul(frustum.Front()).Normalized());
 		}
 	}
+}
+
+void ModuleCamera::TranslateCamera(float deltaTime) const
+{
+	// Translate camera
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(UP, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(DOWN, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(FORWARD, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(BACKWARD, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(LEFT, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(RIGHT, deltaTime);
+
+	// Speed increase/decrease
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
+		App->camera->ProcessSpeed(2);
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
+		App->camera->ProcessSpeed(0.5f);
+	}
+}
+
+void ModuleCamera::RotateCameraKeys(float deltaTime) const
+{
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(PITCH_DOWN, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(YAW_LEFT, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(YAW_RIGHT, deltaTime);
 }

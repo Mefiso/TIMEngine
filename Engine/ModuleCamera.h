@@ -33,6 +33,9 @@ public:
 	float MouseSensitivity;													// Multiplier of the Mouse sensitivity
 	Frustum frustum;														// Identifier of the Camera frustrum Object
 
+private:
+	float deltatime;														// Time between each frame, in milliseconds
+
 public:
 	ModuleCamera(float3 position = float3(0, 1, 7), float3 up = float3(0, 1, 0), float near_plane = 0.1f, float far_plane = 200.0f);	// Constructor
 	~ModuleCamera();														// Destructor
@@ -40,10 +43,15 @@ public:
 	// ------ Module Functions ----- //
 	bool CleanUp() override;												// Clean memory allocated by this Module
 	void ReceiveEvent(const Event& event) override;							// Recieve events from App (that recieves events from other Modules)
+	// callback funcs
+	void ProcessViewportEvents();											// Called from ModuleEditor, when an input is recieved inside the viewport. Perfoms the necessary operations for the corresponding input. This allows the control of the actions performed when the input is captured inside the viewport.
 
 	// ---------- Getters ---------- //
 	float4x4 ViewMatrix() const { return frustum.ViewMatrix(); }			// Returns the View matrix of the Camera frustrum
 	float4x4 ProjectionMatrix() const { return frustum.ProjectionMatrix(); }// Returns the Projection matrix of the Camera
+
+	// ---------- Setters ---------- //
+	void SetDeltaTime(float _deltaTime) { deltatime = _deltaTime; }
 
 	// Process movement
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);		// Applies the corresponding changes when an input from keyboard is detected and the Viewport is hovered. (Editor.PreUpdate > Rendered.ProcessViewportEvents)
@@ -54,9 +62,11 @@ public:
 private:
 	// Process Camera Rotations
 	void RotateCamera(float yaw, float pitch);								// Auxiliar function of ProcessKeyboard() when rotation is needed
+	void RotateCameraKeys(float deltaTime) const;							// Rotates the application camera if an Input event has occurred
 	void ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre);	// Applies the corresponding changes when recieving a Event::orbit_event from ModuleInput
 
 	// Process Camera Movements
+	void TranslateCamera(float deltaTime) const;							// Moves the application camera if an Input event has occurred
 	void ProcessMouseMovement(float xoffset, float yoffset);				// Applies the corresponding changes when recieving a Event::rotate_event from ModuleInput
 	void ProcessMouseScroll(float xoffset, float yoffset);					// Applies the corresponding changes when recieving a Event::wheel_event from ModuleInput
 };
