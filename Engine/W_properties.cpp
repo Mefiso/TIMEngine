@@ -23,9 +23,18 @@ void WProperties::Draw()
 		ImGui::End();
 		return;
 	}
-
+	
 	if (selectedObject)
 	{
+		strcpy_s(InputBuf, IM_ARRAYSIZE(InputBuf), (char*)selectedObject->GetName().c_str());
+		ImGui::AlignTextToFramePadding();
+		ImGui::TextUnformatted("Name:");
+		ImGui::SameLine();
+		if (ImGui::InputText("##NameDisplay", InputBuf, IM_ARRAYSIZE(InputBuf), ImGuiInputTextFlags_EnterReturnsTrue, (ImGuiInputTextCallback)0, (void*)this))
+		{
+			selectedObject->ChangeName(InputBuf);
+		}
+		
 		for (std::vector<Component*>::iterator it = selectedObject->GetComponents().begin(), end = selectedObject->GetComponents().end(); it != end; ++it)
 		{
 			switch ((*it)->GetType())
@@ -61,6 +70,18 @@ void WProperties::DrawTransformationHeader() const
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	if (ImGui::CollapsingHeader("Transform"))
 	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			//TODO
+			if (ImGui::MenuItem("Delete"))
+			{
+				/*DeselectAll(App->scene->GetRoot()->GetChildren());
+				App->editor->InspectObject(nullptr);				// Reset selection (needed for avoiding pointer derreferenced memory)
+				toDelete = _gameObjList[i];*/
+			}
+
+			ImGui::EndPopup();
+		}
 		ImGui::PushItemWidth(70.f);
 		bool modified = false;
 		ImGui::TextUnformatted("Position");

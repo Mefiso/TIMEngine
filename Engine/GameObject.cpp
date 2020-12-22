@@ -10,7 +10,7 @@ GameObject::GameObject()
 	++objectCount;
 }
 
-GameObject::GameObject(char* _name) : name(_name)
+GameObject::GameObject(const std::string& _name) : name(_name)
 {
 	++objectCount;
 }

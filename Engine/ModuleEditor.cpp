@@ -62,7 +62,6 @@ update_status ModuleEditor::Update()
 	ImGuiID dockspaceID = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	DrawMainMenu();
 
-	//CreateViewport();
 	//ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
@@ -84,8 +83,6 @@ update_status ModuleEditor::PostUpdate()
 {
 	GameObject* toDelete = hierarchy->GetToDelete();
 	if (toDelete) {
-		//if(properties.se)
-
 		if (toDelete->GetParent())
 			toDelete->GetParent()->RemoveChild(toDelete->GetUID());
 		RELEASE(toDelete);

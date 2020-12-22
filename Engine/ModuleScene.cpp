@@ -97,6 +97,7 @@ void ModuleScene::LoadScene(std::string const& path)
 			(*it)->SetProgram(defaultProgram);
 		}
 	}
+	importer.FreeScene();
 }
 
 void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* object)

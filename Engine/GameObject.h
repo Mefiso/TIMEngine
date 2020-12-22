@@ -21,7 +21,7 @@ public:
 
 private:
 
-	char* name = "New GameObject";
+	std::string name = std::string("New GameObject");
 	const int uID = objectCount;																		// Unique identifier of each GameObject instance
 	GameObject* parent = nullptr;																		// Pointer to the parent of this GameObject
 	std::vector<GameObject*> children;																	// Vector of pointers to GameObjects that are child of this GameObject
@@ -32,7 +32,7 @@ private:
 public:
 
 	GameObject();																						// Constructor
-	GameObject(char* _name);																			// Constructor (name as param)
+	GameObject(const std::string& _name);																			// Constructor (name as param)
 	~GameObject();																						// Destructor
 
 	void CleanUp();																						// Clears all memory stored by this GameObject
@@ -43,7 +43,7 @@ public:
 	void RemoveChild(int childID);																		// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
 
 	// ---------- Getters ---------- //
-	char* GetName() const { return name; }
+	const std::string& GetName() const { return name; }
 	int GetUID() const { return uID; }
 	GameObject* GetParent() const { return parent; }
 	std::vector<GameObject*>& GetChildren() { return children; }
@@ -60,9 +60,12 @@ public:
 	// TODO: Get a list of various materials of same type
 
 	// ---------- Setters ---------- //
-	void ChangeName(char* _newName) { name = _newName; }
+	void ChangeName(const std::string& _newName) { name = _newName; }
 	void SetTransform(float3& _scale, float3& _rotation, float3& _translation);
 	void SetTransform(float4x4& _newTransform, GameObject* _newParent);
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
 };
+
+/*memset(name, 0, sizeof(char) * strlen(_newName));
+		strcpy_s(name, strlen(_newName), _newName);*/

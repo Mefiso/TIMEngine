@@ -24,7 +24,7 @@ void WHierarchy::Draw()
 	if (App->scene->GetRoot())
 	{
 		ImGui::SetNextItemOpen(true);
-		if (ImGui::TreeNode(App->scene->GetRoot()->GetName()))
+		if (ImGui::TreeNode(App->scene->GetRoot()->GetName().c_str()))
 		{
 			// Process Draging objects into Scene.root
 			if (ImGui::BeginDragDropTarget())
@@ -54,7 +54,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 		ImGuiTreeNodeFlags node_flags = base_flags;
 		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)_gameObjList[i]->GetUID(),
 			node_flags | (_gameObjList[i]->GetChildren().empty() ? ImGuiTreeNodeFlags_Leaf : 0) | (_gameObjList[i]->isSelected ? ImGuiTreeNodeFlags_Selected : 0),
-			"%s", _gameObjList[i]->GetName());
+			"%s", _gameObjList[i]->GetName().c_str());
 
 		// On item clicked - Process Selection of Items
 		if (ImGui::IsItemClicked()) {
@@ -70,7 +70,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 		{
 			ImGui::SetDragDropPayload("HIERARCHYNODES", NULL, 0);
 			dragged = _gameObjList[i];
-			ImGui::Text("%s", _gameObjList[i]->GetName());
+			ImGui::Text("%s", _gameObjList[i]->GetName().c_str());
 			ImGui::EndDragDropSource();
 		}
 
