@@ -4,12 +4,6 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ModuleInput.cpp" />
-    <ClCompile Include="ModuleRender.cpp" />
-    <ClCompile Include="ModuleWindow.cpp" />
-    <ClCompile Include="ModuleCamera.cpp" />
-    <ClCompile Include="ModuleProgram.cpp" />
-    <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="Window.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
@@ -25,8 +19,6 @@
     <ClCompile Include="W_about.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleTexture.cpp" />
-    <ClCompile Include="ModuleDebugDraw.cpp" />
     <ClCompile Include="W_properties.cpp">
       <Filter>EditorWindows</Filter>
     </ClCompile>
@@ -45,7 +37,6 @@
     <ClCompile Include="CMaterial.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="W_hierarchy.cpp">
       <Filter>EditorWindows</Filter>
@@ -194,17 +185,37 @@
     <ClCompile Include="ThirdPartyLibs\MathGeoLib\Time\Clock.cpp">
       <Filter>MathGeoLib\Time</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleCamera.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleEditor.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleInput.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleRender.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleWindow.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleDebugDraw.cpp">
+      <Filter>UtilityModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleScene.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleProgram.cpp">
+      <Filter>UtilityModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleTexture.cpp">
+      <Filter>UtilityModules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Globals.h" />
-    <ClInclude Include="Module.h" />
-    <ClInclude Include="ModuleInput.h" />
-    <ClInclude Include="ModuleRender.h" />
-    <ClInclude Include="ModuleWindow.h" />
-    <ClInclude Include="ModuleCamera.h" />
-    <ClInclude Include="ModuleProgram.h" />
-    <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="W_console.h">
       <Filter>EditorWindows</Filter>
     </ClInclude>
@@ -220,10 +231,8 @@
     <ClInclude Include="W_about.h">
       <Filter>EditorWindows</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="debug_draw.hpp" />
-    <ClInclude Include="ModuleDebugDraw.h" />
     <ClInclude Include="Leaks.h" />
     <ClInclude Include="W_properties.h">
       <Filter>EditorWindows</Filter>
@@ -246,7 +255,6 @@
     <ClInclude Include="CMaterial.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="W_hierarchy.h">
       <Filter>EditorWindows</Filter>
@@ -503,6 +511,36 @@
     <ClInclude Include="ThirdPartyLibs\MathGeoLib\Time\Clock.h">
       <Filter>MathGeoLib\Time</Filter>
     </ClInclude>
+    <ClInclude Include="Module.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleCamera.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleEditor.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleInput.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleRender.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleWindow.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleDebugDraw.h">
+      <Filter>UtilityModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleScene.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleProgram.h">
+      <Filter>UtilityModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleTexture.h">
+      <Filter>UtilityModules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
@@ -534,6 +572,12 @@
     </Filter>
     <Filter Include="MathGeoLib\Time">
       <UniqueIdentifier>{51ede1e4-1903-4acf-be9e-48cbe0a7257b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CoreModules">
+      <UniqueIdentifier>{b46a4ccc-f9e9-4c18-b130-381e9cfbe030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UtilityModules">
+      <UniqueIdentifier>{6f98f07e-2e78-45f7-a127-ba05bfdf092d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

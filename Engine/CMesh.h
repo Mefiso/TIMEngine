@@ -23,6 +23,8 @@ public:
 
 	void Draw() override;												// Sends the information of this component to Render it
 
+	unsigned int GetProgram() const { return program; }
+
 	void SetProgram(unsigned int _program) { program = _program; }		// Sets the shading program used to render this Component
 
 private:
