@@ -26,6 +26,7 @@ void WProperties::Draw()
 
 	if (selectedObject)
 	{
+		int nrMeshes = 1;
 		for (std::vector<Component*>::iterator it = selectedObject->GetComponents().begin(), end = selectedObject->GetComponents().end(); it != end; ++it)
 		{
 			switch ((*it)->GetType())
@@ -34,7 +35,7 @@ void WProperties::Draw()
 				DrawTransformationHeader();
 				break;
 			case MESH:
-				DrawMeshHeader((CMesh*)(*it));
+				DrawMeshHeader((CMesh*)(*it), nrMeshes++);
 				break;
 			case MATERIAL:
 				DrawMaterialHeader((CMaterial*)(*it));
@@ -64,9 +65,9 @@ void WProperties::DrawTransformationHeader() const
 		ImGui::PushItemWidth(70.f);
 		bool modified = false;
 		ImGui::TextUnformatted("Position");
-		if (ImGui::SliderFloat("X##1", &position.x, -FLT_MAX / 2.0f , FLT_MAX / 2.0f, "%.2f")) modified = true;
-		ImGui::SameLine(); if (ImGui::DragFloat("Y##1", &position.y, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
-		ImGui::SameLine(); if (ImGui::DragFloat("Z##1", &position.z, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
+		if (ImGui::SliderFloat("X##1", &position.x, -100.0f , 100.0f, "%.2f")) modified = true;
+		ImGui::SameLine(); if (ImGui::SliderFloat("Y##1", &position.x, -100.0f, 100.0f, "%.2f")) modified = true;
+		ImGui::SameLine(); if (ImGui::SliderFloat("Z##1", &position.x, -100.0f, 100.0f, "%.2f")) modified = true;
 
 		ImGui::TextUnformatted("Rotation");
 		if (ImGui::SliderAngle("X##2", &rotation.x)) modified = true;
@@ -74,19 +75,19 @@ void WProperties::DrawTransformationHeader() const
 		ImGui::SameLine(); if (ImGui::SliderAngle("Z##2", &rotation.z)) modified = true;
 
 		ImGui::TextUnformatted("Scale");
-		if (ImGui::DragFloat("X##3", &scale.x, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
-		ImGui::SameLine(); if (ImGui::DragFloat("Y##3", &scale.y, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
-		ImGui::SameLine(); if (ImGui::DragFloat("Z##3", &scale.z, 0.1f, -FLT_MAX, FLT_MAX, "%.2f")) modified = true;
+		if (ImGui::SliderFloat("X##3", &scale.x, -10.0f, 10.0f, "%.2f")) modified = true;
+		ImGui::SameLine(); if (ImGui::SliderFloat("Y##3", &scale.x, -10.0f, 10.0f, "%.2f")) modified = true;
+		ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.x, -10.0f, 10.0f, "%.2f")) modified = true;
 
 		if (modified)
 			selectedObject->SetTransform(scale, rotation, position);
 	}
 }
 
-void WProperties::DrawMeshHeader(CMesh* mesh) const
+void WProperties::DrawMeshHeader(CMesh* mesh, int id) const
 {
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
-	if (ImGui::CollapsingHeader("Mesh"))
+	if (ImGui::CollapsingHeader(("Mesh##" + std::to_string(id)).c_str()))
 	{
 		ImGui::TextUnformatted("Num vertices:"); ImGui::SameLine();
 		ImGui::TextColored(color, "%d", mesh->numVertices);

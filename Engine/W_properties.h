@@ -31,6 +31,6 @@ public:
 private:
 
 	void DrawTransformationHeader() const;					// Prints the Transformation information of the selected Model into the window (translation, rotation, scale)
-	void DrawMeshHeader(CMesh* mesh) const;					// Prints the Geometry information for each mesh in the Model into the window (Number of meshes, textures, triangles, faces...)
+	void DrawMeshHeader(CMesh* mesh, int id) const;			// Prints the Geometry information for each mesh in the Model into the window (Number of meshes, textures, triangles, faces...)
 	void DrawMaterialHeader(CMaterial* material) const;		// Prints the Texture information for each texture in the Model into the window (Size, wrapping, min and mag filters, preview)
 };
