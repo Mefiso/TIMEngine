@@ -26,12 +26,14 @@ CMaterial::~CMaterial()
 
 void CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType type, const std::string& name, const std::string& path, std::vector<Texture*>* _matTextures)
 {
+	// Iterates over all material textures of the specified type
 	_matTextures->reserve(material->GetTextureCount(type));
 	for (unsigned int i = 0; i < material->GetTextureCount(type); ++i)
 	{
 		aiString file;
 		if (material->GetTexture(type, i, &file) == AI_SUCCESS)
 		{
+			// Checks if texture is already loaded in scene. If so, skips loading texture from file.
 			bool skip = false;
 			for (unsigned j = 0; j < App->scene->loadedTextures.size(); ++j)
 			{
@@ -42,6 +44,7 @@ void CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType t
 					break;
 				}
 			}
+			// If the texture has never been loaded, tries to load it from file
 			if (!skip)
 			{
 				bool texFound = true;
@@ -63,6 +66,7 @@ void CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType t
 						}
 					}
 				}
+				// Add Texture to loaded textures vector
 				if (texFound) {
 					LOG("[info] Texture loaded.");
 					texture->path = file.C_Str();

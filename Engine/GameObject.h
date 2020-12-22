@@ -50,14 +50,21 @@ public:
 	std::vector<Component*>& GetComponents() { return components; }
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
 	CTransform* GetTransform() const { return transform; }												// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
-	
+
 	template<typename T>
 	T* GetComponent()																					// Get a component of type T, or null if it does not exist on this GameObject
 	{
 		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) return c; }
 		return nullptr;
 	}
-	// TODO: Get a list of various materials of same type
+	// TODO: Get a list of various component of same type
+	template<typename T>
+	std::vector<T*>& GetComponents()																					// Get a component of type T, or null if it does not exist on this GameObject
+	{
+		std::vector<T*> cs;
+		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) cs.push_back(c); }
+		return cs;
+	}
 
 	// ---------- Setters ---------- //
 	void ChangeName(const std::string& _newName) { name = _newName; }

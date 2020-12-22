@@ -27,7 +27,6 @@ private:
 	unsigned int FBO = 0, textureColorbuffer = 0, RBO = 0;			// IDs of the Viewport buffer objects and texture
 
 	MSTimer msTimer;												// Timer object
-	float deltatime;												// Time between each frame, in milliseconds
 
 public:
 	ModuleRender();													// Constructor
@@ -47,11 +46,6 @@ public:
 
 	// ---------- Setters ---------- //
 
-	// callback funcs
-	void ProcessViewportEvents();									// Called from ModuleEditor, when an input is recieved inside the viewport. Perfoms the necessary operations for the corresponding input. This allows the control of the actions performed when the input is captured inside the viewport.
-
 private:
 	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables
-	void TranslateCamera(float deltaTime) const;					// Moves the application camera if an Input event has occurred
-	void RotateCameraKeys(float deltaTime) const;					// Rotates the application camera if an Input event has occurred
 };

@@ -1,6 +1,6 @@
 #include "W_viewport.h"
 #include "Application.h"
-#include "ModuleRender.h"
+#include "ModuleCamera.h"
 #include "ModuleCamera.h"
 
 WViewport::WViewport(std::string name) : Window(name)
@@ -31,7 +31,7 @@ void WViewport::Draw()
 	}
 
 	if (ImGui::IsWindowHovered()) {
-		App->renderer->ProcessViewportEvents();
+		App->camera->ProcessViewportEvents();
 		viewportIsHovered = true;
 	}
 	else {

@@ -4,7 +4,6 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
-#include "ModuleInput.h"
 #include "ModuleProgram.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleScene.h"
@@ -101,7 +100,7 @@ update_status ModuleRender::PreUpdate()
 	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	deltatime = msTimer.Stop() / 1000.f;
+	App->camera->SetDeltaTime(msTimer.Stop() / 1000.f);
 	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
@@ -148,14 +147,6 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-void ModuleRender::ProcessViewportEvents() {
-	TranslateCamera(deltatime);
-	RotateCameraKeys(deltatime);
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-		App->camera->onFocus(App->scene->GetRoot()->GetChildren()[App->scene->GetRoot()->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10); // TODO: WE NEED THE ABILITY TO SELECT A GAMEOBJECT
-	}
-}
-
 void ModuleRender::InitFramebuffer()
 {
 	glGenFramebuffers(1, &FBO);
@@ -176,41 +167,4 @@ void ModuleRender::InitFramebuffer()
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		LOG("[error] FRAMEBUFFER:: Framebuffer is not complete!");
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void ModuleRender::TranslateCamera(float deltaTime) const
-{
-	// Translate camera
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(UP, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(DOWN, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(FORWARD, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(BACKWARD, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(LEFT, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(RIGHT, deltaTime);
-
-	// Speed increase/decrease
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
-		App->camera->ProcessSpeed(2);
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
-		App->camera->ProcessSpeed(0.5f);
-	}
-}
-
-void ModuleRender::RotateCameraKeys(float deltaTime) const
-{
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(PITCH_DOWN, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(YAW_LEFT, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(YAW_RIGHT, deltaTime);
 }
