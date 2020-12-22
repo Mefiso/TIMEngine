@@ -71,11 +71,6 @@ void CMesh::Draw()
 			*/
 			ModuleProgram::setInt(program, ("material." + name + number).c_str(), i);
 			glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
-			ModuleProgram::setInt(program, (name + number).c_str(), i);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, material->textures[i]->wraps);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, material->textures[i]->wrapt);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material->textures[i]->minfilter);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, material->textures[i]->magfilter);
 		}
 		ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr-1);
 		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
