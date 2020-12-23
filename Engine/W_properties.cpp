@@ -152,8 +152,8 @@ void WProperties::DrawTransformationBody()
 	bool modified = false;
 	ImGui::TextUnformatted("Position");
 	if (ImGui::SliderFloat("X##1", &position.x, -50.0f, 50.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Y##1", &position.x, -50.0f, 50.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Z##1", &position.x, -50.0f, 50.0f, "%.2f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Y##1", &position.y, -50.0f, 50.0f, "%.2f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Z##1", &position.z, -50.0f, 50.0f, "%.2f")) modified = true;
 
 	ImGui::TextUnformatted("Rotation");
 	if (ImGui::SliderAngle("X##2", &rotation.x)) modified = true;
@@ -162,8 +162,8 @@ void WProperties::DrawTransformationBody()
 
 	ImGui::TextUnformatted("Scale");
 	if (ImGui::SliderFloat("X##3", &scale.x, 0.0f, 10.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Y##3", &scale.x, 0.0f, 10.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.x, 0.0f, 10.0f, "%.2f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Y##3", &scale.y, 0.0f, 10.0f, "%.2f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.z, 0.0f, 10.0f, "%.2f")) modified = true;
 
 	if (modified)
 		selectedObject->SetTransform(scale, rotation, position);
