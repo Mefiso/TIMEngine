@@ -5,6 +5,7 @@
 #include "CTransform.h"
 #include "CMaterial.h"
 #include "CMesh.h"
+#include "CCamera.h"
 #include "GL/glew.h"
 #include "Leaks.h"
 
@@ -68,6 +69,11 @@ void WProperties::Draw()
 				if (!selectedObject->GetComponent<CMaterial>())
 					selectedObject->AddComponent(MATERIAL);
 			}
+			if (ImGui::MenuItem("Camera"))
+			{
+				if (!selectedObject->GetComponent<CCamera>())
+					selectedObject->AddComponent(CAMERA);
+			}
 
 			// TODO: Generate opening a window on already existing component creation
 			/*if(false)
@@ -102,6 +108,8 @@ void WProperties::DrawComponentHeader(Component* _component)
 		name = "Mesh"; break;
 	case MATERIAL:
 		name = "Material"; break;
+	case CAMERA:
+		name = "Camera"; break;
 	}
 
 	bool headerOpen = ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap);
@@ -127,6 +135,9 @@ void WProperties::DrawComponentHeader(Component* _component)
 			break;
 		case MATERIAL:
 			DrawMaterialBody((CMaterial*)_component);
+			break;
+		case CAMERA:
+			DrawCameraBody((CCamera*)_component);
 			break;
 		}
 	}
@@ -239,4 +250,9 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 		}
 		ImGui::EndTabBar();
 	}
+}
+
+void WProperties::DrawCameraBody(CCamera* _camera)
+{
+	ImGui::Text("SOMETHIG HERE");
 }
