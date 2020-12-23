@@ -12,6 +12,7 @@ GameObject::GameObject()
 
 GameObject::GameObject(const std::string& _name) : name(_name)
 {
+	aabb.SetNegativeInfinity();
 	++objectCount;
 }
 
@@ -64,6 +65,7 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 		break;
 	case MESH:
 		newComp = new CMesh(this, (aiMesh*)arg);
+		UpdateBoundingBoxes();
 		break;
 	case MATERIAL:
 		newComp = new CMaterial(this, (aiMaterial*)arg, path);
@@ -126,6 +128,7 @@ void GameObject::AddChild(GameObject* _newChild)
 		_newChild->SetTransform(thisTransform * worldTransform, this);
 	}
 	children.push_back(_newChild);
+	UpdateBoundingBoxes();
 }
 
 void GameObject::RemoveChild(int childID)
@@ -188,5 +191,18 @@ void GameObject::SetProgram(unsigned int program)
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		(*it)->SetProgram(program);
+	}
+}
+
+void GameObject::UpdateBoundingBoxes()
+{
+	CMesh* mesh = GetComponent<CMesh>();
+	if (mesh)
+		aabb.Enclose(mesh->AABBmin, mesh->AABBmax);
+
+	for (GameObject* child : children)
+	{
+		child->UpdateBoundingBoxes();
+		aabb.Enclose(child->aabb);
 	}
 }
