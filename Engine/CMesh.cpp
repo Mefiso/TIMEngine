@@ -49,6 +49,7 @@ void CMesh::Draw()
 
 		ModuleProgram::setVec3(program, "material.ambient", float3(0.05f, 0.05f, 0.05f));
 		ModuleProgram::setFloat(program, "material.shininess", 64.0f);
+		ModuleProgram::setVec3(program, "material.diffuse", float3(0.5f, 0.5f, 0.5f));
 
 		CMaterial* material = owner->GetComponent<CMaterial>();
 
