@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "Math/float4x4.h"
 #include "Geometry/AABB.h"
+#include "Geometry/OBB.h"
 #include <vector>
 
 class CTransform;
@@ -30,6 +31,7 @@ private:
 	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
 	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
 	AABB aabb;
+	OBB obb;
 
 public:
 
@@ -76,4 +78,5 @@ public:
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
 	void UpdateBoundingBoxes();
+	void UpdateOBB();
 };

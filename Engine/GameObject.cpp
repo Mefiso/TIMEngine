@@ -2,17 +2,21 @@
 #include "CMesh.h"
 #include "CTransform.h"
 #include "CMaterial.h"
+#include "debugdraw.h"
 
 int GameObject::objectCount = 0;
 
 GameObject::GameObject()
 {
+	aabb.SetNegativeInfinity();
+	obb.SetNegativeInfinity();
 	++objectCount;
 }
 
 GameObject::GameObject(const std::string& _name) : name(_name)
 {
 	aabb.SetNegativeInfinity();
+	obb.SetNegativeInfinity();
 	++objectCount;
 }
 
@@ -40,6 +44,10 @@ void GameObject::CleanUp()
 
 void GameObject::Draw()
 {
+	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
+	ddVec3 points[8];
+	obb.GetCornerPoints(points);
+	dd::box(points, float3(0.9f));
 	// update components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -203,6 +211,13 @@ void GameObject::UpdateBoundingBoxes()
 	for (GameObject* child : children)
 	{
 		child->UpdateBoundingBoxes();
-		aabb.Enclose(child->aabb);
+		aabb.Enclose(child->obb);
 	}
+	obb = transform ? aabb.Transform(transform->GetTransformationMatrix()) : aabb;
+}
+
+void GameObject::UpdateOBB()
+{
+	obb = aabb.Transform(transform->GetTransformationMatrix());
+	parent->UpdateBoundingBoxes();
 }

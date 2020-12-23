@@ -166,7 +166,10 @@ void WProperties::DrawTransformationBody()
 	ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.z, 0.0f, 10.0f, "%.2f")) modified = true;
 
 	if (modified)
+	{
 		selectedObject->SetTransform(scale, rotation, position);
+		selectedObject->UpdateOBB();
+	}
 }
 
 void WProperties::DrawMeshBody(CMesh* mesh)
