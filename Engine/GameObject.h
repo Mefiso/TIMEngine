@@ -59,7 +59,7 @@ public:
 	}
 	// TODO: Get a list of various component of same type
 	template<typename T>
-	std::vector<T*>& GetComponents()																					// Get a component of type T, or null if it does not exist on this GameObject
+	std::vector<T*>& GetComponentsOfType()																	// Get a vector of component of type T, empty if it does not exist on this GameObject
 	{
 		std::vector<T*> cs;
 		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) cs.push_back(c); }
@@ -73,6 +73,3 @@ public:
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
 };
-
-/*memset(name, 0, sizeof(char) * strlen(_newName));
-		strcpy_s(name, strlen(_newName), _newName);*/

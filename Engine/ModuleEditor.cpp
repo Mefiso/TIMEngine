@@ -81,13 +81,21 @@ update_status ModuleEditor::Update()
 
 update_status ModuleEditor::PostUpdate()
 {
-	GameObject* toDelete = hierarchy->GetToDelete();
-	if (toDelete) {
-		if (toDelete->GetParent())
-			toDelete->GetParent()->RemoveChild(toDelete->GetUID());
-		RELEASE(toDelete);
+	GameObject* toDeleteGO = hierarchy->GetToDelete();
+	if (toDeleteGO) {
+		if (toDeleteGO->GetParent())
+			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUID());
+		RELEASE(toDeleteGO);
 		hierarchy->SetToDelete(nullptr);
 	}
+
+	Component* toDeleteCMP = properties->GetToDelete();
+	if (toDeleteCMP) {
+		if (toDeleteCMP->GetOwner())
+			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUID());
+		properties->SetToDelete(nullptr);
+	}
+
 	return UPDATE_CONTINUE;
 }
 

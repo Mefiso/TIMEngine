@@ -3,10 +3,10 @@
 class GameObject;
 
 enum ComponentType {
-	INVALID,
 	TRANSFORM,
 	MESH,
-	MATERIAL
+	MATERIAL,
+	INVALID
 };
 
 class Component
@@ -29,7 +29,9 @@ public:
 	virtual void Draw() {}									// Sends the information of this component to Render it
 
 	// ---------- Getters ---------- //
-	ComponentType GetType() { return type; }
+	ComponentType GetType() const { return type; }
+	GameObject* GetOwner() const { return owner; }
+	const int GetUID() const { return ID; }
 	bool IsActive() const { return active; }
 
 	// ---------- Setters ---------- //

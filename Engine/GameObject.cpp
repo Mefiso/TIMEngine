@@ -22,9 +22,6 @@ GameObject::~GameObject()
 
 void GameObject::CleanUp()
 {
-	/*if (parent)
-		parent->RemoveChild(this->uID);*/
-
 	// Clean components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -57,7 +54,7 @@ void GameObject::Draw()
 void GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)
 {
 	Component* newComp;
-	//for (unsigned int i = 0; i< components.size())
+	//TODO: for (unsigned int i = 0; i< components.size())
 	//check if already exists CMaterial or CTransform
 	switch (_type)
 	{
@@ -90,8 +87,11 @@ void GameObject::RemoveComponent(int _cID)
 		}
 	if (toRemove >= 0)
 	{
+		if (components[toRemove]->GetType() == TRANSFORM)
+			transform = nullptr;
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
+		
 	}
 }
 
