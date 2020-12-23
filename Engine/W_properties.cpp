@@ -28,7 +28,7 @@ void WProperties::Draw()
 		ImGui::End();
 		return;
 	}
-	
+
 	if (selectedObject)
 	{
 		// GameObject Options
@@ -39,7 +39,7 @@ void WProperties::Draw()
 			if (strlen(RenameBuf) > 0)
 				selectedObject->ChangeName(RenameBuf);
 		}
-		
+
 		// Components
 		for (std::vector<Component*>::iterator it = selectedObject->GetComponents().begin(), end = selectedObject->GetComponents().end(); it != end; ++it)
 		{
@@ -151,9 +151,9 @@ void WProperties::DrawTransformationBody()
 	ImGui::PushItemWidth(70.f);
 	bool modified = false;
 	ImGui::TextUnformatted("Position");
-	if (ImGui::SliderFloat("X##1", &position.x, -100.0f , 100.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Y##1", &position.x, -100.0f, 100.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Z##1", &position.x, -100.0f, 100.0f, "%.2f")) modified = true;
+	if (ImGui::SliderFloat("X##1", &position.x, -50.0f, 50.0f, "%.2f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Y##1", &position.x, -50.0f, 50.0f, "%.2f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Z##1", &position.x, -50.0f, 50.0f, "%.2f")) modified = true;
 
 	ImGui::TextUnformatted("Rotation");
 	if (ImGui::SliderAngle("X##2", &rotation.x)) modified = true;
@@ -161,9 +161,9 @@ void WProperties::DrawTransformationBody()
 	ImGui::SameLine(); if (ImGui::SliderAngle("Z##2", &rotation.z)) modified = true;
 
 	ImGui::TextUnformatted("Scale");
-	if (ImGui::SliderFloat("X##3", &scale.x, -10.0f, 10.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Y##3", &scale.x, -10.0f, 10.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.x, -10.0f, 10.0f, "%.2f")) modified = true;
+	if (ImGui::SliderFloat("X##3", &scale.x, 0.0f, 10.0f, "%.2f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Y##3", &scale.x, 0.0f, 10.0f, "%.2f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.x, 0.0f, 10.0f, "%.2f")) modified = true;
 
 	if (modified)
 		selectedObject->SetTransform(scale, rotation, position);
@@ -188,7 +188,7 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	// TODO: Button to add textures inside this component
 	if (ImGui::BeginTabBar("Textures"))
-	{			
+	{
 		// TODO: remove this texture from this material
 		// TODO: select another file for this texture (and drag and drop?)
 		std::string label;
