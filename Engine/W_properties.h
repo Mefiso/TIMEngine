@@ -37,8 +37,8 @@ public:
 	void SetToDelete(Component* _component) { toDelete = _component; }
 
 private:
-	void DrawComponentHeader(Component* _component);
-	void DrawTransformationBody();					// Prints the Transformation information of the selected Model into the window (translation, rotation, scale)
-	void DrawMeshBody(CMesh* mesh);			// Prints the Geometry information for each mesh in the Model into the window (Number of meshes, textures, triangles, faces...)
-	void DrawMaterialBody(CMaterial* material);		// Prints the Texture information for each texture in the Model into the window (Size, wrapping, min and mag filters, preview)
+	void DrawComponentHeader(Component* _component);		// Draws the Components information of the Selected GameObject
+	void DrawTransformationBody();							// Subfunction of DrawComponentHeader. Draws the Transformation information of the selected GameObject into the window (translation, rotation, scale)
+	void DrawMeshBody(CMesh* mesh);							// Subfunction of DrawComponentHeader. Draws the Geometry information for each mesh in the GameObject into the window (Number of meshes, textures, triangles, faces...)
+	void DrawMaterialBody(CMaterial* material);				// Subfunction of DrawComponentHeader. Draws the Texture information for each texture in the GameObject into the window (Size, wrapping, min and mag filters, preview)
 };

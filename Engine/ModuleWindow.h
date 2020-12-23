@@ -7,7 +7,6 @@ class Application;
 class ModuleWindow : public Module
 {
 public:
-
 	float brightness = 1.0f;								// Gamma value of the screen
 	SDL_Window* window = nullptr;							// The window we'll be rendering to
 	SDL_Surface* screen_surface = nullptr;					// The surface contained by the window

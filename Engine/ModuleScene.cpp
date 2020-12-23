@@ -84,10 +84,10 @@ void ModuleScene::LoadScene(std::string const& path)
 	}
 	else
 	{
-		directory = path.substr(0, path.find_last_of('/')).size() == path.size() ?
-			path.substr(0, path.find_last_of('\\')) : path.substr(0, path.find_last_of('/'));
+		directory = path.substr(0, path.find_last_of('/')).size() == path.size() ? path.substr(0, path.find_last_of('\\')) : path.substr(0, path.find_last_of('/'));
+		std::string filename = path.substr(0, path.find_last_of('/')).size() == path.size() ? path.substr(path.find_last_of('\\')+1, path.size()) : path.substr(path.find_last_of('/')+1, path.size());
 
-		GameObject* newModel = new GameObject();
+		GameObject* newModel = new GameObject(filename.c_str());
 		newModel->SetParent(root);
 		ProcessNode(scene->mRootNode, scene, newModel);
 
@@ -112,7 +112,7 @@ void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* ob
 	}
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
 	{
-		GameObject* newChild = new GameObject();
+		GameObject* newChild = new GameObject(node->mChildren[i]->mName.C_Str());
 		ProcessNode(node->mChildren[i], scene, newChild);
 		newChild->SetParent(object);
 	}

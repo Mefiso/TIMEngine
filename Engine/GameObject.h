@@ -57,9 +57,9 @@ public:
 		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) return c; }
 		return nullptr;
 	}
-	// TODO: Get a list of various component of same type
+
 	template<typename T>
-	std::vector<T*>& GetComponentsOfType()																	// Get a vector of component of type T, empty if it does not exist on this GameObject
+	std::vector<T*>& GetComponentsOfType()																// Get a vector of component of type T, empty if it does not exist on this GameObject
 	{
 		std::vector<T*> cs;
 		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) cs.push_back(c); }

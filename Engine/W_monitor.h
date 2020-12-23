@@ -37,7 +37,7 @@ public:
 
 private:
 
-	void DrawInputHeader();								// Prints the Information of the inputs performed at each frame
+	void DrawInputHeader();							// Prints the Information of the inputs performed at each frame
 	void ShowSoftware() const;						// Prints the Information of the Software used to build this Application
 	void ShowHardware() const;						// Prints the Information of the iHardware of your Computer
 

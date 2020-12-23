@@ -27,8 +27,6 @@ const float ASPECTRATIO = SCREEN_WIDTH / (float)SCREEN_HEIGHT;				// Initial Asp
 class ModuleCamera : public Module
 {
 public:
-
-	// Camera options
 	float MovementSpeed;													// Multiplier of the Camera movement speed when using the keyboard
 	float MouseSensitivity;													// Multiplier of the Mouse sensitivity
 	Frustum frustum;														// Identifier of the Camera frustrum Object
