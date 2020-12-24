@@ -212,6 +212,9 @@
     <ClCompile Include="ModuleTexture.cpp">
       <Filter>UtilityModules</Filter>
     </ClCompile>
+    <ClCompile Include="CCamera.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -540,6 +543,9 @@
     </ClInclude>
     <ClInclude Include="ModuleTexture.h">
       <Filter>UtilityModules</Filter>
+    </ClInclude>
+    <ClInclude Include="CCamera.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -27,5 +27,5 @@ public:
 	void SetRotation(float3& _rotation) { rotation = _rotation; }
 	void SetScale(float3& _scale) { scale = _scale; }
 
-	void UpdateTransformMatrix();											// Updates transformMatrix when a change is detected in Rotation, Scale and Position
+	void UpdateTransformMatrix();											// Updates transformMatrix. Must be used when a change is detected in Rotation, Scale and Position
 };

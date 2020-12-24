@@ -2,6 +2,7 @@
 #include "CMesh.h"
 #include "CTransform.h"
 #include "CMaterial.h"
+#include "CCamera.h"
 
 int GameObject::objectCount = 0;
 
@@ -67,6 +68,9 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 		break;
 	case MATERIAL:
 		newComp = new CMaterial(this, (aiMaterial*)arg, path);
+		break;
+	case CAMERA:
+		newComp = new CCamera(this);
 		break;
 	default:
 		newComp = new Component(INVALID, this);

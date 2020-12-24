@@ -89,16 +89,17 @@ void WConfig::DrawRendererHeader()
 
 void WConfig::DrawCameraHeader()
 {
-	if (ImGui::CollapsingHeader("Camera")) {
+	Frustum* frust = App->camera->defaultCamera->GetFrustum();
+	if (ImGui::CollapsingHeader("Engine Camera")) {
 		static bool posModified = false;
-		float3 pos = App->camera->frustum.Pos();
+		float3 pos = frust->Pos();
 		ImGui::BulletText("Camera Position:");
 		ImGui::PushItemWidth(50.f);
 		if (ImGui::DragFloat("x", &pos.x, 0.005f, -FLT_MAX, +FLT_MAX, "%.2f", ImGuiSliderFlags_None)) posModified = true;
 		ImGui::SameLine(); if (ImGui::DragFloat("y", &pos.y, 0.005f, -FLT_MAX, +FLT_MAX, "%.2f", ImGuiSliderFlags_None)) posModified = true;
 		ImGui::SameLine(); if (ImGui::DragFloat("z", &pos.z, 0.005f, -FLT_MAX, +FLT_MAX, "%.2f", ImGuiSliderFlags_None)) posModified = true;
 		if (posModified) {
-			App->camera->frustum.SetPos(pos);
+			frust->SetPos(pos);
 			posModified = false;
 		}
 
@@ -112,19 +113,23 @@ void WConfig::DrawCameraHeader()
 		ImGui::Separator();
 
 		ImGui::TextUnformatted("Frustum");
-		float nearPlane = App->camera->frustum.NearPlaneDistance();
-		float farPlane = App->camera->frustum.FarPlaneDistance();
+		float nearPlane = frust->NearPlaneDistance();
+		float farPlane = frust->FarPlaneDistance();
 		if (ImGui::InputFloat("Near Plane", &nearPlane, 0.1f, 1.0f, "%.3f")) {
-			App->camera->frustum.SetViewPlaneDistances(nearPlane, App->camera->frustum.FarPlaneDistance());
+			frust->SetViewPlaneDistances(nearPlane, farPlane);
 		}
 
 		if (ImGui::InputFloat("Far Plane", &farPlane, 5.f, 20.0f, "%.3f")) {
-			App->camera->frustum.SetViewPlaneDistances(App->camera->frustum.NearPlaneDistance(), farPlane);
+			frust->SetViewPlaneDistances(nearPlane, farPlane);
 		}
 
-		float VFOV = App->camera->frustum.VerticalFov();
+		float VFOV = frust->VerticalFov();
+		float ar = frust->AspectRatio();
 		if (ImGui::SliderAngle("FOV", &VFOV, 45.f, 110.f)) {
-			App->camera->frustum.SetVerticalFovAndAspectRatio(VFOV, App->camera->frustum.AspectRatio());
+			frust->SetVerticalFovAndAspectRatio(VFOV, ar);
+		}
+		if (ImGui::SliderFloat("Aspect Ratio", &ar, 0.05f, 24.f)) {
+			frust->SetVerticalFovAndAspectRatio(VFOV, ar);	// The aspect ratio is not stored, so when resizing the viewport/window the user can recover the original aspect ratio
 		}
 	}
 }
