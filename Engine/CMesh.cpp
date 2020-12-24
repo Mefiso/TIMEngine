@@ -132,6 +132,7 @@ void CMesh::LoadVBO(const aiMesh* mesh)
 	for (unsigned i = 0u; i < numVertices; ++i)
 	{
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset, sizeof(float) * 3, &mesh->mVertices[i]);
+		CheckMinMaxPoints(float3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
 		glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 3, sizeof(float) * 3, &mesh->mNormals[i]);
 		if (mesh->mTextureCoords[0] != NULL)
 			glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 6, sizeof(float) * 2, &mesh->mTextureCoords[0][i]);
@@ -179,4 +180,16 @@ void CMesh::CreateVAO()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
 
 	glBindVertexArray(0);
+}
+
+void CMesh::CheckMinMaxPoints(float3 vertex)
+{
+	AABBmax.x = vertex.x > AABBmax.x ? vertex.x : AABBmax.x;
+	AABBmax.y = vertex.y > AABBmax.y ? vertex.y : AABBmax.y;
+	AABBmax.z = vertex.z > AABBmax.z ? vertex.z : AABBmax.z;
+
+	AABBmin.x = vertex.x < AABBmin.x ? vertex.x : AABBmin.x;
+	AABBmin.y = vertex.y < AABBmin.y ? vertex.y : AABBmin.y;
+	AABBmin.z = vertex.z < AABBmin.z ? vertex.z : AABBmin.z;
+
 }
