@@ -11,15 +11,15 @@
 class CCamera : public Component
 {
 private:
-	Frustum* frustum = new Frustum();		// frustrum object of this Camera
+	Frustum* frustum = new Frustum();							// frustrum object of this Camera
 
 public:
-	CCamera(GameObject* _owner);	// Constructor
-	~CCamera();						// Destructor
+	CCamera(GameObject* _owner);								// Constructor
+	~CCamera();													// Destructor
 
 	// ---------- Getters ---------- //
 	Frustum* GetFrustum() { return frustum; }
 
-	void UpdateFrustumFromTransform(CTransform* _transform);
-	void UpdateTransformFromFrustum();
+	void UpdateFrustumFromTransform(CTransform* _transform);	// Updates Frustum position and rotation. This function must be called when the Transform of the 'owner' GameObject changes
+	void UpdateTransformFromFrustum();							// Updates the Transform of the 'owner' GameObject. This function must be called when the frustum is modified by the user inputs that control the camera
 };
