@@ -20,7 +20,7 @@ public:
 	const float3& GetPos() const { return position; }
 	const float3& GetRotation() const { return rotation; }
 	const float3& GetScale() const { return scale; }
-	float4x4 GetTransformationMatrix() const { return transformMatrix; }
+	const float4x4& GetTransformationMatrix() const { return transformMatrix; }
 
 	// ---------- Setters ---------- //
 	void SetPos(float3& _position) { position = _position; }

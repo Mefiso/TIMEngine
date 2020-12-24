@@ -95,7 +95,6 @@ void GameObject::RemoveComponent(int _cID)
 			transform = nullptr;
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
-		
 	}
 }
 
@@ -155,7 +154,6 @@ float4x4 GameObject::GetModelMatrix() const
 	else
 		return  this->transform->GetTransformationMatrix();
 }
-
 
 void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _translation)
 {

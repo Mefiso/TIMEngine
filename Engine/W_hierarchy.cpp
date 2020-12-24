@@ -26,7 +26,7 @@ void WHierarchy::Draw()
 		ImGui::SetNextItemOpen(true);
 		if (ImGui::TreeNode(App->scene->GetRoot()->GetName().c_str()))
 		{
-			// Process Draging objects into Scene.root
+			// Process Dragging objects into Scene.root
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
@@ -36,7 +36,7 @@ void WHierarchy::Draw()
 				ImGui::EndDragDropTarget();
 			}
 
-			// Draw Hierachy tree
+			// Draw Hierarchy tree
 			DrawTree(App->scene->GetRoot()->GetChildren());
 
 			ImGui::TreePop();
@@ -92,14 +92,14 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 			if (ImGui::MenuItem("Delete"))
 			{
 				DeselectAll(App->scene->GetRoot()->GetChildren());
-				App->editor->InspectObject(nullptr);				// Reset selection (needed for avoiding pointer derreferenced memory)
+				App->editor->InspectObject(nullptr);				// Reset selection (needed for avoiding pointer dereferenced memory)
 				toDelete = _gameObjList[i];
 			}
 
 			ImGui::EndPopup();
 		}
 
-		// Process recusive tree when opening the node
+		// Process recursive tree when opening the node
 		if (node_open)
 		{
 			std::vector<GameObject*> goChildren = _gameObjList[i]->GetChildren();
