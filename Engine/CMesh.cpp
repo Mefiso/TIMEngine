@@ -60,6 +60,33 @@ void CMesh::Draw()
 		unsigned int heightNr = 1;
 		if (material)
 		{
+
+			// TODO: Preguntar al Carlos.
+			ModuleProgram::use(program);
+
+			float4x4 model = owner->GetModelMatrix();
+			ModuleProgram::setMat4(program, "model", model);
+			ModuleProgram::setMat4(program, "view", App->camera->ViewMatrix());
+			ModuleProgram::setMat4(program, "proj", App->camera->ProjectionMatrix());
+
+			// This should be set from other parameters not hardcoded
+			// Lighting
+			ModuleProgram::setVec3(program, "lightDir", float3(0.5f, 1.0f, 1.3f));
+			ModuleProgram::setVec3(program, "lightColor", float3(1.0));
+
+			// This should be set from other parameters not hardcoded
+			// Camera
+			ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum->Pos());
+
+			ModuleProgram::setVec3(program, "material.ambient", float3(0.05f, 0.05f, 0.05f));
+			ModuleProgram::setFloat(program, "material.shininess", 64.0f);
+
+			// Bind appropriate textures
+			unsigned int diffuseNr = 1;
+			unsigned int specularNr = 1;
+			unsigned int normalNr = 1;
+			unsigned int heightNr = 1;
+
 			for (unsigned int i = 0u; i < material->textures.size(); i++)
 			{
 				glActiveTexture(GL_TEXTURE0 + i);					// Activate proper texture unit
