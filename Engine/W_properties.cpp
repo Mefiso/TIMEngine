@@ -1,6 +1,7 @@
 #include "W_properties.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleCamera.h"
 #include "GameObject.h"
 #include "CTransform.h"
 #include "CMaterial.h"
@@ -177,7 +178,12 @@ void WProperties::DrawTransformationBody()
 	ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.x, -10.0f, 10.0f, "%.2f")) modified = true;
 
 	if (modified)
+	{
 		selectedObject->SetTransform(scale, rotation, position);
+		if (selectedObject->GetComponent<CCamera>())
+			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
+	}
+	ImGui::PopItemWidth();
 }
 
 void WProperties::DrawMeshBody(CMesh* mesh)
@@ -247,6 +253,7 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 				ImGui::Image(texid, ImVec2(sizeX, sizeX * h / (float)w));
 				ImGui::EndTabItem();
 			}
+			ImGui::PopItemWidth();
 		}
 		ImGui::EndTabBar();
 	}
@@ -254,5 +261,41 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 
 void WProperties::DrawCameraBody(CCamera* _camera)
 {
-	ImGui::Text("SOMETHIG HERE");
+	bool isActive = App->camera->activeCamera == _camera;
+
+	if (ImGui::Checkbox("Set Camera as Active", &isActive))
+	{
+		if (isActive)
+			App->camera->SetActiveCamera(_camera);
+		else
+			App->camera->ResetActiveCamera();	
+	};
+
+	//TODO:
+	if (ImGui::Checkbox("Set Camera Culling (Does nothing)!", &isActive))
+	{
+	}
+	
+	ImGui::PushItemWidth(180);
+	ImGui::TextUnformatted("Frustum");
+	Frustum* frust = _camera->GetFrustum();
+	float nearPlane = frust->NearPlaneDistance();
+	float farPlane = frust->FarPlaneDistance();
+	if (ImGui::InputFloat("Near Plane", &nearPlane, 0.1f, 1.0f, "%.3f")) {
+		frust->SetViewPlaneDistances(nearPlane, farPlane);
+	}
+
+	if (ImGui::InputFloat("Far Plane", &farPlane, 5.f, 20.0f, "%.3f")) {
+		frust->SetViewPlaneDistances(nearPlane, farPlane);
+	}
+
+	float VFOV = frust->VerticalFov();
+	float ar = frust->AspectRatio();
+	if (ImGui::SliderAngle("FOV", &VFOV, 45.f, 110.f)) {
+		frust->SetVerticalFovAndAspectRatio(VFOV, ar);
+	}
+	if (ImGui::SliderFloat("Aspect Ratio", &ar, 0.05f, 24.f)) {
+		frust->SetVerticalFovAndAspectRatio(VFOV, ar);	// The aspect ratio is not stored, so when resizing the viewport/window the user can recover the original aspect ratio
+	}
+	ImGui::PopItemWidth();
 }

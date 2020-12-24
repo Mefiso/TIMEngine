@@ -49,7 +49,7 @@ void CMesh::Draw()
 
 			// This should be set from other parameters not hardcoded
 			// Camera
-			ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum.Pos());
+			ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum->Pos());
 
 			ModuleProgram::setVec3(program, "material.ambient", float3(0.05f, 0.05f, 0.05f));
 			ModuleProgram::setFloat(program, "material.shininess", 64.0f);

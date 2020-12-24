@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "SDL.h"
+#include "CCamera.h"
 #include "Geometry/Frustum.h"
 
 enum Camera_Movement {
@@ -29,13 +30,16 @@ class ModuleCamera : public Module
 public:
 	float MovementSpeed = 0.f;												// Multiplier of the Camera movement speed when using the keyboard
 	float MouseSensitivity = 0.f;											// Multiplier of the Mouse sensitivity
-	Frustum frustum;														// Identifier of the Camera frustrum Object
+
+	CCamera* defaultCamera = new CCamera(nullptr);
+	CCamera* activeCamera = defaultCamera;
+	Frustum* frustum = defaultCamera->GetFrustum();							// Identifier of the Camera frustrum Object
 
 private:
-	float deltatime;														// Time between each frame, in milliseconds
+	float deltatime = 0.f;													// Time between each frame, in milliseconds
 
 public:
-	ModuleCamera(float3 position = float3(0, 1, 7), float3 up = float3(0, 1, 0), float near_plane = 0.1f, float far_plane = 200.0f);	// Constructor
+	ModuleCamera();	// Constructor
 	~ModuleCamera();														// Destructor
 
 	// ------ Module Functions ----- //
@@ -45,11 +49,13 @@ public:
 	void ProcessViewportEvents();											// Called from ModuleEditor, when an input is recieved inside the viewport. Perfoms the necessary operations for the corresponding input. This allows the control of the actions performed when the input is captured inside the viewport.
 
 	// ---------- Getters ---------- //
-	float4x4 ViewMatrix() const { return frustum.ViewMatrix(); }			// Returns the View matrix of the Camera frustrum
-	float4x4 ProjectionMatrix() const { return frustum.ProjectionMatrix(); }// Returns the Projection matrix of the Camera
+	float4x4 ViewMatrix() const { return frustum->ViewMatrix(); }			// Returns the View matrix of the Camera frustrum
+	float4x4 ProjectionMatrix() const { return frustum->ProjectionMatrix(); }// Returns the Projection matrix of the Camera
 
 	// ---------- Setters ---------- //
 	void SetDeltaTime(float _deltaTime) { deltatime = _deltaTime; }
+	void SetActiveCamera(CCamera* _camera) { activeCamera = _camera; frustum = _camera->GetFrustum(); }
+	void ResetActiveCamera() { activeCamera = defaultCamera; frustum = defaultCamera->GetFrustum(); }
 
 	// Process movement
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);		// Applies the corresponding changes when an input from keyboard is detected and the Viewport is hovered. (Editor.PreUpdate > Rendered.ProcessViewportEvents)
