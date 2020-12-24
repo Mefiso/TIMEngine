@@ -45,9 +45,12 @@ void GameObject::CleanUp()
 void GameObject::Draw()
 {
 	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
-	ddVec3 points[8];
-	obb.GetCornerPoints(points);
-	dd::box(points, float3(0.9f));
+	if (name.compare("Scene 1") != 0)
+	{
+		ddVec3 points[8];
+		obb.GetCornerPoints(points);
+		dd::box(points, float3(0.9f));
+	}
 	// update components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -204,6 +207,7 @@ void GameObject::SetProgram(unsigned int program)
 
 void GameObject::UpdateBoundingBoxes()
 {
+	aabb.SetNegativeInfinity();
 	CMesh* mesh = GetComponent<CMesh>();
 	if (mesh)
 		aabb.Enclose(mesh->AABBmin, mesh->AABBmax);
@@ -211,13 +215,22 @@ void GameObject::UpdateBoundingBoxes()
 	for (GameObject* child : children)
 	{
 		child->UpdateBoundingBoxes();
+
+		if (transform)
+		{
+			float4x4 inverseTransform = GetModelMatrix();
+			transform->GetScale().Equals(float3::one) ? inverseTransform.InverseOrthonormal() : inverseTransform.Inverse();
+			child->obb.Transform(inverseTransform);
+		}
 		aabb.Enclose(child->obb);
+		if (transform)
+			child->obb.Transform(GetModelMatrix());
 	}
-	obb = transform ? aabb.Transform(transform->GetTransformationMatrix()) : aabb;
+	obb = transform ? aabb.Transform(GetModelMatrix()) : aabb;
 }
 
 void GameObject::UpdateOBB()
 {
-	obb = aabb.Transform(transform->GetTransformationMatrix());
+	obb = aabb.Transform(GetModelMatrix());
 	parent->UpdateBoundingBoxes();
 }
