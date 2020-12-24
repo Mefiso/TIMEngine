@@ -168,7 +168,7 @@ void WProperties::DrawTransformationBody()
 	if (modified)
 	{
 		selectedObject->SetTransform(scale, rotation, position);
-		selectedObject->UpdateOBB();
+		selectedObject->GetParent()->UpdateBoundingBoxes();
 	}
 }
 

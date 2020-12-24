@@ -124,8 +124,12 @@ void GameObject::SetParent(GameObject* _newParent)
 	{
 		_newParent->AddChild(this);
 		if (parent)
+		{
 			parent->RemoveChild(this->uID);
+			parent->UpdateBoundingBoxes();
+		}
 		parent = _newParent;
+		parent->UpdateBoundingBoxes();
 	}
 }
 
@@ -139,7 +143,6 @@ void GameObject::AddChild(GameObject* _newChild)
 		_newChild->SetTransform(thisTransform * worldTransform, this);
 	}
 	children.push_back(_newChild);
-	UpdateBoundingBoxes();
 }
 
 void GameObject::RemoveChild(int childID)
@@ -233,6 +236,6 @@ void GameObject::UpdateBoundingBoxes()
 
 void GameObject::UpdateOBB()
 {
-	obb = aabb.Transform(GetModelMatrix());
+	//obb = aabb.Transform(GetModelMatrix());
 	parent->UpdateBoundingBoxes();
 }
