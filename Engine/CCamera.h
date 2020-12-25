@@ -11,13 +11,13 @@
 class CCamera : public Component
 {
 private:
-	Frustum* frustum = new Frustum();							// frustrum object of this Camera
+	Frustum* frustum = new Frustum();							// frustum object of this Camera
 
 public:
 	CCamera(GameObject* _owner);								// Constructor
 	~CCamera();													// Destructor
 
-	void Draw() override;										// Sends the information of this component to Render it
+	void Draw() override;										// Sends the information of this component to Render it. If the owner GameObject is selected, it will draw the camera frustum.
 
 	// ---------- Getters ---------- //
 	Frustum* GetFrustum() { return frustum; }
