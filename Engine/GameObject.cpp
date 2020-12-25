@@ -2,17 +2,23 @@
 #include "CMesh.h"
 #include "CTransform.h"
 #include "CMaterial.h"
+#include "debugdraw.h"
 #include "CCamera.h"
+
 
 int GameObject::objectCount = 0;
 
 GameObject::GameObject()
 {
+	aabb.SetNegativeInfinity();
+	obb.SetNegativeInfinity();
 	++objectCount;
 }
 
 GameObject::GameObject(const std::string& _name) : name(_name)
 {
+	aabb.SetNegativeInfinity();
+	obb.SetNegativeInfinity();
 	++objectCount;
 }
 
@@ -40,6 +46,13 @@ void GameObject::CleanUp()
 
 void GameObject::Draw()
 {
+	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
+	if (name.compare("Scene 1") != 0)
+	{
+		ddVec3 points[8];
+		obb.GetCornerPoints(points);
+		dd::box(points, float3(0.9f));
+	}
 	// update components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -65,6 +78,7 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 		break;
 	case MESH:
 		newComp = new CMesh(this, (aiMesh*)arg);
+		UpdateBoundingBoxes();
 		break;
 	case MATERIAL:
 		newComp = new CMaterial(this, (aiMaterial*)arg, path);
@@ -115,8 +129,12 @@ void GameObject::SetParent(GameObject* _newParent)
 	{
 		_newParent->AddChild(this);
 		if (parent)
+		{
 			parent->RemoveChild(this->uID);
+			parent->UpdateBoundingBoxes();
+		}
 		parent = _newParent;
+		parent->UpdateBoundingBoxes();
 	}
 }
 
@@ -178,6 +196,8 @@ void GameObject::SetTransform(float4x4& _newTransform, GameObject* _newParent)
 	rotation.y = -atan2(-_newTransform.Col3(2)[0], sqrt(_newTransform.Col3(2)[1] * _newTransform.Col3(2)[1] + _newTransform.Col3(2)[2] * _newTransform.Col3(2)[2]));
 	rotation.z = -atan2(_newTransform.Col3(1)[0], _newTransform.Col3(0)[0]);
 	transform->SetRotation(rotation);
+
+	transform->UpdateTransformMatrix();
 }
 
 void GameObject::SetProgram(unsigned int program)
@@ -193,4 +213,34 @@ void GameObject::SetProgram(unsigned int program)
 	{
 		(*it)->SetProgram(program);
 	}
+}
+
+void GameObject::UpdateBoundingBoxes()
+{
+	aabb.SetNegativeInfinity();
+	CMesh* mesh = GetComponent<CMesh>();
+	if (mesh)
+		aabb.Enclose(mesh->AABBmin, mesh->AABBmax);
+
+	for (GameObject* child : children)
+	{
+		child->UpdateBoundingBoxes();
+
+		if (transform)
+		{
+			float4x4 inverseTransform = GetModelMatrix();
+			transform->GetScale().Equals(float3::one) ? inverseTransform.InverseOrthonormal() : inverseTransform.Inverse();
+			child->obb.Transform(inverseTransform);
+		}
+		aabb.Enclose(child->obb);
+		if (transform)
+			child->obb.Transform(GetModelMatrix());
+	}
+	obb = transform ? aabb.Transform(GetModelMatrix()) : aabb;
+}
+
+void GameObject::UpdateOBB()
+{
+	//obb = aabb.Transform(GetModelMatrix());
+	parent->UpdateBoundingBoxes();
 }

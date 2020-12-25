@@ -180,6 +180,7 @@ void WProperties::DrawTransformationBody()
 	if (modified)
 	{
 		selectedObject->SetTransform(scale, rotation, position);
+		selectedObject->GetParent()->UpdateBoundingBoxes();
 		if (selectedObject->GetComponent<CCamera>())
 			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
 	}

@@ -4,6 +4,8 @@
 #include "Application.h"
 #include "Component.h"
 #include "Math/float4x4.h"
+#include "Geometry/AABB.h"
+#include "Geometry/OBB.h"
 #include <vector>
 
 class CTransform;
@@ -28,6 +30,8 @@ private:
 	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
 	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
 	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
+	AABB aabb;
+	OBB obb;
 
 public:
 
@@ -50,6 +54,7 @@ public:
 	std::vector<Component*>& GetComponents() { return components; }
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
 	CTransform* GetTransform() const { return transform; }												// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
+	const AABB& GetAABB() const { return aabb; }
 
 	template<typename T>
 	T* GetComponent()																					// Get a component of type T, or null if it does not exist on this GameObject
@@ -72,4 +77,6 @@ public:
 	void SetTransform(float4x4& _newTransform, GameObject* _newParent);
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
+	void UpdateBoundingBoxes();
+	void UpdateOBB();
 };

@@ -1,14 +1,14 @@
 #pragma once
 #include "Component.h"
 #include "assimp/scene.h"
-#include "Geometry/AABB.h"
+#include "Math/float3.h"
 
 class CMesh : public Component
 {
 public:
 	unsigned int numVertices = 0u;										// Number of non-repeated vertices of the Mesh
 	unsigned int numIndices = 0u;										// Total number of vertices of the Mesh (includes repeated vertices of adjacent faces)
-	AABB boundingBox = AABB(float3::zero, float3::zero);				// Axis Aligned Bounding Box of the Mesh (Local to the Mesh coordinates)
+	float3 AABBmin = float3::inf, AABBmax = -float3::inf;
 
 private:
 	unsigned int VAO = 0u, VBO = 0u, EBO = 0u;							// Buffer Object identifiers of the mesh this Component represents
@@ -30,4 +30,5 @@ private:
 	void LoadVBO(const aiMesh* mesh);									// Loads the Vertex Buffer Object of this mesh
 	void LoadEBO(const aiMesh* mesh);									// Loads the Element Buffer Object of this mesh
 	void CreateVAO();													// Loads the Vertex Array Object of this mesh
+	void CheckMinMaxPoints(float3 vertex);								// If vertex is a point outside the current min and max points for AABB, it modifies those min/max points
 };
