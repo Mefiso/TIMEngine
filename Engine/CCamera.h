@@ -17,6 +17,8 @@ public:
 	CCamera(GameObject* _owner);								// Constructor
 	~CCamera();													// Destructor
 
+	void Draw() override;										// Sends the information of this component to Render it
+
 	// ---------- Getters ---------- //
 	Frustum* GetFrustum() { return frustum; }
 

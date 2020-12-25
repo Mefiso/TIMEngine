@@ -1,4 +1,5 @@
 #include "CCamera.h"
+#include "debugdraw.h"
 
 CCamera::CCamera(GameObject* _owner) : Component(CAMERA, _owner)
 {
@@ -13,6 +14,12 @@ CCamera::CCamera(GameObject* _owner) : Component(CAMERA, _owner)
 CCamera::~CCamera()
 {
 	RELEASE(frustum);
+}
+
+void CCamera::Draw()
+{
+	if (owner->isSelected)
+		dd::frustum(frustum->ViewProjMatrix().Inverted(), dd::colors::Gray);
 }
 
 void CCamera::UpdateFrustumFromTransform(CTransform* _transform)
