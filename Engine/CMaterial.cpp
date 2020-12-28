@@ -35,11 +35,11 @@ void CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType t
 		{
 			// Checks if texture is already loaded in scene. If so, skips loading texture from file.
 			bool skip = false;
-			for (unsigned j = 0; j < App->scene->loadedTextures.size(); ++j)
+			for (unsigned j = 0; j < App->sceneLoad->loadedTextures.size(); ++j)
 			{
-				if (std::strcmp(App->scene->loadedTextures[j]->path.data(), file.C_Str()) == 0)
+				if (std::strcmp(App->sceneLoad->loadedTextures[j]->path.data(), file.C_Str()) == 0)
 				{
-					_matTextures->push_back(App->scene->loadedTextures[j]);
+					_matTextures->push_back(App->sceneLoad->loadedTextures[j]);
 					skip = true;
 					break;
 				}
@@ -75,8 +75,8 @@ void CMaterial::LoadMaterialTextures(const aiMaterial* material, aiTextureType t
 					texture->wrapt = GL_REPEAT;
 					texture->minfilter = GL_LINEAR_MIPMAP_LINEAR;
 					texture->magfilter = GL_LINEAR;
-					App->scene->loadedTextures.push_back(texture);
-					_matTextures->push_back(App->scene->loadedTextures[App->scene->loadedTextures.size() - 1]);
+					App->sceneLoad->loadedTextures.push_back(texture);
+					_matTextures->push_back(App->sceneLoad->loadedTextures[App->sceneLoad->loadedTextures.size() - 1]);
 				}
 			}
 		}

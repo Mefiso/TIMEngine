@@ -37,6 +37,7 @@ void CCamera::UpdateTransformFromFrustum()
 			tf->SetPos((float3)frustum->Pos());
 			tf->SetRotation(frustum->WorldMatrix().ToEulerXYZ());
 			tf->UpdateTransformMatrix();
+			owner->GetParent()->UpdateBoundingBoxes();
 		}
 	}
 }
