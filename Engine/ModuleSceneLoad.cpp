@@ -1,4 +1,4 @@
-#include "ModuleScene.h"
+#include "ModuleSceneLoad.h"
 
 #include "GL/glew.h"
 #include <assimp/Importer.hpp>
@@ -7,6 +7,7 @@
 #include "ModuleTexture.h"
 #include "ModuleCamera.h"
 #include "ModuleProgram.h"
+#include "ModuleSceneManager.h"
 
 #include "Component.h"
 #include "GameObject.h"
@@ -17,31 +18,24 @@ void AssimpLog(const char* msg, char* user) {
 		LOG("[info] Assimp Log: %s", msg);
 }
 
-ModuleScene::ModuleScene()
+ModuleSceneLoad::ModuleSceneLoad()
 {
 	stream.callback = AssimpLog;
 	aiAttachLogStream(&stream);
-
-	root->ChangeName("Scene 1");
 }
 
-ModuleScene::~ModuleScene()
+ModuleSceneLoad::~ModuleSceneLoad()
 {
-	RELEASE(root);
+	CleanUp();
 }
 
-bool ModuleScene::Start()
+bool ModuleSceneLoad::Start()
 {
-	vanillaProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\vanilla.vs.glsl", ".\\resources\\shaders\\vanilla.fs.glsl");
-	phongProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\phong.vs.glsl", ".\\resources\\shaders\\phong.fs.glsl");
-	pbrProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\bdrfPhong.vs.glsl", ".\\resources\\shaders\\bdrfPhong.fs.glsl");
-	defaultProgram = pbrProgram;
-
 	LoadScene("./resources/models/baker_house/BakerHouse.fbx");
 	return true;
 }
 
-bool ModuleScene::CleanUp()
+bool ModuleSceneLoad::CleanUp()
 {
 	for (std::vector<Texture*>::iterator it = loadedTextures.begin(), end = loadedTextures.end(); it != end; ++it)
 	{
@@ -50,15 +44,10 @@ bool ModuleScene::CleanUp()
 	}
 	loadedTextures.clear();
 
-	RELEASE(root);
-
-	glDeleteProgram(vanillaProgram);
-	glDeleteProgram(phongProgram);
-	glDeleteProgram(pbrProgram);
 	return true;
 }
 
-void ModuleScene::ReceiveEvent(const Event& event)
+void ModuleSceneLoad::ReceiveEvent(const Event& event)
 {
 	switch (event.type)
 	{
@@ -68,13 +57,7 @@ void ModuleScene::ReceiveEvent(const Event& event)
 	}
 }
 
-void ModuleScene::CreateEmptyGameObject()
-{
-	GameObject* newEmpty = new GameObject("Empty GameObj");
-	newEmpty->SetParent(root);
-}
-
-void ModuleScene::LoadScene(std::string const& path)
+void ModuleSceneLoad::LoadScene(std::string const& path)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
@@ -88,19 +71,19 @@ void ModuleScene::LoadScene(std::string const& path)
 		std::string filename = path.substr(0, path.find_last_of('/')).size() == path.size() ? path.substr(path.find_last_of('\\')+1, path.size()) : path.substr(path.find_last_of('/')+1, path.size());
 
 		GameObject* newModel = new GameObject(filename.c_str());
-		newModel->SetParent(root);
+		newModel->SetParent(App->sceneMng->GetRoot());
 		ProcessNode(scene->mRootNode, scene, newModel);
 
 		// Set default shading program
-		newModel->SetProgram(defaultProgram);
+		newModel->SetProgram(App->sceneMng->GetProgram());
 		for (std::vector<GameObject*>::const_iterator it = newModel->GetChildren().begin(); it != newModel->GetChildren().end(); ++it) {
-			(*it)->SetProgram(defaultProgram);
+			(*it)->SetProgram(App->sceneMng->GetProgram());
 		}
 	}
 	importer.FreeScene();
 }
 
-void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* object)
+void ModuleSceneLoad::ProcessNode(aiNode* node, const aiScene* scene, GameObject* object)
 {
 	object->AddComponent(TRANSFORM, nullptr);
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
@@ -118,7 +101,7 @@ void ModuleScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* ob
 	}
 }
 
-void ModuleScene::DropFile(const std::string& file)
+void ModuleSceneLoad::DropFile(const std::string& file)
 {
 	if ([file]() {
 		const char* l[] = { ".fbx", ".FBX", ".obj" };
@@ -131,6 +114,6 @@ void ModuleScene::DropFile(const std::string& file)
 	{
 		LoadScene(file);
 		// TODO: What if new scene has no transform? (could it be possible?)
-		App->camera->onFocus(root->GetChildren()[root->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10);
+		App->camera->onFocus(App->sceneMng->GetRoot()->GetChildren()[App->sceneMng->GetRoot()->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10);
 	}
 }

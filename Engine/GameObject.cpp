@@ -179,6 +179,8 @@ void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _transl
 	transform->SetRotation(_rotation);
 	transform->SetScale(_scale);
 	transform->UpdateTransformMatrix();
+
+	parent->UpdateBoundingBoxes();
 }
 
 void GameObject::SetTransform(float4x4& _newTransform, GameObject* _newParent)

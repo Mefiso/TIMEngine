@@ -2,7 +2,8 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
-#include "ModuleScene.h"
+#include "ModuleSceneLoad.h"
+#include "ModuleSceneManager.h"
 #include "ModuleRender.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleEditor.h"
@@ -20,7 +21,8 @@ Application::Application()
 	// Order matters: they will Init/start/update in this order
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(input = new ModuleInput());
-	modules.push_back(scene = new ModuleScene());
+	modules.push_back(sceneMng = new ModuleSceneManager());
+	modules.push_back(sceneLoad = new ModuleSceneLoad());
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(debugdraw = new ModuleDebugDraw());
 	modules.push_back(editor = new ModuleEditor());

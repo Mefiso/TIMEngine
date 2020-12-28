@@ -6,7 +6,7 @@
 #include "ModuleCamera.h"
 #include "ModuleProgram.h"
 #include "ModuleDebugDraw.h"
-#include "ModuleScene.h"
+#include "ModuleSceneManager.h"
 #include "GameObject.h"
 #include "debugdraw.h"
 #include "SDL.h"
@@ -119,8 +119,8 @@ update_status ModuleRender::Update()
 	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 
 	// Render all GameObjects
-	if (App->scene->GetRoot())
-		App->scene->GetRoot()->Draw();
+	if (App->sceneMng->GetRoot())
+		App->sceneMng->GetRoot()->Draw();
 
 	if (showGrid)
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);

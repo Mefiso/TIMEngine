@@ -203,9 +203,6 @@
     <ClCompile Include="ModuleDebugDraw.cpp">
       <Filter>UtilityModules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleScene.cpp">
-      <Filter>CoreModules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleProgram.cpp">
       <Filter>UtilityModules</Filter>
     </ClCompile>
@@ -214,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="CCamera.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleSceneManager.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleSceneLoad.cpp">
+      <Filter>CoreModules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -535,9 +538,6 @@
     <ClInclude Include="ModuleDebugDraw.h">
       <Filter>UtilityModules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleScene.h">
-      <Filter>CoreModules</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleProgram.h">
       <Filter>UtilityModules</Filter>
     </ClInclude>
@@ -546,6 +546,12 @@
     </ClInclude>
     <ClInclude Include="CCamera.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleSceneManager.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleSceneLoad.h">
+      <Filter>CoreModules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
