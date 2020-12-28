@@ -55,6 +55,7 @@ public:
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
 	CTransform* GetTransform() const { return transform; }												// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
 	const AABB& GetAABB() const { return aabb; }
+	const OBB& GetOBB() const { return obb; }
 
 	template<typename T>
 	T* GetComponent()																					// Get a component of type T, or null if it does not exist on this GameObject

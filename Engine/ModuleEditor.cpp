@@ -156,6 +156,11 @@ void ModuleEditor::InspectObject(GameObject* _object)
 		properties->SetInspectedObject(_object);
 }
 
+const GameObject* ModuleEditor::GetSelectedObject() const
+{
+	return properties->GetSelectedGO();
+}
+
 void ModuleEditor::DrawMainMenu()
 {
 	if (ImGui::BeginMainMenuBar())

@@ -170,7 +170,7 @@ float4x4 GameObject::GetModelMatrix() const
 	if (parent && parent->transform)
 		return (parent->GetModelMatrix() * this->transform->GetTransformationMatrix());
 	else
-		return  this->transform->GetTransformationMatrix();
+		return  transform ? this->transform->GetTransformationMatrix() : float4x4::identity;
 }
 
 void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _translation)

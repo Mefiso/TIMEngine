@@ -131,6 +131,6 @@ void ModuleScene::DropFile(const std::string& file)
 	{
 		LoadScene(file);
 		// TODO: What if new scene has no transform? (could it be possible?)
-		App->camera->onFocus(root->GetChildren()[root->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10);
+		App->camera->onFocus(root->GetChildren()[root->GetChildren().size() - 1]->GetModelMatrix().Col3(3), root->GetChildren()[root->GetChildren().size() - 1]->GetOBB().Size().Length() * 2.0f);
 	}
 }

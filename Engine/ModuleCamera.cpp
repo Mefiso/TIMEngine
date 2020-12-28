@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
+#include "ModuleScene.h"
 #include "ModuleInput.h"
 #include "Math/Quat.h"
 #include "Math/float3x3.h"
@@ -45,8 +46,12 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 void ModuleCamera::ProcessViewportEvents() {
 	TranslateCamera(deltatime);
 	RotateCameraKeys(deltatime);
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-		//App->camera->onFocus(App->scene->GetRoot()->GetChildren()[App->scene->GetRoot()->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10); // TODO: WE NEED THE ABILITY TO SELECT A GAMEOBJECT
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		const GameObject* selected = App->editor->GetSelectedObject();
+		if (!selected)
+			selected = App->scene->GetRoot();
+		onFocus(selected->GetModelMatrix().Col3(3), selected->GetAABB().Size().Length()*2.f);
 	}
 }
 
