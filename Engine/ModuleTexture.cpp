@@ -29,7 +29,7 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 
 	ilGenImages(1, &imgId);								/* Generation of one image name */
 	ilBindImage(imgId);									/* Binding of image name */
-	success = ilLoadImage(path.c_str());				/* Loading of image "image.jpg" */
+	success = ilLoadImage(path.c_str());				/* Loading of image */
 	if (success)										/* If no error occured: */
 	{
 		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
@@ -70,4 +70,51 @@ unsigned int ModuleTexture::LoadTexture(const std::string path)
 	ilDeleteImages(1, &imgId);
 
 	return textureId;
+}
+
+unsigned int ModuleTexture::LoadCubemap(std::vector<std::string> faces)
+{
+	ILuint imgId;
+	ILboolean success;
+	ILinfo info;
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		ilGenImages(1, &imgId);								/* Generation of one image name */
+		ilBindImage(imgId);									/* Binding of image name */
+		success = ilLoadImage(faces[i].c_str());			/* Loading of image */
+		if (success)
+		{
+			success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+			if (!success)
+			{
+				/* Error occured */
+				LOG("[error] Could not convert image");
+				return false;
+			}
+			iluGetImageInfo(&info);
+			/*if (IL_ORIGIN_UPPER_LEFT)
+				iluFlipImage();
+			if (force_flip)
+				iluFlipImage();*/
+
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB8_ALPHA8, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE, ilGetData());
+		}
+		else
+		{
+			/* Error occured */
+			LOG("[error] Could not Load image %s", faces[i].c_str())
+			return false;
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	return textureID;
 }

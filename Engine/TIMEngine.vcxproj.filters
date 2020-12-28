@@ -635,5 +635,11 @@
     <None Include="ThirdPartyLibs\MathGeoLib\Math\Matrix.inl">
       <Filter>MathGeoLib\Math</Filter>
     </None>
+    <None Include="Game\resources\shaders\skybox.vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Game\resources\shaders\skybox.fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

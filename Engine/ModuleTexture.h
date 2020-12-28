@@ -26,4 +26,5 @@ public:
 	static bool Init();									// Initialise ModuleWindow
 
 	static unsigned int LoadTexture(std::string path);	// Loads an image file and attaches it to a GL_TEXTURE_2D
+	static unsigned int LoadCubemap(std::vector<std::string> faces);
 };

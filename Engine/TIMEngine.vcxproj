@@ -337,6 +337,8 @@
     <None Include="Game\resources\shaders\bdrfPhong.vs.glsl" />
     <None Include="Game\resources\shaders\phong.fs.glsl" />
     <None Include="Game\resources\shaders\phong.vs.glsl" />
+    <None Include="Game\resources\shaders\skybox.fs.glsl" />
+    <None Include="Game\resources\shaders\skybox.vs.glsl" />
     <None Include="Game\resources\shaders\vanilla.fs.glsl" />
     <None Include="Game\resources\shaders\vanilla.vs.glsl" />
     <None Include="ThirdPartyLibs\MathGeoLib\emscripten\library_system.js" />

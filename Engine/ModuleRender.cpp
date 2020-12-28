@@ -14,6 +14,9 @@
 #include "Leaks.h"
 #include "Brofiler.h"
 
+
+#include "ModuleTexture.h"
+
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	const char* tmp_source = "", * tmp_type = "", * tmp_severity = "";
@@ -90,6 +93,35 @@ bool ModuleRender::Init()
 
 	msTimer.Start();
 
+
+
+	// Temp ----------------------
+	skyboxShader = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\skybox.vs.glsl", ".\\resources\\shaders\\skybox.fs.glsl");
+	faces =
+	{
+		".\\resources\\skybox\\default\\right.jpg",
+		".\\resources\\skybox\\default\\left.jpg",
+		".\\resources\\skybox\\default\\top.jpg",
+		".\\resources\\skybox\\default\\bottom.jpg",
+		".\\resources\\skybox\\default\\front.jpg",
+		".\\resources\\skybox\\default\\back.jpg"
+	};
+	cubemapTexture = ModuleTexture::LoadCubemap(faces);
+	// skybox VAO
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+	//---------------------------
+
+
+
+
+
 	return true;
 }
 
@@ -97,7 +129,6 @@ update_status ModuleRender::PreUpdate()
 {
 	BROFILER_CATEGORY("PreUpdateRenderer", Profiler::Color::Orchid);
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	App->camera->SetDeltaTime(msTimer.Stop() / 1000.f);
@@ -109,6 +140,8 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 	BROFILER_CATEGORY("UpdateRenderer", Profiler::Color::Orchid);
+	// ... draw rest of the scene
+
 	if (depthTest) glEnable(GL_DEPTH_TEST); // Enable depth test
 	else glDisable(GL_DEPTH_TEST);
 
@@ -125,6 +158,19 @@ update_status ModuleRender::Update()
 	if (showGrid)
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
 
+	glDepthFunc(GL_LEQUAL);
+	ModuleProgram::use(skyboxShader);
+	ModuleProgram::setMat4(skyboxShader, "view", App->camera->ViewMatrix());
+	ModuleProgram::setMat4(skyboxShader, "proj", App->camera->ProjectionMatrix());
+	ModuleProgram::setInt(skyboxShader, "skybox", 0);
+
+	glBindVertexArray(skyboxVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
+	glDepthFunc(GL_LESS);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	return UPDATE_CONTINUE;
