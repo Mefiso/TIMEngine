@@ -1,9 +1,8 @@
 #include "W_hierarchy.h"
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleScene.h"
+#include "ModuleSceneLoad.h"
 #include "ModuleEditor.h"
-//#include "W_properties.h"
 
 WHierarchy::WHierarchy(std::string name) : Window(name)
 {

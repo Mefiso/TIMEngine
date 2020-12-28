@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
-#include "ModuleScene.h"
+#include "ModuleSceneLoad.h"
 #include "ModuleRender.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleEditor.h"

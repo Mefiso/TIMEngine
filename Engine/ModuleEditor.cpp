@@ -2,7 +2,7 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
-#include "ModuleScene.h"
+#include "ModuleSceneLoad.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "W_viewport.h"

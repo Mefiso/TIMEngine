@@ -6,7 +6,7 @@
 #include "ModuleCamera.h"
 #include "ModuleProgram.h"
 #include "ModuleDebugDraw.h"
-#include "ModuleScene.h"
+#include "ModuleSceneLoad.h"
 #include "GameObject.h"
 #include "debugdraw.h"
 #include "SDL.h"

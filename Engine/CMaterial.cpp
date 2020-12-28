@@ -3,7 +3,7 @@
 #include "GL/glew.h"
 
 #include "Application.h"
-#include "ModuleScene.h"
+#include "ModuleSceneLoad.h"
 #include "ModuleTexture.h"
 #include "Leaks.h"
 
