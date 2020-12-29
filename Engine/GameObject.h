@@ -20,6 +20,7 @@ private:
 public:
 
 	bool isSelected = false;
+	static bool drawOBB;
 
 private:
 

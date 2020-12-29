@@ -84,7 +84,10 @@ update_status ModuleEditor::PostUpdate()
 	GameObject* toDeleteGO = hierarchy->GetToDelete();
 	if (toDeleteGO) {
 		if (toDeleteGO->GetParent())
+		{
 			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUID());
+			App->scene->octree.Erase(toDeleteGO);
+		}
 		RELEASE(toDeleteGO);
 		hierarchy->SetToDelete(nullptr);
 	}

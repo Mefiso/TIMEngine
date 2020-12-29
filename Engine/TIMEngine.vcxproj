@@ -160,6 +160,7 @@
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="MSTimer.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="ThirdPartyLibs\ImGUI\imconfig.h" />
     <ClInclude Include="ThirdPartyLibs\ImGUI\imgui.h" />
     <ClInclude Include="ThirdPartyLibs\ImGUI\imgui_impl_opengl3.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="ThirdPartyLibs\ImGUI\imgui.cpp" />
     <ClCompile Include="ThirdPartyLibs\ImGUI\imgui_demo.cpp" />
     <ClCompile Include="ThirdPartyLibs\ImGUI\imgui_draw.cpp" />

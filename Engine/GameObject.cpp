@@ -1,12 +1,15 @@
+#include "Application.h"
+#include "ModuleScene.h"
 #include "GameObject.h"
 #include "CMesh.h"
 #include "CTransform.h"
 #include "CMaterial.h"
-#include "debugdraw.h"
 #include "CCamera.h"
+#include "debugdraw.h"
 
 
 int GameObject::objectCount = 0;
+bool GameObject::drawOBB = false;
 
 GameObject::GameObject()
 {
@@ -47,7 +50,7 @@ void GameObject::CleanUp()
 void GameObject::Draw()
 {
 	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
-	if (name.compare("Scene 1") != 0)
+	if (name.compare("Scene 1") != 0 && drawOBB)
 	{
 		ddVec3 points[8];
 		obb.GetCornerPoints(points);
@@ -78,7 +81,6 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 		break;
 	case MESH:
 		newComp = new CMesh(this, (aiMesh*)arg);
-		UpdateBoundingBoxes();
 		break;
 	case MATERIAL:
 		newComp = new CMaterial(this, (aiMaterial*)arg, path);
@@ -91,6 +93,11 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	}
 
 	components.push_back(newComp);
+	if (_type == MESH)
+	{
+		UpdateBoundingBoxes();
+		App->scene->octree.Insert(this);
+	}
 }
 
 void GameObject::RemoveComponent(int _cID)

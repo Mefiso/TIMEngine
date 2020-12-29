@@ -18,6 +18,7 @@ public:
 	bool depthTest = true;											// Set if depth test is performed
 	bool cullFace = true;											// Set if face culling is performed
 	bool showGrid = true;											// Set if the grid is rendered
+	bool showOctree = false;										// Set if the octree from scene is rendered
 
 	float3 backgroundColor = { 0.1f, 0.1f, 0.1f };					// Base color of the viewport window
 	float3 gridColor = { 1.f, 1.f, 1.f };							// Base color of the world Grid

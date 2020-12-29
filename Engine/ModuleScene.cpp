@@ -37,7 +37,9 @@ bool ModuleScene::Start()
 	pbrProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\bdrfPhong.vs.glsl", ".\\resources\\shaders\\bdrfPhong.fs.glsl");
 	defaultProgram = pbrProgram;
 
+	octree.SetBoundaries(AABB(float3(-20, -20, -20), float3(20, 20, 20)));
 	LoadScene("./resources/models/baker_house/BakerHouse.fbx");
+
 	return true;
 }
 
