@@ -4,7 +4,6 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
-#include "ModuleProgram.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleSceneManager.h"
 #include "GameObject.h"
@@ -13,6 +12,9 @@
 #include "uSTimer.h"
 #include "Leaks.h"
 #include "Brofiler.h"
+
+
+#include "ModuleTexture.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -86,8 +88,9 @@ bool ModuleRender::Init()
 	InitFramebuffer();
 	glViewport(0, 0, viewport_width, viewport_height);
 
-	uSTimer test = uSTimer();
+	glDepthFunc(GL_LEQUAL); // For the skybox to be visualized at z-depth = (+-)1
 
+	uSTimer test = uSTimer();
 	msTimer.Start();
 
 	return true;
@@ -97,7 +100,6 @@ update_status ModuleRender::PreUpdate()
 {
 	BROFILER_CATEGORY("PreUpdateRenderer", Profiler::Color::Orchid);
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	App->camera->SetDeltaTime(msTimer.Stop() / 1000.f);
@@ -122,10 +124,13 @@ update_status ModuleRender::Update()
 	if (App->sceneMng->GetRoot())
 		App->sceneMng->GetRoot()->Draw();
 
+	// Render Grid and origin 
 	if (showGrid)
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// Render Skybox
+	// TODO: if (drawskybox)... else glClearColor(bgcolor)
+	App->sceneMng->DrawSkybox();
 
 	return UPDATE_CONTINUE;
 }

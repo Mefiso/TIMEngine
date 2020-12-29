@@ -1,17 +1,18 @@
 #include "ModuleSceneLoad.h"
-
-#include "GL/glew.h"
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
+#include "ModuleSceneManager.h"
 
 #include "ModuleTexture.h"
 #include "ModuleCamera.h"
 #include "ModuleProgram.h"
-#include "ModuleSceneManager.h"
 
 #include "Component.h"
 #include "GameObject.h"
 #include "Leaks.h"
+
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
+
 
 void AssimpLog(const char* msg, char* user) {
 	if (msg)
@@ -32,6 +33,16 @@ ModuleSceneLoad::~ModuleSceneLoad()
 bool ModuleSceneLoad::Start()
 {
 	LoadScene("./resources/models/baker_house/BakerHouse.fbx");
+	std::vector<std::string> faces =
+	{
+		".\\resources\\skybox\\default\\right.jpg",
+		".\\resources\\skybox\\default\\left.jpg",
+		".\\resources\\skybox\\default\\top.jpg",
+		".\\resources\\skybox\\default\\bottom.jpg",
+		".\\resources\\skybox\\default\\front.jpg",
+		".\\resources\\skybox\\default\\back.jpg"
+	};
+	App->sceneMng->SetSkyboxTexture(ModuleTexture::LoadCubemap(faces));
 	return true;
 }
 
