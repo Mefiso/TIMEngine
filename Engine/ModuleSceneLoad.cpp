@@ -43,6 +43,7 @@ bool ModuleSceneLoad::Start()
 		".\\resources\\skybox\\default\\back.jpg"
 	};
 	App->sceneMng->SetSkyboxTexture(ModuleTexture::LoadCubemap(faces));
+	faces.empty();
 	return true;
 }
 

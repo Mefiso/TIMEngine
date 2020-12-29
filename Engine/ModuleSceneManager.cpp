@@ -34,6 +34,7 @@ bool ModuleSceneManager::CleanUp()
 	glDeleteTextures(1, &skyboxTexture);
 
 	RELEASE(root);
+
 	return true;
 }
 
