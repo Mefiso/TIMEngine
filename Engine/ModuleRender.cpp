@@ -4,7 +4,6 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
-#include "ModuleProgram.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleSceneManager.h"
 #include "GameObject.h"
@@ -89,38 +88,10 @@ bool ModuleRender::Init()
 	InitFramebuffer();
 	glViewport(0, 0, viewport_width, viewport_height);
 
+	glDepthFunc(GL_LEQUAL); // For the skybox to be visualized at z-depth = (+-)1
+
 	uSTimer test = uSTimer();
-
 	msTimer.Start();
-
-
-
-	// Temp ----------------------
-	skyboxShader = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\skybox.vs.glsl", ".\\resources\\shaders\\skybox.fs.glsl");
-	faces =
-	{
-		".\\resources\\skybox\\default\\right.jpg",
-		".\\resources\\skybox\\default\\left.jpg",
-		".\\resources\\skybox\\default\\top.jpg",
-		".\\resources\\skybox\\default\\bottom.jpg",
-		".\\resources\\skybox\\default\\front.jpg",
-		".\\resources\\skybox\\default\\back.jpg"
-	};
-	cubemapTexture = ModuleTexture::LoadCubemap(faces);
-	// skybox VAO
-	glGenVertexArrays(1, &skyboxVAO);
-	glGenBuffers(1, &skyboxVBO);
-	glBindVertexArray(skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-	//---------------------------
-
-
-
-
 
 	return true;
 }
@@ -140,8 +111,6 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 	BROFILER_CATEGORY("UpdateRenderer", Profiler::Color::Orchid);
-	// ... draw rest of the scene
-
 	if (depthTest) glEnable(GL_DEPTH_TEST); // Enable depth test
 	else glDisable(GL_DEPTH_TEST);
 
@@ -155,23 +124,13 @@ update_status ModuleRender::Update()
 	if (App->sceneMng->GetRoot())
 		App->sceneMng->GetRoot()->Draw();
 
+	// Render Grid and origin 
 	if (showGrid)
 		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
 
-	glDepthFunc(GL_LEQUAL);
-	ModuleProgram::use(skyboxShader);
-	ModuleProgram::setMat4(skyboxShader, "view", App->camera->ViewMatrix());
-	ModuleProgram::setMat4(skyboxShader, "proj", App->camera->ProjectionMatrix());
-	ModuleProgram::setInt(skyboxShader, "skybox", 0);
-
-	glBindVertexArray(skyboxVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
-	glActiveTexture(GL_TEXTURE0);
-	glDepthFunc(GL_LESS);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// Render Skybox
+	// TODO: if (drawskybox)... else glClearColor(bgcolor)
+	App->sceneMng->DrawSkybox();
 
 	return UPDATE_CONTINUE;
 }

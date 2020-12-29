@@ -96,10 +96,8 @@ unsigned int ModuleTexture::LoadCubemap(std::vector<std::string> faces)
 				return false;
 			}
 			iluGetImageInfo(&info);
-			/*if (IL_ORIGIN_UPPER_LEFT)
+			if (!IL_ORIGIN_UPPER_LEFT)
 				iluFlipImage();
-			if (force_flip)
-				iluFlipImage();*/
 
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB8_ALPHA8, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE, ilGetData());
 		}
