@@ -29,6 +29,9 @@ bool ModuleSceneManager::CleanUp()
 	glDeleteProgram(phongProgram);
 	glDeleteProgram(pbrProgram);
 	glDeleteProgram(skyboxShader);
+	glDeleteVertexArrays(1, &skyboxVAO);
+	glDeleteBuffers(1, &skyboxVBO);
+	glDeleteTextures(1, &skyboxTexture);
 
 	RELEASE(root);
 	return true;
