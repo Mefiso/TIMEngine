@@ -83,9 +83,13 @@ update_status ModuleEditor::PostUpdate()
 	GameObject* toDeleteGO = hierarchy->GetToDelete();
 	if (toDeleteGO) {
 		if (toDeleteGO->GetParent())
+		{
 			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUID());
+			toDeleteGO->UpdateBoundingBoxes();
+		}
 		RELEASE(toDeleteGO);
 		hierarchy->SetToDelete(nullptr);
+		
 	}
 
 	Component* toDeleteCMP = properties->GetToDelete();

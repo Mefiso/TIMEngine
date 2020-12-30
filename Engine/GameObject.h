@@ -6,6 +6,7 @@
 #include "Math/float4x4.h"
 #include "Geometry/AABB.h"
 #include "Geometry/OBB.h"
+#include "debugdraw.h"
 #include <vector>
 
 class CTransform;
@@ -30,8 +31,9 @@ private:
 	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
 	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
 	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
-	AABB aabb;
-	OBB obb;
+	AABB aabb;																							// AxisAlignedBoundingBox of the GameObject in local Coordinates of the object mesh
+	OBB obb;																							// ObliquousBoundingBox of the GameObject in World Coordinates
+	ddVec3 obbPoints[8];																				// World coordinates of the OBB vertices
 
 public:
 
@@ -45,6 +47,8 @@ public:
 	void RemoveComponent(int _cID);																		// Detach a component from this GameObject
 	void AddChild(GameObject* _newChild);																// Subfunction of SetParent(). Places another GameObject as a child of this one
 	void RemoveChild(int childID);																		// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
+	void UpdateBoundingBoxes();
+	void UpdateBoundingBoxesRecursive();
 
 	// ---------- Getters ---------- //
 	const std::string& GetName() const { return name; }
@@ -77,6 +81,4 @@ public:
 	void SetTransform(float4x4& _newTransform, GameObject* _newParent);
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
-	void UpdateBoundingBoxes();
-	void UpdateOBB();
 };

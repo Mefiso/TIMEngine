@@ -2,7 +2,6 @@
 #include "CMesh.h"
 #include "CTransform.h"
 #include "CMaterial.h"
-#include "debugdraw.h"
 #include "CCamera.h"
 
 
@@ -49,9 +48,7 @@ void GameObject::Draw()
 	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
 	if (name.compare("Scene 1") != 0)
 	{
-		ddVec3 points[8];
-		obb.GetCornerPoints(points);
-		dd::box(points, float3(0.9f));
+		dd::box(obbPoints, float3(0.9f));
 	}
 	// update components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
@@ -131,10 +128,10 @@ void GameObject::SetParent(GameObject* _newParent)
 		if (parent)
 		{
 			parent->RemoveChild(this->uID);
-			parent->UpdateBoundingBoxes();
+			UpdateBoundingBoxes();
 		}
 		parent = _newParent;
-		parent->UpdateBoundingBoxes();
+		UpdateBoundingBoxes();
 	}
 }
 
@@ -180,7 +177,7 @@ void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _transl
 	transform->SetScale(_scale);
 	transform->UpdateTransformMatrix();
 
-	parent->UpdateBoundingBoxes();
+	UpdateBoundingBoxes();
 }
 
 void GameObject::SetTransform(float4x4& _newTransform, GameObject* _newParent)
@@ -239,10 +236,44 @@ void GameObject::UpdateBoundingBoxes()
 			child->obb.Transform(GetModelMatrix());
 	}
 	obb = transform ? aabb.Transform(GetModelMatrix()) : aabb;
+
+	//Added, calculate obb vertices only when obb is updated
+	ddVec3 points[8];
+	obb.GetCornerPoints(points);
+	ddVec3 points2[8] = { points[0], points[1], points[3], points[2], points[4], points[5], points[7], points[6] };
+	memcpy(obbPoints, points2, sizeof(ddVec3) * 8);
+
+	if (this->parent)
+		parent->UpdateBoundingBoxesRecursive();
 }
 
-void GameObject::UpdateOBB()
+void GameObject::UpdateBoundingBoxesRecursive()
 {
-	//obb = aabb.Transform(GetModelMatrix());
-	parent->UpdateBoundingBoxes();
+	aabb.SetNegativeInfinity();
+	CMesh* mesh = GetComponent<CMesh>();
+	if (mesh)
+		aabb.Enclose(mesh->AABBmin, mesh->AABBmax);
+
+	for (GameObject* child : children)
+	{
+		if (transform)
+		{
+			float4x4 inverseTransform = GetModelMatrix();
+			transform->GetScale().Equals(float3::one) ? inverseTransform.InverseOrthonormal() : inverseTransform.Inverse();
+			child->obb.Transform(inverseTransform);
+		}
+		aabb.Enclose(child->obb);
+		if (transform)
+			child->obb.Transform(GetModelMatrix());
+	}
+	obb = transform ? aabb.Transform(GetModelMatrix()) : aabb;
+
+	//Added, calculate obb vertices only when obb is updated
+	ddVec3 points[8];
+	obb.GetCornerPoints(points);
+	ddVec3 points2[8] = { points[0], points[1], points[3], points[2], points[4], points[5], points[7], points[6] };
+	memcpy(obbPoints, points2, sizeof(ddVec3) * 8);
+
+	if (this->parent)
+		parent->UpdateBoundingBoxesRecursive();
 }
