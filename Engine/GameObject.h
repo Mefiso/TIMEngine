@@ -80,5 +80,6 @@ public:
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
 	void UpdateBoundingBoxes();
+	void UpdateOctreePosition();
 	void UpdateOBB();
 };

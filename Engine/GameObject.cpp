@@ -32,6 +32,8 @@ GameObject::~GameObject()
 
 void GameObject::CleanUp()
 {
+	if (GetComponent<CMesh>())
+		App->scene->octree.Erase(this);
 	// Clean components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -105,11 +107,13 @@ void GameObject::RemoveComponent(int _cID)
 	int toRemove = -1;
 
 	for (unsigned int i = 0u; i < components.size(); ++i)
+	{
 		if (components[i]->ID == _cID)
 		{
 			toRemove = (int)i;
 			break;
 		}
+	}
 	if (toRemove >= 0)
 	{
 		if (components[toRemove]->GetType() == TRANSFORM)
@@ -244,6 +248,16 @@ void GameObject::UpdateBoundingBoxes()
 			child->obb.Transform(GetModelMatrix());
 	}
 	obb = transform ? aabb.Transform(GetModelMatrix()) : aabb;
+}
+
+void GameObject::UpdateOctreePosition()
+{
+	if (GetComponent<CMesh>())
+		App->scene->octree.UpdateGO(this);
+	for (GameObject* child : children)
+	{
+		child->UpdateOctreePosition();
+	}
 }
 
 void GameObject::UpdateOBB()

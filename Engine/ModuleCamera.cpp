@@ -35,8 +35,14 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 		ProcessMouseMovement((float)event.point2d.x, (float)event.point2d.y);
 		break;
 	case Event::orbit_event:
-		ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
+	{
+		const GameObject* selected = App->editor->GetSelectedObject();
+		if (selected)
+			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, selected->GetModelMatrix().Col3(3));
+		else
+			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
 		break;
+	}
 	case Event::wheel_event:
 		ProcessMouseScroll((float)event.point2d.x, (float)event.point2d.y);
 		break;
@@ -49,9 +55,10 @@ void ModuleCamera::ProcessViewportEvents() {
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
 		const GameObject* selected = App->editor->GetSelectedObject();
-		if (!selected)
-			selected = App->scene->GetRoot();
-		onFocus(selected->GetModelMatrix().Col3(3), selected->GetAABB().Size().Length()*2.f);
+		if (selected)
+			onFocus(selected->GetModelMatrix().Col3(3), selected->GetAABB().Size().Length() * 2.f);
+		else
+			onFocus(float3::zero, 20.0f);
 	}
 }
 

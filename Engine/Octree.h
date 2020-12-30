@@ -17,7 +17,7 @@ public:
 	~OctreeNode();
 
 	void Insert(GameObject* go);
-	void Erase(GameObject* go);
+	bool Erase(GameObject* go);
 	void OnChildrenErase();
 	void CreateChildren();
 	void ForwardToChildren();

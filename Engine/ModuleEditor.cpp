@@ -86,7 +86,6 @@ update_status ModuleEditor::PostUpdate()
 		if (toDeleteGO->GetParent())
 		{
 			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUID());
-			App->scene->octree.Erase(toDeleteGO);
 		}
 		RELEASE(toDeleteGO);
 		hierarchy->SetToDelete(nullptr);
@@ -95,7 +94,12 @@ update_status ModuleEditor::PostUpdate()
 	Component* toDeleteCMP = properties->GetToDelete();
 	if (toDeleteCMP) {
 		if (toDeleteCMP->GetOwner())
+		{
+			// If it's a mesh delete it from octree
+			if (toDeleteCMP->GetType() == MESH)
+				App->scene->octree.Erase(toDeleteCMP->GetOwner());
 			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUID());
+		}
 		properties->SetToDelete(nullptr);
 	}
 

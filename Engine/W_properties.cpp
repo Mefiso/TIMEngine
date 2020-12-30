@@ -182,7 +182,7 @@ void WProperties::DrawTransformationBody()
 	{
 		selectedObject->SetTransform(scale, rotation, position);
 		selectedObject->GetParent()->UpdateBoundingBoxes();
-		App->scene->octree.UpdateGO(selectedObject);
+		selectedObject->UpdateOctreePosition();
 		if (selectedObject->GetComponent<CCamera>())
 			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
 	}

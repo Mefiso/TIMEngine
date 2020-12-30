@@ -54,22 +54,25 @@ void OctreeNode::Insert(GameObject* go)
 	}
 }
 
-void OctreeNode::Erase(GameObject* go)
+bool OctreeNode::Erase(GameObject* go)
 {
+	bool ret = false;
 	std::list<GameObject*>::iterator it = std::find(objects.begin(), objects.end(), go);
 	if (it != objects.end())
 	{
 		objects.erase(it);
-		if (parent)
-			parent->OnChildrenErase();
+		ret = true;
 	}
-	// Check if this is not a leaf
+	// Check if it's not a leaf
 	if (children[0] != nullptr)
 	{
 		for (int i = 0; i < 8; ++i)
-			children[i]->Erase(go);
-
+			ret = children[i]->Erase(go) ? true : ret;
+		if (ret)
+			OnChildrenErase();
 	}
+
+	return ret;
 }
 
 void OctreeNode::OnChildrenErase()
