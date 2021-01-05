@@ -50,7 +50,6 @@ void OctreeNode::Insert(GameObject* go)
 			CreateChildren();
 			ForwardToChildren();
 		}
-
 	}
 }
 
@@ -64,7 +63,7 @@ bool OctreeNode::Erase(GameObject* go)
 		ret = true;
 	}
 	// Check if it's not a leaf
-	if (children[0] != nullptr)
+	else if (children[0] != nullptr)
 	{
 		for (int i = 0; i < 8; ++i)
 			ret = children[i]->Erase(go) ? true : ret;
@@ -77,16 +76,17 @@ bool OctreeNode::Erase(GameObject* go)
 
 void OctreeNode::OnChildrenErase()
 {
-	bool allEmpty = true;
+	unsigned int count = 0;
 	for (int i = 0; i < 8; ++i)
 	{
-		if (!children[i]->objects.empty())
-			allEmpty = false;
+		count += children[i]->objects.size();
 	}
-	if (allEmpty)
+	if (count <= CAPACITY)
 	{
 		for (int i = 0; i < 8; ++i)
 		{
+			for (std::list<GameObject*>::iterator it = children[i]->objects.begin(), end = children[i]->objects.end(); it != end; ++it)
+				objects.push_back(*it);
 			RELEASE(children[i])
 		}
 	}
@@ -189,7 +189,6 @@ void OctreeNode::ForwardToChildren()
 			for (int i = 0; i < 8; ++i)
 				if (intersects[i])
 					children[i]->Insert(go);
-
 		}
 	}
 }
