@@ -142,10 +142,8 @@ void GameObject::SetParent(GameObject* _newParent)
 		if (parent)
 		{
 			parent->RemoveChild(this->uID);
-			parent->UpdateBoundingBoxes();
 		}
 		parent = _newParent;
-		parent->UpdateBoundingBoxes();
 	}
 }
 
@@ -178,10 +176,18 @@ void GameObject::RemoveChild(int childID)
 
 float4x4 GameObject::GetModelMatrix() const
 {
-	if (parent && parent->transform)
-		return (parent->GetModelMatrix() * this->transform->GetTransformationMatrix());
+	if (parent)
+		return parent->GetModelMatrix() * (transform ? this->transform->GetTransformationMatrix() : float4x4::identity);
 	else
 		return  transform ? this->transform->GetTransformationMatrix() : float4x4::identity;
+}
+
+const float3 GameObject::GetAccumulatedScale() const
+{
+	if (parent)
+		return parent->GetAccumulatedScale().Mul(transform ? this->transform->GetScale() : float3::one);
+	else
+		return transform ? this->transform->GetScale() : float3::one;
 }
 
 void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _translation)
@@ -196,10 +202,11 @@ void GameObject::SetTransform(float4x4& _newTransform, GameObject* _newParent)
 {
 	transform->SetPos((float3)(_newTransform.Col3(3)));
 
-	float3 oldParentScale = parent->transform ? parent->transform->GetScale() : float3::one;
+	// Scale modified separately since we are using inverseorthonormal in add child and the scale may be not uniform.
+	float3 oldParentScale = parent->GetAccumulatedScale();
 	float3 oldScaleChild = transform->GetScale();
 	float3 totalScale = oldParentScale.Mul(oldScaleChild);
-	float3 newChildScale = totalScale.Div(_newParent->transform ? _newParent->transform->GetScale() : float3::one);
+	float3 newChildScale = totalScale.Div(_newParent->GetAccumulatedScale());
 	transform->SetScale(newChildScale);
 
 	float3 rotation;
@@ -230,24 +237,23 @@ void GameObject::UpdateBoundingBoxes()
 {
 	aabb.SetNegativeInfinity();
 	CMesh* mesh = GetComponent<CMesh>();
+	bool nonuniformScaling = false;
 	if (mesh)
+	{
 		aabb.Enclose(mesh->AABBmin, mesh->AABBmax);
+		if (GetAccumulatedScale().MaxElement() != GetAccumulatedScale().MinElement()) // Non uniform scaling
+		{
+			nonuniformScaling = true;
+			aabb.Scale(aabb.CenterPoint(), GetAccumulatedScale());
+		}
+	}
 
 	for (GameObject* child : children)
-	{
 		child->UpdateBoundingBoxes();
 
-		if (transform)
-		{
-			float4x4 inverseTransform = GetModelMatrix();
-			transform->GetScale().Equals(float3::one) ? inverseTransform.InverseOrthonormal() : inverseTransform.Inverse();
-			child->obb.Transform(inverseTransform);
-		}
-		aabb.Enclose(child->obb);
-		if (transform)
-			child->obb.Transform(GetModelMatrix());
-	}
-	obb = transform ? aabb.Transform(GetModelMatrix()) : aabb;
+	obb = aabb.Transform(GetModelMatrix());
+	if (nonuniformScaling)
+		obb.Scale(obb.CenterPoint(), 1.0 / GetAccumulatedScale().x);
 }
 
 void GameObject::UpdateOctreePosition()
@@ -260,8 +266,20 @@ void GameObject::UpdateOctreePosition()
 	}
 }
 
-void GameObject::UpdateOBB()
+float4 GameObject::ComputeCenterAndDistance() const
 {
-	//obb = aabb.Transform(GetModelMatrix());
-	parent->UpdateBoundingBoxes();
+	if (GetComponent<CMesh>() != nullptr)
+	{
+		return float4(GetModelMatrix().Col3(3), aabb.Size().Length() * 2.f);
+	}
+	else
+	{
+		float3 minPoint = float3::inf, maxPoint = -float3::inf;
+		for (GameObject* child : children)
+		{
+			minPoint = minPoint.Min(child->aabb.minPoint);
+			maxPoint = maxPoint.Max(child->aabb.maxPoint);
+		}
+		return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.f);
+	}
 }

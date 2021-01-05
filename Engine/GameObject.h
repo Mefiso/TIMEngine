@@ -54,12 +54,13 @@ public:
 	std::vector<GameObject*>& GetChildren() { return children; }
 	std::vector<Component*>& GetComponents() { return components; }
 	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
+	const float3 GetAccumulatedScale() const;
 	CTransform* GetTransform() const { return transform; }												// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
 	const AABB& GetAABB() const { return aabb; }
 	const OBB& GetOBB() const { return obb; }
 
 	template<typename T>
-	T* GetComponent()																					// Get a component of type T, or null if it does not exist on this GameObject
+	T* GetComponent() const																					// Get a component of type T, or null if it does not exist on this GameObject
 	{
 		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) return c; }
 		return nullptr;
@@ -81,5 +82,6 @@ public:
 	void SetProgram(unsigned int program);
 	void UpdateBoundingBoxes();
 	void UpdateOctreePosition();
-	void UpdateOBB();
+
+	float4 ComputeCenterAndDistance() const;
 };

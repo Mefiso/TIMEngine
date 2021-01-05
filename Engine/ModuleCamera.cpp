@@ -56,7 +56,10 @@ void ModuleCamera::ProcessViewportEvents() {
 	{
 		const GameObject* selected = App->editor->GetSelectedObject();
 		if (selected)
-			onFocus(selected->GetModelMatrix().Col3(3), selected->GetAABB().Size().Length() * 2.f);
+		{
+			float4 centerDistance = selected->ComputeCenterAndDistance();
+			onFocus(centerDistance.xyz(), centerDistance.w);
+		}
 		else
 			onFocus(float3::zero, 20.0f);
 	}
