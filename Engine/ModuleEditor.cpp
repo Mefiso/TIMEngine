@@ -123,15 +123,6 @@ bool ModuleEditor::CleanUp()
 	return true;
 }
 
-void ModuleEditor::ReceiveEvent(const Event& event)
-{
-	switch (event.type)
-	{
-	case Event::file_dropped:
-		break;
-	}
-}
-
 const bool ModuleEditor::IsViewportHovered() const
 {
 	return viewport->viewportIsHovered;

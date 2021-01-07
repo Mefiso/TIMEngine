@@ -16,7 +16,7 @@ class GameObject
 {
 private:
 
-	static int objectCount;																				// GLobal counter of number of GameObjects. Used to set the uID of each new instance of GameObject.
+	static int objectCount;																				// Global counter of number of GameObjects. Used to set the uID of each new instance of GameObject.
 
 public:
 
@@ -24,7 +24,7 @@ public:
 
 private:
 
-	std::string name = std::string("New GameObject");
+	std::string name = std::string("");
 	const int uID = objectCount;																		// Unique identifier of each GameObject instance
 	GameObject* parent = nullptr;																		// Pointer to the parent of this GameObject
 	std::vector<GameObject*> children;																	// Vector of pointers to GameObjects that are child of this GameObject

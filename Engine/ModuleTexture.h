@@ -21,7 +21,6 @@ public:
 	static bool force_flip;												// Activates the flipping of the Difuse Texture loaded with the next model
 
 public:
-
 	//  ----- Module Functions ----- //
 	static bool Init();													// Initialise ModuleWindow
 

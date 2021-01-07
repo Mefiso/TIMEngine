@@ -65,29 +65,42 @@ void GameObject::Draw()
 void GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)
 {
 	Component* newComp;
-	//TODO: for (unsigned int i = 0; i< components.size())
-	//check if already exists CMaterial or CTransform
 	switch (_type)
 	{
 	case TRANSFORM:
-		newComp = new CTransform(this);
-		transform = (CTransform*)newComp;
+		if (!this->GetTransform())
+		{
+			newComp = new CTransform(this);
+			transform = (CTransform*)newComp;
+			components.push_back(newComp);
+		}
 		break;
 	case MESH:
-		newComp = new CMesh(this, (aiMesh*)arg);
-		UpdateBoundingBoxes();
+		if (!this->GetComponent<CMesh>())
+		{
+			newComp = new CMesh(this, (aiMesh*)arg);
+			components.push_back(newComp);
+			UpdateBoundingBoxes();
+		}
 		break;
 	case MATERIAL:
-		newComp = new CMaterial(this, (aiMaterial*)arg, path);
+		if (!this->GetComponent<CMaterial>())
+		{
+			newComp = new CMaterial(this, (aiMaterial*)arg, path);
+			components.push_back(newComp);
+		}
 		break;
 	case CAMERA:
-		newComp = new CCamera(this);
+		if (!this->GetComponent<CCamera>())
+		{
+			newComp = new CCamera(this);
+			components.push_back(newComp);
+		}
 		break;
 	default:
 		newComp = new Component(INVALID, this);
+		components.push_back(newComp);		// TODO: Should we really be doing this?
 	}
-
-	components.push_back(newComp);
 }
 
 void GameObject::RemoveComponent(int _cID)

@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
-#include "ModuleSceneLoad.h"
+#include "ModuleFilesystem.h"
 #include "ModuleSceneManager.h"
 #include "ModuleRender.h"
 #include "ModuleDebugDraw.h"
@@ -22,7 +22,7 @@ Application::Application()
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(sceneMng = new ModuleSceneManager());
-	modules.push_back(sceneLoad = new ModuleSceneLoad());
+	modules.push_back(filesys = new ModuleFilesystem());
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(debugdraw = new ModuleDebugDraw());
 	modules.push_back(editor = new ModuleEditor());

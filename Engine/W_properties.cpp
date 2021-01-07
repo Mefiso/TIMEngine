@@ -57,23 +57,19 @@ void WProperties::Draw()
 		{
 			if (ImGui::MenuItem("Transform"))
 			{
-				if (!selectedObject->GetTransform())
-					selectedObject->AddComponent(TRANSFORM);
+				selectedObject->AddComponent(TRANSFORM);
 			}
 			if (ImGui::MenuItem("Mesh"))
 			{
-				if (!selectedObject->GetComponent<CMesh>())
-					selectedObject->AddComponent(MESH);
+				selectedObject->AddComponent(MESH);
 			}
 			if (ImGui::MenuItem("Material"))
 			{
-				if (!selectedObject->GetComponent<CMaterial>())
-					selectedObject->AddComponent(MATERIAL);
+				selectedObject->AddComponent(MATERIAL);
 			}
 			if (ImGui::MenuItem("Camera"))
 			{
-				if (!selectedObject->GetComponent<CCamera>())
-					selectedObject->AddComponent(CAMERA);
+				selectedObject->AddComponent(CAMERA);
 			}
 
 			// TODO: Generate opening a window on already existing component creation

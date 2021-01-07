@@ -5,7 +5,7 @@
 
 class ModuleWindow;
 class ModuleInput;
-class ModuleSceneLoad;
+class ModuleFilesystem;
 class ModuleSceneManager;
 class ModuleRender;
 class ModuleDebugDraw;
@@ -19,7 +19,7 @@ public:
 	// ---- Application Modules ---- //
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
-	ModuleSceneLoad* sceneLoad = nullptr;
+	ModuleFilesystem* filesys = nullptr;
 	ModuleSceneManager* sceneMng = nullptr;
 	ModuleRender* renderer = nullptr;
 	ModuleDebugDraw* debugdraw = nullptr;

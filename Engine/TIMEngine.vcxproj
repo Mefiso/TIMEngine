@@ -148,6 +148,9 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="ImporterMaterial.h" />
+    <ClInclude Include="ImporterMesh.h" />
+    <ClInclude Include="ImporterScene.h" />
     <ClInclude Include="Leaks.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleCamera.h" />
@@ -156,7 +159,7 @@
     <ClInclude Include="ModuleProgram.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleEditor.h" />
-    <ClInclude Include="ModuleSceneLoad.h" />
+    <ClInclude Include="ModuleFilesystem.h" />
     <ClInclude Include="ModuleSceneManager.h" />
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
@@ -263,6 +266,9 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CTransform.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="ImporterMaterial.cpp" />
+    <ClCompile Include="ImporterMesh.cpp" />
+    <ClCompile Include="ImporterScene.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModuleCamera.cpp" />
@@ -271,7 +277,7 @@
     <ClCompile Include="ModuleProgram.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
-    <ClCompile Include="ModuleSceneLoad.cpp" />
+    <ClCompile Include="ModuleFilesystem.cpp" />
     <ClCompile Include="ModuleSceneManager.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />

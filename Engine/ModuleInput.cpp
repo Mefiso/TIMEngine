@@ -4,6 +4,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleEditor.h"
+#include "ModuleFilesystem.h"
 #include "SDL.h"
 #include "Leaks.h"
 #include "Brofiler.h"
@@ -141,10 +142,8 @@ update_status ModuleInput::PreUpdate()
 		}
 		case SDL_DROPFILE:
 		{
-			LOG("[info] A file has been dropped %s", sdlEvent.drop.file);
-			Event ev(Event::file_dropped);
-			ev.string.ptr = sdlEvent.drop.file;
-			App->BroadcastEvent(ev);
+			LOG("[info] A file has been dropped: %s", sdlEvent.drop.file);
+			App->filesys->DropFile(sdlEvent.drop.file);
 			SDL_free(sdlEvent.drop.file);
 			break;
 		}

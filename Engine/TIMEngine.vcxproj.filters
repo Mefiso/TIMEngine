@@ -215,8 +215,17 @@
     <ClCompile Include="ModuleSceneManager.cpp">
       <Filter>CoreModules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleSceneLoad.cpp">
+    <ClCompile Include="ModuleFilesystem.cpp">
       <Filter>CoreModules</Filter>
+    </ClCompile>
+    <ClCompile Include="ImporterMaterial.cpp">
+      <Filter>Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="ImporterMesh.cpp">
+      <Filter>Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="ImporterScene.cpp">
+      <Filter>Importers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -550,8 +559,17 @@
     <ClInclude Include="ModuleSceneManager.h">
       <Filter>CoreModules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleSceneLoad.h">
+    <ClInclude Include="ModuleFilesystem.h">
       <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ImporterMesh.h">
+      <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="ImporterMaterial.h">
+      <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="ImporterScene.h">
+      <Filter>Importers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -590,6 +608,9 @@
     </Filter>
     <Filter Include="UtilityModules">
       <UniqueIdentifier>{6f98f07e-2e78-45f7-a127-ba05bfdf092d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Importers">
+      <UniqueIdentifier>{a6df53f4-25e1-4094-a972-3daaf95400ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
