@@ -18,7 +18,7 @@ public:
 
 	void Insert(GameObject* go);
 	bool Erase(GameObject* go);
-	void OnChildrenErase();
+	unsigned int OnErase();
 	void CreateChildren();
 	void ForwardToChildren();
 	void Draw();

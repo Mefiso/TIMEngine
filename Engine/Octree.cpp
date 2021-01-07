@@ -68,18 +68,21 @@ bool OctreeNode::Erase(GameObject* go)
 		for (int i = 0; i < 8; ++i)
 			ret = children[i]->Erase(go) ? true : ret;
 		if (ret)
-			OnChildrenErase();
+			OnErase();
 	}
 
 	return ret;
 }
 
-void OctreeNode::OnChildrenErase()
+unsigned OctreeNode::OnErase()
 {
 	unsigned int count = 0;
+
 	for (int i = 0; i < 8; ++i)
 	{
 		count += children[i]->objects.size();
+		if (children[i]->children[0] != nullptr)
+			count += children[i]->OnErase();
 	}
 	if (count <= CAPACITY)
 	{
@@ -90,6 +93,7 @@ void OctreeNode::OnChildrenErase()
 			RELEASE(children[i])
 		}
 	}
+	return count;
 }
 
 void OctreeNode::CreateChildren()
