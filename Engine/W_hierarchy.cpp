@@ -1,9 +1,8 @@
 #include "W_hierarchy.h"
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleScene.h"
+#include "ModuleSceneManager.h"
 #include "ModuleEditor.h"
-//#include "W_properties.h"
 
 WHierarchy::WHierarchy(std::string name) : Window(name)
 {
@@ -21,23 +20,24 @@ void WHierarchy::Draw()
 		return;
 	}
 
-	if (App->scene->GetRoot())
+	if (App->sceneMng->GetRoot())
 	{
+		GameObject* root = App->sceneMng->GetRoot();
 		ImGui::SetNextItemOpen(true);
-		if (ImGui::TreeNode(App->scene->GetRoot()->GetName().c_str()))
+		if (ImGui::TreeNode(root->GetName().c_str()))
 		{
 			// Process Dragging objects into Scene.root
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHYNODES"))
 				{
-					dragged->SetParent(App->scene->GetRoot());
+					dragged->SetParent(root);
 				}
 				ImGui::EndDragDropTarget();
 			}
 
 			// Draw Hierarchy tree
-			DrawTree(App->scene->GetRoot()->GetChildren());
+			DrawTree(root->GetChildren());
 
 			ImGui::TreePop();
 		}
@@ -59,7 +59,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 		// On item clicked - Process Selection of Items
 		if (ImGui::IsItemClicked()) {
 			if (!ImGui::GetIO().KeyCtrl) {
-				DeselectAll(App->scene->GetRoot()->GetChildren());
+				DeselectAll(App->sceneMng->GetRoot()->GetChildren());
 				App->editor->InspectObject(_gameObjList[i]);   // send the selected GO to w_properties
 			}
 			_gameObjList[i]->isSelected = true;
@@ -91,7 +91,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 
 			if (ImGui::MenuItem("Delete"))
 			{
-				DeselectAll(App->scene->GetRoot()->GetChildren());
+				DeselectAll(App->sceneMng->GetRoot()->GetChildren());
 				App->editor->InspectObject(nullptr);				// Reset selection (needed for avoiding pointer dereferenced memory)
 				toDelete = _gameObjList[i];
 			}

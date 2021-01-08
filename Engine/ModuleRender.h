@@ -25,7 +25,7 @@ public:
 
 private:
 	int viewport_width = 0, viewport_height = 0;					// Initial size of Viewport window
-	unsigned int FBO = 0, textureColorbuffer = 0, RBO = 0;			// IDs of the Viewport buffer objects and texture
+	unsigned int FBO = 0u, textureColorbuffer = 0u, RBO = 0u;		// IDs of the Viewport buffer objects and texture
 
 	MSTimer msTimer;												// Timer object
 
@@ -44,8 +44,6 @@ public:
 	unsigned int GetTextureColorbuffer() { return textureColorbuffer; }
 	unsigned int GetViewportWidth() { return viewport_width; }
 	unsigned int GetViewportHeight() { return viewport_height; }
-
-	// ---------- Setters ---------- //
 
 private:
 	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables

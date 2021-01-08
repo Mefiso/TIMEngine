@@ -52,11 +52,9 @@ void GameObject::CleanUp()
 void GameObject::Draw()
 {
 	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
-	if (name.compare("Scene 1") != 0 && drawOBB)
+	if (name.compare("Scene 1") != 0)
 	{
-		ddVec3 points[8];
-		obb.GetCornerPoints(points);
-		dd::box(points, float3(0.9f));
+		dd::box(obbPoints, float3(0.9f));
 	}
 	// update components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
@@ -256,6 +254,15 @@ void GameObject::UpdateBoundingBoxes()
 	obb = aabb.Transform(GetModelMatrix());
 	if (nonuniformScaling)
 		obb.Scale(obb.CenterPoint(), 1.0 / GetAccumulatedScale().x);
+
+	//Added, calculate obb vertices only when obb is updated
+	ddVec3 points[8];
+	obb.GetCornerPoints(points);
+	ddVec3 points2[8] = { points[0], points[1], points[3], points[2], points[4], points[5], points[7], points[6] };
+	memcpy(obbPoints, points2, sizeof(ddVec3) * 8);
+
+	if (this->parent)
+		parent->UpdateBoundingBoxesRecursive();
 }
 
 void GameObject::UpdateOctreePosition()
@@ -266,6 +273,7 @@ void GameObject::UpdateOctreePosition()
 	{
 		child->UpdateOctreePosition();
 	}
+
 }
 
 float4 GameObject::ComputeCenterAndDistance() const

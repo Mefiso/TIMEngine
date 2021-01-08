@@ -203,9 +203,6 @@
     <ClCompile Include="ModuleDebugDraw.cpp">
       <Filter>UtilityModules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleScene.cpp">
-      <Filter>CoreModules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleProgram.cpp">
       <Filter>UtilityModules</Filter>
     </ClCompile>
@@ -536,9 +533,6 @@
     <ClInclude Include="ModuleDebugDraw.h">
       <Filter>UtilityModules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleScene.h">
-      <Filter>CoreModules</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleProgram.h">
       <Filter>UtilityModules</Filter>
     </ClInclude>
@@ -630,6 +624,12 @@
     </None>
     <None Include="ThirdPartyLibs\MathGeoLib\Math\Matrix.inl">
       <Filter>MathGeoLib\Math</Filter>
+    </None>
+    <None Include="Game\resources\shaders\skybox.vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Game\resources\shaders\skybox.fs.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

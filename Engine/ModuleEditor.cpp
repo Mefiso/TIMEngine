@@ -2,7 +2,7 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
-#include "ModuleScene.h"
+#include "ModuleSceneManager.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "W_viewport.h"
@@ -24,7 +24,6 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(properties = new WProperties("Properties"));
 	editorWindows.push_back(viewport = new WViewport("Viewport"));
 	editorWindows.push_back(about = new WAbout("About"));
-
 }
 
 ModuleEditor::~ModuleEditor()
@@ -92,7 +91,8 @@ update_status ModuleEditor::PostUpdate()
 	}
 
 	Component* toDeleteCMP = properties->GetToDelete();
-	if (toDeleteCMP) {
+	if (toDeleteCMP)
+	{
 		if (toDeleteCMP->GetOwner())
 		{
 			// If it's a mesh delete it from octree
@@ -287,6 +287,6 @@ void ModuleEditor::ShowMenuGameObject()
 {
 	if (ImGui::MenuItem("Create Empty GameObject"))
 	{
-		App->scene->CreateEmptyGameObject();
+		App->sceneMng->CreateEmptyGameObject();
 	}
 }

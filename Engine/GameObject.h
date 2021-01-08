@@ -6,6 +6,7 @@
 #include "Math/float4x4.h"
 #include "Geometry/AABB.h"
 #include "Geometry/OBB.h"
+#include "debugdraw.h"
 #include <vector>
 
 class CTransform;
@@ -31,8 +32,9 @@ private:
 	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
 	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
 	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
-	AABB aabb;
-	OBB obb;
+	AABB aabb;																							// AxisAlignedBoundingBox of the GameObject in local Coordinates of the object mesh
+	OBB obb;																							// ObliquousBoundingBox of the GameObject in World Coordinates
+	ddVec3 obbPoints[8];																				// World coordinates of the OBB vertices
 
 public:
 

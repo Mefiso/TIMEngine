@@ -156,7 +156,8 @@
     <ClInclude Include="ModuleProgram.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleEditor.h" />
-    <ClInclude Include="ModuleScene.h" />
+    <ClInclude Include="ModuleSceneLoad.h" />
+    <ClInclude Include="ModuleSceneManager.h" />
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="MSTimer.h" />
@@ -271,7 +272,8 @@
     <ClCompile Include="ModuleProgram.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
-    <ClCompile Include="ModuleScene.cpp" />
+    <ClCompile Include="ModuleSceneLoad.cpp" />
+    <ClCompile Include="ModuleSceneManager.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Octree.cpp" />
@@ -337,6 +339,8 @@
     <None Include="Game\resources\shaders\bdrfPhong.vs.glsl" />
     <None Include="Game\resources\shaders\phong.fs.glsl" />
     <None Include="Game\resources\shaders\phong.vs.glsl" />
+    <None Include="Game\resources\shaders\skybox.fs.glsl" />
+    <None Include="Game\resources\shaders\skybox.vs.glsl" />
     <None Include="Game\resources\shaders\vanilla.fs.glsl" />
     <None Include="Game\resources\shaders\vanilla.vs.glsl" />
     <None Include="ThirdPartyLibs\MathGeoLib\emscripten\library_system.js" />
