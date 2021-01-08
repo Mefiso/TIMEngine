@@ -23,6 +23,7 @@ ModuleCamera::~ModuleCamera()
 bool ModuleCamera::CleanUp()
 {
 	LOG("Destroying Camera");
+	RELEASE(defaultCamera);
 
 	return true;
 }
