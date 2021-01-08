@@ -2,7 +2,6 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
-#include "ModuleScene.h"
 #include "GameObject.h"
 #include "CTransform.h"
 #include "CMaterial.h"
