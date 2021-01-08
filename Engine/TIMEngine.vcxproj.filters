@@ -215,6 +215,7 @@
     <ClCompile Include="CCamera.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="Octree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -547,6 +548,7 @@
     <ClInclude Include="CCamera.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="Octree.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

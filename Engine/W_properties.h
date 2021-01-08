@@ -33,6 +33,7 @@ public:
 
 	// ---------- Getters ---------- //
 	Component* GetToDelete() const { return toDelete; }
+	GameObject* GetSelectedGO() const { return selectedObject; };
 
 	// ---------- Setters ---------- //
 	void SetToDelete(Component* _component) { toDelete = _component; }

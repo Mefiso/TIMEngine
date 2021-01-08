@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
+#include "ModuleScene.h"
 #include "ModuleInput.h"
 #include "Math/Quat.h"
 #include "Math/float3x3.h"
@@ -22,6 +23,7 @@ ModuleCamera::~ModuleCamera()
 bool ModuleCamera::CleanUp()
 {
 	LOG("Destroying Camera");
+	RELEASE(defaultCamera);
 
 	return true;
 }
@@ -34,8 +36,14 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 		ProcessMouseMovement((float)event.point2d.x, (float)event.point2d.y);
 		break;
 	case Event::orbit_event:
-		ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
+	{
+		const GameObject* selected = App->editor->GetSelectedObject();
+		if (selected)
+			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, selected->GetModelMatrix().Col3(3));
+		else
+			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
 		break;
+	}
 	case Event::wheel_event:
 		ProcessMouseScroll((float)event.point2d.x, (float)event.point2d.y);
 		break;
@@ -45,8 +53,16 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 void ModuleCamera::ProcessViewportEvents() {
 	TranslateCamera(deltatime);
 	RotateCameraKeys(deltatime);
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-		//App->camera->onFocus(App->scene->GetRoot()->GetChildren()[App->scene->GetRoot()->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10); // TODO: WE NEED THE ABILITY TO SELECT A GAMEOBJECT
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		const GameObject* selected = App->editor->GetSelectedObject();
+		if (selected)
+		{
+			float4 centerDistance = selected->ComputeCenterAndDistance();
+			onFocus(centerDistance.xyz(), centerDistance.w);
+		}
+		else
+			onFocus(float3::zero, 20.0f);
 	}
 }
 

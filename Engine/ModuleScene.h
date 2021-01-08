@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "GameObject.h"
+#include "Octree.h"
 
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
@@ -15,6 +16,7 @@ class ModuleScene : public Module
 {
 public:
 	std::vector<Texture*> loadedTextures;										// A vector containing All the texures loaded
+	Octree octree = Octree();
 
 private:
 	GameObject* root = new GameObject();										// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children

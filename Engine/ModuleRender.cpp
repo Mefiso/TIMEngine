@@ -116,14 +116,17 @@ update_status ModuleRender::Update()
 	else glDisable(GL_CULL_FACE);
 
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
-	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
+	if (showGrid)
+		dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
+	if (showOctree)
+		App->scene->octree.Draw();
 
 	// Render all GameObjects
 	if (App->scene->GetRoot())
 		App->scene->GetRoot()->Draw();
 
-	if (showGrid)
-		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
+
+	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

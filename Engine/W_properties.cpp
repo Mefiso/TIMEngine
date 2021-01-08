@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
+#include "ModuleScene.h"
 #include "GameObject.h"
 #include "CTransform.h"
 #include "CMaterial.h"
@@ -180,7 +181,8 @@ void WProperties::DrawTransformationBody()
 	if (modified)
 	{
 		selectedObject->SetTransform(scale, rotation, position);
-		selectedObject->GetParent()->UpdateBoundingBoxes();
+		selectedObject->UpdateBoundingBoxes();
+		selectedObject->UpdateOctreePosition();
 		if (selectedObject->GetComponent<CCamera>())
 			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
 	}
@@ -258,7 +260,6 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 		}
 		ImGui::EndTabBar();
 	}
-
 }
 
 void WProperties::DrawCameraBody(CCamera* _camera)
@@ -270,14 +271,14 @@ void WProperties::DrawCameraBody(CCamera* _camera)
 		if (isActive)
 			App->camera->SetActiveCamera(_camera);
 		else
-			App->camera->ResetActiveCamera();	
+			App->camera->ResetActiveCamera();
 	};
 
 	//TODO:
 	if (ImGui::Checkbox("Set Camera Culling (Does nothing)!", &isActive))
 	{
 	}
-	
+
 	ImGui::PushItemWidth(180);
 	ImGui::TextUnformatted("Frustum");
 	Frustum* frust = _camera->GetFrustum();

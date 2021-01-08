@@ -37,7 +37,9 @@ bool ModuleScene::Start()
 	pbrProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\bdrfPhong.vs.glsl", ".\\resources\\shaders\\bdrfPhong.fs.glsl");
 	defaultProgram = pbrProgram;
 
+	octree.SetBoundaries(AABB(float3(-20, -20, -20), float3(20, 20, 20)));
 	LoadScene("./resources/models/baker_house/BakerHouse.fbx");
+
 	return true;
 }
 
@@ -131,6 +133,7 @@ void ModuleScene::DropFile(const std::string& file)
 	{
 		LoadScene(file);
 		// TODO: What if new scene has no transform? (could it be possible?)
-		App->camera->onFocus(root->GetChildren()[root->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10);
+		float4 centerDistance = root->GetChildren()[root->GetChildren().size() - 1]->ComputeCenterAndDistance();
+		App->camera->onFocus(centerDistance.xyz(), centerDistance.w);
 	}
 }

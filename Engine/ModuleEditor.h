@@ -53,6 +53,7 @@ public:
 	void CreateViewport();											// Sends the definition (FBO, RBO, colorBuffer) of the viewport from ModuleRender to W_Viewport
 	void Log(const char* input) const;								// Sends LOG inputs from the log function to W_Console
 	void InspectObject(GameObject* _object);						// Sends the currently selected GameObject in the hierarchy to the properties inspector window WProperties
+	const GameObject* GetSelectedObject() const;					// Retrieves the currently selected game object in the hierarchy and properties windows.
 
 private:
 	void DrawMainMenu();											// Generates the main menu using ImGui
