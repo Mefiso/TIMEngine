@@ -153,8 +153,15 @@ void GameObject::AddChild(GameObject* _newChild)
 	{
 		float4x4 worldTransform = _newChild->GetModelMatrix();
 		float4x4 thisTransform = this->transform ? this->GetModelMatrix() : float4x4::identity;
-		thisTransform.InverseOrthonormal();
-		_newChild->SetTransform(thisTransform * worldTransform, this);
+		float3 thisScale = float3(thisTransform.Col3(0).Length(), thisTransform.Col3(1).Length(), thisTransform.Col3(2).Length());
+		if (thisScale.Equals(float3::one))
+			thisTransform.InverseOrthonormal();
+		else if (thisScale.xxx().Equals(thisScale))
+			thisTransform.InverseOrthogonalUniformScale();
+		else
+			thisTransform.InverseColOrthogonal();
+
+		_newChild->SetTransform(thisTransform * worldTransform);
 	}
 	children.push_back(_newChild);
 }
@@ -198,16 +205,11 @@ void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _transl
 	transform->UpdateTransformMatrix();
 }
 
-void GameObject::SetTransform(float4x4& _newTransform, GameObject* _newParent)
+void GameObject::SetTransform(float4x4& _newTransform)
 {
 	transform->SetPos((float3)(_newTransform.Col3(3)));
 
-	// Scale modified separately since we are using inverseorthonormal in add child and the scale may be not uniform.
-	float3 oldParentScale = parent->GetAccumulatedScale();
-	float3 oldScaleChild = transform->GetScale();
-	float3 totalScale = oldParentScale.Mul(oldScaleChild);
-	float3 newChildScale = totalScale.Div(_newParent->GetAccumulatedScale());
-	transform->SetScale(newChildScale);
+	transform->SetScale(float3(_newTransform.Col3(0).Length(), _newTransform.Col3(1).Length(), _newTransform.Col3(2).Length()));
 
 	float3 rotation;
 	rotation.x = -atan2(_newTransform.Col3(2)[1], _newTransform.Col3(2)[2]);

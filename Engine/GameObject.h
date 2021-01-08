@@ -77,7 +77,7 @@ public:
 	// ---------- Setters ---------- //
 	void ChangeName(const std::string& _newName) { name = _newName; }
 	void SetTransform(float3& _scale, float3& _rotation, float3& _translation);
-	void SetTransform(float4x4& _newTransform, GameObject* _newParent);
+	void SetTransform(float4x4& _newTransform);
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
 	void UpdateBoundingBoxes();
