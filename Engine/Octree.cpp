@@ -68,32 +68,35 @@ bool OctreeNode::Erase(GameObject* go)
 		for (int i = 0; i < 8; ++i)
 			ret = children[i]->Erase(go) ? true : ret;
 		if (ret)
-			OnErase();
+		{
+			std::list<GameObject*> co;
+			OnErase(co);
+		}
 	}
 
 	return ret;
 }
 
-unsigned OctreeNode::OnErase()
+void OctreeNode::OnErase(std::list<GameObject*> &childObjects)
 {
-	unsigned int count = 0;
-
 	for (int i = 0; i < 8; ++i)
 	{
-		count += children[i]->objects.size();
+		for (std::list<GameObject*>::iterator it = children[i]->objects.begin(), end = children[i]->objects.end(); it != end; ++it)
+		{
+			if (std::find(childObjects.begin(), childObjects.end(), *it) == childObjects.end())
+				childObjects.push_back(*it);
+		}
 		if (children[i]->children[0] != nullptr)
-			count += children[i]->OnErase();
+			children[i]->OnErase(childObjects);
 	}
-	if (count <= CAPACITY)
+	if (childObjects.size() <= CAPACITY)
 	{
+		objects.insert(objects.end(), childObjects.begin(), childObjects.end());
 		for (int i = 0; i < 8; ++i)
 		{
-			for (std::list<GameObject*>::iterator it = children[i]->objects.begin(), end = children[i]->objects.end(); it != end; ++it)
-				objects.push_back(*it);
 			RELEASE(children[i])
 		}
 	}
-	return count;
 }
 
 void OctreeNode::CreateChildren()
