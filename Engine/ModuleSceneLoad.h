@@ -1,8 +1,6 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "GameObject.h"
-#include "Octree.h"
 
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
@@ -16,7 +14,6 @@ class ModuleSceneLoad : public Module
 {
 public:
 	std::vector<Texture*> loadedTextures;										// A vector containing All the texures loaded
-	Octree octree = Octree();
 
 private:
 	struct aiLogStream stream;													// Assimp logs are registered in this variable

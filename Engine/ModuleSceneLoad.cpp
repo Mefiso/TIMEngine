@@ -32,7 +32,6 @@ ModuleSceneLoad::~ModuleSceneLoad()
 
 bool ModuleSceneLoad::Start()
 {
-	octree.SetBoundaries(AABB(float3(-20, -20, -20), float3(20, 20, 20)));
 	LoadScene("./resources/models/baker_house/BakerHouse.fbx");
 	std::vector<std::string> faces =
 	{
@@ -127,7 +126,7 @@ void ModuleSceneLoad::DropFile(const std::string& file)
 	{
 		LoadScene(file);
 		// TODO: What if new scene has no transform? (could it be possible?)
-		float4 centerDistance = root->GetChildren()[root->GetChildren().size() - 1]->ComputeCenterAndDistance();
+		float4 centerDistance = App->sceneMng->GetRoot()->GetChildren()[App->sceneMng->GetRoot()->GetChildren().size() - 1]->ComputeCenterAndDistance();
 		App->camera->onFocus(centerDistance.xyz(), centerDistance.w);
 	}
 }

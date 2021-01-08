@@ -14,6 +14,7 @@ ModuleSceneManager::~ModuleSceneManager()
 
 bool ModuleSceneManager::Start()
 {
+	octree.SetBoundaries(AABB(float3(-20, -20, -20), float3(20, 20, 20)));
 	InitSkyboxVAO();
 	vanillaProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\vanilla.vs.glsl", ".\\resources\\shaders\\vanilla.fs.glsl");
 	phongProgram = ModuleProgram::CreateProgramFromFile(".\\resources\\shaders\\phong.vs.glsl", ".\\resources\\shaders\\phong.fs.glsl");

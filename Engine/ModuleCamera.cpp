@@ -3,7 +3,6 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
-#include "ModuleScene.h"
 #include "ModuleInput.h"
 #include "Math/Quat.h"
 #include "Math/float3x3.h"

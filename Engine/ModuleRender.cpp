@@ -121,7 +121,7 @@ update_status ModuleRender::Update()
 	if (showGrid)
 		dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
 	if (showOctree)
-		App->scene->octree.Draw();
+		App->sceneMng->octree.Draw();
 
 	// Render all GameObjects
 	if (App->sceneMng->GetRoot())

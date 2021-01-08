@@ -2,13 +2,15 @@
 #include "Module.h"
 #include "Globals.h"
 #include "GameObject.h"
+#include "Octree.h"
 
 class ModuleSceneManager : public Module
 {
+public:
+	Octree octree = Octree();										// Octree structure of the scene
 
 private:
 	GameObject* root = new GameObject();							// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children
-	// Octree* ot = nullptr;										// Pointer to the octree structure of the scene
 	unsigned int skyboxVAO = 0u, skyboxVBO = 0u;					// IDs of the Skybox Cube buffer objects
 	unsigned int skyboxTexture = 0u;								// ID of the cubemap texture generated for the skybox
 

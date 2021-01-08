@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "ModuleScene.h"
+#include "ModuleSceneManager.h"
 #include "GameObject.h"
 #include "CMesh.h"
 #include "CTransform.h"
@@ -33,7 +33,7 @@ GameObject::~GameObject()
 void GameObject::CleanUp()
 {
 	if (GetComponent<CMesh>())
-		App->scene->octree.Erase(this);
+		App->sceneMng->octree.Erase(this);
 	// Clean components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -52,7 +52,7 @@ void GameObject::CleanUp()
 void GameObject::Draw()
 {
 	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
-	if (name.compare("Scene 1") != 0)
+	if (name.compare("Scene 1") != 0 && drawOBB)
 	{
 		dd::box(obbPoints, float3(0.9f));
 	}
@@ -96,7 +96,7 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	if (_type == MESH)
 	{
 		UpdateBoundingBoxes();
-		App->scene->octree.Insert(this);
+		App->sceneMng->octree.Insert(this);
 	}
 }
 
@@ -260,15 +260,12 @@ void GameObject::UpdateBoundingBoxes()
 	obb.GetCornerPoints(points);
 	ddVec3 points2[8] = { points[0], points[1], points[3], points[2], points[4], points[5], points[7], points[6] };
 	memcpy(obbPoints, points2, sizeof(ddVec3) * 8);
-
-	if (this->parent)
-		parent->UpdateBoundingBoxesRecursive();
 }
 
 void GameObject::UpdateOctreePosition()
 {
 	if (GetComponent<CMesh>())
-		App->scene->octree.UpdateGO(this);
+		App->sceneMng->octree.UpdateGO(this);
 	for (GameObject* child : children)
 	{
 		child->UpdateOctreePosition();
