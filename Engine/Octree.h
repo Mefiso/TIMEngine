@@ -12,6 +12,7 @@ private:
 	std::list<GameObject*> objects;
 	OctreeNode* children[8];
 	OctreeNode* parent = nullptr;
+
 public:
 	OctreeNode(const AABB& box);
 	~OctreeNode();
@@ -22,8 +23,11 @@ public:
 	void CreateChildren();
 	void ForwardToChildren();
 	void Draw();
-
+	void CollectFrustumIntersections(std::vector<GameObject*>& insideObjects, const float4 frustumPlanes[6], const float3 frustumPoints[8]);
 	const AABB& GetBox() const { return box; }
+
+private:
+	bool BoxInFrustum(const AABB& box, const float4 frustumPlanes[6], const float3 frustumPoints[8]);
 };
 
 class Octree
@@ -40,6 +44,7 @@ public:
 	void UpdateGO(GameObject* go);
 	void CleanUp();
 	void Draw();
+	void CollectFrustumIntersections(std::vector<GameObject*>& insideObjects, const float4 frustumPlanes[6], const float3 frustumPoints[8]);
 
 	const OctreeNode* GetRoot() const { return root; }
 };

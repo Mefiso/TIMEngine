@@ -18,6 +18,12 @@ ModuleCamera::~ModuleCamera()
 {
 }
 
+bool ModuleCamera::Start()
+{
+	cullingCamera->PerformFrustumCulling();
+	return true;
+}
+
 // Called before quitting
 bool ModuleCamera::CleanUp()
 {

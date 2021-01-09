@@ -210,6 +210,54 @@ void OctreeNode::Draw()
 	}
 }
 
+void OctreeNode::CollectFrustumIntersections(std::vector<GameObject*>& insideObjects, const float4 frustumPlanes[6], const float3 frustumPoints[8])
+{
+	if (BoxInFrustum(box, frustumPlanes, frustumPoints))
+	{
+		for (std::list<GameObject*>::const_iterator it = this->objects.begin(); it != this->objects.end(); ++it)
+		{
+			if (BoxInFrustum((*it)->GetOBB().MinimalEnclosingAABB(), frustumPlanes, frustumPoints))
+			{
+				if (std::find(insideObjects.begin(), insideObjects.end(), *it) == insideObjects.end())
+					insideObjects.push_back(*it);
+			}
+		}
+
+		if (children[0] != nullptr)
+		{
+			for (int i = 0; i < 8; ++i)
+				children[i]->CollectFrustumIntersections(insideObjects, frustumPlanes, frustumPoints);
+		}
+	}
+}
+
+bool OctreeNode::BoxInFrustum(const AABB& box, const float4 frustumPlanes[6], const float3 frustumPoints[8])
+{
+	// Check box points outside/inside frustum planes
+	float3 boxPoints[8];
+	box.GetCornerPoints(boxPoints);
+	for (int i = 0; i < 6; ++i)
+	{
+		int out = 0;
+		for (int j = 0; j < 8; ++j)
+			out += (frustumPlanes[i].Dot(float4(boxPoints[j], 1.0f)) < 0.0) ? 1 : 0;
+		if (out == 8)
+		{
+			return false;
+		}
+	}
+	// Check frustum points outside/inside box
+	int out;
+	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].x > box.MaxX()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].x < box.MinX()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].y > box.MaxY()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].y < box.MinY()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].z > box.MaxZ()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].z < box.MinZ()) ? 1 : 0); if (out == 8) return false;
+
+	return true;
+}
+
 Octree::Octree()
 {
 }
@@ -254,4 +302,10 @@ void Octree::CleanUp()
 void Octree::Draw()
 {
 	root->Draw();
+}
+
+void Octree::CollectFrustumIntersections(std::vector<GameObject*>& insideObjects, const float4 frustumPlanes[6], const float3 frustumPoints[8])
+{
+	if (root)
+		root->CollectFrustumIntersections(insideObjects, frustumPlanes, frustumPoints);
 }

@@ -124,9 +124,14 @@ update_status ModuleRender::Update()
 		App->sceneMng->octree.Draw();
 
 	// Render all GameObjects
-	if (App->sceneMng->GetRoot())
+	/*if (App->sceneMng->GetRoot())
 		App->sceneMng->GetRoot()->Draw();
+	*/
+	for (std::vector<GameObject*>::iterator it = objectsToDraw.begin(), end = objectsToDraw.end(); it != end; ++it)
+		(*it)->Draw();
 
+	if (App->camera->cullingCamera != App->camera->defaultCamera)
+		App->camera->cullingCamera->Draw();
 
 	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
 
@@ -152,6 +157,12 @@ bool ModuleRender::CleanUp()
 	SDL_GL_DeleteContext(context);
 
 	return true;
+}
+
+void ModuleRender::PerformFrustumCulling(const float4 frustumPlanes[6], const float3 frustumPoints[8])
+{
+	objectsToDraw.clear();
+	App->sceneMng->octree.CollectFrustumIntersections(objectsToDraw, frustumPlanes, frustumPoints);
 }
 
 void ModuleRender::InitFramebuffer()

@@ -5,6 +5,7 @@
 #include "MSTimer.h"
 
 class Model;
+class GameObject;
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -26,6 +27,7 @@ public:
 private:
 	int viewport_width = 0, viewport_height = 0;					// Initial size of Viewport window
 	unsigned int FBO = 0u, textureColorbuffer = 0u, RBO = 0u;		// IDs of the Viewport buffer objects and texture
+	std::vector<GameObject*> objectsToDraw;							// Objects that pass the frustum culling test
 
 	MSTimer msTimer;												// Timer object
 
@@ -44,6 +46,8 @@ public:
 	unsigned int GetTextureColorbuffer() { return textureColorbuffer; }
 	unsigned int GetViewportWidth() { return viewport_width; }
 	unsigned int GetViewportHeight() { return viewport_height; }
+
+	void PerformFrustumCulling(const float4 frustumPlanes[6], const float3 frustumPoints[8]);
 
 private:
 	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables

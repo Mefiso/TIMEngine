@@ -56,16 +56,16 @@ void GameObject::Draw()
 	{
 		dd::box(obbPoints, float3(0.9f));
 	}
-	// update components
+	// draw components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
 		(*it)->Draw();
 	}
-	//update children accordingly
-	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
+	//draw children accordingly
+	/*for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		(*it)->Draw();
-	}
+	}*/
 }
 
 void GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)

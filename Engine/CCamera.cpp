@@ -1,3 +1,5 @@
+#include "Application.h"
+#include "ModuleRender.h"
 #include "CCamera.h"
 #include "debugdraw.h"
 
@@ -40,4 +42,23 @@ void CCamera::UpdateTransformFromFrustum()
 			owner->GetParent()->UpdateBoundingBoxes();
 		}
 	}
+}
+
+void CCamera::PerformFrustumCulling()
+{
+	// Compute frustum planes
+	float4x4 viewProjMatrix = frustum->ViewProjMatrix();
+
+	float4 frustumPlanes[6];
+	frustumPlanes[0] = viewProjMatrix.Row(3) + viewProjMatrix.Row(0);
+	frustumPlanes[1] = viewProjMatrix.Row(3) - viewProjMatrix.Row(0);
+	frustumPlanes[2] = viewProjMatrix.Row(3) + viewProjMatrix.Row(1);
+	frustumPlanes[3] = viewProjMatrix.Row(3) - viewProjMatrix.Row(1);
+	frustumPlanes[4] = viewProjMatrix.Row(3) + viewProjMatrix.Row(2);
+	frustumPlanes[5] = viewProjMatrix.Row(3) - viewProjMatrix.Row(2);
+
+	float3 frustumPoints[8];
+	frustum->GetCornerPoints(frustumPoints);
+
+	App->renderer->PerformFrustumCulling(frustumPlanes, frustumPoints);
 }

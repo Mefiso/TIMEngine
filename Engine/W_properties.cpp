@@ -1,4 +1,4 @@
-#include "W_properties.h"
+ #include "W_properties.h"
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
@@ -182,8 +182,12 @@ void WProperties::DrawTransformationBody()
 		selectedObject->SetTransform(scale, rotation, position);
 		selectedObject->UpdateBoundingBoxes();
 		selectedObject->UpdateOctreePosition();
-		if (selectedObject->GetComponent<CCamera>())
-			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
+		if (CCamera* camera = selectedObject->GetComponent<CCamera>())
+		{
+			camera->UpdateFrustumFromTransform(transform);
+			if (App->camera->cullingCamera == camera)
+				camera->PerformFrustumCulling();
+		}
 	}
 	ImGui::PopItemWidth();
 }
@@ -264,6 +268,7 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 void WProperties::DrawCameraBody(CCamera* _camera)
 {
 	bool isActive = App->camera->activeCamera == _camera;
+	bool isCulling = App->camera->cullingCamera == _camera;
 
 	if (ImGui::Checkbox("Set Camera as Active", &isActive))
 	{
@@ -272,11 +277,14 @@ void WProperties::DrawCameraBody(CCamera* _camera)
 		else
 			App->camera->ResetActiveCamera();
 	};
-
-	//TODO:
-	if (ImGui::Checkbox("Set Camera Culling (Does nothing)!", &isActive))
+	if (ImGui::Checkbox("Set Camera as Culling", &isCulling))
 	{
-	}
+		if (isCulling)
+			App->camera->SetCullingCamera(_camera);
+		else
+			App->camera->ResetCullingCamera();
+		App->camera->cullingCamera->PerformFrustumCulling();
+	};
 
 	ImGui::PushItemWidth(180);
 	ImGui::TextUnformatted("Frustum");
