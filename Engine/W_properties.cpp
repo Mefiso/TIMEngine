@@ -182,13 +182,13 @@ void WProperties::DrawTransformationBody()
 	ImGui::PopItemWidth();
 }
 
-void WProperties::DrawMeshBody(CMesh* mesh)
+void WProperties::DrawMeshBody(CMesh* _mesh)
 {
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	ImGui::TextUnformatted("Num vertices:"); ImGui::SameLine();
-	ImGui::TextColored(color, "%d", mesh->numVertices);
+	ImGui::TextColored(color, "%d", _mesh->GetNumVertices());
 	ImGui::TextUnformatted("Num indices:"); ImGui::SameLine();
-	ImGui::TextColored(color, "%d", mesh->numIndices);
+	ImGui::TextColored(color, "%d", _mesh->GetNumIndices());
 }
 
 // Texture
@@ -196,7 +196,7 @@ void WProperties::DrawMeshBody(CMesh* mesh)
 const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
 const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
 const char* filterM[] = { "Linear", "Nearest" };
-void WProperties::DrawMaterialBody(CMaterial* material)
+void WProperties::DrawMaterialBody(CMaterial* _material)
 {
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	// TODO: Button to add textures inside this component
@@ -205,13 +205,13 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 		// TODO: remove this texture from this material
 		// TODO: select another file for this texture (and drag and drop?)
 		std::string label;
-		for (unsigned int i = 0; i < material->textures.size(); ++i)
+		for (unsigned int i = 0; i < _material->textures.size(); ++i)
 		{
 			label = "Texture " + std::to_string(i);
 			ImGui::PushItemWidth(100);
 			if (ImGui::BeginTabItem(label.c_str()))
 			{
-				glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
+				glBindTexture(GL_TEXTURE_2D, _material->textures[i]->id);
 				// Texture size
 				int w, h;
 				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
@@ -223,28 +223,28 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 				ImGui::SameLine();
 				ImGui::TextColored(color, "%d", h);
 				
-				auto it = std::find(wrapmode.begin(), wrapmode.end(), material->textures[i]->wraps);
+				auto it = std::find(wrapmode.begin(), wrapmode.end(), _material->textures[i]->wraps);
 				int indexWS = it - wrapmode.begin();
 				if (ImGui::Combo("Wrap (S dir)", &indexWS, wrap, IM_ARRAYSIZE(wrap)))
-					material->textures[i]->wraps = wrapmode[indexWS];
+					_material->textures[i]->wraps = wrapmode[indexWS];
 
-				it = std::find(wrapmode.begin(), wrapmode.end(), material->textures[i]->wrapt);
+				it = std::find(wrapmode.begin(), wrapmode.end(), _material->textures[i]->wrapt);
 				int indexWT = it - wrapmode.begin();
 				if (ImGui::Combo("Wrap (T dir)", &indexWT, wrap, IM_ARRAYSIZE(wrap)))
-					material->textures[i]->wrapt = wrapmode[indexWT];
+					_material->textures[i]->wrapt = wrapmode[indexWT];
 
-				it = std::find(filtermode.begin(), filtermode.end() - 2, material->textures[i]->minfilter);
+				it = std::find(filtermode.begin(), filtermode.end() - 2, _material->textures[i]->minfilter);
 				int indexFm = it - filtermode.begin();
 				if (ImGui::Combo("Minification", &indexFm, filterm, IM_ARRAYSIZE(filterm)))
-					material->textures[i]->minfilter = filtermode[indexFm];
+					_material->textures[i]->minfilter = filtermode[indexFm];
 
-				it = std::find(filtermode.end() - 2, filtermode.end(), material->textures[i]->magfilter);
+				it = std::find(filtermode.end() - 2, filtermode.end(), _material->textures[i]->magfilter);
 				int indexFM = it - (filtermode.end() - 2);
 				if (ImGui::Combo("Magnification", &indexFM, filterM, IM_ARRAYSIZE(filterM)))
-					material->textures[i]->magfilter = filtermode[4 + indexFM];
+					_material->textures[i]->magfilter = filtermode[4 + indexFM];
 				ImGui::Separator();
 
-				ImTextureID texid = (ImTextureID)material->textures[i]->id;
+				ImTextureID texid = (ImTextureID)_material->textures[i]->id;
 				float sizeX = ImGui::GetWindowSize().x > 350.f ? 350.f : ImGui::GetWindowSize().x;
 				ImGui::Image(texid, ImVec2(sizeX, sizeX * h / (float)w));
 				ImGui::EndTabItem();

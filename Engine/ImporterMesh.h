@@ -7,8 +7,8 @@
 class GameObject;
 namespace ImporterMesh
 {
-	void Import(const aiMesh* _aimesh, GameObject* _parent);
-	//uint64 Save(const Material* ourMaterial, char** fileBuffer);
+	bool Import(const aiMesh* _aimesh, GameObject* _parent);		// Imports a mesh from assimp into a GameObject '_parent'
+	unsigned int Save(CMesh* _mesh, const char* _filename);				// Saves the information of a Component Mesh into a file, using our custom file format
 	//void Load(const char* fileBuffer, Material* ourMaterial);
 	//void LoadCheckers(Material* ourMaterial);
 
@@ -18,23 +18,32 @@ namespace ImporterMesh
 		void CheckMinMaxPoints(float3 vertex, CMesh* _cmesh)
 		{
 			float3 AABBmax = _cmesh->GetAABBmax();
+			float3 AABBmin = _cmesh->GetAABBmin();
+
 			AABBmax.x = vertex.x > AABBmax.x ? vertex.x : AABBmax.x;
 			AABBmax.y = vertex.y > AABBmax.y ? vertex.y : AABBmax.y;
 			AABBmax.z = vertex.z > AABBmax.z ? vertex.z : AABBmax.z;
-
-			float3 AABBmin = _cmesh->GetAABBmin();
+			
 			AABBmin.x = vertex.x < AABBmin.x ? vertex.x : AABBmin.x;
 			AABBmin.y = vertex.y < AABBmin.y ? vertex.y : AABBmin.y;
 			AABBmin.z = vertex.z < AABBmin.z ? vertex.z : AABBmin.z;
+
+			_cmesh->SetAABBmax(AABBmax);
+			_cmesh->SetAABBmin(AABBmin);
 		}
 
 		// Loads the Vertex Buffer Object of this mesh
-		void LoadVBO(const aiMesh* _aimesh, unsigned int _numVertices, unsigned int VBO, CMesh* _cmesh)
+		unsigned int LoadVBO(const aiMesh* _aimesh, unsigned int _numVertices, CMesh* _cmesh)
 		{
+			unsigned int VBO = 0;
 			glGenBuffers(1, &VBO);
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-			unsigned vertex_size = (sizeof(float) * 8);
+			unsigned vertex_size = (sizeof(float) * 3);
+			if (_aimesh->mNormals != NULL)
+				vertex_size += (sizeof(float) * 3);
+			if (_aimesh->mTextureCoords[0] != NULL)
+				vertex_size += (sizeof(float) * 2);
 			unsigned buff_size = vertex_size * _numVertices;
 			glBufferData(GL_ARRAY_BUFFER, buff_size, nullptr, GL_STATIC_DRAW);
 
@@ -43,16 +52,26 @@ namespace ImporterMesh
 			{
 				glBufferSubData(GL_ARRAY_BUFFER, data_offset, sizeof(float) * 3, &_aimesh->mVertices[i]);
 				CheckMinMaxPoints(float3(_aimesh->mVertices[i].x, _aimesh->mVertices[i].y, _aimesh->mVertices[i].z), _cmesh);
-				glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 3, sizeof(float) * 3, &_aimesh->mNormals[i]);
-				if (_aimesh->mTextureCoords[0] != NULL)
-					glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float) * 6, sizeof(float) * 2, &_aimesh->mTextureCoords[0][i]);
+				if (_aimesh->mNormals != NULL)
+				{
+					glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float)*3, sizeof(float)*3, &_aimesh->mNormals[i]);
+					if (_aimesh->mTextureCoords[0] != NULL)
+						glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float)*6, sizeof(float)*2, &_aimesh->mTextureCoords[0][i]);
+				}
+				else {
+					if (_aimesh->mTextureCoords[0] != NULL)
+						glBufferSubData(GL_ARRAY_BUFFER, data_offset + sizeof(float)*3, sizeof(float)*2, &_aimesh->mTextureCoords[0][i]);
+				}
+				// TODO: colors?
 				data_offset += vertex_size;
 			}
+			return VBO;
 		}
 
 		// Loads the Element Buffer Object of this mesh
-		void LoadEBO(const aiMesh* _aimesh, unsigned int numIndices, unsigned int EBO)
+		unsigned int LoadEBO(const aiMesh* _aimesh, unsigned int numIndices)
 		{
+			unsigned int EBO = 0;
 			glGenBuffers(1, &EBO);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
@@ -70,11 +89,13 @@ namespace ImporterMesh
 			}
 
 			glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+			return EBO;
 		}
 
 		// Loads the Vertex Array Object of this mesh
-		void CreateVAO(unsigned int VBO, unsigned int EBO, unsigned int VAO)
+		unsigned int CreateVAO(unsigned int VBO, unsigned int EBO)
 		{
+			unsigned int VAO = 0;
 			glGenVertexArrays(1, &VAO);
 
 			glBindVertexArray(VAO);
@@ -92,6 +113,7 @@ namespace ImporterMesh
 			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
 
 			glBindVertexArray(0);
+			return VAO;
 		}
 	}
 };

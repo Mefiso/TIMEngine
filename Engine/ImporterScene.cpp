@@ -54,7 +54,12 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		ImporterMesh::Import(mesh, object);
+		std::string nodeName = "./Library/Meshes/";
+		nodeName.append(node->mName.C_Str());
+
+		bool imported = ImporterMesh::Import(mesh, object);
+		if (imported)
+			ImporterMesh::Save(object->GetComponent<CMesh>(), nodeName.c_str());
 		//	log time
 		//	save the custom file format
 		//	load from custom file format

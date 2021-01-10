@@ -32,10 +32,10 @@ public:
 	bool CleanUp() override;										// Clean memory allocated by this Module
 
 	// ---------- Getters ---------- //
-	GameObject* GetRoot() { return root; }
-	unsigned int GetProgram() { return defaultProgram; }
-	unsigned int GetSkyboxProgram() { return skyboxShader; }
-	unsigned int GetSkyboxTexture() { return skyboxTexture; }
+	GameObject* GetRoot() const { return root; }
+	unsigned int GetProgram() const { return defaultProgram; }
+	unsigned int GetSkyboxProgram() const { return skyboxShader; }
+	unsigned int GetSkyboxTexture() const { return skyboxTexture; }
 
 	// ---------- Setters ---------- //
 	void SetSkyboxTexture(unsigned int _texID) { skyboxTexture = _texID; }

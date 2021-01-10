@@ -11,6 +11,7 @@
 
 CMesh::CMesh(GameObject* _owner) : Component(MESH, _owner)
 {
+	LOG("");
 }
 
 CMesh::~CMesh()
@@ -18,6 +19,10 @@ CMesh::~CMesh()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
+	delete[] vertices;
+	delete[] normals;
+	delete[] uvs;
+	delete[] indices;
 }
 
 void CMesh::Draw()
