@@ -62,8 +62,9 @@ void GameObject::Draw()
 	}
 }
 
-void GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)
+bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)
 {
+	bool createdComp = false;
 	Component* newComp;
 	switch (_type)
 	{
@@ -73,14 +74,16 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 			newComp = new CTransform(this);
 			transform = (CTransform*)newComp;
 			components.push_back(newComp);
+			createdComp = true;
 		}
 		break;
 	case MESH:
 		if (!this->GetComponent<CMesh>())
 		{
-			newComp = new CMesh(this, (aiMesh*)arg);
+			newComp = new CMesh(this);
 			components.push_back(newComp);
 			UpdateBoundingBoxes();
+			createdComp = true;
 		}
 		break;
 	case MATERIAL:
@@ -88,6 +91,7 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 		{
 			newComp = new CMaterial(this, (aiMaterial*)arg, path);
 			components.push_back(newComp);
+			createdComp = true;
 		}
 		break;
 	case CAMERA:
@@ -95,12 +99,16 @@ void GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 		{
 			newComp = new CCamera(this);
 			components.push_back(newComp);
+			createdComp = true;
 		}
 		break;
 	default:
 		newComp = new Component(INVALID, this);
 		components.push_back(newComp);		// TODO: Should we really be doing this?
+		createdComp = true;
 	}
+
+	return createdComp;
 }
 
 void GameObject::RemoveComponent(int _cID)
@@ -232,7 +240,7 @@ void GameObject::UpdateBoundingBoxes()
 	aabb.SetNegativeInfinity();
 	CMesh* mesh = GetComponent<CMesh>();
 	if (mesh)
-		aabb.Enclose(mesh->AABBmin, mesh->AABBmax);
+		aabb.Enclose(mesh->GetAABBmin(), mesh->GetAABBmax());
 
 	for (GameObject* child : children)
 	{
@@ -265,7 +273,7 @@ void GameObject::UpdateBoundingBoxesRecursive()
 	aabb.SetNegativeInfinity();
 	CMesh* mesh = GetComponent<CMesh>();
 	if (mesh)
-		aabb.Enclose(mesh->AABBmin, mesh->AABBmax);
+		aabb.Enclose(mesh->GetAABBmin(), mesh->GetAABBmax());
 
 	for (GameObject* child : children)
 	{

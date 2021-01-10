@@ -1,4 +1,5 @@
 #include "ImporterScene.h"
+#include "ImporterMesh.h"
 
 #include "ModuleSceneManager.h"
 #include "ModuleCamera.h"
@@ -8,8 +9,18 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
+// Assimp Callback
+struct aiLogStream stream;		// Assimp logs are registered in this variable
+void AssimpLog(const char* msg, char* user) {
+	if (msg)
+		LOG("[info] Assimp Log: %s", msg);
+}
+
 void ImporterScene::Load(std::string const& _path)
 {
+	stream.callback = AssimpLog;
+	aiAttachLogStream(&stream);
+
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_path, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
@@ -43,7 +54,7 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		object->AddComponent(MESH, (void*)mesh);
+		ImporterMesh::Import(mesh, object);
 		//	log time
 		//	save the custom file format
 		//	load from custom file format

@@ -49,7 +49,7 @@ void ModuleFilesystem::DropFile(const std::string& file)
 	std::string ext = file.substr(file.find_last_of('.'), file.size());
 
 	// FBX or OBJ files -> Load a scene
-	if (ext.compare(".fbx") == 0 || ext.compare(".FBX") == 0 || ext.compare(".obj") == 0)
+	if (ext.compare(".fbx") == 0 || ext.compare(".FBX") == 0 || ext.compare(".obj") == 0 || ext.compare(".OBJ") == 0)
 		ImporterScene::Load(file);
 }
 

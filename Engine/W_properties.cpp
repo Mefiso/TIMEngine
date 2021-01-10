@@ -222,7 +222,7 @@ void WProperties::DrawMaterialBody(CMaterial* material)
 				ImGui::TextUnformatted("Height:");
 				ImGui::SameLine();
 				ImGui::TextColored(color, "%d", h);
-
+				
 				auto it = std::find(wrapmode.begin(), wrapmode.end(), material->textures[i]->wraps);
 				int indexWS = it - wrapmode.begin();
 				if (ImGui::Combo("Wrap (S dir)", &indexWS, wrap, IM_ARRAYSIZE(wrap)))
