@@ -219,6 +219,9 @@
     <ClCompile Include="ModuleSceneManager.cpp">
       <Filter>CoreModules</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleTimeManager.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -553,6 +556,9 @@
       <Filter>CoreModules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleSceneManager.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleTimeManager.h">
       <Filter>CoreModules</Filter>
     </ClInclude>
   </ItemGroup>
