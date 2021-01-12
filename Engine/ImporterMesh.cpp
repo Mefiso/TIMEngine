@@ -1,11 +1,8 @@
 #include "ImporterMesh.h"
 #include "GameObject.h"
-#include "MSTimer.h"
 
 bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _parent)
 {
-	MSTimer msTimer = MSTimer();
-	msTimer.Start();
 	if (_parent->AddComponent(MESH))
 	{
 		CMesh* cmesh = _parent->GetComponent<CMesh>();
@@ -71,10 +68,8 @@ bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _parent)
 		cmesh->SetEBO(LoadEBO(numIndices, indices));
 		cmesh->SetVAO(CreateVAO(cmesh->GetVBO(), cmesh->GetEBO()));
 
-		LOG("IMPORT TIME: %d ms", msTimer.Stop());
 		return true;
 	}
-	msTimer.Stop();
 	return false;
 }
 
@@ -147,8 +142,6 @@ unsigned int ImporterMesh::Save(CMesh* _mesh, const char* _filename)
 
 bool ImporterMesh::Load(const char* _filename, GameObject* _parent, unsigned int _filesize)
 {
-	MSTimer msTimer = MSTimer();
-	msTimer.Start();
 	if (_parent->AddComponent(MESH))
 	{
 		// Open file to read
@@ -231,7 +224,6 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _parent, unsigned int
 			RELEASE_ARRAY(fileBuffer);
 			fclose(f);
 			LOG("[info] Mesh data loaded from '%s' file", _filename);
-			LOG("LOAD TIME: %d ms", msTimer.Stop());
 			return true;
 		}
 	}

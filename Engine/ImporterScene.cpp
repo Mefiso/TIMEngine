@@ -6,6 +6,8 @@
 #include "Component.h"
 #include "GameObject.h"
 
+#include "uSTimer.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
@@ -53,11 +55,16 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 	object->AddComponent(TRANSFORM, nullptr);
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
+		// IMPORT MESHES
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		std::string nodeName = "./Library/Meshes/";
 		nodeName.append(node->mName.C_Str());
 
+		uSTimer msTimer = uSTimer();
+		msTimer.Start();
 		bool imported = ImporterMesh::Import(mesh, object);
+		LOG("IMPORT TIME: %d ms",msTimer.Stop()/1000);
+
 		// TODO: the if nesting shouldnt be included?
 		if (imported)
 		{
@@ -68,13 +75,13 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 			if (fsize > 0)
 			{
 				// load from custom file format
+				msTimer.Start();
 				ImporterMesh::Load(nodeName.c_str(), object, fsize);
+				LOG("LOAD TIME: %d ms", msTimer.Stop()/1000);
 			}
-			
-			
-			//	TODO: log time
 		}
 
+		// IMPORT MATERIALS
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 		object->AddComponent(MATERIAL, (void*)material, _dir);
 		//	log time
