@@ -5,7 +5,7 @@
 
 #include "ModuleSceneManager.h" // Only for skybox loading. Should be removed when fixed hardcoding
 #include "GL/glew.h"			// And this two should not be here
-#include "ModuleTexture.h"
+#include "ImporterMaterial.h"
 
 ModuleFilesystem::ModuleFilesystem()
 {
@@ -28,7 +28,7 @@ bool ModuleFilesystem::Start()
 		".\\resources\\skybox\\default\\front.jpg",
 		".\\resources\\skybox\\default\\back.jpg"
 	};
-	App->sceneMng->SetSkyboxTexture(ModuleTexture::LoadCubemap(faces));
+	App->sceneMng->SetSkyboxTexture(ImporterMaterial::LoadCubemap(faces));
 	return true;
 }
 

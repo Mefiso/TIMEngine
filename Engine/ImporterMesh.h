@@ -1,7 +1,7 @@
 #pragma once
 #include "Globals.h"
 #include "CMesh.h"
-#include <assimp/scene.h>
+#include <assimp/mesh.h>
 #include <GL/glew.h>
 #include <Math/float3.h>
 #include <Math/float2.h>

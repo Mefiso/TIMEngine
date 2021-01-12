@@ -89,7 +89,7 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	case MATERIAL:
 		if (!this->GetComponent<CMaterial>())
 		{
-			newComp = new CMaterial(this, (aiMaterial*)arg, path);
+			newComp = new CMaterial(this);
 			components.push_back(newComp);
 			createdComp = true;
 		}

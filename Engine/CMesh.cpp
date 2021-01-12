@@ -4,6 +4,7 @@
 #include "ModuleCamera.h"
 #include "GameObject.h"
 #include "CMaterial.h"
+#include "ImporterMaterial.h"
 
 #include <string>
 

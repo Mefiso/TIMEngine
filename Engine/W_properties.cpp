@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "CTransform.h"
 #include "CMaterial.h"
+#include "ImporterMaterial.h"
 #include "CMesh.h"
 #include "CCamera.h"
 #include "GL/glew.h"

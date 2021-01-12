@@ -1,5 +1,6 @@
 #include "ImporterScene.h"
 #include "ImporterMesh.h"
+#include "ImporterMaterial.h"
 
 #include "ModuleSceneManager.h"
 #include "ModuleCamera.h"
@@ -57,8 +58,8 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 	{
 		// IMPORT MESHES
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		std::string nodeName = "./Library/Meshes/";
-		nodeName.append(node->mName.C_Str());
+		std::string meshPath = "./Library/Meshes/";
+		meshPath.append(node->mName.C_Str());
 
 		uSTimer msTimer = uSTimer();
 		msTimer.Start();
@@ -69,25 +70,28 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 		if (imported)
 		{
 			// save the custom file format
-			unsigned int fsize = ImporterMesh::Save(object->GetComponent<CMesh>(), nodeName.c_str());
+			unsigned int fsize = ImporterMesh::Save(object->GetComponent<CMesh>(), meshPath.c_str());
 			
 			object->RemoveComponent(object->GetComponent<CMesh>()->GetUID()); // empty the cmesh (THIS IS PROVISIONAL UNTIL THE FILESYSTEM IS CORRECTLY IMPLEMENTED) (we will rather import or load, but not both)
 			if (fsize > 0)
 			{
 				// load from custom file format
 				msTimer.Start();
-				ImporterMesh::Load(nodeName.c_str(), object, fsize);
+				ImporterMesh::Load(meshPath.c_str(), object, fsize);
 				LOG("LOAD TIME: %d ms", msTimer.Stop()/1000);
 			}
 		}
 
 		// IMPORT MATERIALS
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		object->AddComponent(MATERIAL, (void*)material, _dir);
-		//	log time
-		//	save the custom file format
-		//	load from custom file format
-		//	log time
+		imported = ImporterMaterial::Import(material, _dir, object);
+
+			// save the custom file format
+			//	log time
+			//	save the custom file format
+			//	load from custom file format
+			//	log time
+
 	}
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
 	{

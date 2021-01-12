@@ -161,7 +161,6 @@
     <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="ModuleFilesystem.h" />
     <ClInclude Include="ModuleSceneManager.h" />
-    <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="MSTimer.h" />
     <ClInclude Include="ThirdPartyLibs\ImGUI\imconfig.h" />
@@ -279,7 +278,6 @@
     <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ModuleFilesystem.cpp" />
     <ClCompile Include="ModuleSceneManager.cpp" />
-    <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="ThirdPartyLibs\ImGUI\imgui.cpp" />
     <ClCompile Include="ThirdPartyLibs\ImGUI\imgui_demo.cpp" />

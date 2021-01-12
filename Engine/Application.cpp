@@ -8,7 +8,6 @@
 #include "ModuleDebugDraw.h"
 #include "ModuleEditor.h"
 #include "ModuleCamera.h"
-#include "ModuleTexture.h"
 
 #include "Leaks.h"
 #include "Brofiler.h"
@@ -43,8 +42,6 @@ bool Application::Init()
 
 	for (vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
-	if (ret)
-		ret = ModuleTexture::Init();
 
 	for (vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Start();

@@ -1,6 +1,5 @@
 #pragma once
 #include "Window.h"
-#include "ModuleTexture.h"
 #include "GL/glew.h"
 #include <Math/float4x4.h>
 

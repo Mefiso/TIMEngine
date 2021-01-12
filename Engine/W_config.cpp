@@ -1,7 +1,6 @@
 #include "W_config.h"
 #include "Application.h"
 #include "ModuleWindow.h"
-#include "ModuleTexture.h"
 #include "ModuleRender.h"
 #include "ModuleCamera.h"
 #include "Leaks.h"
