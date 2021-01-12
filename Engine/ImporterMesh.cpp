@@ -20,6 +20,8 @@ bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _parent)
 			vertices[j] = _aimesh->mVertices[i].x;
 			vertices[j+1] = _aimesh->mVertices[i].y;
 			vertices[j+2] = _aimesh->mVertices[i].z;
+			float vtx[3] = { vertices[j] , vertices[j + 1], vertices[j + 2] };
+			CheckMinMaxPoints(vtx, cmesh);
 		}
 		cmesh->SetVertices(vertices);
 
@@ -216,7 +218,6 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _parent, unsigned int
 			//cursor += bytes;
 
 			// Load Buffer Objects
-			// TODO: La AABB no fa falta pq ja la creem en el VBO?
 			cmesh->SetVBO(LoadVBO(cmesh, header[1], vertices, normals, uvs));
 			cmesh->SetEBO(LoadEBO(header[0], indices));
 			cmesh->SetVAO(CreateVAO(cmesh->GetVBO(), cmesh->GetEBO()));

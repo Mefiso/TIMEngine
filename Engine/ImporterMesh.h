@@ -56,7 +56,6 @@ namespace ImporterMesh
 				j = i * 3;
 				float vtx[3] = { _vertices[j] , _vertices[j+1], _vertices[j+2] };
 				glBufferSubData(GL_ARRAY_BUFFER, data_offset, sizeof(float)*3, &vtx);
-				CheckMinMaxPoints(vtx, _cmesh);
 				if (_normals)
 				{
 					float nml[3] = { _normals[j], _normals[j + 1], _normals[j + 2] };
