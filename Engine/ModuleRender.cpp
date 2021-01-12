@@ -90,7 +90,6 @@ bool ModuleRender::Init()
 
 	glDepthFunc(GL_LEQUAL); // For the skybox to be visualized at z-depth = (+-)1
 
-	uSTimer test = uSTimer();
 	msTimer.Start();
 
 	return true;

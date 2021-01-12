@@ -58,12 +58,22 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 		nodeName.append(node->mName.C_Str());
 
 		bool imported = ImporterMesh::Import(mesh, object);
+		// TODO: the if nesting shouldnt be included?
 		if (imported)
-			ImporterMesh::Save(object->GetComponent<CMesh>(), nodeName.c_str());
-		//	log time
-		//	save the custom file format
-		//	load from custom file format
-		//	log time
+		{
+			// save the custom file format
+			unsigned int fsize = ImporterMesh::Save(object->GetComponent<CMesh>(), nodeName.c_str());
+			
+			object->RemoveComponent(object->GetComponent<CMesh>()->GetUID()); // empty the cmesh (THIS IS PROVISIONAL UNTIL THE FILESYSTEM IS CORRECTLY IMPLEMENTED) (we will rather import or load, but not both)
+			if (fsize > 0)
+			{
+				// load from custom file format
+				ImporterMesh::Load(nodeName.c_str(), object, fsize);
+			}
+			
+			
+			//	TODO: log time
+		}
 
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 		object->AddComponent(MATERIAL, (void*)material, _dir);

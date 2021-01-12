@@ -19,10 +19,10 @@ CMesh::~CMesh()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
-	delete[] vertices;
-	delete[] normals;
-	delete[] uvs;
-	delete[] indices;
+	RELEASE_ARRAY(vertices);
+	RELEASE_ARRAY(normals);
+	RELEASE_ARRAY(uvs);
+	RELEASE_ARRAY(indices);
 }
 
 void CMesh::Draw()
