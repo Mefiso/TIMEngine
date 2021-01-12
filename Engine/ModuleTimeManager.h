@@ -5,14 +5,19 @@
 
 class ModuleTimeManager : public Module
 {
+public:
+	uSTimer precisionTimer;
+
 private:
 	int frameCount = 0u;
 	MSTimer time;
 	float timeScale = 1.f;
 	float deltaTime = 0.f;
+	float lastFrameTime = 0.f;
 
 	MSTimer realTime;
 	float rtDeltaTime = 0.f;
+	float lastFrameRTime = 0.f;
 
 public:
 	ModuleTimeManager();

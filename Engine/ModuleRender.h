@@ -29,8 +29,6 @@ private:
 	unsigned int FBO = 0u, textureColorbuffer = 0u, RBO = 0u;		// IDs of the Viewport buffer objects and texture
 	std::vector<GameObject*> objectsToDraw;							// Objects that pass the frustum culling test
 
-	MSTimer msTimer;												// Timer object
-
 public:
 	ModuleRender();													// Constructor
 	~ModuleRender();												// Destructor
@@ -48,6 +46,7 @@ public:
 	unsigned int GetViewportHeight() { return viewport_height; }
 
 	void PerformFrustumCulling(const float4 frustumPlanes[6], const float3 frustumPoints[8]);
+	void RemoveObjectFromDrawList(GameObject* go);
 
 private:
 	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables

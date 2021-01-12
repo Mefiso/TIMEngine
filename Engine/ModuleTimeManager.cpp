@@ -18,11 +18,15 @@ bool ModuleTimeManager::Init()
 update_status ModuleTimeManager::PreUpdate()
 {
 	++frameCount;
-	rtDeltaTime = realTime.Read() / 1000.f - rtDeltaTime;
-	if (!time.IsStopped())
-		deltaTime = (time.Read() / 1000.f) * timeScale - deltaTime;
-	else
-		deltaTime = 0.f;
+	static float currentFrameTime;
+	// Real Time
+	currentFrameTime = realTime.Read() / 1000.0f;
+	rtDeltaTime = currentFrameTime - lastFrameRTime;
+	lastFrameRTime = currentFrameTime;
+	// Game Time
+	currentFrameTime = (time.Read() / 1000.f);
+	deltaTime = (currentFrameTime - lastFrameTime) * timeScale;
+	lastFrameTime = currentFrameTime;
 
 	return UPDATE_CONTINUE;
 }

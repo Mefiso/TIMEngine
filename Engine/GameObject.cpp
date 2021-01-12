@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModuleSceneManager.h"
+#include "ModuleRender.h"
 #include "GameObject.h"
 #include "CMesh.h"
 #include "CTransform.h"
@@ -32,8 +33,6 @@ GameObject::~GameObject()
 
 void GameObject::CleanUp()
 {
-	if (GetComponent<CMesh>())
-		App->sceneMng->octree.Erase(this);
 	// Clean components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
@@ -47,6 +46,8 @@ void GameObject::CleanUp()
 		RELEASE(*it);
 	}
 	children.clear();
+
+	App->renderer->RemoveObjectFromDrawList(this);
 }
 
 void GameObject::Draw()
@@ -61,11 +62,6 @@ void GameObject::Draw()
 	{
 		(*it)->Draw();
 	}
-	//draw children accordingly
-	/*for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
-	{
-		(*it)->Draw();
-	}*/
 }
 
 void GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)

@@ -9,7 +9,6 @@
 #include "GameObject.h"
 #include "debugdraw.h"
 #include "SDL.h"
-#include "uSTimer.h"
 #include "Leaks.h"
 #include "Brofiler.h"
 
@@ -49,7 +48,6 @@ void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLe
 
 ModuleRender::ModuleRender()
 {
-	msTimer = MSTimer();
 }
 
 // Destructor
@@ -90,8 +88,6 @@ bool ModuleRender::Init()
 
 	glDepthFunc(GL_LEQUAL); // For the skybox to be visualized at z-depth = (+-)1
 
-	msTimer.Start();
-
 	return true;
 }
 
@@ -101,8 +97,6 @@ update_status ModuleRender::PreUpdate()
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	App->camera->SetDeltaTime(msTimer.Stop() / 1000.f);
-	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
 
@@ -122,10 +116,7 @@ update_status ModuleRender::Update()
 	if (showOctree)
 		App->sceneMng->octree.Draw();
 
-	// Render all GameObjects
-	/*if (App->sceneMng->GetRoot())
-		App->sceneMng->GetRoot()->Draw();
-	*/
+	// Render not culled GameObjects
 	for (std::vector<GameObject*>::iterator it = objectsToDraw.begin(), end = objectsToDraw.end(); it != end; ++it)
 		(*it)->Draw();
 
@@ -162,6 +153,13 @@ void ModuleRender::PerformFrustumCulling(const float4 frustumPlanes[6], const fl
 {
 	objectsToDraw.clear();
 	App->sceneMng->octree.CollectFrustumIntersections(objectsToDraw, frustumPlanes, frustumPoints);
+}
+
+void ModuleRender::RemoveObjectFromDrawList(GameObject* go)
+{
+	std::vector<GameObject*>::iterator it = std::find(objectsToDraw.begin(), objectsToDraw.end(), go);
+	if (it != objectsToDraw.end())
+		objectsToDraw.erase(it);
 }
 
 void ModuleRender::InitFramebuffer()

@@ -128,5 +128,6 @@ void ModuleSceneLoad::DropFile(const std::string& file)
 		// TODO: What if new scene has no transform? (could it be possible?)
 		float4 centerDistance = App->sceneMng->GetRoot()->GetChildren()[App->sceneMng->GetRoot()->GetChildren().size() - 1]->ComputeCenterAndDistance();
 		App->camera->onFocus(centerDistance.xyz(), centerDistance.w);
+		App->camera->cullingCamera->PerformFrustumCulling();
 	}
 }

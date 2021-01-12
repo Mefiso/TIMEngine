@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
+#include "ModuleTimeManager.h"
 #include "ModuleInput.h"
 #include "Math/Quat.h"
 #include "Math/float3x3.h"
@@ -39,6 +40,7 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	{
 	case Event::rotate_event:
 		ProcessMouseMovement((float)event.point2d.x, (float)event.point2d.y);
+		cullingCamera->PerformFrustumCulling();
 		break;
 	case Event::orbit_event:
 	{
@@ -47,6 +49,7 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, selected->GetModelMatrix().Col3(3));
 		else
 			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
+		cullingCamera->PerformFrustumCulling();
 		break;
 	}
 	case Event::wheel_event:
@@ -56,8 +59,8 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 }
 
 void ModuleCamera::ProcessViewportEvents() {
-	TranslateCamera(deltatime);
-	RotateCameraKeys(deltatime);
+	TranslateCamera(App->timeMng->GetRealTimeDeltaTime());
+	RotateCameraKeys(App->timeMng->GetRealTimeDeltaTime());
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
 		const GameObject* selected = App->editor->GetSelectedObject();
@@ -109,6 +112,7 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 	}
 
 	activeCamera->UpdateTransformFromFrustum();
+	cullingCamera->PerformFrustumCulling();
 }
 
 void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
