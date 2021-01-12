@@ -27,7 +27,7 @@ public:
 	update_status PreUpdate() override;
 
 	// ---------- Getters ---------- //
-	int GetFramCount() const { return frameCount; }
+	int GetFrameCount() const { return frameCount; }
 	float GetDeltaTime() const { return deltaTime; }
 	float GetRealTimeDeltaTime() const { return rtDeltaTime; }
 	float GetTime() const { return (time.Read() / 1000.f) * timeScale; }

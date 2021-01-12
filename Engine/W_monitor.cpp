@@ -1,6 +1,7 @@
 #include "W_monitor.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleTimeManager.h"
 #include "GL/glew.h"
 #include "IL/il.h"
 #include "Leaks.h"
@@ -32,10 +33,8 @@ void WMonitor::Draw()
 		// Update FPS buffer
 	fpsNow = ImGui::GetIO().Framerate;
 	fps_log.push_back(fpsNow);
-	frames++;
-	elapsedTime += 1.f / fpsNow;
 
-	sprintf_s(title, 75, "%.3f ms/frame (%.1f FPS). Averaged FPS %.1f", 1000.0 / fpsNow, fpsNow, frames / elapsedTime);
+	sprintf_s(title, 75, "%.3f ms/frame (%.1f FPS). Averaged FPS %.1f", 1000.0 / fpsNow, fpsNow, App->timeMng->GetFrameCount() / App->timeMng->GetRealTime());
 	// Remove the 1st element when we have more than 'histNumElements' values in the FPS vector
 	if (fps_log.size() > histNumElements)
 		fps_log.erase(fps_log.begin());

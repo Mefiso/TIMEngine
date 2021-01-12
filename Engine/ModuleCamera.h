@@ -36,9 +36,6 @@ public:
 	Frustum* frustum = defaultCamera->GetFrustum();								// Identifier of the Camera frustrum Object
 	CCamera* cullingCamera = activeCamera;										// The camera that performs the frustum culling, this should always be the active camera, but we allow to change it for debugging purposes
 
-private:
-	float deltatime = 0.f;														// Time between each frame, in milliseconds
-
 public:
 	ModuleCamera();																// Constructor
 	~ModuleCamera();															// Destructor
@@ -55,7 +52,6 @@ public:
 	float4x4 ProjectionMatrix() const { return frustum->ProjectionMatrix(); }	// Returns the Projection matrix of the Camera
 
 	// ---------- Setters ---------- //
-	void SetDeltaTime(float _deltaTime) { deltatime = _deltaTime; }
 	void SetActiveCamera(CCamera* _camera) { activeCamera = _camera; frustum = _camera->GetFrustum(); }
 	void ResetActiveCamera() { activeCamera = defaultCamera; frustum = defaultCamera->GetFrustum(); }
 	void SetCullingCamera(CCamera* _camera) { cullingCamera = _camera; cullingCamera->PerformFrustumCulling(); }
