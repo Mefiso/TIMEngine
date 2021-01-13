@@ -209,9 +209,14 @@
     <ClCompile Include="CCamera.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="ModuleSceneLoad.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
     <ClCompile Include="ModuleSceneManager.cpp">
       <Filter>CoreModules</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleTimeManager.cpp">
     <ClCompile Include="ModuleFilesystem.cpp">
       <Filter>CoreModules</Filter>
     </ClCompile>
@@ -550,10 +555,15 @@
     <ClInclude Include="CCamera.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="Octree.h" />
+    <ClInclude Include="ModuleSceneLoad.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
     <ClInclude Include="ModuleSceneManager.h">
       <Filter>CoreModules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleFilesystem.h">
+    <ClInclude Include="ModuleTimeManager.h">
       <Filter>CoreModules</Filter>
     </ClInclude>
     <ClInclude Include="ImporterMesh.h">

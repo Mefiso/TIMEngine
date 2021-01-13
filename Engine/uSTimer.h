@@ -17,12 +17,12 @@ public:
 	}
 	unsigned int Stop() {
 		elapsed = SDL_GetPerformanceCounter() - start;
-		return (unsigned int)elapsed;
+		return (unsigned int)elapsed / (float)freq;
 	}
 
 private:
 	Uint64 start = 0u;
 	Uint64 elapsed = 0u;
 	bool stopped = true;
-	Uint64 freq = SDL_GetPerformanceFrequency() * 1000000;
+	Uint64 freq = SDL_GetPerformanceFrequency() / 1000000;
 };

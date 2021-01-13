@@ -9,7 +9,6 @@
 #include "GameObject.h"
 #include "debugdraw.h"
 #include "SDL.h"
-#include "uSTimer.h"
 #include "Leaks.h"
 #include "Brofiler.h"
 
@@ -46,7 +45,6 @@ void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLe
 
 ModuleRender::ModuleRender()
 {
-	msTimer = MSTimer();
 }
 
 // Destructor
@@ -87,8 +85,6 @@ bool ModuleRender::Init()
 
 	glDepthFunc(GL_LEQUAL); // For the skybox to be visualized at z-depth = (+-)1
 
-	msTimer.Start();
-
 	return true;
 }
 
@@ -98,8 +94,6 @@ update_status ModuleRender::PreUpdate()
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	App->camera->SetDeltaTime(msTimer.Stop() / 1000.f);
-	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
 
@@ -114,15 +108,19 @@ update_status ModuleRender::Update()
 	else glDisable(GL_CULL_FACE);
 
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
-	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
-
-	// Render all GameObjects
-	if (App->sceneMng->GetRoot())
-		App->sceneMng->GetRoot()->Draw();
-
-	// Render Grid and origin 
 	if (showGrid)
-		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
+		dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
+	if (showOctree)
+		App->sceneMng->octree.Draw();
+
+	// Render not culled GameObjects
+	for (std::vector<GameObject*>::iterator it = objectsToDraw.begin(), end = objectsToDraw.end(); it != end; ++it)
+		(*it)->Draw();
+
+	if (App->camera->cullingCamera != App->camera->defaultCamera)
+		App->camera->cullingCamera->Draw();
+
+	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
 
 	// Render Skybox
 	// TODO: if (drawskybox)... else glClearColor(bgcolor)
@@ -146,6 +144,19 @@ bool ModuleRender::CleanUp()
 	SDL_GL_DeleteContext(context);
 
 	return true;
+}
+
+void ModuleRender::PerformFrustumCulling(const float4 frustumPlanes[6], const float3 frustumPoints[8])
+{
+	objectsToDraw.clear();
+	App->sceneMng->octree.CollectFrustumIntersections(objectsToDraw, frustumPlanes, frustumPoints);
+}
+
+void ModuleRender::RemoveObjectFromDrawList(GameObject* go)
+{
+	std::vector<GameObject*>::iterator it = std::find(objectsToDraw.begin(), objectsToDraw.end(), go);
+	if (it != objectsToDraw.end())
+		objectsToDraw.erase(it);
 }
 
 void ModuleRender::InitFramebuffer()

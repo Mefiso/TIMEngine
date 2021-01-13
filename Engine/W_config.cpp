@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
 #include "ModuleCamera.h"
+#include "GameObject.h"
 #include "Leaks.h"
 
 WConfig::WConfig(std::string name) : Window(name),
@@ -76,6 +77,9 @@ void WConfig::DrawRendererHeader()
 		if (ImGui::Button("Reset##1"))
 			App->renderer->gridColor = { 1.f, 1.f, 1.f };
 		ImGui::Unindent(ImGui::GetWindowWidth() - 70);
+
+		ImGui::Checkbox("Draw bounding boxes", &GameObject::drawOBB);
+		ImGui::Checkbox("Draw octree", &App->renderer->showOctree);
 
 		ImGui::ColorEdit3("Set Background Color", &App->renderer->backgroundColor[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
 		ImGui::SameLine();

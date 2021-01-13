@@ -34,15 +34,14 @@ public:
 	CCamera* defaultCamera = new CCamera(nullptr);								// This is the default camera of the Engine. To simplify functionality, we use a Component Camera
 	CCamera* activeCamera = defaultCamera;										// The active camera is the one that will be used to render the scene. It can be changed to use a Gameobject with a Camera Component instead of the default camera
 	Frustum* frustum = defaultCamera->GetFrustum();								// Identifier of the Camera frustrum Object
-
-private:
-	float deltatime = 0.f;														// Time between each frame, in milliseconds
+	CCamera* cullingCamera = activeCamera;										// The camera that performs the frustum culling, this should always be the active camera, but we allow to change it for debugging purposes
 
 public:
 	ModuleCamera();																// Constructor
 	~ModuleCamera();															// Destructor
 
 	// ------ Module Functions ----- //
+	bool Start();																// Perform the initial frustum culling
 	bool CleanUp() override;													// Clean memory allocated by this Module
 	void ReceiveEvent(const Event& event) override;								// Recieve events from App (that recieves events from other Modules)
 	// callback funcs
@@ -53,9 +52,10 @@ public:
 	float4x4 ProjectionMatrix() const { return frustum->ProjectionMatrix(); }	// Returns the Projection matrix of the Camera
 
 	// ---------- Setters ---------- //
-	void SetDeltaTime(float _deltaTime) { deltatime = _deltaTime; }
 	void SetActiveCamera(CCamera* _camera) { activeCamera = _camera; frustum = _camera->GetFrustum(); }
 	void ResetActiveCamera() { activeCamera = defaultCamera; frustum = defaultCamera->GetFrustum(); }
+	void SetCullingCamera(CCamera* _camera) { cullingCamera = _camera; cullingCamera->PerformFrustumCulling(); }
+	void ResetCullingCamera() { cullingCamera = defaultCamera; }
 
 	// Process movement
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);			// Applies the corresponding changes when an input from keyboard is detected and the Viewport is hovered. (Editor.PreUpdate > Rendered.ProcessViewportEvents)

@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
+#include "ModuleTimeManager.h"
 #include "ModuleInput.h"
 #include "Math/Quat.h"
 #include "Math/float3x3.h"
@@ -18,11 +19,18 @@ ModuleCamera::~ModuleCamera()
 {
 }
 
+bool ModuleCamera::Start()
+{
+	cullingCamera->PerformFrustumCulling();
+	return true;
+}
+
 // Called before quitting
 bool ModuleCamera::CleanUp()
 {
 	LOG("Destroying Camera");
 	RELEASE(defaultCamera);
+
 	return true;
 }
 
@@ -32,21 +40,38 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	{
 	case Event::rotate_event:
 		ProcessMouseMovement((float)event.point2d.x, (float)event.point2d.y);
+		cullingCamera->PerformFrustumCulling();
 		break;
 	case Event::orbit_event:
-		ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
+	{
+		const GameObject* selected = App->editor->GetSelectedObject();
+		if (selected)
+			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, selected->GetModelMatrix().Col3(3));
+		else
+			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
+		cullingCamera->PerformFrustumCulling();
 		break;
+	}
 	case Event::wheel_event:
 		ProcessMouseScroll((float)event.point2d.x, (float)event.point2d.y);
+		cullingCamera->PerformFrustumCulling();
 		break;
 	}
 }
 
 void ModuleCamera::ProcessViewportEvents() {
-	TranslateCamera(deltatime);
-	RotateCameraKeys(deltatime);
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-		//App->camera->onFocus(App->scene->GetRoot()->GetChildren()[App->scene->GetRoot()->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10); // TODO: WE NEED THE ABILITY TO SELECT A GAMEOBJECT
+	TranslateCamera(App->timeMng->GetRealTimeDeltaTime());
+	RotateCameraKeys(App->timeMng->GetRealTimeDeltaTime());
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		const GameObject* selected = App->editor->GetSelectedObject();
+		if (selected)
+		{
+			float4 centerDistance = selected->ComputeCenterAndDistance();
+			onFocus(centerDistance.xyz(), centerDistance.w);
+		}
+		else
+			onFocus(float3::zero, 20.0f);
 	}
 }
 
@@ -88,6 +113,7 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 	}
 
 	activeCamera->UpdateTransformFromFrustum();
+	cullingCamera->PerformFrustumCulling();
 }
 
 void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
@@ -133,6 +159,7 @@ void ModuleCamera::onFocus(float3 center, float distance)
 	frustum->SetPos(center - frustum->Front() * distance);
 
 	activeCamera->UpdateTransformFromFrustum();
+	cullingCamera->PerformFrustumCulling();
 }
 
 void ModuleCamera::RotateCamera(float yaw, float pitch)

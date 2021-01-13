@@ -1,4 +1,4 @@
-#include "W_properties.h"
+ #include "W_properties.h"
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
@@ -177,8 +177,11 @@ void WProperties::DrawTransformationBody()
 	if (modified)
 	{
 		selectedObject->SetTransform(scale, rotation, position);
+		selectedObject->UpdateBoundingBoxes();
+		selectedObject->UpdateOctreePosition();
 		if (selectedObject->GetComponent<CCamera>())
 			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
+		App->camera->cullingCamera->PerformFrustumCulling();
 	}
 	ImGui::PopItemWidth();
 }
@@ -199,6 +202,17 @@ const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Ne
 const char* filterM[] = { "Linear", "Nearest" };
 void WProperties::DrawMaterialBody(CMaterial* _material)
 {
+	ImGui::PushItemWidth(100);
+	ImGui::ColorEdit3("Set ambient color", &material->ambient[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
+	// The following settings are used when material has no diffuse/specular maps
+	ImGui::ColorEdit3("Set diffuse color", &material->diffuse[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs); ImGui::SameLine();
+	HelpMarker("This color is used when there isn't any diffuse map");
+	ImGui::ColorEdit3("Set specular color", &material->specular[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs); ImGui::SameLine();
+	HelpMarker("This color is used when there isn't any specular map");
+	ImGui::SliderFloat("Shininess", &material->shininess, 1.0, 300.0f, "%.1f");
+	ImGui::InputInt("Shininess in alpha", &material->shininessAlpha, 1, 1); ImGui::SameLine();
+	HelpMarker("Number of the specular map which has the shininess in the alpha channel. If 0, no specular map contains the shininess and the above setting is used instead.");
+
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	// TODO: Button to add textures inside this component
 	if (ImGui::BeginTabBar("Textures"))
@@ -209,7 +223,6 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 		for (unsigned int i = 0u; i < _material->textures.size(); ++i)
 		{
 			label = "Texture " + std::to_string(i);
-			ImGui::PushItemWidth(100);
 			if (ImGui::BeginTabItem(label.c_str()))
 			{
 				glBindTexture(GL_TEXTURE_2D, _material->textures[i]->id);
@@ -250,30 +263,34 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 				ImGui::Image(texid, ImVec2(sizeX, sizeX * h / (float)w));
 				ImGui::EndTabItem();
 			}
-			ImGui::PopItemWidth();
+
 		}
 		ImGui::EndTabBar();
 	}
-
+	ImGui::PopItemWidth();
 }
 
 void WProperties::DrawCameraBody(CCamera* _camera)
 {
 	bool isActive = App->camera->activeCamera == _camera;
+	bool isCulling = App->camera->cullingCamera == _camera;
 
 	if (ImGui::Checkbox("Set Camera as Active", &isActive))
 	{
 		if (isActive)
 			App->camera->SetActiveCamera(_camera);
 		else
-			App->camera->ResetActiveCamera();	
+			App->camera->ResetActiveCamera();
+	};
+	if (ImGui::Checkbox("Set Camera as Culling", &isCulling))
+	{
+		if (isCulling)
+			App->camera->SetCullingCamera(_camera);
+		else
+			App->camera->ResetCullingCamera();
+		App->camera->cullingCamera->PerformFrustumCulling();
 	};
 
-	//TODO:
-	if (ImGui::Checkbox("Set Camera Culling (Does nothing)!", &isActive))
-	{
-	}
-	
 	ImGui::PushItemWidth(180);
 	ImGui::TextUnformatted("Frustum");
 	Frustum* frust = _camera->GetFrustum();

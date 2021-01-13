@@ -7,17 +7,32 @@ public:
 	MSTimer() {}
 	~MSTimer() {}
 
-	void Start() {
+	void Start()
+	{
 		start = SDL_GetTicks();
 		stopped = false;
 		elapsed = 0u;
 	}
-	unsigned int Read() const {
-		return stopped ? elapsed : SDL_GetTicks() - start;
+	unsigned int Read() const
+	{
+		return stopped ? elapsed : SDL_GetTicks() - start + elapsed;
 	}
-	unsigned int Stop() {
-		elapsed = SDL_GetTicks() - start;
+	unsigned int Stop()
+	{
+		elapsed += stopped ? 0u : SDL_GetTicks() - start;
 		return elapsed;
+	}
+	void Resume()
+	{
+		if (stopped)
+		{
+			start = SDL_GetTicks();
+			stopped = false;
+		}
+	}
+	bool IsStopped() const
+	{
+		return stopped;
 	}
 
 private:

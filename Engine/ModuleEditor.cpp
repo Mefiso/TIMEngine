@@ -85,17 +85,22 @@ update_status ModuleEditor::PostUpdate()
 		if (toDeleteGO->GetParent())
 		{
 			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUID());
-			toDeleteGO->UpdateBoundingBoxes();
 		}
 		RELEASE(toDeleteGO);
 		hierarchy->SetToDelete(nullptr);
-		
 	}
 
 	Component* toDeleteCMP = properties->GetToDelete();
-	if (toDeleteCMP) {
+	if (toDeleteCMP)
+	{
 		if (toDeleteCMP->GetOwner())
+		{
+			// If it's a mesh delete it from octree
+			//if (toDeleteCMP->GetType() == MESH)
+			//	App->sceneMng->octree.Erase(toDeleteCMP->GetOwner());
 			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUID());
+			App->renderer->RemoveObjectFromDrawList(toDeleteCMP->GetOwner());
+		}
 		properties->SetToDelete(nullptr);
 	}
 
@@ -148,6 +153,11 @@ void ModuleEditor::InspectObject(GameObject* _object)
 {
 	if (properties)
 		properties->SetInspectedObject(_object);
+}
+
+const GameObject* ModuleEditor::GetSelectedObject() const
+{
+	return properties->GetSelectedGO();
 }
 
 void ModuleEditor::DrawMainMenu()

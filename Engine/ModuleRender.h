@@ -5,6 +5,7 @@
 #include "MSTimer.h"
 
 class Model;
+class GameObject;
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -18,6 +19,7 @@ public:
 	bool depthTest = true;											// Set if depth test is performed
 	bool cullFace = true;											// Set if face culling is performed
 	bool showGrid = true;											// Set if the grid is rendered
+	bool showOctree = false;										// Set if the octree from scene is rendered
 
 	float3 backgroundColor = { 0.1f, 0.1f, 0.1f };					// Base color of the viewport window
 	float3 gridColor = { 1.f, 1.f, 1.f };							// Base color of the world Grid
@@ -25,8 +27,7 @@ public:
 private:
 	int viewport_width = 0, viewport_height = 0;					// Initial size of Viewport window
 	unsigned int FBO = 0u, textureColorbuffer = 0u, RBO = 0u;		// IDs of the Viewport buffer objects and texture
-
-	MSTimer msTimer;												// Timer object
+	std::vector<GameObject*> objectsToDraw;							// Objects that pass the frustum culling test
 
 public:
 	ModuleRender();													// Constructor
@@ -43,6 +44,9 @@ public:
 	unsigned int GetTextureColorbuffer() { return textureColorbuffer; }
 	unsigned int GetViewportWidth() { return viewport_width; }
 	unsigned int GetViewportHeight() { return viewport_height; }
+
+	void PerformFrustumCulling(const float4 frustumPlanes[6], const float3 frustumPoints[8]);
+	void RemoveObjectFromDrawList(GameObject* go);
 
 private:
 	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables

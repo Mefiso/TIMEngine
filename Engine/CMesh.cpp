@@ -1,5 +1,6 @@
 #include "CMesh.h"
 #include "Application.h"
+#include "ModuleSceneManager.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
 #include "GameObject.h"
@@ -16,6 +17,7 @@ CMesh::CMesh(GameObject* _owner) : Component(MESH, _owner)
 
 CMesh::~CMesh()
 {
+	App->sceneMng->octree.Erase(owner);
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
@@ -79,7 +81,7 @@ void CMesh::Draw()
 		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
 		if (specularNr == 1) {
 			ModuleProgram::setVec3(program, "material.specular", float3(0.08f));
-			//ModuleProgram::setInt(program, "material.shininessAlpha", 1);
+			//ModuleProgram::setInt(program, "material.shininessAlpha", );
 		}
 
 		glBindVertexArray(VAO);

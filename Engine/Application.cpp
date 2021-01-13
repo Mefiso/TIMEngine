@@ -8,6 +8,7 @@
 #include "ModuleDebugDraw.h"
 #include "ModuleEditor.h"
 #include "ModuleCamera.h"
+#include "ModuleTimeManager.h"
 
 #include "Leaks.h"
 #include "Brofiler.h"
@@ -18,6 +19,7 @@ using namespace std;
 Application::Application()
 {
 	// Order matters: they will Init/start/update in this order
+	modules.push_back(timeMng = new ModuleTimeManager());
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(sceneMng = new ModuleSceneManager());
@@ -38,6 +40,7 @@ Application::~Application()
 
 bool Application::Init()
 {
+	timeMng->precisionTimer.Start();
 	bool ret = true;
 
 	for (vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
@@ -46,6 +49,7 @@ bool Application::Init()
 	for (vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Start();
 
+	LOG("[info] Time to init TIMEngine: %.3f ms", timeMng->precisionTimer.Stop() / 1000.f);
 	return ret;
 }
 
@@ -84,4 +88,19 @@ void Application::BroadcastEvent(const Event& event)
 void Application::Log(const char* input) const
 {
 	editor->Log(input);
+}
+
+void Application::StartTimer()
+{
+	timeMng->precisionTimer.Start();
+}
+
+unsigned int Application::ReadTimer() const
+{
+	return timeMng->precisionTimer.Read();
+}
+
+unsigned int Application::StopTimer()
+{
+	return timeMng->precisionTimer.Stop();
 }

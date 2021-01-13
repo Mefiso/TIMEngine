@@ -1,11 +1,16 @@
+#include "Application.h"
+#include "ModuleSceneManager.h"
+#include "ModuleRender.h"
 #include "GameObject.h"
 #include "CMesh.h"
 #include "CTransform.h"
 #include "CMaterial.h"
 #include "CCamera.h"
+#include "debugdraw.h"
 
 
 int GameObject::objectCount = 0;
+bool GameObject::drawOBB = false;
 
 GameObject::GameObject()
 {
@@ -41,22 +46,19 @@ void GameObject::CleanUp()
 		RELEASE(*it);
 	}
 	children.clear();
+
+	App->renderer->RemoveObjectFromDrawList(this);
 }
 
 void GameObject::Draw()
 {
 	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
-	if (name.compare("Scene 1") != 0)
+	if (name.compare("Scene 1") != 0 && drawOBB)
 	{
 		dd::box(obbPoints, float3(0.9f));
 	}
-	// update components
+	// draw components
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
-	{
-		(*it)->Draw();
-	}
-	//update children accordingly
-	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		(*it)->Draw();
 	}
@@ -83,6 +85,7 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 			newComp = new CMesh(this);
 			components.push_back(newComp);
 			UpdateBoundingBoxes();
+			App->sceneMng->octree.Insert(this);
 			createdComp = true;
 		}
 		break;
@@ -116,11 +119,13 @@ void GameObject::RemoveComponent(int _cID)
 	int toRemove = -1;
 
 	for (unsigned int i = 0u; i < components.size(); ++i)
+	{
 		if (components[i]->ID == _cID)
 		{
 			toRemove = (int)i;
 			break;
 		}
+	}
 	if (toRemove >= 0)
 	{
 		if (components[toRemove]->GetType() == TRANSFORM)
@@ -149,10 +154,8 @@ void GameObject::SetParent(GameObject* _newParent)
 		if (parent)
 		{
 			parent->RemoveChild(this->uID);
-			UpdateBoundingBoxes();
 		}
 		parent = _newParent;
-		UpdateBoundingBoxes();
 	}
 }
 
@@ -162,8 +165,15 @@ void GameObject::AddChild(GameObject* _newChild)
 	{
 		float4x4 worldTransform = _newChild->GetModelMatrix();
 		float4x4 thisTransform = this->transform ? this->GetModelMatrix() : float4x4::identity;
-		thisTransform.InverseOrthonormal();
-		_newChild->SetTransform(thisTransform * worldTransform, this);
+		float3 thisScale = float3(thisTransform.Col3(0).Length(), thisTransform.Col3(1).Length(), thisTransform.Col3(2).Length());
+		if (thisScale.Equals(float3::one))
+			thisTransform.InverseOrthonormal();
+		else if (thisScale.xxx().Equals(thisScale))
+			thisTransform.InverseOrthogonalUniformScale();
+		else
+			thisTransform.InverseColOrthogonal();
+
+		_newChild->SetTransform(thisTransform * worldTransform);
 	}
 	children.push_back(_newChild);
 }
@@ -185,10 +195,18 @@ void GameObject::RemoveChild(int childID)
 
 float4x4 GameObject::GetModelMatrix() const
 {
-	if (parent && parent->transform)
-		return (parent->GetModelMatrix() * this->transform->GetTransformationMatrix());
+	if (parent)
+		return parent->GetModelMatrix() * (transform ? this->transform->GetTransformationMatrix() : float4x4::identity);
 	else
-		return  this->transform->GetTransformationMatrix();
+		return  transform ? this->transform->GetTransformationMatrix() : float4x4::identity;
+}
+
+const float3 GameObject::GetAccumulatedScale() const
+{
+	if (parent)
+		return parent->GetAccumulatedScale().Mul(transform ? this->transform->GetScale() : float3::one);
+	else
+		return transform ? this->transform->GetScale() : float3::one;
 }
 
 void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _translation)
@@ -197,19 +215,13 @@ void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _transl
 	transform->SetRotation(_rotation);
 	transform->SetScale(_scale);
 	transform->UpdateTransformMatrix();
-
-	UpdateBoundingBoxes();
 }
 
-void GameObject::SetTransform(float4x4& _newTransform, GameObject* _newParent)
+void GameObject::SetTransform(float4x4& _newTransform)
 {
 	transform->SetPos((float3)(_newTransform.Col3(3)));
 
-	float3 oldParentScale = parent->transform ? parent->transform->GetScale() : float3::one;
-	float3 oldScaleChild = transform->GetScale();
-	float3 totalScale = oldParentScale.Mul(oldScaleChild);
-	float3 newChildScale = totalScale.Div(_newParent->transform ? _newParent->transform->GetScale() : float3::one);
-	transform->SetScale(newChildScale);
+	transform->SetScale(float3(_newTransform.Col3(0).Length(), _newTransform.Col3(1).Length(), _newTransform.Col3(2).Length()));
 
 	float3 rotation;
 	rotation.x = -atan2(_newTransform.Col3(2)[1], _newTransform.Col3(2)[2]);
@@ -239,62 +251,69 @@ void GameObject::UpdateBoundingBoxes()
 {
 	aabb.SetNegativeInfinity();
 	CMesh* mesh = GetComponent<CMesh>();
+	bool nonuniformScaling = false;
 	if (mesh)
+	{
 		aabb.Enclose(mesh->GetAABBmin(), mesh->GetAABBmax());
+		if (GetAccumulatedScale().MaxElement() != GetAccumulatedScale().MinElement()) // Non uniform scaling
+		{
+			nonuniformScaling = true;
+			aabb.Scale(aabb.CenterPoint(), GetAccumulatedScale());
+		}
+	}
 
 	for (GameObject* child : children)
-	{
 		child->UpdateBoundingBoxes();
 
-		if (transform)
-		{
-			float4x4 inverseTransform = GetModelMatrix();
-			transform->GetScale().Equals(float3::one) ? inverseTransform.InverseOrthonormal() : inverseTransform.Inverse();
-			child->obb.Transform(inverseTransform);
-		}
-		aabb.Enclose(child->obb);
-		if (transform)
-			child->obb.Transform(GetModelMatrix());
-	}
-	obb = transform ? aabb.Transform(GetModelMatrix()) : aabb;
+	obb = aabb.Transform(GetModelMatrix());
+	if (nonuniformScaling)
+		obb.Scale(obb.CenterPoint(), 1.0 / GetAccumulatedScale().x);
 
 	//Added, calculate obb vertices only when obb is updated
 	ddVec3 points[8];
 	obb.GetCornerPoints(points);
 	ddVec3 points2[8] = { points[0], points[1], points[3], points[2], points[4], points[5], points[7], points[6] };
 	memcpy(obbPoints, points2, sizeof(ddVec3) * 8);
-
-	if (this->parent)
-		parent->UpdateBoundingBoxesRecursive();
 }
 
-void GameObject::UpdateBoundingBoxesRecursive()
+void GameObject::UpdateOctreePosition()
 {
-	aabb.SetNegativeInfinity();
-	CMesh* mesh = GetComponent<CMesh>();
-	if (mesh)
-		aabb.Enclose(mesh->GetAABBmin(), mesh->GetAABBmax());
-
+	if (GetComponent<CMesh>())
+		App->sceneMng->octree.UpdateGO(this);
 	for (GameObject* child : children)
 	{
-		if (transform)
-		{
-			float4x4 inverseTransform = GetModelMatrix();
-			transform->GetScale().Equals(float3::one) ? inverseTransform.InverseOrthonormal() : inverseTransform.Inverse();
-			child->obb.Transform(inverseTransform);
-		}
-		aabb.Enclose(child->obb);
-		if (transform)
-			child->obb.Transform(GetModelMatrix());
+		child->UpdateOctreePosition();
 	}
-	obb = transform ? aabb.Transform(GetModelMatrix()) : aabb;
 
-	//Added, calculate obb vertices only when obb is updated
-	ddVec3 points[8];
-	obb.GetCornerPoints(points);
-	ddVec3 points2[8] = { points[0], points[1], points[3], points[2], points[4], points[5], points[7], points[6] };
-	memcpy(obbPoints, points2, sizeof(ddVec3) * 8);
+}
 
-	if (this->parent)
-		parent->UpdateBoundingBoxesRecursive();
+float4 GameObject::ComputeCenterAndDistance() const
+{
+	if (GetComponent<CMesh>() != nullptr)
+	{
+		return float4(GetModelMatrix().Col3(3), obb.Size().Length() * 2.f);
+	}
+	else
+	{
+		float3 minPoint = float3::inf, maxPoint = -float3::inf;
+		for (GameObject* child : children)
+		{
+			if (child->GetComponent<CMesh>() != nullptr)
+			{
+				minPoint = minPoint.Min(child->obb.MinimalEnclosingAABB().minPoint);
+				maxPoint = maxPoint.Max(child->obb.MinimalEnclosingAABB().maxPoint);
+			}
+		}
+		if (minPoint.Equals(float3::inf) || maxPoint.Equals(-float3::inf))
+		{
+			float4 ret = float4::zero;
+			for (GameObject* child : children)
+			{
+				ret = child->ComputeCenterAndDistance();
+			}
+			return ret;
+		}
+		else
+			return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.f);
+	}
 }

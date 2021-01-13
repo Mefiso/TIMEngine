@@ -22,12 +22,12 @@ private:
 
 	Hardware hardware;								// System hardware Information
 	float fpsNow = 0.f;								// Framerate calculated of the current frame
-	int frames = 0;									// Total frames elapsed since the start of the Application
-	float elapsedTime = 0.0f;						// Total time elapsed since the satart of the Application
+	//int frames = 0;									// Total frames elapsed since the start of the Application
+	//float elapsedTime = 0.0f;						// Total time elapsed since the start of the Application
 	char title[75];									// Title of the Framerate Histogram
 	std::vector<float> fps_log;						// Vector of deltatimes that will be represented in the Framerate Histogram
 	const unsigned int histNumElements = 50u;		// Maximum number of elements represented in the Framerate Histogram
-
+	float maxFPS = 30.0f;
 
 public:
 
@@ -37,6 +37,7 @@ public:
 
 private:
 
+	void DrawTimersHeader();						// Prints the Information of the timers and frame rate
 	void DrawInputHeader();							// Prints the Information of the inputs performed at each frame
 	void ShowSoftware() const;						// Prints the Information of the Software used to build this Application
 	void ShowHardware() const;						// Prints the Information of the iHardware of your Computer

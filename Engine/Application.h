@@ -11,12 +11,14 @@ class ModuleRender;
 class ModuleDebugDraw;
 class ModuleEditor;
 class ModuleCamera;
+class ModuleTimeManager;
 struct Event;
 
 class Application
 {
 public:
 	// ---- Application Modules ---- //
+	ModuleTimeManager* timeMng = nullptr;
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
 	ModuleFilesystem* filesys = nullptr;
@@ -39,6 +41,9 @@ public:
 	void BroadcastEvent(const Event& event);	// Call ReceiveEvent() for each Module
 
 	void Log(const char* input) const;			// Forward a LOG output to the Editor, then to W_Console
+	void StartTimer();
+	unsigned int ReadTimer() const;
+	unsigned int StopTimer();
 };
 
 extern Application* App;
