@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "ModuleTexture.h"
 #include "assimp/scene.h"
+#include "Math/float3.h"
 
 class CMaterial : public Component
 {
@@ -11,7 +12,7 @@ public:
 	float3 ambient = float3(0.05);
 	float3 diffuse = float3(0.5);
 	float shininess = 64.0f;
-	float specular = 0.08f;
+	float3 specular = float3(0.08f);
 	int shininessAlpha = 0;
 
 public:
