@@ -54,6 +54,7 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	}
 	case Event::wheel_event:
 		ProcessMouseScroll((float)event.point2d.x, (float)event.point2d.y);
+		cullingCamera->PerformFrustumCulling();
 		break;
 	}
 }
@@ -158,6 +159,7 @@ void ModuleCamera::onFocus(float3 center, float distance)
 	frustum->SetPos(center - frustum->Front() * distance);
 
 	activeCamera->UpdateTransformFromFrustum();
+	cullingCamera->PerformFrustumCulling();
 }
 
 void ModuleCamera::RotateCamera(float yaw, float pitch)

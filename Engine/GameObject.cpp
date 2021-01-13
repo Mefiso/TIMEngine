@@ -273,16 +273,29 @@ float4 GameObject::ComputeCenterAndDistance() const
 {
 	if (GetComponent<CMesh>() != nullptr)
 	{
-		return float4(GetModelMatrix().Col3(3), aabb.Size().Length() * 2.f);
+		return float4(GetModelMatrix().Col3(3), obb.Size().Length() * 2.f);
 	}
 	else
 	{
 		float3 minPoint = float3::inf, maxPoint = -float3::inf;
 		for (GameObject* child : children)
 		{
-			minPoint = minPoint.Min(child->aabb.minPoint);
-			maxPoint = maxPoint.Max(child->aabb.maxPoint);
+			if (child->GetComponent<CMesh>() != nullptr)
+			{
+				minPoint = minPoint.Min(child->obb.MinimalEnclosingAABB().minPoint);
+				maxPoint = maxPoint.Max(child->obb.MinimalEnclosingAABB().maxPoint);
+			}
 		}
-		return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.f);
+		if (minPoint.Equals(float3::inf) || maxPoint.Equals(-float3::inf))
+		{
+			float4 ret = float4::zero;
+			for (GameObject* child : children)
+			{
+				ret = child->ComputeCenterAndDistance();
+			}
+			return ret;
+		}
+		else
+			return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.f);
 	}
 }

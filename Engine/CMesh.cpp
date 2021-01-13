@@ -84,7 +84,7 @@ void CMesh::Draw()
 		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
 		if (specularNr == 1) {
 			ModuleProgram::setVec3(program, "material.specular", float3(0.08f));
-			//ModuleProgram::setInt(program, "material.shininessAlpha", 1);
+			ModuleProgram::setInt(program, "material.shininessAlpha", 1);
 		}
 
 		glBindVertexArray(VAO);
