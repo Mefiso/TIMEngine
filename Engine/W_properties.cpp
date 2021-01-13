@@ -182,12 +182,9 @@ void WProperties::DrawTransformationBody()
 		selectedObject->SetTransform(scale, rotation, position);
 		selectedObject->UpdateBoundingBoxes();
 		selectedObject->UpdateOctreePosition();
-		if (CCamera* camera = selectedObject->GetComponent<CCamera>())
-		{
-			camera->UpdateFrustumFromTransform(transform);
-			if (App->camera->cullingCamera == camera)
-				camera->PerformFrustumCulling();
-		}
+		if (selectedObject->GetComponent<CCamera>())
+			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
+		App->camera->cullingCamera->PerformFrustumCulling();
 	}
 	ImGui::PopItemWidth();
 }

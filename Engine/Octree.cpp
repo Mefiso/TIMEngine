@@ -13,7 +13,7 @@
 #define BDL 6
 #define BUL 7
 
-#define CAPACITY 2
+#define CAPACITY 10
 
 OctreeNode::OctreeNode(const AABB& box) : box(box)
 {

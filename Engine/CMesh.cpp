@@ -1,6 +1,7 @@
 #include "CMesh.h"
 #include "GL/glew.h"
 #include "Application.h"
+#include "ModuleSceneManager.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
 #include "GameObject.h"
@@ -21,6 +22,7 @@ CMesh::CMesh(GameObject* _owner, const aiMesh* mesh) : Component(MESH, _owner)
 
 CMesh::~CMesh()
 {
+	App->sceneMng->octree.Erase(owner);
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
