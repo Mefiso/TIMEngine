@@ -57,7 +57,7 @@ bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _parent)
 		// Load Buffer Objects
 		cmesh->SetVBO(LoadVBO(cmesh, numVertices, interleaved, vtxSize));
 		cmesh->SetEBO(LoadEBO(numIndices, indices));
-		cmesh->SetVAO(CreateVAO(cmesh->GetVBO(), cmesh->GetEBO(), vtxSize));
+		cmesh->SetVAO(CreateVAO(cmesh->GetVBO(), cmesh->GetEBO()));
 
 		return true;
 	}
@@ -167,7 +167,7 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _parent, unsigned int
 			// Load Buffer Objects
 			cmesh->SetVBO(LoadVBO(cmesh, header[1], vertices, header[2]));
 			cmesh->SetEBO(LoadEBO(header[0], indices));
-			cmesh->SetVAO(CreateVAO(cmesh->GetVBO(), cmesh->GetEBO(), header[3]));
+			cmesh->SetVAO(CreateVAO(cmesh->GetVBO(), cmesh->GetEBO()));
 
 			RELEASE_ARRAY(fileBuffer);
 			fclose(f);

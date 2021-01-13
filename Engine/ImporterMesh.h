@@ -57,7 +57,7 @@ namespace ImporterMesh
 		}
 
 		// Loads the Vertex Array Object of this mesh
-		unsigned int CreateVAO(unsigned int VBO, unsigned int EBO, unsigned int _vtxSize)
+		unsigned int CreateVAO(unsigned int VBO, unsigned int EBO)
 		{
 			unsigned int VAO = 0u;
 			glGenVertexArrays(1, &VAO);
@@ -69,13 +69,13 @@ namespace ImporterMesh
 			// TODO: what if normals or uvs are not present?
 			// vertex positions
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * _vtxSize, (void*)0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
 			// vertex normals
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * _vtxSize, (void*)(sizeof(float) * 3));
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
 			// vertex texture coords
 			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * _vtxSize, (void*)(sizeof(float) * 6));
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
 
 			glBindVertexArray(0);
 			return VAO;
