@@ -217,6 +217,8 @@
       <Filter>CoreModules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleTimeManager.cpp">
+      <Filter>CoreModules</Filter>
+    </ClCompile>
     <ClCompile Include="ModuleFilesystem.cpp">
       <Filter>CoreModules</Filter>
     </ClCompile>
@@ -563,6 +565,8 @@
       <Filter>CoreModules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleFilesystem.h">
+      <Filter>CoreModules</Filter>
+    </ClInclude>
     <ClInclude Include="ModuleTimeManager.h">
       <Filter>CoreModules</Filter>
     </ClInclude>
