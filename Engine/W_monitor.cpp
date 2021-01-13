@@ -29,18 +29,8 @@ void WMonitor::Draw()
 		return;
 	}
 
-	// ----- RESOURCE USAGE ----- //
-	// Update FPS buffer
-	fpsNow = 1 / App->timeMng->GetRealTimeDeltaTime();//ImGui::GetIO().Framerate;//
-	fps_log.push_back(fpsNow);
-
-	sprintf_s(title, 75, "%.3f ms/frame (%.1f FPS). Averaged FPS %.1f", 1000.0 / fpsNow, fpsNow, App->timeMng->GetFrameCount() / App->timeMng->GetRealTime());
-	// Remove the 1st element when we have more than 'histNumElements' values in the FPS vector
-	if (fps_log.size() > histNumElements)
-		fps_log.erase(fps_log.begin());
-
-	// Plot Hist
-	ImGui::PlotHistogram("##Histogram", &fps_log[0], histNumElements, 0, title, 0.0f, 300, ImVec2(400, 50));
+	// Timers
+	DrawTimersHeader();
 
 	// Input
 	DrawInputHeader();
@@ -53,6 +43,32 @@ void WMonitor::Draw()
 	}
 
 	ImGui::End();
+}
+
+void WMonitor::DrawTimersHeader()
+{
+	if (ImGui::CollapsingHeader("Timers"))
+	{
+		// ----- RESOURCE USAGE ----- //
+		// Update FPS buffer
+		fpsNow = 1 / App->timeMng->GetRealTimeDeltaTime();//ImGui::GetIO().Framerate;//
+		fps_log.push_back(fpsNow);
+
+		sprintf_s(title, 75, "%.3f ms/frame (%.1f FPS). Averaged FPS %.1f", 1000.0 / fpsNow, fpsNow, App->timeMng->GetFrameCount() / App->timeMng->GetRealTime());
+		// Remove the 1st element when we have more than 'histNumElements' values in the FPS vector
+		if (fps_log.size() > histNumElements)
+			fps_log.erase(fps_log.begin());
+
+		// Plot Hist
+		ImGui::PlotHistogram("##Histogram", &fps_log[0], histNumElements, 0, title, 0.0f, 300, ImVec2(400, 50));
+
+		// Max fps
+		ImGui::Checkbox("##2", &App->timeMng->maxFPS); ImGui::SameLine();
+		if (ImGui::SliderFloat("Max FPS", &maxFPS, 10, 120, "%.1f")) App->timeMng->SetMSPerFrame(1000 / maxFPS);
+
+		// Timers
+		ImGui::Text("Real time since application start: %.3f s", App->timeMng->GetRealTime());
+	}
 }
 
 void WMonitor::DrawInputHeader()

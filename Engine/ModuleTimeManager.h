@@ -7,6 +7,7 @@ class ModuleTimeManager : public Module
 {
 public:
 	uSTimer precisionTimer;
+	bool maxFPS = true;
 
 private:
 	int frameCount = 0u;
@@ -35,5 +36,9 @@ public:
 	float GetRealTimeDeltaTime() const { return rtDeltaTime; }
 	float GetTime() const { return (time.Read() / 1000.f) * timeScale; }
 	float GetRealTime() const { return realTime.Read() / 1000.f; }
+	float GetMSPerFrame() const { return msPerFrame; }
+
+	// ---------- Setters ---------- //
+	void SetMSPerFrame(float _msPerFrame) { msPerFrame = _msPerFrame; }
 };
 

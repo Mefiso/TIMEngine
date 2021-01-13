@@ -35,10 +35,13 @@ update_status ModuleTimeManager::PreUpdate()
 
 update_status ModuleTimeManager::PostUpdate()
 {
-	static float elapsed;
-	elapsed = realTime.Read() - lastFrameRTime * 1000.0f;
-	if (elapsed < msPerFrame)
-		SDL_Delay(msPerFrame - elapsed);
+	if (maxFPS)
+	{
+		static float elapsed;
+		elapsed = realTime.Read() - lastFrameRTime * 1000.0f;
+		if (elapsed < msPerFrame)
+			SDL_Delay(msPerFrame - elapsed);
+	}
 
 	return UPDATE_CONTINUE;
 }
