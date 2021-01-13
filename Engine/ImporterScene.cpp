@@ -85,7 +85,9 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 		// IMPORT MATERIALS
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 		imported = ImporterMaterial::Import(material, _dir, object);
-
+		//**
+		//object->RemoveComponent(object->GetComponent<CMaterial>()->GetUID());
+			//Load
 			// save the custom file format
 			//	log time
 			//	save the custom file format

@@ -206,7 +206,7 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 		// TODO: remove this texture from this material
 		// TODO: select another file for this texture (and drag and drop?)
 		std::string label;
-		for (unsigned int i = 0; i < _material->textures.size(); ++i)
+		for (unsigned int i = 0u; i < _material->textures.size(); ++i)
 		{
 			label = "Texture " + std::to_string(i);
 			ImGui::PushItemWidth(100);

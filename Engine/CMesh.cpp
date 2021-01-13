@@ -12,7 +12,6 @@
 
 CMesh::CMesh(GameObject* _owner) : Component(MESH, _owner)
 {
-	LOG("");
 }
 
 CMesh::~CMesh()

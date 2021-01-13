@@ -5,7 +5,7 @@
 #include <IL/devil_cpp_wrapper.hpp>
 
 
-bool ImporterMaterial::Import(const aiMaterial* _material, const std::string& _path, GameObject* _parent)
+bool ImporterMaterial::Import(aiMaterial* _material, const std::string& _path, GameObject* _parent)
 {
 	if (_parent->AddComponent(MATERIAL))
 	{
@@ -33,21 +33,65 @@ bool ImporterMaterial::Import(const aiMaterial* _material, const std::string& _p
 	return false;
 }
 
-/*unsigned int ImporterMaterial::Save(const CMaterial* ourMaterial, const char* _filename)
+void ImporterMaterial::Save(const char* _destPath)
 {
-	ILuint size;
-	ILubyte* data;
-	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);// To pick a specific DXT compression use
-	size = ilSaveL(IL_DDS, nullptr, 0); // Get the size of the data buffer
-	if (size > 0)
-	{
-		data = new ILubyte[size]; // allocate data buffer
-		if (ilSaveL(IL_DDS, data, size) > 0) // Save to buffer with the ilSaveIL function
-			*fileBuffer = (char*)data;
+	// Open file to write
+	FILE* f;
+	errno_t err;
+	if ((err = fopen_s(&f, _destPath, "wb")) != 0) {
+		// File could not be opened. FILE* was set to NULL. error code is returned in err.
+		LOG("[error] File could not be opened: %s", _destPath, strerror(err));
 	}
-}*/
+	else {
+		ILuint size;
+		ILubyte* data;
+		ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);	// To pick a specific DXT compression use
+		size = ilSaveL(IL_DDS, nullptr, 0);		// Get the size of the data buffer
+		if (size > 0)
+		{
+			char* fileBuffer = new char[size]; // Allocate
+			data = new ILubyte[size]; // allocate data buffer
+			if (ilSaveL(IL_DDS, data, size) > 0) {
+				// Save to buffer with the ilSaveIL function
+				fileBuffer = (char*)data;
+				fwrite(fileBuffer, sizeof(char), size, f);
+				fileBuffer = nullptr;
+			}
+			RELEASE_ARRAY(data);
+		}
+		fclose(f);
+	}
+}
 
-unsigned int ImporterMaterial::LoadTexture(const std::string path)
+void ImporterMaterial::Load(const char* fileBuffer, CMaterial* ourMaterial)
+{
+	/*if (_parent->AddComponent(MATERIAL))
+	{
+		if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION)
+		{
+			return false;
+		}
+		ilInit();
+		iluInit();
+
+		CMaterial* cmaterial = _parent->GetComponent<CMaterial>();
+		std::vector<Texture*>* diffuseMaps = new std::vector<Texture*>();
+		LoadMaterialTextures(_material, aiTextureType_DIFFUSE, "diffuse", _path, diffuseMaps);
+		cmaterial->textures.insert(cmaterial->textures.end(), diffuseMaps->begin(), diffuseMaps->end());
+		std::vector<Texture*>* specularMaps = new std::vector<Texture*>();
+		LoadMaterialTextures(_material, aiTextureType_SPECULAR, "specular", _path, specularMaps);
+		cmaterial->textures.insert(cmaterial->textures.end(), specularMaps->begin(), specularMaps->end());
+
+		RELEASE(diffuseMaps);
+		RELEASE(specularMaps);
+		ilShutDown();
+
+		return true;
+	}
+	return false;*/
+}
+
+unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string _destPath)
 {
 	ILuint imgId;
 	ILboolean success;
@@ -57,7 +101,7 @@ unsigned int ImporterMaterial::LoadTexture(const std::string path)
 
 	ilGenImages(1, &imgId);								/* Generation of one image name */
 	ilBindImage(imgId);									/* Binding of image name */
-	success = ilLoadImage(path.c_str());				/* Loading of image */
+	success = ilLoadImage(_path.c_str());				/* Loading of image */
 	if (success)										/* If no error occured: */
 	{
 		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
@@ -85,12 +129,12 @@ unsigned int ImporterMaterial::LoadTexture(const std::string path)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		// here
+		Save(_destPath.c_str());
 	}
 	else
 	{
 		/* Error occured */
-		LOG("[error] Could not Load image %s", path.c_str())
+		LOG("[error] Could not Load image %s", _path.c_str())
 			return false;
 	}
 	ilDeleteImages(1, &imgId);
@@ -98,7 +142,7 @@ unsigned int ImporterMaterial::LoadTexture(const std::string path)
 	return textureId;
 }
 
-unsigned int ImporterMaterial::LoadCubemap(std::vector<std::string> faces)
+unsigned int ImporterMaterial::LoadCubemap(std::vector<std::string> _faces)
 {
 	ILuint imgId;
 	ILboolean success;
@@ -107,11 +151,11 @@ unsigned int ImporterMaterial::LoadCubemap(std::vector<std::string> faces)
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-	for (unsigned int i = 0; i < faces.size(); i++)
+	for (unsigned int i = 0; i < _faces.size(); i++)
 	{
 		ilGenImages(1, &imgId);								/* Generation of one image name */
 		ilBindImage(imgId);									/* Binding of image name */
-		success = ilLoadImage(faces[i].c_str());			/* Loading of image */
+		success = ilLoadImage(_faces[i].c_str());			/* Loading of image */
 		if (success)
 		{
 			success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
@@ -130,7 +174,7 @@ unsigned int ImporterMaterial::LoadCubemap(std::vector<std::string> faces)
 		else
 		{
 			/* Error occured */
-			LOG("[error] Could not Load image %s", faces[i].c_str())
+			LOG("[error] Could not Load image %s", _faces[i].c_str())
 				return false;
 		}
 	}
