@@ -64,7 +64,7 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 		uSTimer msTimer = uSTimer();
 		msTimer.Start();
 		bool imported = ImporterMesh::Import(mesh, object);
-		LOG("IMPORT TIME: %d ms",msTimer.Stop()/1000);
+		LOG("IMPORT TIME: %d ms",msTimer.Stop());
 
 		// TODO: the if nesting shouldnt be included?
 		if (imported)
@@ -78,7 +78,7 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 				// load from custom file format
 				msTimer.Start();
 				ImporterMesh::Load(meshPath.c_str(), object, fsize);
-				LOG("LOAD TIME: %d ms", msTimer.Stop()/1000);
+				LOG("LOAD TIME: %d ms", msTimer.Stop());
 			}
 		}
 

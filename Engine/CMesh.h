@@ -7,9 +7,8 @@ class CMesh : public Component
 private:
 	unsigned int numVertices = 0u;										// Number of non-repeated vertices of the Mesh
 	unsigned int numIndices = 0u;										// Total number of vertices of the Mesh (includes repeated vertices of adjacent faces). Each index points to a vertex in 'vertices'
-	float* vertices = nullptr;											// The list of vertices
-	float* normals = nullptr;											// The list of normals of each vertex
-	float* uvs = nullptr;												// The list of texture coordinates of each vertex
+	unsigned int vtxSize = 0u;											// Size of each vertex. Including vert position, normals and uvs if available.
+	float* vertices = nullptr;											// The list of vertices. Includes vert position.xyz, normals.xyz and uvs.uv if available.
 	unsigned int* indices = nullptr;									// The list of indices
 	unsigned int VAO = 0u, VBO = 0u, EBO = 0u;							// Buffer Object identifiers of the mesh this Component represents
 	unsigned int program = 0u;											// Shading program used when rendering this mesh
@@ -25,8 +24,7 @@ public:
 	unsigned int GetNumVertices() const { return numVertices; }
 	unsigned int GetNumIndices() const { return numIndices; }
 	float* GetVertices() const { return vertices; }
-	float* GetNormals() const { return normals; }
-	float* GetUVs() const { return uvs; }
+	unsigned int GetVtxSize() const { return vtxSize; }
 	unsigned int* GetIndices() const { return indices; }
 	unsigned int GetProgram() const { return program; }
 	const unsigned int& GetVBO() const { return VBO; }
@@ -39,9 +37,8 @@ public:
 	void SetNumVertices(unsigned int _nV) { numVertices = _nV; }
 	void SetNumIndices(unsigned int _nI) { numIndices = _nI; }
 	void SetVertices(float* _vtx) { vertices = _vtx; }
-	void SetNormals(float* _nm) { normals = _nm; }
+	void SetVtxSize(unsigned int _size) { vtxSize = _size; }
 	void SetIndices(unsigned int* _ind) { indices = _ind; }
-	void SetUVs(float* _uvs) { uvs = _uvs; }
 	void SetProgram(unsigned int _program) { program = _program; }		// Sets the shading program used to render this Component
 	void SetVBO(unsigned int _VBO) { VBO = _VBO; }
 	void SetEBO(unsigned int _EBO) { EBO = _EBO; }

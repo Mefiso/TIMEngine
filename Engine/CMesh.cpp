@@ -21,8 +21,6 @@ CMesh::~CMesh()
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
 	RELEASE_ARRAY(vertices);
-	RELEASE_ARRAY(normals);
-	RELEASE_ARRAY(uvs);
 	RELEASE_ARRAY(indices);
 }
 
