@@ -30,8 +30,8 @@ void WMonitor::Draw()
 	}
 
 	// ----- RESOURCE USAGE ----- //
-		// Update FPS buffer
-	fpsNow = ImGui::GetIO().Framerate;
+	// Update FPS buffer
+	fpsNow = 1 / App->timeMng->GetRealTimeDeltaTime();//ImGui::GetIO().Framerate;//
 	fps_log.push_back(fpsNow);
 
 	sprintf_s(title, 75, "%.3f ms/frame (%.1f FPS). Averaged FPS %.1f", 1000.0 / fpsNow, fpsNow, App->timeMng->GetFrameCount() / App->timeMng->GetRealTime());

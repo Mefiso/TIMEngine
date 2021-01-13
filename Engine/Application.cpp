@@ -41,6 +41,7 @@ Application::~Application()
 
 bool Application::Init()
 {
+	timeMng->precisionTimer.Start();
 	bool ret = true;
 
 	for (vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
@@ -51,6 +52,7 @@ bool Application::Init()
 	for (vector<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Start();
 
+	LOG("[info] Time to init TIMEngine: %.3f ms", timeMng->precisionTimer.Stop() / 1000.f);
 	return ret;
 }
 

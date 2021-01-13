@@ -24,5 +24,5 @@ private:
 	Uint64 start = 0u;
 	Uint64 elapsed = 0u;
 	bool stopped = true;
-	Uint64 freq = SDL_GetPerformanceFrequency() * 1000000;
+	Uint64 freq = SDL_GetPerformanceFrequency() / 1000000;
 };
