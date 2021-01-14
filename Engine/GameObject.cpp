@@ -52,7 +52,6 @@ void GameObject::CleanUp()
 
 void GameObject::Draw()
 {
-	//dd::aabb(aabb.minPoint, aabb.maxPoint, float3(0.9f));
 	if (name.compare("Scene 1") != 0 && drawOBB)
 	{
 		dd::box(obbPoints, float3(0.9f));
@@ -84,8 +83,6 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 		{
 			newComp = new CMesh(this);
 			components.push_back(newComp);
-			UpdateBoundingBoxes();
-			App->sceneMng->octree.Insert(this);
 			createdComp = true;
 		}
 		break;

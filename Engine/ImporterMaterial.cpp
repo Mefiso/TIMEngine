@@ -129,7 +129,7 @@ unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		Save(_destPath.c_str());
+		//Save(_destPath.c_str());
 	}
 	else
 	{

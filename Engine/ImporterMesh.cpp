@@ -1,11 +1,13 @@
 #include "ImporterMesh.h"
+#include "Application.h"
+#include "ModuleSceneManager.h"
 #include "GameObject.h"
 
-bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _parent)
+bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _owner)
 {
-	if (_parent->AddComponent(MESH))
+	if (_owner->AddComponent(MESH))
 	{
-		CMesh* cmesh = _parent->GetComponent<CMesh>();
+		CMesh* cmesh = _owner->GetComponent<CMesh>();
 		unsigned int numVertices = _aimesh->mNumVertices;
 		unsigned int numIndices = _aimesh->mNumFaces * 3u;
 		cmesh->SetNumVertices(numVertices);
@@ -58,6 +60,9 @@ bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _parent)
 		cmesh->SetVBO(LoadVBO(cmesh, numVertices, interleaved, vtxSize));
 		cmesh->SetEBO(LoadEBO(numIndices, indices));
 		cmesh->SetVAO(CreateVAO(cmesh->GetVBO(), cmesh->GetEBO()));
+
+		_owner->UpdateBoundingBoxes();
+		App->sceneMng->octree.Insert(_owner);
 
 		return true;
 	}
@@ -114,7 +119,7 @@ unsigned int ImporterMesh::Save(CMesh* _mesh, const char* _filename)
 	}
 }
 
-bool ImporterMesh::Load(const char* _filename, GameObject* _parent, unsigned int _filesize)
+bool ImporterMesh::Load(const char* _filename, GameObject* _owner, unsigned int _filesize)
 {
 	// Open file to read
 	FILE* f;
@@ -125,9 +130,9 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _parent, unsigned int
 		return false;
 	}
 	else {
-		if (_parent->AddComponent(MESH))
+		if (_owner->AddComponent(MESH))
 		{
-			CMesh* cmesh = _parent->GetComponent<CMesh>();
+			CMesh* cmesh = _owner->GetComponent<CMesh>();
 			char* fileBuffer = new char[_filesize]; // Allocate
 			char* cursor = fileBuffer;
 			fread_s(fileBuffer, sizeof(char) * _filesize, sizeof(char), _filesize, f);
@@ -168,6 +173,9 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _parent, unsigned int
 			cmesh->SetVBO(LoadVBO(cmesh, header[1], vertices, header[2]));
 			cmesh->SetEBO(LoadEBO(header[0], indices));
 			cmesh->SetVAO(CreateVAO(cmesh->GetVBO(), cmesh->GetEBO()));
+
+			_owner->UpdateBoundingBoxes();
+			App->sceneMng->octree.Insert(_owner);
 
 			RELEASE_ARRAY(fileBuffer);
 			fclose(f);

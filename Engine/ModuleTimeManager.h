@@ -7,7 +7,7 @@ class ModuleTimeManager : public Module
 {
 public:
 	uSTimer precisionTimer;
-	bool maxFPS = true;
+	bool maxFPS = false;
 
 private:
 	int frameCount = 0u;
