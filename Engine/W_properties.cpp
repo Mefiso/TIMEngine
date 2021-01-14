@@ -1,4 +1,4 @@
- #include "W_properties.h"
+#include "W_properties.h"
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
@@ -226,17 +226,19 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 			if (ImGui::BeginTabItem(label.c_str()))
 			{
 				glBindTexture(GL_TEXTURE_2D, _material->textures[i]->id);
+
+				// Texture  type
+				ImGui::TextUnformatted("Type:"); ImGui::SameLine();
+				ImGui::TextColored(color, "%s", _material->textures[i]->type.c_str());
 				// Texture size
 				int w, h;
 				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
 				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
-				ImGui::TextUnformatted("Width:");
-				ImGui::SameLine();
+				ImGui::TextUnformatted("Width:"); ImGui::SameLine();
 				ImGui::TextColored(color, "%d", w);
-				ImGui::TextUnformatted("Height:");
-				ImGui::SameLine();
+				ImGui::TextUnformatted("Height:"); ImGui::SameLine();
 				ImGui::TextColored(color, "%d", h);
-				
+
 				auto it = std::find(wrapmode.begin(), wrapmode.end(), _material->textures[i]->wraps);
 				int indexWS = it - wrapmode.begin();
 				if (ImGui::Combo("Wrap (S dir)", &indexWS, wrap, IM_ARRAYSIZE(wrap)))
@@ -263,7 +265,6 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 				ImGui::Image(texid, ImVec2(sizeX, sizeX * h / (float)w));
 				ImGui::EndTabItem();
 			}
-
 		}
 		ImGui::EndTabBar();
 	}
