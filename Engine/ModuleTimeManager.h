@@ -28,7 +28,6 @@ public:
 
 	bool Init() override;
 	update_status PreUpdate() override;
-	update_status PostUpdate() override;
 
 	// ---------- Getters ---------- //
 	int GetFrameCount() const { return frameCount; }
