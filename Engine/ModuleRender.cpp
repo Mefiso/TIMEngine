@@ -113,7 +113,7 @@ update_status ModuleRender::Update()
 	if (showOctree)
 		App->sceneMng->octree.Draw();
 
-	// Render not culled GameObjects
+	// Render non-culled GameObjects
 	for (std::vector<GameObject*>::iterator it = objectsToDraw.begin(), end = objectsToDraw.end(); it != end; ++it)
 		(*it)->Draw();
 

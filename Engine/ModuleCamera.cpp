@@ -40,7 +40,6 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	{
 	case Event::rotate_event:
 		ProcessMouseMovement((float)event.point2d.x, (float)event.point2d.y);
-		cullingCamera->PerformFrustumCulling();
 		break;
 	case Event::orbit_event:
 	{
@@ -49,12 +48,10 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, selected->GetModelMatrix().Col3(3));
 		else
 			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, float3::zero);
-		cullingCamera->PerformFrustumCulling();
 		break;
 	}
 	case Event::wheel_event:
 		ProcessMouseScroll((float)event.point2d.x, (float)event.point2d.y);
-		cullingCamera->PerformFrustumCulling();
 		break;
 	}
 }
@@ -73,6 +70,92 @@ void ModuleCamera::ProcessViewportEvents() {
 		else
 			onFocus(float3::zero, 20.0f);
 	}
+}
+
+void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
+{
+	xoffset *= MouseSensitivity;
+	yoffset *= MouseSensitivity;
+	RotateCamera(-xoffset, yoffset);
+
+	activeCamera->UpdateTransformFromFrustum();
+	cullingCamera->PerformFrustumCulling();
+}
+
+void ModuleCamera::ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre)
+{
+	float3 lookDirection = Quat::RotateAxisAngle(float3::unitY, xoffset * MouseSensitivity) * (frustum->Pos() - orbit_centre); // Another option would be to rotate around frustum.Up(), both appear to work for me
+	lookDirection = Quat::RotateAxisAngle(frustum->WorldRight(), yoffset * MouseSensitivity) * lookDirection;
+	frustum->SetPos(lookDirection + orbit_centre);
+
+	// Look
+	float3x3 look = float3x3::LookAt(frustum->Front(), (-lookDirection).Normalized(), frustum->Up(), float3::unitY);
+	frustum->SetFront(look.MulDir(frustum->Front()).Normalized());
+	frustum->SetUp(look.MulDir(frustum->Up()).Normalized());
+
+	activeCamera->UpdateTransformFromFrustum();
+	cullingCamera->PerformFrustumCulling();
+}
+
+void ModuleCamera::ProcessMouseScroll(float xoffset, float yoffset)
+{
+	frustum->SetPos(frustum->Pos() + frustum->Front() * yoffset); // simulates zoom but it's actually moving
+	frustum->SetPos(frustum->Pos() + frustum->WorldRight() * xoffset);
+
+	activeCamera->UpdateTransformFromFrustum();
+	cullingCamera->PerformFrustumCulling();
+}
+
+void ModuleCamera::TranslateCamera(float deltaTime) const
+{
+	// Translate camera
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(UP, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(DOWN, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(FORWARD, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(BACKWARD, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(LEFT, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(RIGHT, deltaTime);
+
+	// Speed increase/decrease
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
+		App->camera->ProcessSpeed(2);
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
+		App->camera->ProcessSpeed(0.5f);
+	}
+}
+
+void ModuleCamera::RotateCameraKeys(float deltaTime) const
+{
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(PITCH_DOWN, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(YAW_LEFT, deltaTime);
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		App->camera->ProcessKeyboard(YAW_RIGHT, deltaTime);
+}
+
+void ModuleCamera::onFocus(float3 center, float distance)
+{
+	// The effect is that it moves in a perpendicular way with respect the camera front and then backwards/forward a distance
+	frustum->SetPos(center);
+	frustum->SetPos(center - frustum->Front() * distance);
+
+	activeCamera->UpdateTransformFromFrustum();
+	cullingCamera->PerformFrustumCulling();
+}
+
+void ModuleCamera::ProcessSpeed(float multiplier)
+{
+	MovementSpeed *= multiplier;
 }
 
 void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
@@ -116,52 +199,6 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 	cullingCamera->PerformFrustumCulling();
 }
 
-void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
-{
-	xoffset *= MouseSensitivity;
-	yoffset *= MouseSensitivity;
-	RotateCamera(-xoffset, yoffset);
-
-	activeCamera->UpdateTransformFromFrustum();
-}
-
-void ModuleCamera::ProcessMouseScroll(float xoffset, float yoffset)
-{
-	frustum->SetPos(frustum->Pos() + frustum->Front() * yoffset); // simulates zoom but it's actually moving
-	frustum->SetPos(frustum->Pos() + frustum->WorldRight() * xoffset);
-
-	activeCamera->UpdateTransformFromFrustum();
-}
-
-void ModuleCamera::ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre)
-{
-	float3 lookDirection = Quat::RotateAxisAngle(float3::unitY, xoffset * MouseSensitivity) * (frustum->Pos() - orbit_centre); // Another option would be to rotate around frustum.Up(), both appear to work for me
-	lookDirection = Quat::RotateAxisAngle(frustum->WorldRight(), yoffset * MouseSensitivity) * lookDirection;
-	frustum->SetPos(lookDirection + orbit_centre);
-
-	// Look
-	float3x3 look = float3x3::LookAt(frustum->Front(), (-lookDirection).Normalized(), frustum->Up(), float3::unitY);
-	frustum->SetFront(look.MulDir(frustum->Front()).Normalized());
-	frustum->SetUp(look.MulDir(frustum->Up()).Normalized());
-
-	activeCamera->UpdateTransformFromFrustum();
-}
-
-void ModuleCamera::onResize(float aspect_ratio)
-{
-	frustum->SetVerticalFovAndAspectRatio(frustum->VerticalFov(), aspect_ratio);
-}
-
-void ModuleCamera::onFocus(float3 center, float distance)
-{
-	// The effect is that it moves in a perpendicular way with respect the camera front and then backwards/forward a distance
-	frustum->SetPos(center);
-	frustum->SetPos(center - frustum->Front() * distance);
-
-	activeCamera->UpdateTransformFromFrustum();
-	cullingCamera->PerformFrustumCulling();
-}
-
 void ModuleCamera::RotateCamera(float yaw, float pitch)
 {
 	if (yaw != 0.f)
@@ -181,44 +218,7 @@ void ModuleCamera::RotateCamera(float yaw, float pitch)
 	}
 }
 
-void ModuleCamera::TranslateCamera(float deltaTime) const
+void ModuleCamera::onResize(float aspect_ratio)
 {
-	// Translate camera
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(UP, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(DOWN, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(FORWARD, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(BACKWARD, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(LEFT, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(RIGHT, deltaTime);
-
-	// Speed increase/decrease
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
-		App->camera->ProcessSpeed(2);
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
-		App->camera->ProcessSpeed(0.5f);
-	}
-}
-
-void ModuleCamera::ProcessSpeed(float multiplier)
-{
-	MovementSpeed *= multiplier;
-}
-
-void ModuleCamera::RotateCameraKeys(float deltaTime) const
-{
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(PITCH_DOWN, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(YAW_LEFT, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(YAW_RIGHT, deltaTime);
+	frustum->SetVerticalFovAndAspectRatio(frustum->VerticalFov(), aspect_ratio);
 }

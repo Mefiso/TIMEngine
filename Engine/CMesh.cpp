@@ -76,6 +76,7 @@ void CMesh::Draw()
 				glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
 			}
 		}
+		// If no diffuse/specular maps
 		ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr - 1);
 		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
 		if (specularNr == 1) {

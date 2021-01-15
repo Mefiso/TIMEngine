@@ -203,6 +203,8 @@ const char* filterM[] = { "Linear", "Nearest" };
 void WProperties::DrawMaterialBody(CMaterial* _material)
 {
 	ImGui::PushItemWidth(100);
+
+	// ------ Material base settings ------ //
 	ImGui::ColorEdit3("Set ambient color", &_material->ambient[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
 	// The following settings are used when material has no diffuse/specular maps
 	ImGui::ColorEdit3("Set diffuse color", &_material->diffuse[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs); ImGui::SameLine();
@@ -213,6 +215,7 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 	ImGui::InputInt("Shininess in alpha", &_material->shininessAlpha, 1, 1); ImGui::SameLine();
 	HelpMarker("Number of the specular map which has the shininess in the alpha channel. If 0, no specular map contains the shininess and the above setting is used instead.");
 
+	// -------- Textures settings -------- //
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	// TODO: Button to add textures inside this component
 	if (ImGui::BeginTabBar("Textures"))
