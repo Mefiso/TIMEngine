@@ -32,6 +32,7 @@ public:
 	void CreateEmptyGameObject();									// Creates a new GameObject, and adds it as a child of 'root'
 	void InitSkyboxVAO();											// Initialises the Skybox VBO and VAO
 	void DrawSkybox();												// Sends the Skybox VAO to render
+	void DeselectAll(std::vector<GameObject*> _goRoots);		// Deselects all GameObjects in the list, and any GO children of those
 	void MousePicker(int _x, int _y);								// Explores the octree to select an object on a mouse click in the viewport
 
 	// ---------- Getters ---------- //

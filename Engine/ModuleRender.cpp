@@ -122,6 +122,8 @@ update_status ModuleRender::Update()
 
 	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
 
+	dd::line(picking.a, picking.b, dd::colors::Blue);
+
 	// Render Skybox
 	// TODO: if (drawskybox)... else glClearColor(bgcolor)
 	App->sceneMng->DrawSkybox();

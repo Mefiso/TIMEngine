@@ -6,6 +6,9 @@
 #include <Geometry/LineSegment.h>
 #include <Geometry/Triangle.h>
 
+
+#include "ModuleRender.h"
+
 ModuleSceneManager::ModuleSceneManager()
 {
 	root->ChangeName("Scene 1");
@@ -121,22 +124,32 @@ void ModuleSceneManager::DrawSkybox()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ModuleSceneManager::DeselectAll(std::vector<GameObject*> _goRoots)
+{
+	for (unsigned int i = 0u; i < _goRoots.size(); ++i)
+	{
+		_goRoots[i]->isSelected = false;
+		std::vector<GameObject*> goChildren = _goRoots[i]->GetChildren();
+		DeselectAll(goChildren);
+	}
+}
+
 void ModuleSceneManager::MousePicker(int _x, int _y)
 {
 	// deselect all gameobjects
-
+	DeselectAll(root->GetChildren());
 
 	//Normalise x,y to [-1,1]
 	float vpX = (_x - App->editor->GetViewportPos().x - App->editor->GetViewportSize().x / 2) / (App->editor->GetViewportSize().x / 2);
-	float vpY = (_y - App->editor->GetViewportPos().y - App->editor->GetViewportSize().y / 2) / (App->editor->GetViewportSize().y / 2);
+	float vpY = (_y - App->editor->GetViewportPos().y - App->editor->GetViewportSize().y / 2) / (App->editor->GetViewportSize().y / 2) * -1; // -1 inverts the Y coordinate (origin of frustum is at LOWERLEFT. origin of screen is at UPPERLEFT)
 
 	LineSegment ray = App->camera->GenerateRaycast((float)vpX, (float)vpY);
+	App->renderer->picking = ray;
 	//check collisions
 		// with octree + aabb
 	std::list<GameObject*> intersectedObjects;
 	octree.GetRoot()->CollectLineIntersections(ray, intersectedObjects); //return map(distancia,gameobject)
 
-	//intersectedObjects.front()->ChangeName("hola");
 	if (intersectedObjects.empty())
 	{
 		return;
@@ -150,10 +163,9 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 			float* vertices = cmesh->GetVertices();
 
 			// transform ray to local mesh coordinates
-			float3 componentA = ((*it)->GetTransform()->GetTransformationMatrix().Inverted().Transform(float4(ray.a, 1))).xyz();
-			float3 componentB = ((*it)->GetTransform()->GetTransformationMatrix().Inverted().Transform(float4(ray.b, 1))).xyz();
+			LineSegment localSpaceRay(ray);
+			localSpaceRay.Transform((*it)->GetTransform()->GetTransformationMatrix().Inverted());
 
-			LineSegment localSpaceRay = LineSegment(componentA, componentB);
 			// generate each face of the mesh
 			float3 face[3];
 			for (unsigned int i = 0; i < cmesh->GetNumIndices(); i += 3)
@@ -171,8 +183,8 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 				face[2].z = vertices[indices[i+2] * cmesh->GetVtxSize()+2];
 
 				// compare the face with the ray
-				//const Triangle &triangle, float *distance, vec *intersectionPoint
 				Triangle f = Triangle(face[0], face[1], face[2]);
+				//const Triangle &triangle, float *distance, vec *intersectionPoint
 				if (ray.Intersects(f, nullptr, nullptr))
 					(*it)->isSelected = true;
 			}
