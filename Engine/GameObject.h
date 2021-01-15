@@ -6,6 +6,7 @@
 #include "Math/float4x4.h"
 #include "Geometry/AABB.h"
 #include "Geometry/OBB.h"
+#include "Algorithm/Random/LCG.h"
 #include "debugdraw.h"
 #include <vector>
 
@@ -16,7 +17,7 @@ class GameObject
 {
 private:
 
-	static int objectCount;																				// Global counter of number of GameObjects. Used to set the uID of each new instance of GameObject.
+	static LCG randomGen;																				// Random Generator used to set UUID.
 
 public:
 
@@ -26,7 +27,7 @@ public:
 private:
 
 	std::string name = std::string("");
-	const int uID = objectCount;																		// Unique identifier of each GameObject instance
+	const int UUID;																						// Unique identifier of each GameObject instance
 	GameObject* parent = nullptr;																		// Pointer to the parent of this GameObject
 	std::vector<GameObject*> children;																	// Vector of pointers to GameObjects that are child of this GameObject
 	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
@@ -51,7 +52,7 @@ public:
 
 	// ---------- Getters ---------- //
 	const std::string& GetName() const { return name; }
-	int GetUID() const { return uID; }
+	int GetUUID() const { return UUID; }
 	GameObject* GetParent() const { return parent; }
 	std::vector<GameObject*>& GetChildren() { return children; }
 	std::vector<Component*>& GetComponents() { return components; }

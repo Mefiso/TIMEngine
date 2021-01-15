@@ -84,7 +84,7 @@ update_status ModuleEditor::PostUpdate()
 	if (toDeleteGO) {
 		if (toDeleteGO->GetParent())
 		{
-			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUID());
+			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUUID());
 		}
 		RELEASE(toDeleteGO);
 		hierarchy->SetToDelete(nullptr);
@@ -95,7 +95,7 @@ update_status ModuleEditor::PostUpdate()
 	{
 		if (toDeleteCMP->GetOwner())
 		{
-			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUID());
+			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUUID());
 			App->renderer->RemoveObjectFromDrawList(toDeleteCMP->GetOwner());
 		}
 		properties->SetToDelete(nullptr);

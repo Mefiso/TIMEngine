@@ -7,23 +7,22 @@
 #include "CMaterial.h"
 #include "CCamera.h"
 #include "debugdraw.h"
+#include "Leaks.h"
 
 
-int GameObject::objectCount = 0;
+LCG GameObject::randomGen = LCG();
 bool GameObject::drawOBB = false;
 
-GameObject::GameObject()
+GameObject::GameObject() : UUID(randomGen.Int())
 {
 	aabb.SetNegativeInfinity();
 	obb.SetNegativeInfinity();
-	++objectCount;
 }
 
-GameObject::GameObject(const std::string& _name) : name(_name)
+GameObject::GameObject(const std::string& _name) : name(_name), UUID(randomGen.Int())
 {
 	aabb.SetNegativeInfinity();
 	obb.SetNegativeInfinity();
-	++objectCount;
 }
 
 GameObject::~GameObject()
@@ -117,7 +116,7 @@ void GameObject::RemoveComponent(int _cID)
 
 	for (unsigned int i = 0u; i < components.size(); ++i)
 	{
-		if (components[i]->ID == _cID)
+		if (components[i]->UUID == _cID)
 		{
 			toRemove = (int)i;
 			break;
@@ -138,7 +137,7 @@ void GameObject::SetParent(GameObject* _newParent)
 	bool isChild = false;
 	for (unsigned int i = 0; i < this->GetChildren().size(); ++i)
 	{
-		if (this->children[i]->GetUID() == _newParent->GetUID())
+		if (this->children[i]->GetUUID() == _newParent->GetUUID())
 		{
 			isChild = true;
 			break;
@@ -150,7 +149,7 @@ void GameObject::SetParent(GameObject* _newParent)
 		_newParent->AddChild(this);
 		if (parent)
 		{
-			parent->RemoveChild(this->uID);
+			parent->RemoveChild(this->UUID);
 		}
 		parent = _newParent;
 	}
@@ -182,7 +181,7 @@ void GameObject::RemoveChild(int childID)
 	int toRemove = -1;
 	for (unsigned int i = 0u; i < children.size(); ++i)
 	{
-		if (children[i]->uID == childID)
+		if (children[i]->UUID == childID)
 		{
 			toRemove = (int)i;
 			break;

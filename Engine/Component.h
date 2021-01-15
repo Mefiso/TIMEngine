@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Algorithm/Random/LCG.h"
+
 class GameObject;
 
 enum ComponentType {
@@ -13,10 +15,10 @@ enum ComponentType {
 class Component
 {
 private:
-	static int componentCount;								// Global counter of number of Components. Used to set the uID of each new instance of Component.
+	static LCG randomGen;									// RNG for setting UUIDs.
 
 public:
-	const int ID = componentCount;							// Unique identifier of each Component instance
+	const int UUID;											// Unique identifier of each Component instance
 
 private:
 	ComponentType type;										// Type of the Component (Defined by ComponentType enum)
@@ -32,7 +34,7 @@ public:
 	// ---------- Getters ---------- //
 	ComponentType GetType() const { return type; }
 	GameObject* GetOwner() const { return owner; }
-	const int GetUID() const { return ID; }
+	const int GetUUID() const { return UUID; }
 	bool IsActive() const { return active; }
 
 	// ---------- Setters ---------- //

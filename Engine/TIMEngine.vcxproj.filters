@@ -119,9 +119,6 @@
     <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\SAT.cpp">
       <Filter>MathGeoLib\Algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.cpp">
-      <Filter>MathGeoLib\Algorithm</Filter>
-    </ClCompile>
     <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\GJK.cpp">
       <Filter>MathGeoLib\Algorithm</Filter>
     </ClCompile>
@@ -210,9 +207,6 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="Octree.cpp" />
-    <ClCompile Include="ModuleSceneLoad.cpp">
-      <Filter>CoreModules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleSceneManager.cpp">
       <Filter>CoreModules</Filter>
     </ClCompile>
@@ -230,6 +224,9 @@
     </ClCompile>
     <ClCompile Include="ImporterScene.cpp">
       <Filter>Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.cpp">
+      <Filter>MathGeoLib\Algorithm\Random</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -401,9 +398,6 @@
     <ClInclude Include="ThirdPartyLibs\MathGeoLib\Algorithm\SAT.h">
       <Filter>MathGeoLib\Algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.h">
-      <Filter>MathGeoLib\Algorithm</Filter>
-    </ClInclude>
     <ClInclude Include="ThirdPartyLibs\MathGeoLib\Math\sse_mathfun.h">
       <Filter>MathGeoLib\Math</Filter>
     </ClInclude>
@@ -558,9 +552,6 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="Octree.h" />
-    <ClInclude Include="ModuleSceneLoad.h">
-      <Filter>CoreModules</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleSceneManager.h">
       <Filter>CoreModules</Filter>
     </ClInclude>
@@ -578,6 +569,9 @@
     </ClInclude>
     <ClInclude Include="ImporterScene.h">
       <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.h">
+      <Filter>MathGeoLib\Algorithm\Random</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -619,6 +613,9 @@
     </Filter>
     <Filter Include="Importers">
       <UniqueIdentifier>{a6df53f4-25e1-4094-a972-3daaf95400ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MathGeoLib\Algorithm\Random">
+      <UniqueIdentifier>{3814e593-5377-438c-a3a6-0d7de28766a2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
