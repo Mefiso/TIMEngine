@@ -57,6 +57,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 			"%s", _gameObjList[i]->GetName().c_str());
 
 		// On item clicked - Process Selection of Items
+		// TODO: Differentiate click arrow to open hierarchy vs click to select object
 		if (ImGui::IsItemClicked()) {
 			if (!ImGui::GetIO().KeyCtrl) {
 				App->sceneMng->DeselectAll(App->sceneMng->GetRoot()->GetChildren());

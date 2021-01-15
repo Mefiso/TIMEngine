@@ -146,16 +146,16 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 	LineSegment ray = App->camera->GenerateRaycast((float)vpX, (float)vpY);
 	App->renderer->picking = ray;
 	//check collisions
-		// with octree + aabb
+		// collisions with octree + aabb
 	std::list<GameObject*> intersectedObjects;
 	octree.GetRoot()->CollectLineIntersections(ray, intersectedObjects); //return map(distancia,gameobject)
 
-	if (intersectedObjects.empty())
+	GameObject* pickedGO = nullptr;
+	if (!intersectedObjects.empty())
 	{
-		return;
-	}
-	else {
-		// with vertices
+		// collisions with vertices
+		float minDist = 3.40282e+038; // max float
+		float objDist = 3.40282e+038;
 		for (std::list<GameObject*>::const_iterator it = intersectedObjects.begin(); it != intersectedObjects.end(); ++it)
 		{
 			CMesh* cmesh = (*it)->GetComponent<CMesh>();
@@ -168,6 +168,7 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 
 			// generate each face of the mesh
 			float3 face[3];
+			float vtxDist;
 			for (unsigned int i = 0; i < cmesh->GetNumIndices(); i += 3)
 			{
 				face[0].x = vertices[indices[i] * cmesh->GetVtxSize()];
@@ -184,10 +185,27 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 
 				// compare the face with the ray
 				Triangle f = Triangle(face[0], face[1], face[2]);
-				//const Triangle &triangle, float *distance, vec *intersectionPoint
-				if (ray.Intersects(f, nullptr, nullptr))
-					(*it)->isSelected = true;
+				if (localSpaceRay.Intersects(f, &vtxDist, nullptr))
+				{
+					// min distance
+					if (vtxDist < objDist)
+					{
+						objDist = vtxDist;
+					}
+				}
+			}
+			// choose the GO selection by minDist
+			
+			if (objDist < minDist)
+			{
+				minDist = objDist;
+				pickedGO = (*it);
 			}
 		}
+	}
+	if (pickedGO)
+	{
+		App->editor->InspectObject(pickedGO);
+		pickedGO->isSelected = true;
 	}
 }

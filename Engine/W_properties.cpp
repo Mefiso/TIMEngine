@@ -110,7 +110,7 @@ void WProperties::DrawComponentHeader(Component* _component)
 		name = "Camera"; break;
 	}
 
-	bool headerOpen = ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap);
+	bool headerOpen = ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_DefaultOpen);
 	ImGui::SameLine();
 	if (ImGui::GetWindowWidth() > 170)
 		ImGui::Indent(ImGui::GetWindowWidth() - 85);
