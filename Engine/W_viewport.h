@@ -2,6 +2,10 @@
 #include "Window.h"
 #include <Math/float2.h>
 
+
+#include "CCamera.h"
+#include "GameObject.h"
+
 class WViewport : public Window
 {
 public:
@@ -26,4 +30,8 @@ public:
 	float GetWidth() { return width; }
 	float GetHeight() { return height; }
 	float2 GetViewportPosition() { return viewportPosition; }
+
+
+
+	void DrawGuizmo(CCamera* camera, GameObject* go);
 };

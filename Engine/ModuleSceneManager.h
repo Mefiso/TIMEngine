@@ -7,6 +7,7 @@
 class ModuleSceneManager : public Module
 {
 public:
+	GameObject* selectedObject = nullptr;							// Pointer to the selected Game Object. This will have the gizmos on him, w_properties will show its information, and will be highlighted in the w_hierarchy
 	Octree octree = Octree();										// Octree structure of the scene
 
 private:
@@ -33,15 +34,17 @@ public:
 	void InitSkyboxVAO();											// Initialises the Skybox VBO and VAO
 	void DrawSkybox();												// Sends the Skybox VAO to render
 	void DeselectAll(std::vector<GameObject*> _goRoots);			// Deselects all GameObjects in the list, and any GO children of those
-	void MousePicker(int _x, int _y);						// Explores the octree to select an object on a mouse click in the viewport
+	void MousePicker(int _x, int _y);								// Explores the octree to select an object on a mouse click in the viewport
 
 	// ---------- Getters ---------- //
 	GameObject* GetRoot() const { return root; }
+	GameObject* GetSelectedGO() const { return selectedObject; };
 	unsigned int GetProgram() const { return defaultProgram; }
 	unsigned int GetSkyboxProgram() const { return skyboxShader; }
 	unsigned int GetSkyboxTexture() const { return skyboxTexture; }
 
 	// ---------- Setters ---------- //
+	void SetSelectedGO(GameObject* _object) { selectedObject = _object; }
 	void SetSkyboxTexture(unsigned int _texID) { skyboxTexture = _texID; }
 
 };

@@ -2,12 +2,14 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
+#include "ModuleSceneManager.h"
 #include "GameObject.h"
 #include "CTransform.h"
 #include "CMaterial.h"
 #include "ImporterMaterial.h"
 #include "CMesh.h"
 #include "CCamera.h"
+#include "CTransform.h"
 #include "GL/glew.h"
 #include "Leaks.h"
 
@@ -19,11 +21,6 @@ WProperties::~WProperties()
 {
 }
 
-void WProperties::SetInspectedObject(GameObject* _object)
-{
-	selectedObject = _object;
-}
-
 void WProperties::Draw()
 {
 	if (!ImGui::Begin(name.c_str(), &active))
@@ -32,8 +29,9 @@ void WProperties::Draw()
 		return;
 	}
 
-	if (selectedObject)
+	if (App->sceneMng->GetSelectedGO())
 	{
+		GameObject* selectedObject = App->sceneMng->GetSelectedGO();
 		// GameObject Options
 		strcpy_s(RenameBuf, IM_ARRAYSIZE(RenameBuf), (char*)selectedObject->GetName().c_str());
 		ImGui::AlignTextToFramePadding(); ImGui::TextUnformatted("Name:"); ImGui::SameLine();
@@ -126,7 +124,7 @@ void WProperties::DrawComponentHeader(Component* _component)
 		switch (_component->GetType())
 		{
 		case TRANSFORM:
-			DrawTransformationBody();
+			DrawTransformationBody((CTransform*)_component);
 			break;
 		case MESH:
 			DrawMeshBody((CMesh*)_component);
@@ -149,12 +147,11 @@ void WProperties::DrawComponentHeader(Component* _component)
 	}
 }
 
-void WProperties::DrawTransformationBody()
+void WProperties::DrawTransformationBody(CTransform* _transform)
 {
-	CTransform* transform = selectedObject->GetTransform();
-	float3 scale = transform->GetScale();
-	float3 rotation = transform->GetRotation();
-	float3 position = transform->GetPos();
+	float3 scale = _transform->GetScale();
+	float3 rotation = _transform->GetRotation();
+	float3 position = _transform->GetPos();
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 
 	ImGui::PushItemWidth(70.f);
@@ -176,11 +173,12 @@ void WProperties::DrawTransformationBody()
 
 	if (modified)
 	{
+		GameObject* selectedObject = App->sceneMng->GetSelectedGO();
 		selectedObject->SetTransform(scale, rotation, position);
 		selectedObject->UpdateBoundingBoxes();
 		selectedObject->UpdateOctreePosition();
 		if (selectedObject->GetComponent<CCamera>())
-			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
+			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(_transform);
 		App->camera->cullingCamera->PerformFrustumCulling();
 	}
 	ImGui::PopItemWidth();

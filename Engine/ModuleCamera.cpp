@@ -1,10 +1,9 @@
-#include "GL/glew.h"
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera.h"
-#include "ModuleEditor.h"
 #include "ModuleTimeManager.h"
 #include "ModuleInput.h"
+#include "ModuleSceneManager.h"
 #include "Math/Quat.h"
 #include "Math/float3x3.h"
 #include "Leaks.h"
@@ -44,7 +43,7 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 		break;
 	case Event::orbit_event:
 	{
-		const GameObject* selected = App->editor->GetSelectedObject();
+		const GameObject* selected = App->sceneMng->GetSelectedGO();
 		if (selected)
 			ProcessOrbit((float)event.point2d.x, (float)event.point2d.y, selected->GetModelMatrix().Col3(3));
 		else
@@ -70,7 +69,7 @@ void ModuleCamera::ProcessViewportEvents() {
 	RotateCameraKeys(App->timeMng->GetRealTimeDeltaTime());
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
-		const GameObject* selected = App->editor->GetSelectedObject();
+		const GameObject* selected = App->sceneMng->GetSelectedGO();
 		if (selected)
 		{
 			float4 centerDistance = selected->ComputeCenterAndDistance();

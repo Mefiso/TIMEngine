@@ -149,17 +149,6 @@ void ModuleEditor::Log(const char* input) const
 		console->AddLog(input);
 }
 
-void ModuleEditor::InspectObject(GameObject* _object)
-{
-	if (properties)
-		properties->SetInspectedObject(_object);
-}
-
-const GameObject* ModuleEditor::GetSelectedObject() const
-{
-	return properties->GetSelectedGO();
-}
-
 void ModuleEditor::DrawMainMenu()
 {
 	if (ImGui::BeginMainMenuBar())

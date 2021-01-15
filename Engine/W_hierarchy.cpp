@@ -61,7 +61,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 		if (ImGui::IsItemClicked()) {
 			if (!ImGui::GetIO().KeyCtrl) {
 				App->sceneMng->DeselectAll(App->sceneMng->GetRoot()->GetChildren());
-				App->editor->InspectObject(_gameObjList[i]);   // send the selected GO to w_properties
+				App->sceneMng->SetSelectedGO(_gameObjList[i]);   // send the selected GO to w_properties
 			}
 			_gameObjList[i]->isSelected = true;
 		}
@@ -93,7 +93,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 			if (ImGui::MenuItem("Delete"))
 			{
 				App->sceneMng->DeselectAll(App->sceneMng->GetRoot()->GetChildren());
-				App->editor->InspectObject(nullptr);				// Reset inspector selection (needed for avoiding pointer dereferenced memory)
+				App->sceneMng->SetSelectedGO(nullptr);				// Reset inspector selection (needed for avoiding pointer dereferenced memory)
 				toDelete = _gameObjList[i];
 			}
 

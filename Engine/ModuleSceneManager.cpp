@@ -6,9 +6,6 @@
 #include <Geometry/LineSegment.h>
 #include <Geometry/Triangle.h>
 
-
-#include "ModuleRender.h"
-
 ModuleSceneManager::ModuleSceneManager()
 {
 	root->ChangeName("Scene 1");
@@ -144,7 +141,7 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 	float vpY = (_y - App->editor->GetViewportPos().y - App->editor->GetViewportSize().y / 2) / (App->editor->GetViewportSize().y / 2) * -1; // -1 inverts the Y coordinate (origin of frustum is at LOWERLEFT. origin of screen is at UPPERLEFT)
 
 	LineSegment ray = App->camera->GenerateRaycast((float)vpX, (float)vpY);
-	App->renderer->picking = ray;
+
 	//check collisions
 		// collisions with octree + aabb
 	std::list<GameObject*> intersectedObjects;
@@ -205,7 +202,7 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 	}
 	if (pickedGO)
 	{
-		App->editor->InspectObject(pickedGO);
+		App->sceneMng->SetSelectedGO(pickedGO);
 		pickedGO->isSelected = true;
 	}
 }
