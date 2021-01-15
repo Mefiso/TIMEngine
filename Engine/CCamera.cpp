@@ -44,7 +44,7 @@ void CCamera::UpdateTransformFromFrustum()
 	}
 }
 
-void CCamera::PerformFrustumCulling(bool extractFrustum = false)
+void CCamera::PerformFrustumCulling(bool extractFrustum)
 {
 	if (extractFrustum)
 	{

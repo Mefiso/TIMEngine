@@ -57,6 +57,7 @@ public:
 	void SetCullingCamera(CCamera* _camera) { cullingCamera = _camera; cullingCamera->PerformFrustumCulling(); }
 	void ResetCullingCamera() { cullingCamera = defaultCamera; }
 
+	void onFocus(float3 center, float distance);								// Moves the camera to Focus the selected object, and places it at a suitable distance
 	void onResize(float aspect_ratio);											// Sets the camera FOV and aspectratio when resizing the application Window
 
 private:
@@ -68,7 +69,6 @@ private:
 	// Viewport (Keyboard) events Handlers
 	void TranslateCamera(float deltaTime) const;								// Moves the application camera if an Input event has occurred
 	void RotateCameraKeys(float deltaTime) const;								// Rotates the application camera if an Input event has occurred
-	void onFocus(float3 center, float distance);								// Moves the camera to Focus the selected object, and places it at a suitable distance
 	// Process Keyboard operations
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);			// Applies the corresponding changes when an input from keyboard is detected and the Viewport is hovered. (Editor.PreUpdate > Rendered.ProcessViewportEvents)
 	void ProcessSpeed(float multiplier);										// Multiplies the current MovementSpeed by a factor
