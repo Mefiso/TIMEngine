@@ -54,8 +54,8 @@ public:
 	// ---------- Setters ---------- //
 	void SetActiveCamera(CCamera* _camera) { activeCamera = _camera; frustum = _camera->GetFrustum(); }
 	void ResetActiveCamera() { activeCamera = defaultCamera; frustum = defaultCamera->GetFrustum(); }
-	void SetCullingCamera(CCamera* _camera) { cullingCamera = _camera; cullingCamera->PerformFrustumCulling(); }
-	void ResetCullingCamera() { cullingCamera = defaultCamera; }
+	void SetCullingCamera(CCamera* _camera) { cullingCamera = _camera; cullingCamera->PerformFrustumCulling(true); }
+	void ResetCullingCamera() { cullingCamera = defaultCamera; cullingCamera->PerformFrustumCulling(true); }
 
 	void onFocus(float3 center, float distance);								// Moves the camera to Focus the selected object, and places it at a suitable distance
 	void onResize(float aspect_ratio);											// Sets the camera FOV and aspectratio when resizing the application Window

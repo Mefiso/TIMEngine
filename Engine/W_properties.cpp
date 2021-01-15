@@ -292,7 +292,6 @@ void WProperties::DrawCameraBody(CCamera* _camera)
 			App->camera->SetCullingCamera(_camera);
 		else
 			App->camera->ResetCullingCamera();
-		App->camera->cullingCamera->PerformFrustumCulling();
 	};
 
 	ImGui::PushItemWidth(180);
