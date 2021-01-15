@@ -27,6 +27,7 @@ void CCamera::Draw()
 void CCamera::UpdateFrustumFromTransform(CTransform* _transform)
 {
 	frustum->SetWorldMatrix(_transform->GetTransformationMatrix().Float3x4Part());
+	PerformFrustumCulling(true);
 }
 
 void CCamera::UpdateTransformFromFrustum()

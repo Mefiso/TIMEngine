@@ -21,7 +21,7 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Start()
 {
-	cullingCamera->PerformFrustumCulling();
+	cullingCamera->PerformFrustumCulling(true);
 	return true;
 }
 
@@ -79,7 +79,7 @@ void ModuleCamera::ProcessMouseMovement(float xoffset, float yoffset)
 	RotateCamera(-xoffset, yoffset);
 
 	activeCamera->UpdateTransformFromFrustum();
-	cullingCamera->PerformFrustumCulling();
+	cullingCamera->PerformFrustumCulling(true);
 }
 
 void ModuleCamera::ProcessOrbit(float xoffset, float yoffset, float3 orbit_centre)
@@ -94,7 +94,7 @@ void ModuleCamera::ProcessOrbit(float xoffset, float yoffset, float3 orbit_centr
 	frustum->SetUp(look.MulDir(frustum->Up()).Normalized());
 
 	activeCamera->UpdateTransformFromFrustum();
-	cullingCamera->PerformFrustumCulling();
+	cullingCamera->PerformFrustumCulling(true);
 }
 
 void ModuleCamera::ProcessMouseScroll(float xoffset, float yoffset)
@@ -103,7 +103,7 @@ void ModuleCamera::ProcessMouseScroll(float xoffset, float yoffset)
 	frustum->SetPos(frustum->Pos() + frustum->WorldRight() * xoffset);
 
 	activeCamera->UpdateTransformFromFrustum();
-	cullingCamera->PerformFrustumCulling();
+	cullingCamera->PerformFrustumCulling(true);
 }
 
 void ModuleCamera::TranslateCamera(float deltaTime) const
@@ -150,7 +150,7 @@ void ModuleCamera::onFocus(float3 center, float distance)
 	frustum->SetPos(center - frustum->Front() * distance);
 
 	activeCamera->UpdateTransformFromFrustum();
-	cullingCamera->PerformFrustumCulling();
+	cullingCamera->PerformFrustumCulling(true);
 }
 
 void ModuleCamera::ProcessSpeed(float multiplier)
@@ -196,7 +196,7 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 	}
 
 	activeCamera->UpdateTransformFromFrustum();
-	cullingCamera->PerformFrustumCulling();
+	cullingCamera->PerformFrustumCulling(true);
 }
 
 void ModuleCamera::RotateCamera(float yaw, float pitch)
