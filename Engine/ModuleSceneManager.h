@@ -25,13 +25,14 @@ public:
 	ModuleSceneManager();											// Constructor
 	~ModuleSceneManager();											// Destructor
 
-	void CreateEmptyGameObject();									// Creates a new GameObject, and adds it as a child of 'root'
-	void InitSkyboxVAO();											// Initialises the Skybox VBO and VAO
-	void DrawSkybox();												// Sends the Skybox VAO to render
-
 	//  ----- Module Functions ----- //
 	bool Start() override;											// Start Module
 	bool CleanUp() override;										// Clean memory allocated by this Module
+
+	void CreateEmptyGameObject();									// Creates a new GameObject, and adds it as a child of 'root'
+	void InitSkyboxVAO();											// Initialises the Skybox VBO and VAO
+	void DrawSkybox();												// Sends the Skybox VAO to render
+	void MousePicker(int _x, int _y);								// Explores the octree to select an object on a mouse click in the viewport
 
 	// ---------- Getters ---------- //
 	GameObject* GetRoot() const { return root; }

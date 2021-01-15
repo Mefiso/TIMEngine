@@ -264,7 +264,7 @@ void GameObject::UpdateBoundingBoxes()
 
 	obb = aabb.Transform(GetModelMatrix());
 	if (nonuniformScaling)
-		obb.Scale(obb.CenterPoint(), 1.0 / GetAccumulatedScale().x);
+		obb.Scale(obb.CenterPoint(), 1.0f / GetAccumulatedScale().x);
 
 	//Added, calculate obb vertices only when obb is updated
 	ddVec3 points[8];

@@ -1,10 +1,11 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "W_viewport.h"
 #include <vector>
+#include <Math/float2.h>
 
 class Window;
-class WViewport;
 class WConsole;
 class WHierarchy;
 class WMonitor;
@@ -53,6 +54,10 @@ public:
 	void Log(const char* input) const;								// Sends LOG inputs from the log function to W_Console
 	void InspectObject(GameObject* _object);						// Sends the currently selected GameObject in the hierarchy to the properties inspector window WProperties
 	const GameObject* GetSelectedObject() const;					// Retrieves the currently selected game object in the hierarchy and properties windows.
+
+	// ---------- Getters ---------- //
+	float2 GetViewportPos() const { return viewport->GetViewportPosition(); }
+	float2 GetViewportSize() const { return float2(viewport->GetWidth(), viewport->GetHeight()); }
 
 private:
 	void DrawMainMenu();											// Generates the main menu using ImGui

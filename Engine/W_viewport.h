@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+#include <Math/float2.h>
 
 class WViewport : public Window
 {
@@ -11,6 +12,7 @@ private:
 
 	unsigned int texid = 0;							// ID of the Texture of the loaded model
 	float width = 0, height = 0;					// Size of the viewport
+	float2 viewportPosition = float2(0, 0);
 
 public:
 	WViewport(std::string name);					// Constructor
@@ -23,4 +25,5 @@ public:
 	// ---------- Getters ---------- //
 	float GetWidth() { return width; }
 	float GetHeight() { return height; }
+	float2 GetViewportPosition() { return viewportPosition; }
 };

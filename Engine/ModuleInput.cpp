@@ -5,6 +5,7 @@
 #include "ModuleRender.h"
 #include "ModuleEditor.h"
 #include "ModuleFilesystem.h"
+#include "ModuleSceneManager.h"
 #include "SDL.h"
 #include "Leaks.h"
 #include "Brofiler.h"
@@ -40,8 +41,6 @@ bool ModuleInput::Init()
 
 update_status ModuleInput::PreUpdate()
 {
-	BROFILER_CATEGORY("PreUpdateInput", Profiler::Color::Orchid);
-
 	if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
@@ -111,7 +110,7 @@ update_status ModuleInput::PreUpdate()
 		case SDL_MOUSEMOTION:
 			if (App->editor->IsViewportHovered()) {
 				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
-					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {																							// REVIEW THIS MEEEEEEN
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {																							// TODO: REVIEW THIS MEEEEEEN
 						SDL_SetRelativeMouseMode(SDL_TRUE);
 					}
 					Event ev(Event::rotate_event);
@@ -149,6 +148,11 @@ update_status ModuleInput::PreUpdate()
 		}
 		case SDL_MOUSEBUTTONDOWN:
 			mouse_buttons[sdlEvent.button.button - 1] = KEY_DOWN;
+			if (App->editor->IsViewportHovered() && GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && GetKey(SDL_SCANCODE_LALT) == KEY_IDLE) { // Mouse Picking
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+				App->sceneMng->MousePicker(x, y);
+			}
 			break;
 		case SDL_MOUSEBUTTONUP:
 			mouse_buttons[sdlEvent.button.button - 1] = KEY_UP;

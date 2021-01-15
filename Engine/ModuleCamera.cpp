@@ -59,6 +59,12 @@ void ModuleCamera::ReceiveEvent(const Event& event)
 	}
 }
 
+LineSegment ModuleCamera::GenerateRaycast(float _x, float _y)
+{
+	LineSegment picking = frustum->UnProjectLineSegment(_x, _y);
+	return picking;
+}
+
 void ModuleCamera::ProcessViewportEvents() {
 	TranslateCamera(App->timeMng->GetRealTimeDeltaTime());
 	RotateCameraKeys(App->timeMng->GetRealTimeDeltaTime());

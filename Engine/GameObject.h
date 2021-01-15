@@ -39,7 +39,7 @@ private:
 public:
 
 	GameObject();																						// Constructor
-	GameObject(const std::string& _name);																			// Constructor (name as param)
+	GameObject(const std::string& _name);																// Constructor (name as param)
 	~GameObject();																						// Destructor
 
 	void CleanUp();																						// Clears all memory stored by this GameObject
@@ -62,7 +62,7 @@ public:
 	const OBB& GetOBB() const { return obb; }
 
 	template<typename T>
-	T* GetComponent() const																					// Get a component of type T, or null if it does not exist on this GameObject
+	T* GetComponent() const																				// Get a component of type T, or null if it does not exist on this GameObject
 	{
 		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) return c; }
 		return nullptr;

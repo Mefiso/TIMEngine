@@ -3,7 +3,8 @@
 #include "Globals.h"
 #include "SDL.h"
 #include "CCamera.h"
-#include "Geometry/Frustum.h"
+#include <Geometry/Frustum.h>
+#include <Geometry/LineSegment.h>
 
 enum Camera_Movement {
 	FORWARD,
@@ -45,6 +46,7 @@ public:
 	bool CleanUp() override;													// Clean memory allocated by this Module
 	void ReceiveEvent(const Event& event) override;								// Recieve events from App (that recieves events from other Modules)
 	// callback funcs
+	LineSegment GenerateRaycast(float _x, float _y);
 	void ProcessViewportEvents();												// Called from ModuleEditor, when an input is recieved inside the viewport. Perfoms the necessary operations for the corresponding input. This allows the control of the actions performed when the input is captured inside the viewport.
 
 	// ---------- Getters ---------- //
