@@ -3,7 +3,7 @@
 #include "Globals.h"
 #include "Math/float3.h"
 #include "MSTimer.h"
-#include <Geometry/LineSegment.h>
+#include "Geometry/LineSegment.h"
 
 class Model;
 class GameObject;

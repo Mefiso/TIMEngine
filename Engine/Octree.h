@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Geometry/AABB.h"
+#include "Geometry/LineSegment.h"
 #include <list>
-#include <Geometry/LineSegment.h>
 
 class GameObject;
 

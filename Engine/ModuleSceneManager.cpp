@@ -154,8 +154,8 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 	if (!intersectedObjects.empty())
 	{
 		// collisions with vertices
-		float minDist = 3.40282e+038; // max float
-		float objDist = 3.40282e+038;
+		float minDist = 3.40282e+038f; // max float
+		float objDist = 3.40282e+038f;
 		for (std::list<GameObject*>::const_iterator it = intersectedObjects.begin(); it != intersectedObjects.end(); ++it)
 		{
 			CMesh* cmesh = (*it)->GetComponent<CMesh>();

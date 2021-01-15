@@ -210,9 +210,6 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="Octree.cpp" />
-    <ClCompile Include="ModuleSceneLoad.cpp">
-      <Filter>CoreModules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleSceneManager.cpp">
       <Filter>CoreModules</Filter>
     </ClCompile>
@@ -230,6 +227,18 @@
     </ClCompile>
     <ClCompile Include="ImporterScene.cpp">
       <Filter>Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\ImGUI\ImGradient.cpp">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\ImGUI\ImGuizmo.cpp">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\ImGUI\ImSequencer.cpp">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\ImGUI\ImCurveEdit.cpp">
+      <Filter>ImGUI\ImGuizmo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -558,9 +567,6 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="Octree.h" />
-    <ClInclude Include="ModuleSceneLoad.h">
-      <Filter>CoreModules</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleSceneManager.h">
       <Filter>CoreModules</Filter>
     </ClInclude>
@@ -578,6 +584,21 @@
     </ClInclude>
     <ClInclude Include="ImporterScene.h">
       <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImCurveEdit.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImGradient.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImGuizmo.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImSequencer.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImZoomSlider.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -619,6 +640,9 @@
     </Filter>
     <Filter Include="Importers">
       <UniqueIdentifier>{a6df53f4-25e1-4094-a972-3daaf95400ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGUI\ImGuizmo">
+      <UniqueIdentifier>{a576fb88-7515-4571-9c73-04c8cd39d947}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
