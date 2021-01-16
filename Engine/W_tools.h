@@ -18,4 +18,3 @@ public:
 	int GetGuizmoMode() const { return guizmoMode; }
 	int GetPlayPauseState() const { return playPauseStop; }
 };
-

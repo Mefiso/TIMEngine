@@ -62,19 +62,6 @@ void WViewport::SetColorbuffer(unsigned int _texid, unsigned int _width, unsigne
 
 void WViewport::DrawGuizmo(CCamera* _camera, GameObject* _go)
 {
-	float4x4 view = _camera->GetFrustum()->ViewMatrix();
-	float4x4 proj = _camera->GetFrustum()->ProjectionMatrix();
-	float4x4 model = _go->GetModelMatrix();
-	float4x4 delta;
-	view.Transpose(); proj.Transpose(); model.Transpose();
-
-	ImGuizmo::BeginFrame();
-	ImGuizmo::Enable(true);
-
-	ImGuiIO& io = ImGui::GetIO();
-	ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, width, height);
-	ImGuizmo::SetDrawlist();
-
 	ImGuizmo::OPERATION ops;
 	switch (App->editor->GetGuizmoState())
 	{
@@ -101,6 +88,21 @@ void WViewport::DrawGuizmo(CCamera* _camera, GameObject* _go)
 		mode = ImGuizmo::LOCAL;
 		break;
 	}
+
+	float4x4 view = _camera->GetFrustum()->ViewMatrix();
+	float4x4 proj = _camera->GetFrustum()->ProjectionMatrix();
+	float4x4 model = _go->GetModelMatrix();
+	float4x4 delta;
+	view.Transpose(); proj.Transpose(); model.Transpose();
+
+	ImGuizmo::BeginFrame();
+	ImGuizmo::Enable(true);
+
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, width, height);
+	ImGuizmo::SetDrawlist();
+
+	
 	ImGuizmo::Manipulate((const float*)&view, (const float*)&proj, ops, mode, (float*)&model, (float*)&delta/*, guizmo_useSnap ? &guizmo_snap.x : NULL*/);
 
 	if (ImGuizmo::IsUsing() && !delta.IsIdentity())
@@ -108,9 +110,16 @@ void WViewport::DrawGuizmo(CCamera* _camera, GameObject* _go)
 		// set the new transform
 		model.Transpose();
 		// TODO: Set the transform correctly (when rotating/scaling)
+		/*Maybe:
+		float3 thisScale = float3(thisTransform.Col3(0).Length(), thisTransform.Col3(1).Length(), thisTransform.Col3(2).Length());
+		if (thisScale.Equals(float3::one))
+			thisTransform.InverseOrthonormal();
+		else if (thisScale.xxx().Equals(thisScale))
+			thisTransform.InverseOrthogonalUniformScale();
+		else
+			thisTransform.InverseColOrthogonal();*/
 		float4x4 parent = _go->GetParent()->GetModelMatrix().Inverted();
 		_go->SetTransform(parent * model);
-
 		_go->UpdateBoundingBoxes();
 		_go->UpdateOctreePosition();
 		
