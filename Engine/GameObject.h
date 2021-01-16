@@ -41,14 +41,16 @@ public:
 
 	GameObject();																						// Constructor
 	GameObject(const std::string& _name);																// Constructor (name as param)
+	GameObject(const std::string& _name, const int _UUID);
 	~GameObject();																						// Destructor
 
 	void CleanUp();																						// Clears all memory stored by this GameObject
 	void Draw();																						// Update this GameObject with the transformations applied to it. SHOULD THIS GO IN PREUPDATE STEP?
-	bool AddComponent(ComponentType _type, void* arg = nullptr, const std::string& path = "");			// Create and attach a new Component to this GameObject
+	bool AddComponent(ComponentType _type, const int _UUID = -1);										// Create and attach a new Component to this GameObject
 	void RemoveComponent(int _cID);																		// Detach a component from this GameObject
 	void AddChild(GameObject* _newChild);																// Subfunction of SetParent(). Places another GameObject as a child of this one
 	void RemoveChild(int childID);																		// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
+	GameObject* SearchChild(int childID);
 
 	// ---------- Getters ---------- //
 	const std::string& GetName() const { return name; }
@@ -61,6 +63,12 @@ public:
 	CTransform* GetTransform() const { return transform; }												// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
 	const AABB& GetAABB() const { return aabb; }
 	const OBB& GetOBB() const { return obb; }
+
+	Component* GetComponent(int _cID)
+	{
+		for (auto c : components) { if (c->GetUUID() == _cID) return c; }
+		return nullptr;
+	}
 
 	template<typename T>
 	T* GetComponent() const																				// Get a component of type T, or null if it does not exist on this GameObject

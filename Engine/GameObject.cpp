@@ -25,6 +25,12 @@ GameObject::GameObject(const std::string& _name) : name(_name), UUID(randomGen.I
 	obb.SetNegativeInfinity();
 }
 
+GameObject::GameObject(const std::string& _name, const int _UUID) : name(_name), UUID(_UUID)
+{
+	aabb.SetNegativeInfinity();
+	obb.SetNegativeInfinity();
+}
+
 GameObject::~GameObject()
 {
 	CleanUp();
@@ -62,7 +68,7 @@ void GameObject::Draw()
 	}
 }
 
-bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)
+bool GameObject::AddComponent(ComponentType _type, const int _UUID)
 {
 	bool createdComp = false;
 	Component* newComp;
@@ -71,7 +77,10 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	case TRANSFORM:
 		if (!this->GetTransform())
 		{
-			newComp = new CTransform(this);
+			if (_UUID != -1)
+				newComp = new CTransform(this, _UUID);
+			else
+				newComp = new CTransform(this);
 			transform = (CTransform*)newComp;
 			components.push_back(newComp);
 			createdComp = true;
@@ -80,7 +89,10 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	case MESH:
 		if (!this->GetComponent<CMesh>())
 		{
-			newComp = new CMesh(this);
+			if (_UUID != -1)
+				newComp = new CMesh(this, _UUID);
+			else
+				newComp = new CMesh(this);
 			components.push_back(newComp);
 			createdComp = true;
 		}
@@ -88,7 +100,10 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	case MATERIAL:
 		if (!this->GetComponent<CMaterial>())
 		{
-			newComp = new CMaterial(this);
+			if (_UUID != -1)
+				newComp = new CMaterial(this, _UUID);
+			else
+				newComp = new CMaterial(this);
 			components.push_back(newComp);
 			createdComp = true;
 		}
@@ -96,7 +111,10 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 	case CAMERA:
 		if (!this->GetComponent<CCamera>())
 		{
-			newComp = new CCamera(this);
+			if (_UUID != -1)
+				newComp = new CCamera(this, _UUID);
+			else
+				newComp = new CCamera(this);
 			components.push_back(newComp);
 			createdComp = true;
 		}
@@ -191,6 +209,24 @@ void GameObject::RemoveChild(int childID)
 		children.erase(children.begin() + toRemove);
 }
 
+GameObject* GameObject::SearchChild(int childID)
+{
+	for (int i = 0; i < children.size(); ++i)
+	{
+		if (children[i]->UUID == childID)
+		{
+			return children[i];
+		}
+	}
+	for (int i = 0; i < children.size(); ++i)
+	{
+		GameObject* go = children[i]->SearchChild(childID);
+		if (go)
+			return go;
+	}
+	return nullptr;
+}
+
 float4x4 GameObject::GetModelMatrix() const
 {
 	if (parent)
@@ -233,11 +269,8 @@ void GameObject::SetTransform(float4x4& _newTransform)
 void GameObject::SetProgram(unsigned int program)
 {
 	// update components
-	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
-	{
-		if ((*it)->GetType() == MESH)
-			((CMesh*)(*it))->SetProgram(program);
-	}
+	GetComponent<CMesh>()->SetProgram(program);
+
 	// update children accordingly
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{

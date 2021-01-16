@@ -28,6 +28,7 @@ protected:
 
 public:
 	Component(ComponentType _type, GameObject* _owner);		// Constructor
+	Component(ComponentType _type, GameObject* _owner, const int _UUID);
 	virtual ~Component();									// Destructor
 	virtual void Draw() {}									// Sends the information of this component to Render it
 

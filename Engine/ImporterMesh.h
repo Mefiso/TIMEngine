@@ -25,7 +25,7 @@ namespace ImporterMesh
 			AABBmax.x = vertex[0] > AABBmax.x ? vertex[0] : AABBmax.x;
 			AABBmax.y = vertex[1] > AABBmax.y ? vertex[1] : AABBmax.y;
 			AABBmax.z = vertex[2] > AABBmax.z ? vertex[2] : AABBmax.z;
-			
+
 			AABBmin.x = vertex[0] < AABBmin.x ? vertex[0] : AABBmin.x;
 			AABBmin.y = vertex[1] < AABBmin.y ? vertex[1] : AABBmin.y;
 			AABBmin.z = vertex[2] < AABBmin.z ? vertex[2] : AABBmin.z;
@@ -82,4 +82,3 @@ namespace ImporterMesh
 		}
 	}
 };
-

@@ -49,7 +49,7 @@ void ImporterMaterial::Save(const char* _destPath)
 		size = ilSaveL(IL_DDS, nullptr, 0);		// Get the size of the data buffer
 		if (size > 0)
 		{
-			char* fileBuffer = new char[size]; // Allocate
+			char* fileBuffer = nullptr;
 			data = new ILubyte[size]; // allocate data buffer
 			if (ilSaveL(IL_DDS, data, size) > 0) {
 				// Save to buffer with the ilSaveIL function
@@ -129,7 +129,7 @@ unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		//Save(_destPath.c_str());
+		Save(_destPath.c_str());
 	}
 	else
 	{

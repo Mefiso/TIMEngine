@@ -17,5 +17,6 @@ public:
 
 public:
 	CMaterial(GameObject* _owner);				// Constructor
+	CMaterial(GameObject* _owner, const int _UUID);
 	~CMaterial();								// Destructor
 };

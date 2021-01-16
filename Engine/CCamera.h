@@ -17,6 +17,7 @@ private:
 
 public:
 	CCamera(GameObject* _owner);								// Constructor
+	CCamera(GameObject* _owner, const int _UUID);
 	~CCamera();													// Destructor
 
 	void Draw() override;										// Sends the information of this component to Render it. If the owner GameObject is selected, it will draw the camera frustum.

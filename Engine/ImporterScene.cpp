@@ -8,8 +8,14 @@
 #include "Component.h"
 #include "GameObject.h"
 
+#include "rapidjson/document.h"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/filewritestream.h"
+#include "rapidjson/writer.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <string>
 
 // Assimp Callback
 struct aiLogStream stream;		// Assimp logs are registered in this variable
@@ -18,7 +24,7 @@ void AssimpLog(const char* msg, char* user) {
 		LOG("[info] Assimp Log: %s", msg);
 }
 
-void ImporterScene::Load(std::string const& _path)
+void ImporterScene::Import(std::string const& _path)
 {
 	stream.callback = AssimpLog;
 	aiAttachLogStream(&stream);
@@ -40,9 +46,6 @@ void ImporterScene::Load(std::string const& _path)
 
 		// Set default shading program for this GameObject and all its children
 		newModel->SetProgram(App->sceneMng->GetProgram());
-		for (std::vector<GameObject*>::const_iterator it = newModel->GetChildren().begin(); it != newModel->GetChildren().end(); ++it) {
-			(*it)->SetProgram(App->sceneMng->GetProgram());
-		}
 	}
 	importer.FreeScene();
 
@@ -54,13 +57,13 @@ void ImporterScene::Load(std::string const& _path)
 
 void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* object, std::string _dir)
 {
-	object->AddComponent(TRANSFORM, nullptr);
+	object->AddComponent(TRANSFORM);
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
 		// IMPORT MESHES
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		std::string meshPath = "./Library/Meshes/";
-		meshPath.append(node->mName.C_Str());
+		meshPath = meshPath + node->mName.C_Str() + ".mesh";
 
 		App->StartTimer();
 		bool imported = ImporterMesh::Import(mesh, object);
@@ -74,10 +77,13 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 			object->RemoveComponent(object->GetComponent<CMesh>()->GetUUID()); // empty the cmesh (THIS IS PROVISIONAL UNTIL THE FILESYSTEM IS CORRECTLY IMPLEMENTED) (we will rather import or load, but not both)
 			if (fsize > 0)
 			{
-				// load from custom file format
-				App->StartTimer();
-				ImporterMesh::Load(meshPath.c_str(), object, fsize);
-				LOG("LOAD TIME: %d microseconds", App->StopTimer());
+				if (object->AddComponent(MESH))
+				{
+					// load from custom file format
+					App->StartTimer();
+					ImporterMesh::Load(meshPath.c_str(), object, fsize);
+					LOG("LOAD TIME: %d microseconds", App->StopTimer());
+				}
 			}
 		}
 
@@ -100,4 +106,83 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 		ProcessNode(node->mChildren[i], scene, newChild, _dir);
 		newChild->SetParent(object);
 	}
+}
+
+bool ImporterScene::Load(std::string const& _path)
+{
+	// Read JSON
+	FILE* f;
+	errno_t err;
+	if ((err = fopen_s(&f, _path.c_str(), "rb")) != 0)
+	{
+		// File could not be opened. FILE* was set to NULL. error code is returned in err.
+		LOG("[error] File could not be opened: %s", _path.c_str(), strerror(err));
+		return false;
+	}
+	else
+	{
+		char readBuffer[65536];
+		rapidjson::FileReadStream is(f, readBuffer, sizeof(readBuffer));
+
+		rapidjson::Document d;
+		d.ParseStream(is);
+		fclose(f);
+
+		// Create gameobjects
+		const rapidjson::Value& gameObjects = d["GameObjects"];
+		std::vector<GameObject*> orphans;
+		for (int i = 0; i < gameObjects.Size(); ++i)
+		{
+			// Load GameObject
+			GameObject* go = new GameObject(gameObjects[i]["Name"].GetString(), gameObjects[i]["UUID"].GetInt());
+			if (gameObjects[i]["ParentUUID"].GetInt() != -1)
+			{
+				GameObject* parent = App->sceneMng->GetRoot()->SearchChild(gameObjects[i]["ParentUUID"].GetInt());
+				if (parent)
+					go->SetParent(parent);
+				else
+					orphans.push_back(go);
+			}
+			else
+				App->sceneMng->SetRoot(go);
+
+			// Load its components
+			const rapidjson::Value& components = gameObjects[i]["Components"];
+			for (int j = 0; j < components.Size(); ++i)
+			{
+				go->AddComponent(static_cast<ComponentType>(components[j]["Type"].GetInt()), components[j]["UUID"].GetInt());
+				switch (components[j]["Type"].GetInt())
+				{
+					// ONLOAD METHOD
+				case TRANSFORM:
+					CTransform* c = go->GetComponent<CTransform>();
+					c->SetPos(float3(components[j]["Position"][0].GetFloat(),
+						components[j]["Position"][1].GetFloat(),
+						components[j]["Position"][2].GetFloat()));
+					c->SetRotation(float3(components[j]["Rotation"][0].GetFloat(),
+						components[j]["Rotation"][1].GetFloat(),
+						components[j]["Rotation"][2].GetFloat()));
+					c->SetScale(float3(components[j]["Scale"][0].GetFloat(),
+						components[j]["Scale"][1].GetFloat(),
+						components[j]["Scale"][2].GetFloat()));
+
+					c->UpdateTransformMatrix();
+					break;
+				case MESH:
+					// Get filename
+					// Get size?
+					// call ImporterMesh::Load
+					break;
+				case Material:
+					// Get Ambient diffuse specular, etc
+					// Get textures array of filenames
+					// call ImporterMaterial::Load
+					break;
+				}
+			}
+		}
+
+		return true;
+	}
+
 }

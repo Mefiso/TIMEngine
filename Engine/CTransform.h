@@ -14,6 +14,7 @@ private:
 
 public:
 	CTransform(GameObject* _owner);											// Constructor
+	CTransform(GameObject* _owner, const int _UUID);
 	~CTransform();															// Destructor
 
 	// ---------- Getters ---------- //

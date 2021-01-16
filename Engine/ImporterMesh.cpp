@@ -29,7 +29,7 @@ bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _owner)
 			interleaved[j++] = _aimesh->mVertices[i].y;
 			interleaved[j++] = _aimesh->mVertices[i].z;
 			float vtx[3] = { _aimesh->mVertices[i].x, _aimesh->mVertices[i].y, _aimesh->mVertices[i].z };
-			CheckMinMaxPoints(vtx, cmesh);	// Generate AABB
+			CheckMinMaxPoints(vtx, cmesh);	// Generate AABB min and max points
 
 			if (_aimesh->mNormals != NULL)
 			{
@@ -130,9 +130,8 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _owner, unsigned int 
 		return false;
 	}
 	else {
-		if (_owner->AddComponent(MESH))
-		{
 			CMesh* cmesh = _owner->GetComponent<CMesh>();
+			cmesh->path = _filename;
 			char* fileBuffer = new char[_filesize]; // Allocate
 			char* cursor = fileBuffer;
 			fread_s(fileBuffer, sizeof(char) * _filesize, sizeof(char), _filesize, f);
@@ -181,12 +180,6 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _owner, unsigned int 
 			fclose(f);
 			LOG("[info] Mesh data loaded from '%s' file", _filename);
 			return true;
-		}
-		else {
-			fclose(f);
-			LOG("[error] A Mesh Component already exists in this GameObject");
-			return false;
-		}
 	}
 	return false;
 }

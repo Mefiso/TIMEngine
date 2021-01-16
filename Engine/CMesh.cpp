@@ -15,6 +15,10 @@ CMesh::CMesh(GameObject* _owner) : Component(MESH, _owner)
 {
 }
 
+CMesh::CMesh(GameObject* _owner, const int _UUID) : Component(MESH, _owner, _UUID)
+{
+}
+
 CMesh::~CMesh()
 {
 	App->sceneMng->octree.Erase(owner);

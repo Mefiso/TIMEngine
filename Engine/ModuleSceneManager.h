@@ -3,11 +3,13 @@
 #include "Globals.h"
 #include "GameObject.h"
 #include "Octree.h"
+#include "Config.h"
 
 class ModuleSceneManager : public Module
 {
 public:
 	Octree octree = Octree();										// Octree structure of the scene
+	Config config = Config();										// Config file for the scene
 
 private:
 	GameObject* root = new GameObject();							// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children
@@ -41,5 +43,6 @@ public:
 
 	// ---------- Setters ---------- //
 	void SetSkyboxTexture(unsigned int _texID) { skyboxTexture = _texID; }
+	void SetRoot(GameObject* _root) { RELEASE(root); root = _root; }
 
 };

@@ -13,6 +13,10 @@ CCamera::CCamera(GameObject* _owner) : Component(CAMERA, _owner)
 	frustum->SetUp(float3(0, 1, 0));
 }
 
+CCamera::CCamera(GameObject* _owner, const int _UUID) : Component(CAMERA, _owner, _UUID)
+{
+}
+
 CCamera::~CCamera()
 {
 	RELEASE(frustum);

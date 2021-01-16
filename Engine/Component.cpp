@@ -5,6 +5,10 @@ Component::Component(ComponentType _type, GameObject* _owner) : type(_type), own
 {
 }
 
+Component::Component(ComponentType _type, GameObject* _owner, const int _UUID) : type(_type), owner(_owner), UUID(_UUID)
+{
+}
+
 Component::~Component()
 {
 }

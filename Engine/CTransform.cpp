@@ -5,6 +5,10 @@ CTransform::CTransform(GameObject* _owner) : Component(TRANSFORM, _owner), scale
 {
 }
 
+CTransform::CTransform(GameObject* _owner, const int _UUID) : Component(TRANSFORM, _owner, _UUID)
+{
+}
+
 CTransform::~CTransform()
 {
 }

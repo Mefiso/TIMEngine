@@ -81,7 +81,7 @@ namespace ImporterMaterial
 						// Add Texture to loaded textures vector
 						if (texFound) {
 							LOG("[info] Texture loaded.");
-							texture->path = file.C_Str();
+							texture->path = destPath;
 							texture->type = _name;
 							texture->wraps = GL_REPEAT;
 							texture->wrapt = GL_REPEAT;
