@@ -74,7 +74,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./ThirdPartyLibs/Brofiler;./ThirdPartyLibs/assimp/include;./ThirdPartyLibs/DevIL/include;./ThirdPartyLibs/ImGUI;./ThirdPartyLibs/MathGeoLib;./ThirdPartyLibs/glew-2.1.0/include;./ThirdPartyLibs/SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./ThirdPartyLibs/rapidjson;./ThirdPartyLibs/Brofiler;./ThirdPartyLibs/assimp/include;./ThirdPartyLibs/DevIL/include;./ThirdPartyLibs/ImGUI;./ThirdPartyLibs/MathGeoLib;./ThirdPartyLibs/glew-2.1.0/include;./ThirdPartyLibs/SDL/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -143,6 +143,7 @@
     <ClInclude Include="CMaterial.h" />
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="CTransform.h" />
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="debug_draw.hpp" />
@@ -255,6 +256,41 @@
     <ClInclude Include="ThirdPartyLibs\MathGeoLib\Math\TransformOps.h" />
     <ClInclude Include="ThirdPartyLibs\MathGeoLib\Math\vec2d.h" />
     <ClInclude Include="ThirdPartyLibs\MathGeoLib\Time\Clock.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\allocators.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\document.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\encodedstream.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\encodings.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\error\en.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\error\error.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\filereadstream.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\filewritestream.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\fwd.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\itoa.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\meta.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\pow10.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\regex.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\stack.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\strtod.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\swap.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\memorybuffer.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\memorystream.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\pointer.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\prettywriter.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\rapidjson.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\reader.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\schema.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\stream.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\stringbuffer.h" />
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\writer.h" />
     <ClInclude Include="uSTimer.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="W_about.h" />
@@ -273,6 +309,7 @@
     <ClCompile Include="CMaterial.cpp" />
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="CTransform.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ImporterMaterial.cpp" />

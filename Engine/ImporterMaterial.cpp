@@ -23,6 +23,8 @@ bool ImporterMaterial::Import(aiMaterial* _material, const std::string& _path, G
 		std::vector<Texture*>* specularMaps = new std::vector<Texture*>();
 		LoadMaterialTextures(_material, aiTextureType_SPECULAR, "specular", _path, specularMaps);
 		cmaterial->textures.insert(cmaterial->textures.end(), specularMaps->begin(), specularMaps->end());
+		cmaterial->filename = _material->GetName().C_Str();
+		cmaterial->filename.append(".mat");
 
 		RELEASE(diffuseMaps);
 		RELEASE(specularMaps);
@@ -33,7 +35,7 @@ bool ImporterMaterial::Import(aiMaterial* _material, const std::string& _path, G
 	return false;
 }
 
-void ImporterMaterial::Save(const char* _destPath)
+void ImporterMaterial::SaveTexture(const char* _destPath)
 {
 	// Open file to write
 	FILE* f;
@@ -45,11 +47,18 @@ void ImporterMaterial::Save(const char* _destPath)
 	else {
 		ILuint size;
 		ILubyte* data;
+		ILinfo info;
+
 		ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);	// To pick a specific DXT compression use
 		size = ilSaveL(IL_DDS, nullptr, 0);		// Get the size of the data buffer
+
+		iluGetImageInfo(&info);
+		if (IL_ORIGIN_UPPER_LEFT)
+			iluFlipImage();
+
 		if (size > 0)
 		{
-			char* fileBuffer = new char[size]; // Allocate
+			char* fileBuffer = nullptr;
 			data = new ILubyte[size]; // allocate data buffer
 			if (ilSaveL(IL_DDS, data, size) > 0) {
 				// Save to buffer with the ilSaveIL function
@@ -63,35 +72,175 @@ void ImporterMaterial::Save(const char* _destPath)
 	}
 }
 
-void ImporterMaterial::Load(const char* fileBuffer, CMaterial* ourMaterial)
+unsigned int ImporterMaterial::Save(CMaterial* _material, const char* _filename)
 {
-	/*if (_parent->AddComponent(MATERIAL))
-	{
+	FILE* f;
+	errno_t err;
+	if ((err = fopen_s(&f, _filename, "wb")) != 0) {
+		// File could not be opened. FILE* was set to NULL. error code is returned in err.
+		LOG("[error] File could not be opened: %s", _filename, strerror(err));
+		return 0;
+	}
+	else {
+		// header is the number of textures in the material
+		unsigned int header = _material->textures.size();
+		// header size + material parameters size   + size of texture struct * number of textures
+		unsigned int size = sizeof(header) + sizeof(float) * 10 + sizeof(int) + (sizeof(int) * 6) * header;
+		for (int i = 0; i < header; ++i)
+		{
+			size += sizeof(char) * (_material->textures[i]->type.size()+1 + _material->textures[i]->path.size()+1);
+		}
+
+		char* fileBuffer = new char[size];
+		char* cursor = fileBuffer;
+
+		unsigned int bytes = sizeof(header);
+		memcpy(cursor, &header, bytes);
+		cursor += bytes;
+
+		// Store ambient, diffuse, specular settings
+		bytes = sizeof(float) * 3;
+		memcpy(cursor, _material->ambient.ptr(), bytes);
+		cursor += bytes;
+
+		memcpy(cursor, _material->diffuse.ptr(), bytes);
+		cursor += bytes;
+
+		memcpy(cursor, &_material->shininess, sizeof(float));
+		cursor += sizeof(float);
+
+		memcpy(cursor, _material->specular.ptr(), bytes);
+		cursor += bytes;
+
+		memcpy(cursor, &_material->shininessAlpha, sizeof(int));
+		cursor += sizeof(int);
+
+		for (int i = 0; i < header; ++i)
+		{
+			Texture* texture = _material->textures[i];
+			int t[6] = {texture->type.size()+1, texture->path.size()+1, texture->wraps, texture->wrapt, texture->minfilter, texture->magfilter };
+			bytes = sizeof(int) * 6;
+			memcpy(cursor, t, bytes);
+			cursor += bytes;
+
+			bytes = sizeof(char) * t[0];
+			memcpy(cursor, texture->type.c_str(), bytes);
+			cursor += bytes;
+			bytes = sizeof(char) * t[1];
+			memcpy(cursor, texture->path.c_str(), bytes);
+			cursor += bytes;
+		}
+
+		fwrite(fileBuffer, sizeof(char), size, f);
+		LOG("[info] Material data stored into '%s' file", _filename);
+
+		RELEASE_ARRAY(fileBuffer);
+		fclose(f);
+		return size;
+	}
+}
+
+bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsigned int _filesize)
+{
+	// Open file to read
+	FILE* f;
+	errno_t err;
+	if ((err = fopen_s(&f, _filename.c_str(), "rb")) != 0) {
+		// File could not be opened. FILE* was set to NULL. error code is returned in err.
+		LOG("[error] File could not be opened: %s", _filename.c_str(), strerror(err));
+		return false;
+	}
+	else {
 		if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION)
 		{
 			return false;
 		}
 		ilInit();
 		iluInit();
+		ourMaterial->filename = _filename.substr(0, _filename.find_last_of('/')).size() == _filename.size() ? _filename.substr(_filename.find_last_of('\\') + 1, _filename.size()) : _filename.substr(_filename.find_last_of('/') + 1, _filename.size());
+		ourMaterial->filesize = _filesize;
 
-		CMaterial* cmaterial = _parent->GetComponent<CMaterial>();
-		std::vector<Texture*>* diffuseMaps = new std::vector<Texture*>();
-		LoadMaterialTextures(_material, aiTextureType_DIFFUSE, "diffuse", _path, diffuseMaps);
-		cmaterial->textures.insert(cmaterial->textures.end(), diffuseMaps->begin(), diffuseMaps->end());
-		std::vector<Texture*>* specularMaps = new std::vector<Texture*>();
-		LoadMaterialTextures(_material, aiTextureType_SPECULAR, "specular", _path, specularMaps);
-		cmaterial->textures.insert(cmaterial->textures.end(), specularMaps->begin(), specularMaps->end());
+		char* fileBuffer = new char[_filesize]; // Allocate
+		char* cursor = fileBuffer;
+		fread_s(fileBuffer, sizeof(char) * _filesize, sizeof(char), _filesize, f);
 
-		RELEASE(diffuseMaps);
-		RELEASE(specularMaps);
+		// amount of textures
+		unsigned int header[1];
+		memcpy(header, cursor, sizeof(unsigned int));
+		cursor += sizeof(int);
+
+		// Load ambient, diffuse, specular settings
+		unsigned int bytes = sizeof(float) * 3;
+		float* color = new float[3];
+		memcpy(color, cursor, bytes);
+		ourMaterial->ambient = float3(color);
+		RELEASE_ARRAY(color);
+		cursor += bytes;
+
+		color = new float[3];
+		memcpy(color, cursor, bytes);
+		ourMaterial->diffuse = float3(color);
+		RELEASE_ARRAY(color);
+		cursor += bytes;
+
+		float s;
+		memcpy(&s, cursor, sizeof(float));
+		ourMaterial->shininess = s;
+		cursor += sizeof(float);
+
+		color = new float[3];
+		memcpy(color, cursor, bytes);
+		ourMaterial->specular = float3(color);
+		RELEASE_ARRAY(color);
+		cursor += bytes;
+
+		int a;
+		memcpy(&a, cursor, sizeof(int));
+		ourMaterial->shininessAlpha = a;
+		cursor += sizeof(int);
+
+		for (int i = 0; i < header[0]; ++i)
+		{
+			int* t = new int[6];
+			bytes = sizeof(int) * 6;
+			memcpy(t, cursor, bytes);
+			Texture* texture = new Texture();
+			texture->wraps = t[2];
+			texture->wrapt = t[3];
+			texture->minfilter = t[4];
+			texture->magfilter = t[5];
+			cursor += bytes;
+
+			char* tp = new char[t[0]];
+			bytes = sizeof(char) * t[0];
+			memcpy(tp, cursor, bytes);
+			texture->type = tp;
+			RELEASE_ARRAY(tp);
+			cursor += bytes;
+
+			char* path = new char[t[1]];
+			bytes = sizeof(char) * t[1];
+			memcpy(path, cursor, bytes);
+			texture->path = path;
+			RELEASE_ARRAY(path);
+			cursor += bytes;
+			RELEASE_ARRAY(t);
+
+			texture->id = LoadTexture("./Library/Textures/" + texture->path, "./Library/Textures/" + texture->path);
+			App->filesys->loadedTextures.push_back(texture);
+			ourMaterial->textures.push_back(App->filesys->loadedTextures[App->filesys->loadedTextures.size() - 1]);
+		}
+		RELEASE_ARRAY(fileBuffer);
+		fclose(f);
+
 		ilShutDown();
 
 		return true;
 	}
-	return false;*/
+	return false;
 }
 
-unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string _destPath)
+unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string _destPath, bool saveToCustom)
 {
 	ILuint imgId;
 	ILboolean success;
@@ -129,7 +278,8 @@ unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		//Save(_destPath.c_str());
+		if(saveToCustom)
+			SaveTexture(_destPath.c_str());
 	}
 	else
 	{

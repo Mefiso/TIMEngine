@@ -20,11 +20,12 @@ class GameObject;
 namespace ImporterMaterial
 {
 	bool Import(aiMaterial* _material, const std::string& _path, GameObject* _parent);
-	void Save(const char* _destPath);
-	void Load(const char* fileBuffer, CMaterial* ourMaterial);
+	void SaveTexture(const char* _destPath);
+	unsigned int Save(CMaterial* _material, const char* _filename);
+	bool Load(std::string _filename, CMaterial* ourMaterial, unsigned int _filesize);
 	//void LoadCheckers(Material* ourMaterial);
 
-	unsigned int LoadTexture(std::string _path, std::string _destPath);					// Loads an image file and attaches it to a GL_TEXTURE_2D
+	unsigned int LoadTexture(std::string _path, std::string _destPath, bool saveToCustom=false);			// Loads an image file and attaches it to a GL_TEXTURE_2D
 	unsigned int LoadCubemap(std::vector<std::string> _faces);	// Loads a Cubemap Texture from 6 images ('faces') and attaches it to a GL_TEXTURE_CUBE_MAP
 
 	namespace
@@ -54,23 +55,23 @@ namespace ImporterMaterial
 					{
 						bool texFound = true;
 						Texture* texture = new Texture();
-						std::string destPath = "./Library/Materials/";
+						std::string destPath = "./Library/Textures/";
 						destPath.append(_material->GetName().C_Str());
-						destPath.append(_name);
+						destPath.append(_name + std::to_string(i));
 						destPath.append(".dds");
 						LOG("[info] Trying to find texture on the path specified by the fbx: %s", file.C_Str());
-						texture->id = LoadTexture(file.C_Str(), destPath);
+						texture->id = LoadTexture(file.C_Str(), destPath, true);
 						//Save(destPath.c_str());
 						if (!texture->id) {
 							LOG("[info] Failed to load textures.");
 							LOG("[info] Trying to find texture on the same folder as fbx: %s", (_path + '/' + file.C_Str()).c_str());
-							texture->id = LoadTexture(_path + '/' + file.C_Str(), destPath);
+							texture->id = LoadTexture(_path + '/' + file.C_Str(), destPath, true);
 							//Save(destPath.c_str());
 
 							if (!texture->id) {
 								LOG("[info] Failed to load textures.");
 								LOG("[info] Trying to find texture on the textures folder.");
-								texture->id = LoadTexture(std::string("./resources/textures/") + file.C_Str(), destPath);
+								texture->id = LoadTexture(std::string("./resources/textures/") + file.C_Str(), destPath, true);
 								//Save(destPath.c_str());
 								if (!texture->id) {
 									LOG("[error] Texture %s not found.", file.C_Str());
@@ -81,7 +82,7 @@ namespace ImporterMaterial
 						// Add Texture to loaded textures vector
 						if (texFound) {
 							LOG("[info] Texture loaded.");
-							texture->path = file.C_Str();
+							texture->path = destPath.substr(19, destPath.size());
 							texture->type = _name;
 							texture->wraps = GL_REPEAT;
 							texture->wrapt = GL_REPEAT;

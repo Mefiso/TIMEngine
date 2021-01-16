@@ -17,6 +17,7 @@ private:
 
 public:
 	CCamera(GameObject* _owner);								// Constructor
+	CCamera(GameObject* _owner, const int _UUID);
 	~CCamera();													// Destructor
 
 	void Draw() override;										// Sends the information of this component to Render it. If the owner GameObject is selected, it will draw the camera frustum.
@@ -27,4 +28,8 @@ public:
 	void UpdateFrustumFromTransform(CTransform* _transform);	// Updates Frustum position and rotation. This function must be called when the Transform of the 'owner' GameObject changes
 	void UpdateTransformFromFrustum();							// Updates the Transform of the 'owner' GameObject. This function must be called when the frustum is modified by the user inputs that control the camera
 	void PerformFrustumCulling(bool extractFrustum = false);	// Extracts the frustum planes and corner points if needed, and tells the renderer to perform the frustum culling
+
+	// ------ Serialization -------- //
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
+	void onLoad(const rapidjson::Value& config) override;
 };

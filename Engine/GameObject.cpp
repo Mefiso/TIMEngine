@@ -8,23 +8,28 @@
 #include "CCamera.h"
 #include "CLight.h"
 #include "debugdraw.h"
+#include "Leaks.h"
 
 
-int GameObject::objectCount = 0;
+LCG GameObject::randomGen = LCG();
 bool GameObject::drawOBB = false;
 
-GameObject::GameObject()
+GameObject::GameObject() : UUID(randomGen.Int())
 {
 	aabb.SetNegativeInfinity();
 	obb.SetNegativeInfinity();
-	++objectCount;
 }
 
-GameObject::GameObject(const std::string& _name) : name(_name)
+GameObject::GameObject(const std::string& _name) : name(_name), UUID(randomGen.Int())
 {
 	aabb.SetNegativeInfinity();
 	obb.SetNegativeInfinity();
-	++objectCount;
+}
+
+GameObject::GameObject(const std::string& _name, const int _UUID) : name(_name), UUID(_UUID)
+{
+	aabb.SetNegativeInfinity();
+	obb.SetNegativeInfinity();
 }
 
 GameObject::~GameObject()
@@ -64,7 +69,7 @@ void GameObject::Draw()
 	}
 }
 
-bool GameObject::AddComponent(ComponentType _type)
+bool GameObject::AddComponent(ComponentType _type, const int _UUID)
 {
 	bool createdComp = false;
 	Component* newComp;
@@ -73,7 +78,10 @@ bool GameObject::AddComponent(ComponentType _type)
 	case TRANSFORM:
 		if (!this->GetTransform())
 		{
-			newComp = new CTransform(this);
+			if (_UUID != -1)
+				newComp = new CTransform(this, _UUID);
+			else
+				newComp = new CTransform(this);
 			transform = (CTransform*)newComp;
 			components.push_back(newComp);
 			createdComp = true;
@@ -82,7 +90,10 @@ bool GameObject::AddComponent(ComponentType _type)
 	case MESH:
 		if (!this->GetComponent<CMesh>())
 		{
-			newComp = new CMesh(this);
+			if (_UUID != -1)
+				newComp = new CMesh(this, _UUID);
+			else
+				newComp = new CMesh(this);
 			components.push_back(newComp);
 			createdComp = true;
 		}
@@ -90,7 +101,10 @@ bool GameObject::AddComponent(ComponentType _type)
 	case MATERIAL:
 		if (!this->GetComponent<CMaterial>())
 		{
-			newComp = new CMaterial(this);
+			if (_UUID != -1)
+				newComp = new CMaterial(this, _UUID);
+			else
+				newComp = new CMaterial(this);
 			components.push_back(newComp);
 			createdComp = true;
 		}
@@ -98,7 +112,10 @@ bool GameObject::AddComponent(ComponentType _type)
 	case CAMERA:
 		if (!this->GetComponent<CCamera>())
 		{
-			newComp = new CCamera(this);
+			if (_UUID != -1)
+				newComp = new CCamera(this, _UUID);
+			else
+				newComp = new CCamera(this);
 			components.push_back(newComp);
 			createdComp = true;
 		}
@@ -129,7 +146,7 @@ void GameObject::RemoveComponent(int _cID)
 
 	for (unsigned int i = 0u; i < components.size(); ++i)
 	{
-		if (components[i]->ID == _cID)
+		if (components[i]->UUID == _cID)
 		{
 			toRemove = (int)i;
 			break;
@@ -139,10 +156,13 @@ void GameObject::RemoveComponent(int _cID)
 	{
 		if (components[toRemove]->GetType() == TRANSFORM)
 			transform = nullptr;
+		if (components[toRemove]->GetType() == MESH)
+			App->renderer->RemoveObjectFromDrawList(this);
 		if (components[toRemove]->GetType() == LIGHT)
 			App->sceneMng->lightSources;
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
+		GetComponent<CMaterial>();
 	}
 }
 
@@ -152,7 +172,7 @@ void GameObject::SetParent(GameObject* _newParent)
 	bool isChild = false;
 	for (unsigned int i = 0; i < this->GetChildren().size(); ++i)
 	{
-		if (this->children[i]->GetUID() == _newParent->GetUID())
+		if (this->children[i]->GetUUID() == _newParent->GetUUID())
 		{
 			isChild = true;
 			break;
@@ -164,7 +184,7 @@ void GameObject::SetParent(GameObject* _newParent)
 		_newParent->AddChild(this);
 		if (parent)
 		{
-			parent->RemoveChild(this->uID);
+			parent->RemoveChild(this->UUID);
 		}
 		parent = _newParent;
 	}
@@ -196,7 +216,7 @@ void GameObject::RemoveChild(int childID)
 	int toRemove = -1;
 	for (unsigned int i = 0u; i < children.size(); ++i)
 	{
-		if (children[i]->uID == childID)
+		if (children[i]->UUID == childID)
 		{
 			toRemove = (int)i;
 			break;
@@ -204,6 +224,24 @@ void GameObject::RemoveChild(int childID)
 	}
 	if (toRemove >= 0)
 		children.erase(children.begin() + toRemove);
+}
+
+GameObject* GameObject::SearchChild(int childID)
+{
+	for (int i = 0; i < children.size(); ++i)
+	{
+		if (children[i]->UUID == childID)
+		{
+			return children[i];
+		}
+	}
+	for (int i = 0; i < children.size(); ++i)
+	{
+		GameObject* go = children[i]->SearchChild(childID);
+		if (go)
+			return go;
+	}
+	return nullptr;
 }
 
 float4x4 GameObject::GetModelMatrix() const
@@ -248,11 +286,9 @@ void GameObject::SetTransform(float4x4& _newTransform)
 void GameObject::SetProgram(unsigned int program)
 {
 	// update components
-	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
-	{
-		if ((*it)->GetType() == MESH)
-			((CMesh*)(*it))->SetProgram(program);
-	}
+	if(GetComponent<CMesh>())
+		GetComponent<CMesh>()->SetProgram(program);
+
 	// update children accordingly
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
@@ -329,4 +365,24 @@ float4 GameObject::ComputeCenterAndDistance() const
 		else
 			return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.f);
 	}
+}
+
+void GameObject::onSave(rapidjson::Value& config, rapidjson::Document& d)
+{
+	rapidjson::Value g(rapidjson::kObjectType);
+	g.AddMember("UUID", rapidjson::Value().SetInt(UUID), d.GetAllocator());
+	g.AddMember("ParentUUID", parent ? rapidjson::Value().SetInt(parent->UUID): rapidjson::Value().SetInt(-1), d.GetAllocator());
+	rapidjson::Value s;
+	s = rapidjson::StringRef(name.c_str(), name.size());
+	g.AddMember("Name", s, d.GetAllocator());
+	rapidjson::Value c(rapidjson::kArrayType);
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		(*it)->onSave(c, d);
+	g.AddMember("Components", c, d.GetAllocator());
+
+	config.PushBack(g, d.GetAllocator());
+
+	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
+		(*it)->onSave(config, d);
+
 }

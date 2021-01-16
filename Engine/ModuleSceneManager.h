@@ -16,6 +16,7 @@ private:
 	GameObject* selectedObject = nullptr;							// Pointer to the selected Game Object. This will have the gizmos on him, w_properties will show its information, and will be highlighted in the w_hierarchy
 	unsigned int skyboxVAO = 0u, skyboxVBO = 0u;					// IDs of the Skybox Cube buffer objects
 	unsigned int skyboxTexture = 0u;								// ID of the cubemap texture generated for the skybox
+	const char* sceneName = "";
 
 	//  ----- Shading Programs ----- //
 	unsigned int defaultProgram = 0u;								// ID of the default Shading program that will be used to render the scene. One of the following  Programs will be assigned as default
@@ -38,6 +39,7 @@ public:
 	void MousePicker(int _x, int _y);								// Explores the octree to select an object on a mouse click in the viewport
 
 	// ---------- Getters ---------- //
+	const char* GetName() { return sceneName; }
 	GameObject* GetRoot() const { return root; }
 	GameObject* GetSelectedGO() const { return selectedObject; };
 	unsigned int GetProgram() const { return defaultProgram; }
@@ -45,7 +47,9 @@ public:
 	unsigned int GetSkyboxTexture() const { return skyboxTexture; }
 
 	// ---------- Setters ---------- //
+	void SetName(const char* _name) { sceneName = _name; }
 	void SetSelectedGO(GameObject* _object) { selectedObject = _object; }
 	void SetSkyboxTexture(unsigned int _texID) { skyboxTexture = _texID; }
+	void SetRoot(GameObject* _root) { RELEASE(root); root = _root; }
 
 };

@@ -14,6 +14,11 @@ CCamera::CCamera(GameObject* _owner) : Component(CAMERA, _owner)
 	frustum->SetUp(float3(0, 1, 0));
 }
 
+CCamera::CCamera(GameObject* _owner, const int _UUID) : Component(CAMERA, _owner, _UUID)
+{
+	frustum->SetKind(FrustumSpaceGL, FrustumRightHanded);
+}
+
 CCamera::~CCamera()
 {
 	RELEASE(frustum);
@@ -64,4 +69,54 @@ void CCamera::PerformFrustumCulling(bool extractFrustum)
 	}
 
 	App->renderer->PerformFrustumCulling(frustumPlanes, frustumPoints);
+}
+
+void CCamera::onSave(rapidjson::Value& config, rapidjson::Document& d) const
+{
+	rapidjson::Value c(rapidjson::kObjectType);
+	c.AddMember("UUID", rapidjson::Value(UUID).Move(), d.GetAllocator());
+	c.AddMember("Type", rapidjson::Value(GetType()).Move(), d.GetAllocator());
+
+	c.AddMember("NearPlane", rapidjson::Value(frustum->NearPlaneDistance()).Move(), d.GetAllocator());
+	c.AddMember("FarPlane", rapidjson::Value(frustum->FarPlaneDistance()).Move(), d.GetAllocator());
+	c.AddMember("FOV", rapidjson::Value(frustum->VerticalFov()).Move(), d.GetAllocator());
+	c.AddMember("AspectRatio", rapidjson::Value(frustum->AspectRatio()).Move(), d.GetAllocator());
+
+	float3 position = frustum->Pos();
+	rapidjson::Value pos(rapidjson::kArrayType);
+	pos.PushBack(rapidjson::Value(position[0]).Move(),
+		d.GetAllocator()).PushBack(rapidjson::Value(position[1]).Move(),
+		d.GetAllocator()).PushBack(rapidjson::Value(position[2]).Move(), d.GetAllocator());
+	c.AddMember("Position", pos, d.GetAllocator());
+
+	float3 front = frustum->Front();
+	rapidjson::Value f(rapidjson::kArrayType);
+	f.PushBack(rapidjson::Value(front[0]).Move(),
+		d.GetAllocator()).PushBack(rapidjson::Value(front[1]).Move(),
+		d.GetAllocator()).PushBack(rapidjson::Value(front[2]).Move(), d.GetAllocator());
+	c.AddMember("Front", f, d.GetAllocator());
+
+	float3 up = frustum->Up();
+	rapidjson::Value u(rapidjson::kArrayType);
+	u.PushBack(rapidjson::Value(up[0]).Move(),
+		d.GetAllocator()).PushBack(rapidjson::Value(up[1]).Move(),
+		d.GetAllocator()).PushBack(rapidjson::Value(up[2]).Move(), d.GetAllocator());
+	c.AddMember("Up", u, d.GetAllocator());
+
+	config.PushBack(c, d.GetAllocator());
+}
+
+void CCamera::onLoad(const rapidjson::Value& config)
+{
+	frustum->SetViewPlaneDistances(config["NearPlane"].GetFloat(), config["FarPlane"].GetFloat());
+	frustum->SetVerticalFovAndAspectRatio(config["FOV"].GetFloat(), config["AspectRatio"].GetFloat());
+	frustum->SetPos(float3(config["Position"][0].GetFloat(),
+		config["Position"][1].GetFloat(),
+		config["Position"][2].GetFloat()));
+	frustum->SetFront(float3(config["Front"][0].GetFloat(),
+		config["Front"][1].GetFloat(),
+		config["Front"][2].GetFloat()));
+	frustum->SetUp(float3(config["Up"][0].GetFloat(),
+		config["Up"][1].GetFloat(),
+		config["Up"][2].GetFloat()));
 }

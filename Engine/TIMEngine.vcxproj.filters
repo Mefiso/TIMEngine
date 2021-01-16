@@ -119,9 +119,6 @@
     <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\SAT.cpp">
       <Filter>MathGeoLib\Algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.cpp">
-      <Filter>MathGeoLib\Algorithm</Filter>
-    </ClCompile>
     <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\GJK.cpp">
       <Filter>MathGeoLib\Algorithm</Filter>
     </ClCompile>
@@ -227,6 +224,9 @@
     </ClCompile>
     <ClCompile Include="ImporterScene.cpp">
       <Filter>Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.cpp">
+      <Filter>MathGeoLib\Algorithm\Random</Filter>
     </ClCompile>
     <ClCompile Include="ThirdPartyLibs\ImGUI\ImGradient.cpp">
       <Filter>ImGUI\ImGuizmo</Filter>
@@ -416,9 +416,6 @@
     <ClInclude Include="ThirdPartyLibs\MathGeoLib\Algorithm\SAT.h">
       <Filter>MathGeoLib\Algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.h">
-      <Filter>MathGeoLib\Algorithm</Filter>
-    </ClInclude>
     <ClInclude Include="ThirdPartyLibs\MathGeoLib\Math\sse_mathfun.h">
       <Filter>MathGeoLib\Math</Filter>
     </ClInclude>
@@ -591,6 +588,116 @@
     <ClInclude Include="ImporterScene.h">
       <Filter>Importers</Filter>
     </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.h">
+      <Filter>MathGeoLib\Algorithm\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>UtilityModules</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\allocators.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\document.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\encodedstream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\encodings.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\filereadstream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\filewritestream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\fwd.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\istreamwrapper.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\memorybuffer.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\memorystream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\ostreamwrapper.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\pointer.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\prettywriter.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\rapidjson.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\reader.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\schema.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\stream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\stringbuffer.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\writer.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\error\en.h">
+      <Filter>rapidjson\error</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\error\error.h">
+      <Filter>rapidjson\error</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\biginteger.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\diyfp.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\dtoa.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\ieee754.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\itoa.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\meta.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\pow10.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\regex.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\stack.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\strfunc.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\strtod.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\internal\swap.h">
+      <Filter>rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\msinttypes\inttypes.h">
+      <Filter>rapidjson\msinttypes</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\msinttypes\stdint.h">
+      <Filter>rapidjson\msinttypes</Filter>
     <ClInclude Include="ThirdPartyLibs\ImGUI\ImCurveEdit.h">
       <Filter>ImGUI\ImGuizmo</Filter>
     </ClInclude>
@@ -653,6 +760,20 @@
     <Filter Include="Importers">
       <UniqueIdentifier>{a6df53f4-25e1-4094-a972-3daaf95400ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MathGeoLib\Algorithm\Random">
+      <UniqueIdentifier>{3814e593-5377-438c-a3a6-0d7de28766a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rapidjson">
+      <UniqueIdentifier>{6118a690-b65f-426e-b422-86a8c61b49d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rapidjson\error">
+      <UniqueIdentifier>{f216993e-955e-4f6e-bae8-783fe1dd13d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rapidjson\internal">
+      <UniqueIdentifier>{915faa80-3fb5-4171-b1de-16df1aae8f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rapidjson\msinttypes">
+      <UniqueIdentifier>{fbaa3bc5-d3c1-4c49-ae99-a3186abc2e1e}</UniqueIdentifier>
     <Filter Include="ImGUI\ImGuizmo">
       <UniqueIdentifier>{a576fb88-7515-4571-9c73-04c8cd39d947}</UniqueIdentifier>
     </Filter>

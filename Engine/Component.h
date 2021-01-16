@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Algorithm/Random/LCG.h"
+#include "rapidjson/document.h"
+
 class GameObject;
 
 enum ComponentType {
@@ -14,10 +17,10 @@ enum ComponentType {
 class Component
 {
 private:
-	static int componentCount;								// Global counter of number of Components. Used to set the uID of each new instance of Component.
+	static LCG randomGen;									// RNG for setting UUIDs.
 
 public:
-	const int ID = componentCount;							// Unique identifier of each Component instance
+	const int UUID;											// Unique identifier of each Component instance
 
 private:
 	ComponentType type;										// Type of the Component (Defined by ComponentType enum)
@@ -27,16 +30,21 @@ protected:
 
 public:
 	Component(ComponentType _type, GameObject* _owner);		// Constructor
+	Component(ComponentType _type, GameObject* _owner, const int _UUID);
 	virtual ~Component();									// Destructor
 	virtual void Draw() {}									// Sends the information of this component to Render it
 
 	// ---------- Getters ---------- //
 	ComponentType GetType() const { return type; }
 	GameObject* GetOwner() const { return owner; }
-	const int GetUID() const { return ID; }
+	const int GetUUID() const { return UUID; }
 	bool IsActive() const { return active; }
 
 	// ---------- Setters ---------- //
 	void Enable() { active = true; }
 	void Disable() { active = false; }
+
+	// ------ Serialization -------- //
+	virtual void onSave(rapidjson::Value& config, rapidjson::Document& d) const {}
+	virtual void onLoad(const rapidjson::Value& config) {}
 };

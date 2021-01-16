@@ -14,6 +14,7 @@ private:
 
 public:
 	CTransform(GameObject* _owner);											// Constructor
+	CTransform(GameObject* _owner, const int _UUID);
 	~CTransform();															// Destructor
 
 	// ---------- Getters ---------- //
@@ -28,4 +29,8 @@ public:
 	void SetScale(float3& _scale) { scale = _scale; }
 
 	void UpdateTransformMatrix();											// Updates transformMatrix. Must be used when a change is detected in Rotation, Scale and Position
+
+	// ------ Serialization -------- //
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
+	void onLoad(const rapidjson::Value& config) override;
 };

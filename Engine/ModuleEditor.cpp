@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
 #include "ModuleSceneManager.h"
+#include "ImporterScene.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include "W_config.h"
@@ -86,7 +87,7 @@ update_status ModuleEditor::PostUpdate()
 	if (toDeleteGO) {
 		if (toDeleteGO->GetParent())
 		{
-			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUID());
+			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUUID());
 		}
 		RELEASE(toDeleteGO);
 		hierarchy->SetToDelete(nullptr);
@@ -97,8 +98,7 @@ update_status ModuleEditor::PostUpdate()
 	{
 		if (toDeleteCMP->GetOwner())
 		{
-			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUID());
-			App->renderer->RemoveObjectFromDrawList(toDeleteCMP->GetOwner());
+			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUUID());
 		}
 		properties->SetToDelete(nullptr);
 	}
@@ -202,7 +202,13 @@ void ModuleEditor::ShowMenuFile()
 	ImGui::MenuItem("(demo menu)", NULL, false, false);
 	ImGui::MenuItem("Only QUIT option is actually working!", NULL, false, false);
 	if (ImGui::MenuItem("New")) {}
-	if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+	if (ImGui::MenuItem("Open", "Ctrl+O"))
+	{
+		if (ImporterScene::Load("./Library/Scenes/Scene 1.json"))
+		{
+			App->sceneMng->SetName("Scene 1");
+		}
+	}
 	if (ImGui::BeginMenu("Open Recent"))
 	{
 		ImGui::MenuItem("fish_hat.c");
@@ -221,7 +227,13 @@ void ModuleEditor::ShowMenuFile()
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+	if (ImGui::MenuItem("Save", "Ctrl+S"))
+	{
+		std::string path = "./Library/Scenes/";
+		path.append(App->sceneMng->GetName());
+		path.append(".json");
+		ImporterScene::Save(path.c_str());
+	}
 	if (ImGui::MenuItem("Save As..")) {}
 
 	ImGui::Separator();

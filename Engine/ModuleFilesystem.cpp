@@ -2,7 +2,6 @@
 
 #include "ImporterScene.h"
 
-
 #include "ModuleSceneManager.h" // Only for skybox loading. Should be removed when fixed hardcoding
 #include "GL/glew.h"			// And this two should not be here
 #include "ImporterMaterial.h"
@@ -18,7 +17,7 @@ ModuleFilesystem::~ModuleFilesystem()
 
 bool ModuleFilesystem::Start()
 {
-	ImporterScene::Load("./resources/models/baker_house/BakerHouse.fbx");
+	ImporterScene::Import("./resources/models/baker_house/BakerHouse.fbx");
 	std::vector<std::string> faces =
 	{
 		".\\resources\\skybox\\default\\right.jpg",
@@ -50,6 +49,6 @@ void ModuleFilesystem::DropFile(const std::string& file)
 
 	// FBX or OBJ files -> Load a scene
 	if (ext.compare(".fbx") == 0 || ext.compare(".FBX") == 0 || ext.compare(".obj") == 0 || ext.compare(".OBJ") == 0)
-		ImporterScene::Load(file);
+		ImporterScene::Import(file);
 }
 

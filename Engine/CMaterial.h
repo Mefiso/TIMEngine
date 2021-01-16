@@ -15,7 +15,15 @@ public:
 	float3 specular = float3(0.08f);
 	int shininessAlpha = 0;
 
+	std::string filename = "";
+	int filesize = 0;
+
 public:
 	CMaterial(GameObject* _owner);				// Constructor
+	CMaterial(GameObject* _owner, const int _UUID);
 	~CMaterial();								// Destructor
+
+	// ------ Serialization -------- //
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
+	void onLoad(const rapidjson::Value& config) override;
 };

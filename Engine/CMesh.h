@@ -1,9 +1,14 @@
 #pragma once
 #include "Component.h"
 #include <Math/float3.h>
+#include <string>
 
 class CMesh : public Component
 {
+public:
+	std::string filename = "";
+	int filesize = 0;
+
 private:
 	unsigned int numVertices = 0u;										// Number of non-repeated vertices of the Mesh
 	unsigned int numIndices = 0u;										// Total number of vertices of the Mesh (includes repeated vertices of adjacent faces). Each index points to a vertex in 'vertices'
@@ -16,6 +21,7 @@ private:
 
 public:
 	CMesh(GameObject* _owner);											// Constructor
+	CMesh(GameObject* _owner, const int _UUID);
 	~CMesh();															// Destructor
 
 	void Draw() override;												// Sends the information of this component to Render it
@@ -45,4 +51,8 @@ public:
 	void SetVAO(unsigned int _VAO) { VAO = _VAO; }
 	void SetAABBmax(float3 _AABBmax) { AABBmax = _AABBmax; }
 	void SetAABBmin(float3 _AABBmin) { AABBmin = _AABBmin; }
+
+	// ------ Serialization -------- //
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
+	void onLoad(const rapidjson::Value& config) override;
 };
