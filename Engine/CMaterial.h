@@ -24,6 +24,6 @@ public:
 	~CMaterial();								// Destructor
 
 	// ------ Serialization -------- //
-	void onSave(rapidjson::Value& config) const override;
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
 	void onLoad(const rapidjson::Value& config) override;
 };

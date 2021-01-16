@@ -2,7 +2,6 @@
 
 #include "ImporterScene.h"
 
-
 #include "ModuleSceneManager.h" // Only for skybox loading. Should be removed when fixed hardcoding
 #include "GL/glew.h"			// And this two should not be here
 #include "ImporterMaterial.h"

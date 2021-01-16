@@ -44,6 +44,6 @@ public:
 	void Disable() { active = false; }
 
 	// ------ Serialization -------- //
-	virtual void onSave(rapidjson::Value& config) const {}
+	virtual void onSave(rapidjson::Value& config, rapidjson::Document& d) const {}
 	virtual void onLoad(const rapidjson::Value& config) {}
 };

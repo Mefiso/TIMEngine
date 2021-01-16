@@ -31,6 +31,6 @@ public:
 	void UpdateTransformMatrix();											// Updates transformMatrix. Must be used when a change is detected in Rotation, Scale and Position
 
 	// ------ Serialization -------- //
-	void onSave(rapidjson::Value& config) const override;
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
 	void onLoad(const rapidjson::Value& config) override;
 };

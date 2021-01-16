@@ -352,3 +352,23 @@ float4 GameObject::ComputeCenterAndDistance() const
 			return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.f);
 	}
 }
+
+void GameObject::onSave(rapidjson::Value& config, rapidjson::Document& d)
+{
+	rapidjson::Value g(rapidjson::kObjectType);
+	g.AddMember("UUID", rapidjson::Value().SetInt(UUID), d.GetAllocator());
+	g.AddMember("ParentUUID", parent ? rapidjson::Value().SetInt(parent->UUID): rapidjson::Value().SetInt(-1), d.GetAllocator());
+	rapidjson::Value s;
+	s = rapidjson::StringRef(name.c_str(), name.size());
+	g.AddMember("Name", s, d.GetAllocator());
+	rapidjson::Value c(rapidjson::kArrayType);
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		(*it)->onSave(c, d);
+	g.AddMember("Components", c, d.GetAllocator());
+
+	config.PushBack(g, d.GetAllocator());
+
+	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
+		(*it)->onSave(config, d);
+
+}

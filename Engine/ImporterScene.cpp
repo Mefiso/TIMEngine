@@ -16,6 +16,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <string>
+#include <map>
 
 // Assimp Callback
 struct aiLogStream stream;		// Assimp logs are registered in this variable
@@ -119,15 +120,15 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 	}
 }
 
-bool ImporterScene::Load(std::string const& _path)
+bool ImporterScene::Load(const char* _path)
 {
 	// Read JSON
 	FILE* f;
 	errno_t err;
-	if ((err = fopen_s(&f, _path.c_str(), "rb")) != 0)
+	if ((err = fopen_s(&f, _path, "rb")) != 0)
 	{
 		// File could not be opened. FILE* was set to NULL. error code is returned in err.
-		LOG("[error] File could not be opened: %s", _path.c_str(), strerror(err));
+		LOG("[error] File could not be opened: %s", _path, strerror(err));
 		return false;
 	}
 	else
@@ -137,52 +138,95 @@ bool ImporterScene::Load(std::string const& _path)
 
 		rapidjson::Document d;
 		d.ParseStream(is);
-		fclose(f);
 
 		// Create gameobjects
-		const rapidjson::Value& gameObjects = d["GameObjects"];
-		std::vector<GameObject*> orphans;
+		const rapidjson::Value& gameObjects = d["Game Objects"];
+		std::map<int, GameObject*> orphans;
 		for (int i = 0; i < gameObjects.Size(); ++i)
 		{
 			// Load GameObject
 			GameObject* go = new GameObject(gameObjects[i]["Name"].GetString(), gameObjects[i]["UUID"].GetInt());
 			if (gameObjects[i]["ParentUUID"].GetInt() != -1)
 			{
-				GameObject* parent = App->sceneMng->GetRoot()->SearchChild(gameObjects[i]["ParentUUID"].GetInt());
-				if (parent)
-					go->SetParent(parent);
+				if (App->sceneMng->GetRoot()->GetUUID() == gameObjects[i]["ParentUUID"].GetInt())
+					go->SetParent(App->sceneMng->GetRoot());
 				else
-					orphans.push_back(go);
+				{
+					GameObject* parent = App->sceneMng->GetRoot()->SearchChild(gameObjects[i]["ParentUUID"].GetInt());
+					if (parent)
+						go->SetParent(parent);
+					else
+						orphans[gameObjects[i]["ParentUUID"].GetInt()] = go;
+				}
 			}
 			else
 				App->sceneMng->SetRoot(go);
 
 			// Load its components
 			const rapidjson::Value& components = gameObjects[i]["Components"];
-			for (int j = 0; j < components.Size(); ++i)
+			for (int j = 0; j < components.Size(); ++j)
 			{
 				go->AddComponent(static_cast<ComponentType>(components[j]["Type"].GetInt()), components[j]["UUID"].GetInt());
 				Component* c = go->GetComponent(components[j]["UUID"].GetInt());
 				c->onLoad(components[j]);
-				switch (components[j]["Type"].GetInt())
+			}
+		}
+		while (orphans.size() > 0)
+		{
+			for (std::map<int, GameObject*>::iterator it = orphans.begin(); it != orphans.end();)
+			{
+				GameObject* parent = App->sceneMng->GetRoot()->SearchChild((*it).first);
+				if (parent)
 				{
-				case TRANSFORM:
-					break;
-				case MESH:
-					// Get filename
-					// Get size?
-					// call ImporterMesh::Load
-					break;
-				case MATERIAL:
-					// Get Ambient diffuse specular, etc
-					// Get textures array of filenames
-					// call ImporterMaterial::Load
-					break;
+					(*it).second->SetParent(parent);
+					orphans.erase(it);
 				}
+				else
+					++it;
 			}
 		}
 
+		fclose(f);
+
+		// Set shaders program
+		App->sceneMng->GetRoot()->SetProgram(App->sceneMng->GetProgram());
+
+		// Focus and frustum culling
+		float4 centerDistance = App->sceneMng->GetRoot()->GetChildren()[App->sceneMng->GetRoot()->GetChildren().size() - 1]->ComputeCenterAndDistance();
+		App->camera->onFocus(centerDistance.xyz(), centerDistance.w);
+		App->camera->cullingCamera->PerformFrustumCulling();
 		return true;
 	}
 
+}
+
+void ImporterScene::Save(const char* _filename)
+{
+	FILE* f;
+	errno_t err;
+	if ((err = fopen_s(&f, _filename, "wb")) != 0)
+	{
+		// File could not be opened. FILE* was set to NULL. error code is returned in err.
+		LOG("[error] File could not be opened: %s", _filename, strerror(err));
+		return;
+	}
+	else
+	{
+		char writeBuffer[65536];
+		rapidjson::FileWriteStream os(f, writeBuffer, sizeof(writeBuffer));
+
+		rapidjson::Document d;
+
+		d.SetObject();
+		rapidjson::Value gameObjects(rapidjson::kArrayType);
+
+		App->sceneMng->GetRoot()->onSave(gameObjects, d);
+
+		d.AddMember("Game Objects", gameObjects, d.GetAllocator());
+
+		rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
+		d.Accept(writer);
+
+		fclose(f);
+	}
 }

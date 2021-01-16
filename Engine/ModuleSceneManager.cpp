@@ -5,6 +5,7 @@
 ModuleSceneManager::ModuleSceneManager()
 {
 	root->ChangeName("Scene 1");
+	sceneName = "Scene 1";
 }
 
 ModuleSceneManager::~ModuleSceneManager()

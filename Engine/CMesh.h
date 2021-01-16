@@ -53,6 +53,6 @@ public:
 	void SetAABBmin(float3 _AABBmin) { AABBmin = _AABBmin; }
 
 	// ------ Serialization -------- //
-	void onSave(rapidjson::Value& config) const override;
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
 	void onLoad(const rapidjson::Value& config) override;
 };

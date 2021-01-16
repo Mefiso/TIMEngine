@@ -30,6 +30,6 @@ public:
 	void PerformFrustumCulling(bool extractFrustum = false);	// Extracts the frustum planes and corner points if needed, and tells the renderer to perform the frustum culling
 
 	// ------ Serialization -------- //
-	void onSave(rapidjson::Value& config) const override;
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
 	void onLoad(const rapidjson::Value& config) override;
 };

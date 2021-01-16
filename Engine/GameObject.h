@@ -96,4 +96,7 @@ public:
 	void UpdateOctreePosition();
 
 	float4 ComputeCenterAndDistance() const;
+
+	// Serialization
+	void onSave(rapidjson::Value& config, rapidjson::Document& d);
 };

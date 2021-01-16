@@ -108,8 +108,18 @@ void CMesh::Draw()
 	}
 }
 
-void CMesh::onSave(rapidjson::Value& config) const
+void CMesh::onSave(rapidjson::Value& config, rapidjson::Document& d) const
 {
+	rapidjson::Value c(rapidjson::kObjectType);
+	c.AddMember("UUID", rapidjson::Value(UUID).Move(), d.GetAllocator());
+	c.AddMember("Type", rapidjson::Value(GetType()).Move(), d.GetAllocator());
+
+	rapidjson::Value s;
+	s = rapidjson::StringRef(filename.c_str(), filename.size());
+	c.AddMember("Filename", s, d.GetAllocator());
+	c.AddMember("Filesize", rapidjson::Value(filesize).Move(), d.GetAllocator());
+
+	config.PushBack(c, d.GetAllocator());
 }
 
 void CMesh::onLoad(const rapidjson::Value& config)
