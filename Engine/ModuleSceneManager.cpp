@@ -124,7 +124,8 @@ void ModuleSceneManager::DrawSkybox()
 void ModuleSceneManager::MousePicker(int _x, int _y)
 {
 	// deselect all gameobjects
-	//selectedObject = nullptr;
+	// TODO: Keep Guizmo object selected if clicked there
+	selectedObject = nullptr;
 
 	//Normalise x,y to [-1,1]
 	float vpX = (_x - App->editor->GetViewportPos().x - App->editor->GetViewportSize().x / 2) / (App->editor->GetViewportSize().x / 2);

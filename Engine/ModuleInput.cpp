@@ -41,7 +41,7 @@ bool ModuleInput::Init()
 
 update_status ModuleInput::PreUpdate()
 {
-	if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+	if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP)
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 
 	SDL_Event sdlEvent;
