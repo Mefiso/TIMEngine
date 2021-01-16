@@ -33,5 +33,5 @@ public:
 
 
 
-	void DrawGuizmo(CCamera* camera, GameObject* go);
+	void DrawGuizmo(CCamera* _camera, GameObject* _go);
 };

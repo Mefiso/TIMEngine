@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModuleRender.h"
+#include "ModuleSceneManager.h"
 #include "CCamera.h"
 #include "debugdraw.h"
 
@@ -20,7 +21,7 @@ CCamera::~CCamera()
 
 void CCamera::Draw()
 {
-	if (owner->isSelected)
+	if (owner == App->sceneMng->GetSelectedGO())
 		dd::frustum(frustum->ViewProjMatrix().Inverted(), dd::colors::Gray);
 }
 

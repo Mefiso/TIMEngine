@@ -262,6 +262,7 @@
     <ClInclude Include="W_hierarchy.h" />
     <ClInclude Include="W_monitor.h" />
     <ClInclude Include="W_properties.h" />
+    <ClInclude Include="W_tools.h" />
     <ClInclude Include="W_viewport.h" />
   </ItemGroup>
   <ItemGroup>
@@ -347,6 +348,7 @@
     <ClCompile Include="W_hierarchy.cpp" />
     <ClCompile Include="W_monitor.cpp" />
     <ClCompile Include="W_properties.cpp" />
+    <ClCompile Include="W_tools.cpp" />
     <ClCompile Include="W_viewport.cpp" />
   </ItemGroup>
   <ItemGroup>

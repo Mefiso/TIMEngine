@@ -1,10 +1,10 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "W_viewport.h"
 #include <vector>
 #include <Math/float2.h>
-
+#include "W_viewport.h"
+#include "W_tools.h"
 class Window;
 class WConsole;
 class WHierarchy;
@@ -24,12 +24,13 @@ private:
 	ImGuiIO* io = nullptr;											// Pointer to the inputs/outputs setting of ImGui
 
 	//  ------ ImGui Windows ------- //
-	WViewport* viewport = nullptr;
+	WConfig* configuration = nullptr;
 	WConsole* console = nullptr;
 	WHierarchy* hierarchy = nullptr;
 	WMonitor* monitor = nullptr;
-	WConfig* configuration = nullptr;
 	WProperties* properties = nullptr;
+	WViewport* viewport = nullptr;
+	WTools* tools = nullptr;
 	WAbout* about = nullptr;
 
 	std::vector<Window*> editorWindows;								// Vector containig the references to each ImGui window
@@ -56,6 +57,9 @@ public:
 	// ---------- Getters ---------- //
 	float2 GetViewportPos() const { return viewport->GetViewportPosition(); }
 	float2 GetViewportSize() const { return float2(viewport->GetWidth(), viewport->GetHeight()); }
+	int GetGuizmoState() const { return tools->GetGuizmoState(); }
+	int GetGuizmoMode() const { return tools->GetGuizmoMode(); }
+	int GetPlayPauseState() const { return tools->GetPlayPauseState(); }
 
 private:
 	void DrawMainMenu();											// Generates the main menu using ImGui

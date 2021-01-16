@@ -5,13 +5,14 @@
 #include "ModuleSceneManager.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
-#include "W_viewport.h"
+#include "W_config.h"
 #include "W_console.h"
 #include "W_hierarchy.h"
 #include "W_monitor.h"
-#include "W_config.h"
-#include "W_about.h"
 #include "W_properties.h"
+#include "W_viewport.h"
+#include "W_Tools.h"
+#include "W_about.h"
 #include "Leaks.h"
 #include "Brofiler.h"
 
@@ -23,6 +24,7 @@ ModuleEditor::ModuleEditor()
 	editorWindows.push_back(monitor = new WMonitor("Monitoring"));
 	editorWindows.push_back(properties = new WProperties("Properties"));
 	editorWindows.push_back(viewport = new WViewport("Viewport"));
+	editorWindows.push_back(tools = new WTools("Tools"));
 	editorWindows.push_back(about = new WAbout("About"));
 }
 

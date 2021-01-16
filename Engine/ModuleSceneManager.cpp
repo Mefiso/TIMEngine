@@ -121,20 +121,10 @@ void ModuleSceneManager::DrawSkybox()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ModuleSceneManager::DeselectAll(std::vector<GameObject*> _goRoots)
-{
-	for (unsigned int i = 0u; i < _goRoots.size(); ++i)
-	{
-		_goRoots[i]->isSelected = false;
-		std::vector<GameObject*> goChildren = _goRoots[i]->GetChildren();
-		DeselectAll(goChildren);
-	}
-}
-
 void ModuleSceneManager::MousePicker(int _x, int _y)
 {
 	// deselect all gameobjects
-	DeselectAll(root->GetChildren());
+	//selectedObject = nullptr;
 
 	//Normalise x,y to [-1,1]
 	float vpX = (_x - App->editor->GetViewportPos().x - App->editor->GetViewportSize().x / 2) / (App->editor->GetViewportSize().x / 2);
@@ -161,7 +151,7 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 
 			// transform ray to local mesh coordinates
 			LineSegment localSpaceRay(ray);
-			localSpaceRay.Transform((*it)->GetTransform()->GetTransformationMatrix().Inverted());
+			localSpaceRay.Transform((*it)->GetModelMatrix().Inverted());
 
 			// generate each face of the mesh
 			float3 face[3];
@@ -203,6 +193,5 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 	if (pickedGO)
 	{
 		App->sceneMng->SetSelectedGO(pickedGO);
-		pickedGO->isSelected = true;
 	}
 }
