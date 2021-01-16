@@ -43,7 +43,6 @@ update_status ModuleInput::PreUpdate()
 {
 	if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP || GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
-	}
 
 	SDL_Event sdlEvent;
 
@@ -108,20 +107,21 @@ update_status ModuleInput::PreUpdate()
 			}
 			break;
 		case SDL_MOUSEMOTION:
-			if (App->editor->IsViewportHovered()) {
-				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
-					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {																							// TODO: REVIEW THIS MEEEEEEN
+			if (App->editor->IsViewportHovered())
+			{
+				if (GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+				{
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE)													// REVIEW THIS MEEEEEEN
 						SDL_SetRelativeMouseMode(SDL_TRUE);
-					}
 					Event ev(Event::rotate_event);
 					ev.point2d.x = sdlEvent.motion.xrel;
 					ev.point2d.y = -sdlEvent.motion.yrel;
 					App->BroadcastEvent(ev);
 				}
-				else if (GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT) {
-					if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
+				else if (GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+				{
+					if (SDL_GetRelativeMouseMode() == SDL_FALSE)
 						SDL_SetRelativeMouseMode(SDL_TRUE);
-					}
 					Event ev(Event::orbit_event);
 					ev.point2d.x = -sdlEvent.motion.xrel;
 					ev.point2d.y = -sdlEvent.motion.yrel;
@@ -131,7 +131,8 @@ update_status ModuleInput::PreUpdate()
 			break;
 		case SDL_MOUSEWHEEL:
 		{
-			if (App->editor->IsViewportHovered()) {
+			if (App->editor->IsViewportHovered())
+			{
 				Event ev(Event::wheel_event);
 				ev.point2d.x = sdlEvent.wheel.x;
 				ev.point2d.y = sdlEvent.wheel.y;

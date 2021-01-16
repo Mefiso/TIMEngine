@@ -28,6 +28,7 @@ void CCamera::Draw()
 void CCamera::UpdateFrustumFromTransform(CTransform* _transform)
 {
 	frustum->SetWorldMatrix(_transform->GetTransformationMatrix().Float3x4Part());
+	PerformFrustumCulling(true);
 }
 
 void CCamera::UpdateTransformFromFrustum()
@@ -45,21 +46,22 @@ void CCamera::UpdateTransformFromFrustum()
 	}
 }
 
-void CCamera::PerformFrustumCulling()
+void CCamera::PerformFrustumCulling(bool extractFrustum)
 {
-	// Compute frustum planes
-	float4x4 viewProjMatrix = frustum->ViewProjMatrix();
+	if (extractFrustum)
+	{
+		// Compute frustum planes
+		float4x4 viewProjMatrix = frustum->ViewProjMatrix();
 
-	float4 frustumPlanes[6];
-	frustumPlanes[0] = viewProjMatrix.Row(3) + viewProjMatrix.Row(0);
-	frustumPlanes[1] = viewProjMatrix.Row(3) - viewProjMatrix.Row(0);
-	frustumPlanes[2] = viewProjMatrix.Row(3) + viewProjMatrix.Row(1);
-	frustumPlanes[3] = viewProjMatrix.Row(3) - viewProjMatrix.Row(1);
-	frustumPlanes[4] = viewProjMatrix.Row(3) + viewProjMatrix.Row(2);
-	frustumPlanes[5] = viewProjMatrix.Row(3) - viewProjMatrix.Row(2);
+		frustumPlanes[0] = viewProjMatrix.Row(3) + viewProjMatrix.Row(0);
+		frustumPlanes[1] = viewProjMatrix.Row(3) - viewProjMatrix.Row(0);
+		frustumPlanes[2] = viewProjMatrix.Row(3) + viewProjMatrix.Row(1);
+		frustumPlanes[3] = viewProjMatrix.Row(3) - viewProjMatrix.Row(1);
+		frustumPlanes[4] = viewProjMatrix.Row(3) + viewProjMatrix.Row(2);
+		frustumPlanes[5] = viewProjMatrix.Row(3) - viewProjMatrix.Row(2);
 
-	float3 frustumPoints[8];
-	frustum->GetCornerPoints(frustumPoints);
+		frustum->GetCornerPoints(frustumPoints);
+	}
 
 	App->renderer->PerformFrustumCulling(frustumPlanes, frustumPoints);
 }

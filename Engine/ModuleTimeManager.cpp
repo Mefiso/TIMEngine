@@ -13,13 +13,22 @@ ModuleTimeManager::~ModuleTimeManager()
 bool ModuleTimeManager::Init()
 {
 	realTime.Start();
-
 	return true;
 }
 
 update_status ModuleTimeManager::PreUpdate()
 {
 	++frameCount;
+
+	// Limiting framerate (delay)
+	if (maxFPS)
+	{
+		static float elapsed;
+		elapsed = realTime.Read() - lastFrameRTime * 1000.0f;
+		if (elapsed < msPerFrame)
+			SDL_Delay(msPerFrame - elapsed);
+	}
+
 	static float currentFrameTime;
 	// Real Time
 	currentFrameTime = realTime.Read() / 1000.0f;
@@ -29,19 +38,6 @@ update_status ModuleTimeManager::PreUpdate()
 	currentFrameTime = (time.Read() / 1000.f);
 	deltaTime = (currentFrameTime - lastFrameTime) * timeScale;
 	lastFrameTime = currentFrameTime;
-
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleTimeManager::PostUpdate()
-{
-	if (maxFPS)
-	{
-		static float elapsed;
-		elapsed = realTime.Read() - lastFrameRTime * 1000.0f;
-		if (elapsed < msPerFrame)
-			SDL_Delay(msPerFrame - elapsed);
-	}
 
 	return UPDATE_CONTINUE;
 }

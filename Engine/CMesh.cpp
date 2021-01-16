@@ -42,15 +42,14 @@ void CMesh::Draw()
 		ModuleProgram::setVec3(program, "lightDir", float3(0.5f, 1.0f, 1.3f));
 		ModuleProgram::setVec3(program, "lightColor", float3(1.0));
 
-		// This should be set from other parameters not hardcoded
 		// Camera
 		ModuleProgram::setVec3(program, "cameraPos", App->camera->frustum->Pos());
 
-		ModuleProgram::setVec3(program, "material.ambient", float3(0.05f, 0.05f, 0.05f));
-		ModuleProgram::setFloat(program, "material.shininess", 64.0f);
-		ModuleProgram::setVec3(program, "material.diffuse", float3(0.5f, 0.5f, 0.5f));
-
+		// Material
 		CMaterial* material = owner->GetComponent<CMaterial>();
+		ModuleProgram::setVec3(program, "material.ambient", material->ambient);
+		ModuleProgram::setFloat(program, "material.shininess", material->shininess);
+		ModuleProgram::setVec3(program, "material.diffuse", material->diffuse);
 
 		// Bind appropriate textures
 		unsigned int diffuseNr = 1;
@@ -77,11 +76,12 @@ void CMesh::Draw()
 				glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
 			}
 		}
+		// If no diffuse/specular maps
 		ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr - 1);
 		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
 		if (specularNr == 1) {
-			ModuleProgram::setVec3(program, "material.specular", float3(0.08f));
-			//ModuleProgram::setInt(program, "material.shininessAlpha", );
+			ModuleProgram::setVec3(program, "material.specular", material->specular);
+			ModuleProgram::setInt(program, "material.shininessAlpha", material->shininessAlpha);
 		}
 
 		glBindVertexArray(VAO);

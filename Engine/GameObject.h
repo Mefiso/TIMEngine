@@ -79,6 +79,7 @@ public:
 	void SetTransform(float4x4& _newTransform);
 	void SetParent(GameObject* _newParent);
 	void SetProgram(unsigned int program);
+
 	void UpdateBoundingBoxes();
 	void UpdateOctreePosition();
 

@@ -1,7 +1,7 @@
 #include "Application.h"
+#include "GameObject.h"
 #include "ModuleSceneManager.h"
 #include "ModuleRender.h"
-#include "GameObject.h"
 #include "CMesh.h"
 #include "CTransform.h"
 #include "CMaterial.h"
@@ -163,11 +163,13 @@ void GameObject::AddChild(GameObject* _newChild)
 		float4x4 worldTransform = _newChild->GetModelMatrix();
 		float4x4 thisTransform = this->transform ? this->GetModelMatrix() : float4x4::identity;
 		float3 thisScale = float3(thisTransform.Col3(0).Length(), thisTransform.Col3(1).Length(), thisTransform.Col3(2).Length());
-		if (thisScale.Equals(float3::one))
+
+		// Inverts the matrix with the fastest possible method
+		if (thisScale.Equals(float3::one))					// No scaling
 			thisTransform.InverseOrthonormal();
-		else if (thisScale.xxx().Equals(thisScale))
+		else if (thisScale.xxx().Equals(thisScale))			// Uniform scaling
 			thisTransform.InverseOrthogonalUniformScale();
-		else
+		else												// Non uniform scaling
 			thisTransform.InverseColOrthogonal();
 
 		_newChild->SetTransform(thisTransform * worldTransform);
@@ -237,7 +239,7 @@ void GameObject::SetProgram(unsigned int program)
 		if ((*it)->GetType() == MESH)
 			((CMesh*)(*it))->SetProgram(program);
 	}
-	//update children accordingly
+	// update children accordingly
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		(*it)->SetProgram(program);

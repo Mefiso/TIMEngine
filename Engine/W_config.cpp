@@ -36,8 +36,7 @@ void WConfig::DrawWindowHeader()
 	if (ImGui::CollapsingHeader("Window")) {
 		SDL_DisplayMode mode;
 		SDL_GetWindowDisplayMode(App->window->window, &mode);
-		ImGui::TextUnformatted("Refresh rate: ");
-		ImGui::SameLine();
+		ImGui::TextUnformatted("Refresh rate: "); ImGui::SameLine();
 		ImGui::TextColored({ 0.0, 1.0, 1.0, 1.0 }, "%d", mode.refresh_rate);
 
 		ImGui::Separator();

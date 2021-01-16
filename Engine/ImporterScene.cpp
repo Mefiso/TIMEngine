@@ -47,7 +47,9 @@ void ImporterScene::Load(std::string const& _path)
 	importer.FreeScene();
 
 	// TODO: What if new scene has no transform? (could it be possible?)
-	App->camera->onFocus(App->sceneMng->GetRoot()->GetChildren()[App->sceneMng->GetRoot()->GetChildren().size() - 1]->GetModelMatrix().Col3(3), 10);
+	float4 centerDistance = App->sceneMng->GetRoot()->GetChildren()[App->sceneMng->GetRoot()->GetChildren().size() - 1]->ComputeCenterAndDistance();
+	App->camera->onFocus(centerDistance.xyz(), centerDistance.w);
+	App->camera->cullingCamera->PerformFrustumCulling();
 }
 
 void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* object, std::string _dir)
@@ -68,7 +70,7 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 		{
 			// save the custom file format
 			unsigned int fsize = ImporterMesh::Save(object->GetComponent<CMesh>(), meshPath.c_str());
-			
+
 			object->RemoveComponent(object->GetComponent<CMesh>()->GetUID()); // empty the cmesh (THIS IS PROVISIONAL UNTIL THE FILESYSTEM IS CORRECTLY IMPLEMENTED) (we will rather import or load, but not both)
 			if (fsize > 0)
 			{

@@ -41,6 +41,8 @@ public:
 	void BroadcastEvent(const Event& event);	// Call ReceiveEvent() for each Module
 
 	void Log(const char* input) const;			// Forward a LOG output to the Editor, then to W_Console
+
+	// Easy access to a precision timer from timeManager module
 	void StartTimer();
 	unsigned int ReadTimer() const;
 	unsigned int StopTimer();

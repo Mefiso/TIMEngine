@@ -97,9 +97,6 @@ update_status ModuleEditor::PostUpdate()
 	{
 		if (toDeleteCMP->GetOwner())
 		{
-			// If it's a mesh delete it from octree
-			//if (toDeleteCMP->GetType() == MESH)
-			//	App->sceneMng->octree.Erase(toDeleteCMP->GetOwner());
 			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUID());
 			App->renderer->RemoveObjectFromDrawList(toDeleteCMP->GetOwner());
 		}

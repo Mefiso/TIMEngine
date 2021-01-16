@@ -11,11 +11,13 @@ public:
 
 private:
 	int frameCount = 0u;
+	// Game Clock
 	MSTimer time;
 	float timeScale = 1.f;
 	float deltaTime = 0.f;
 	float lastFrameTime = 0.f;
 
+	// Real Time Clock
 	MSTimer realTime;
 	float rtDeltaTime = 0.f;
 	float lastFrameRTime = 0.f;
@@ -28,7 +30,6 @@ public:
 
 	bool Init() override;
 	update_status PreUpdate() override;
-	update_status PostUpdate() override;
 
 	// ---------- Getters ---------- //
 	int GetFrameCount() const { return frameCount; }
