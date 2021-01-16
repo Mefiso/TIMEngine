@@ -96,7 +96,6 @@ update_status ModuleEditor::PostUpdate()
 		if (toDeleteCMP->GetOwner())
 		{
 			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUUID());
-			App->renderer->RemoveObjectFromDrawList(toDeleteCMP->GetOwner());
 		}
 		properties->SetToDelete(nullptr);
 	}

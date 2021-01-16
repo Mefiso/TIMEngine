@@ -144,8 +144,11 @@ void GameObject::RemoveComponent(int _cID)
 	{
 		if (components[toRemove]->GetType() == TRANSFORM)
 			transform = nullptr;
+		if (components[toRemove]->GetType() == MESH)
+			App->renderer->RemoveObjectFromDrawList(this);
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
+		GetComponent<CMaterial>();
 	}
 }
 

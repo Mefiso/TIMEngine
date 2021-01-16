@@ -52,17 +52,18 @@ void CMesh::Draw()
 
 		// Material
 		CMaterial* material = owner->GetComponent<CMaterial>();
-		ModuleProgram::setVec3(program, "material.ambient", material->ambient);
-		ModuleProgram::setFloat(program, "material.shininess", material->shininess);
-		ModuleProgram::setVec3(program, "material.diffuse", material->diffuse);
-
-		// Bind appropriate textures
-		unsigned int diffuseNr = 1;
-		unsigned int specularNr = 1;
-		unsigned int normalNr = 1;
-		unsigned int heightNr = 1;
 		if (material)
 		{
+			ModuleProgram::setVec3(program, "material.ambient", material->ambient);
+			ModuleProgram::setFloat(program, "material.shininess", material->shininess);
+			ModuleProgram::setVec3(program, "material.diffuse", material->diffuse);
+
+			// Bind appropriate textures
+			unsigned int diffuseNr = 1;
+			unsigned int specularNr = 1;
+			unsigned int normalNr = 1;
+			unsigned int heightNr = 1;
+
 			for (unsigned int i = 0u; i < material->textures.size(); i++)
 			{
 				glActiveTexture(GL_TEXTURE0 + i);					// Activate proper texture unit
@@ -80,13 +81,24 @@ void CMesh::Draw()
 				ModuleProgram::setInt(program, ("material." + name + number).c_str(), i);
 				glBindTexture(GL_TEXTURE_2D, material->textures[i]->id);
 			}
+
+			// If no diffuse/specular maps
+			ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr - 1);
+			ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
+			if (specularNr == 1) {
+				ModuleProgram::setVec3(program, "material.specular", material->specular);
+				ModuleProgram::setInt(program, "material.shininessAlpha", material->shininessAlpha);
+			}
 		}
-		// If no diffuse/specular maps
-		ModuleProgram::setInt(program, "material.hasDiffuseMap", diffuseNr - 1);
-		ModuleProgram::setInt(program, "material.hasSpecularMap", specularNr - 1);
-		if (specularNr == 1) {
-			ModuleProgram::setVec3(program, "material.specular", material->specular);
-			ModuleProgram::setInt(program, "material.shininessAlpha", material->shininessAlpha);
+		else
+		{
+			ModuleProgram::setVec3(program, "material.ambient", float3(0.05));
+			ModuleProgram::setFloat(program, "material.shininess", 64.f);
+			ModuleProgram::setVec3(program, "material.diffuse", float3(0.5));
+			ModuleProgram::setInt(program, "material.hasDiffuseMap", 0);
+			ModuleProgram::setInt(program, "material.hasSpecularMap", 0);
+			ModuleProgram::setVec3(program, "material.specular", float3(0.08f));
+			ModuleProgram::setInt(program, "material.shininessAlpha", 0);
 		}
 
 		glBindVertexArray(VAO);
