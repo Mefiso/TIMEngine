@@ -4,12 +4,12 @@
 #include "ModuleCamera.h"
 #include "ModuleSceneManager.h"
 #include "GameObject.h"
-#include "CTransform.h"
-#include "CMaterial.h"
 #include "ImporterMaterial.h"
-#include "CMesh.h"
-#include "CCamera.h"
 #include "CTransform.h"
+#include "CMesh.h"
+#include "CMaterial.h"
+#include "CCamera.h"
+#include "CLight.h"
 #include "GL/glew.h"
 #include "Leaks.h"
 
@@ -70,6 +70,10 @@ void WProperties::Draw()
 			{
 				selectedObject->AddComponent(CAMERA);
 			}
+			if (ImGui::MenuItem("Light"))
+			{
+				selectedObject->AddComponent(LIGHT);
+			}
 
 			// TODO: Generate opening a window on already existing component creation
 			/*if(false)
@@ -106,6 +110,8 @@ void WProperties::DrawComponentHeader(Component* _component)
 		name = "Material"; break;
 	case CAMERA:
 		name = "Camera"; break;
+	case LIGHT:
+		name = "Light"; break;
 	}
 
 	bool headerOpen = ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_DefaultOpen);
@@ -134,6 +140,9 @@ void WProperties::DrawComponentHeader(Component* _component)
 			break;
 		case CAMERA:
 			DrawCameraBody((CCamera*)_component);
+			break;
+		case LIGHT:
+			DrawLightBody((CLight*)_component);
 			break;
 		}
 	}
@@ -314,4 +323,40 @@ void WProperties::DrawCameraBody(CCamera* _camera)
 		frust->SetVerticalFovAndAspectRatio(VFOV, ar);	// The aspect ratio is not stored, so when resizing the viewport/window the user can recover the original aspect ratio
 	}
 	ImGui::PopItemWidth();
+}
+
+void WProperties::DrawLightBody(CLight* _light)
+{
+	const char* items[] = { "Directional Light", "Point Light", "Spot Light" };
+	ImGui::PushItemWidth(180);
+	ImGui::Combo("Light Type", &_light->GetTypeRef(), items, IM_ARRAYSIZE(items));
+
+	ImGui::Spacing();
+
+	ImGui::ColorEdit3("Light Color", &_light->GetColorRef().x, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
+	ImGui::DragFloat("Intensity", &_light->GetIntensityRef(), .02f, 0.0f, FLT_MAX, "%.2f");
+
+	switch (_light->GetType())
+	{
+	case 0:	// Directional
+		ImGui::DragFloat3("Direction", &_light->GetDirectionRef().x, .02f, -FLT_MAX, FLT_MAX, "%.2f");
+		break;
+	case 1:	// Point
+		ImGui::TextUnformatted("This is Point Light");
+		ImGui::DragFloat("Constant Att.", &_light->GetKcRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Linear Att.", &_light->GetKlRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Quadratic Att.", &_light->GetKqRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		break;
+	case 2:	// Spot
+		ImGui::DragFloat3("Direction", &_light->GetDirectionRef().x, .02f, -FLT_MAX, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Constant Att.", &_light->GetKcRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Linear Att.", &_light->GetKlRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Quadratic Att.", &_light->GetKqRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Inner Angle", &_light->GetInnerAngRef(), .02f, 0.f, 180, "%.2f");
+		ImGui::DragFloat("Outer Angle", &_light->GetOuterAngRef(), .02f, 0.f, 180, "%.2f");
+		break;
+	default:
+		ImGui::TextUnformatted("The type of ligt was nos specified!");
+		break;
+	}
 }

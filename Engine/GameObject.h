@@ -15,7 +15,7 @@ class CMaterial;
 class GameObject
 {
 private:
-	static int objectCount;																				// Global counter of number of GameObjects. Used to set the uID of each new instance of GameObject.
+	static int objectCount;																		// Global counter of number of GameObjects. Used to set the uID of each new instance of GameObject.
 
 public:
 	static bool drawOBB;
@@ -23,28 +23,28 @@ public:
 private:
 
 	std::string name = std::string("");
-	const int uID = objectCount;																		// Unique identifier of each GameObject instance
-	GameObject* parent = nullptr;																		// Pointer to the parent of this GameObject
-	std::vector<GameObject*> children;																	// Vector of pointers to GameObjects that are child of this GameObject
-	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
-	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
-	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
-	AABB aabb;																							// AxisAlignedBoundingBox of the GameObject in local Coordinates of the object mesh
-	OBB obb;																							// ObliquousBoundingBox of the GameObject in World Coordinates
-	ddVec3 obbPoints[8];																				// World coordinates of the OBB vertices
+	const int uID = objectCount;																// Unique identifier of each GameObject instance
+	GameObject* parent = nullptr;																// Pointer to the parent of this GameObject
+	std::vector<GameObject*> children;															// Vector of pointers to GameObjects that are child of this GameObject
+	std::vector<Component*> components;															// Vector of Components attached to this GameObject
+	bool isActive = true;																		// Indicates if this GameObject must be rendered or not
+	CTransform* transform = nullptr;															// Direct pointer to the Transform Component
+	AABB aabb;																					// AxisAlignedBoundingBox of the GameObject in local Coordinates of the object mesh
+	OBB obb;																					// ObliquousBoundingBox of the GameObject in World Coordinates
+	ddVec3 obbPoints[8];																		// World coordinates of the OBB vertices
 
 public:
 
-	GameObject();																						// Constructor
-	GameObject(const std::string& _name);																// Constructor (name as param)
-	~GameObject();																						// Destructor
+	GameObject();																				// Constructor
+	GameObject(const std::string& _name);														// Constructor (name as param)
+	~GameObject();																				// Destructor
 
-	void CleanUp();																						// Clears all memory stored by this GameObject
-	void Draw();																						// Update this GameObject with the transformations applied to it. SHOULD THIS GO IN PREUPDATE STEP?
-	bool AddComponent(ComponentType _type, void* arg = nullptr, const std::string& path = "");			// Create and attach a new Component to this GameObject
-	void RemoveComponent(int _cID);																		// Detach a component from this GameObject
-	void AddChild(GameObject* _newChild);																// Subfunction of SetParent(). Places another GameObject as a child of this one
-	void RemoveChild(int childID);																		// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
+	void CleanUp();																				// Clears all memory stored by this GameObject
+	void Draw();																				// Update this GameObject with the transformations applied to it. SHOULD THIS GO IN PREUPDATE STEP?
+	bool AddComponent(ComponentType _type);														// Create and attach a new Component to this GameObject
+	void RemoveComponent(int _cID);																// Detach a component from this GameObject
+	void AddChild(GameObject* _newChild);														// Subfunction of SetParent(). Places another GameObject as a child of this one
+	void RemoveChild(int childID);																// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
 
 	// ---------- Getters ---------- //
 	const std::string& GetName() const { return name; }
@@ -52,21 +52,21 @@ public:
 	GameObject* GetParent() const { return parent; }
 	std::vector<GameObject*>& GetChildren() { return children; }
 	std::vector<Component*>& GetComponents() { return components; }
-	float4x4 GetModelMatrix() const;																	// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
+	CTransform* GetTransform() const { return transform; }										// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
+	float4x4 GetModelMatrix() const;															// Returns the global Model Matrix defined by the Transform Components of this GameObject and its parents
 	const float3 GetAccumulatedScale() const;
-	CTransform* GetTransform() const { return transform; }												// Returns the Transform Component of this GameObject, if there is one. If not, returns nullptr
 	const AABB& GetAABB() const { return aabb; }
 	const OBB& GetOBB() const { return obb; }
 
 	template<typename T>
-	T* GetComponent() const																				// Get a component of type T, or null if it does not exist on this GameObject
+	T* GetComponent() const																		// Get a component of type T, or null if it does not exist on this GameObject
 	{
 		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) return c; }
 		return nullptr;
 	}
 
 	template<typename T>
-	std::vector<T*>& GetComponentsOfType()																// Get a vector of component of type T, empty if it does not exist on this GameObject
+	std::vector<T*>& GetComponentsOfType()														// Get a vector of component of type T, empty if it does not exist on this GameObject
 	{
 		std::vector<T*> cs;
 		for (auto i : components) { T* c = dynamic_cast<T*>(i); if (c != nullptr) cs.push_back(c); }

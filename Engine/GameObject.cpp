@@ -6,6 +6,7 @@
 #include "CTransform.h"
 #include "CMaterial.h"
 #include "CCamera.h"
+#include "CLight.h"
 #include "debugdraw.h"
 
 
@@ -63,7 +64,7 @@ void GameObject::Draw()
 	}
 }
 
-bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)
+bool GameObject::AddComponent(ComponentType _type)
 {
 	bool createdComp = false;
 	Component* newComp;
@@ -98,6 +99,14 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 		if (!this->GetComponent<CCamera>())
 		{
 			newComp = new CCamera(this);
+			components.push_back(newComp);
+			createdComp = true;
+		}
+		break;
+	case LIGHT:
+		if (!this->GetComponent<CLight>())
+		{
+			newComp = new CLight(this);
 			components.push_back(newComp);
 			createdComp = true;
 		}
