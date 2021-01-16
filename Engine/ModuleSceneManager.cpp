@@ -3,7 +3,6 @@
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
 #include "CMesh.h"
-#include "ImGuizmo.h"
 #include <Geometry/LineSegment.h>
 #include <Geometry/Triangle.h>
 
@@ -185,7 +184,7 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 				}
 			}
 			// choose the GO selection by minDist
-			
+
 			if (objDist < minDist)
 			{
 				minDist = objDist;

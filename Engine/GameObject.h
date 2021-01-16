@@ -16,7 +16,7 @@ class CMaterial;
 class GameObject
 {
 private:
-	static LCG randomGen;																				// Random Generator used to set UUID.
+	static LCG randomGen;																		// Random Generator used to set UUID.
 
 public:
 	static bool drawOBB;
@@ -24,29 +24,29 @@ public:
 private:
 
 	std::string name = std::string("");
-	const int UUID;																						// Unique identifier of each GameObject instance
-	GameObject* parent = nullptr;																		// Pointer to the parent of this GameObject
-	std::vector<GameObject*> children;																	// Vector of pointers to GameObjects that are child of this GameObject
-	std::vector<Component*> components;																	// Vector of Components attached to this GameObject
-	bool isActive = true;																				// Indicates if this GameObject must be rendered or not
-	CTransform* transform = nullptr;																	// Direct pointer to the Transform Component
-	AABB aabb;																							// AxisAlignedBoundingBox of the GameObject in local Coordinates of the object mesh
-	OBB obb;																							// ObliquousBoundingBox of the GameObject in World Coordinates
-	ddVec3 obbPoints[8];																				// World coordinates of the OBB vertices
+	const int UUID;																				// Unique identifier of each GameObject instance
+	GameObject* parent = nullptr;																// Pointer to the parent of this GameObject
+	std::vector<GameObject*> children;															// Vector of pointers to GameObjects that are child of this GameObject
+	std::vector<Component*> components;															// Vector of Components attached to this GameObject
+	bool isActive = true;																		// Indicates if this GameObject must be rendered or not
+	CTransform* transform = nullptr;															// Direct pointer to the Transform Component
+	AABB aabb;																					// AxisAlignedBoundingBox of the GameObject in local Coordinates of the object mesh
+	OBB obb;																					// ObliquousBoundingBox of the GameObject in World Coordinates
+	ddVec3 obbPoints[8];																		// World coordinates of the OBB vertices
 
 public:
 
-	GameObject();																						// Constructor
-	GameObject(const std::string& _name);																// Constructor (name as param)
+	GameObject();																				// Constructor
+	GameObject(const std::string& _name);														// Constructor (name as param)
 	GameObject(const std::string& _name, const int _UUID);
-	~GameObject();																						// Destructor
+	~GameObject();																				// Destructor
 
-	void CleanUp();																						// Clears all memory stored by this GameObject
-	void Draw();																						// Update this GameObject with the transformations applied to it. SHOULD THIS GO IN PREUPDATE STEP?
-	bool AddComponent(ComponentType _type, const int _UUID = -1);										// Create and attach a new Component to this GameObject
-	void RemoveComponent(int _cID);																		// Detach a component from this GameObject
-	void AddChild(GameObject* _newChild);																// Subfunction of SetParent(). Places another GameObject as a child of this one
-	void RemoveChild(int childID);																		// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
+	void CleanUp();																				// Clears all memory stored by this GameObject
+	void Draw();																				// Update this GameObject with the transformations applied to it. SHOULD THIS GO IN PREUPDATE STEP?
+	bool AddComponent(ComponentType _type, const int _UUID = -1);								// Create and attach a new Component to this GameObject
+	void RemoveComponent(int _cID);																// Detach a component from this GameObject
+	void AddChild(GameObject* _newChild);														// Subfunction of SetParent(). Places another GameObject as a child of this one
+	void RemoveChild(int childID);																// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
 	GameObject* SearchChild(int childID);
 
 	// ---------- Getters ---------- //

@@ -698,6 +698,7 @@
     </ClInclude>
     <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\msinttypes\stdint.h">
       <Filter>rapidjson\msinttypes</Filter>
+    </ClInclude>
     <ClInclude Include="ThirdPartyLibs\ImGUI\ImCurveEdit.h">
       <Filter>ImGUI\ImGuizmo</Filter>
     </ClInclude>
@@ -774,6 +775,7 @@
     </Filter>
     <Filter Include="rapidjson\msinttypes">
       <UniqueIdentifier>{fbaa3bc5-d3c1-4c49-ae99-a3186abc2e1e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ImGUI\ImGuizmo">
       <UniqueIdentifier>{a576fb88-7515-4571-9c73-04c8cd39d947}</UniqueIdentifier>
     </Filter>

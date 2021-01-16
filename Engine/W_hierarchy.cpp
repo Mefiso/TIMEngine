@@ -52,10 +52,10 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 	for (unsigned int i = 0u; i < _gameObjList.size(); ++i)
 	{
 		ImGuiTreeNodeFlags node_flags = base_flags;
-		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)_gameObjList[i]->GetUID(),
+		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)_gameObjList[i]->GetUUID(),
 			node_flags | (_gameObjList[i]->GetChildren().empty() ? ImGuiTreeNodeFlags_Leaf : 0) | ( _gameObjList[i] == App->sceneMng->GetSelectedGO() ? ImGuiTreeNodeFlags_Selected : 0),
 			"%s", _gameObjList[i]->GetName().c_str());
-		
+
 		// On item clicked - Process Selection of Items
 		// TODO: Differentiate click arrow to open hierarchy vs click to select object
 		if (ImGui::IsItemClicked()) {
