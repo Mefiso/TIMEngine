@@ -6,6 +6,7 @@
 #include "CTransform.h"
 #include "CMaterial.h"
 #include "CCamera.h"
+#include "CLight.h"
 #include "debugdraw.h"
 #include "Leaks.h"
 
@@ -119,6 +120,17 @@ bool GameObject::AddComponent(ComponentType _type, const int _UUID)
 			createdComp = true;
 		}
 		break;
+	case LIGHT:
+		if (!this->GetComponent<CLight>())
+		{
+			if (!this->GetTransform())
+				AddComponent(TRANSFORM);
+			newComp = new CLight(this);
+			components.push_back(newComp);
+			//App->sceneMng->lightSources[this] = this->GetModelMatrix().TranslatePart();
+			createdComp = true;
+		}
+		break;
 	default:
 		newComp = new Component(INVALID, this);
 		components.push_back(newComp);		// TODO: Should we really be doing this?
@@ -146,6 +158,8 @@ void GameObject::RemoveComponent(int _cID)
 			transform = nullptr;
 		if (components[toRemove]->GetType() == MESH)
 			App->renderer->RemoveObjectFromDrawList(this);
+		if (components[toRemove]->GetType() == LIGHT)
+			App->sceneMng->lightSources;
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
 		GetComponent<CMaterial>();
@@ -302,7 +316,7 @@ void GameObject::UpdateBoundingBoxes()
 
 	obb = aabb.Transform(GetModelMatrix());
 	if (nonuniformScaling)
-		obb.Scale(obb.CenterPoint(), 1.0 / GetAccumulatedScale().x); // Correct scaling
+		obb.Scale(obb.CenterPoint(), 1.0f / GetAccumulatedScale().x);
 
 	//Added, calculate obb vertices only when obb is updated
 	ddVec3 points[8];

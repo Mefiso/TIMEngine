@@ -4,15 +4,16 @@
 #include <Math/float4x4.h>
 
 class Component;
+class CTransform;
 class CMaterial;
 class CMesh;
 class CCamera;
+class CLight;
 class GameObject;
 
 class WProperties : public Window
 {
 private:
-	GameObject* selectedObject = nullptr;					// Retrieves the Meshes loaded in a model
 	Component* toDelete = nullptr;							// Pointer to a Component to which the 'Remove Component' option has been chosen, from the Options Menu
 	float3 scale = float3::zero;							// Gets the scale transform of a Model
 	float3 rotation = float3::zero;							// Gets the rotation transform of a Model
@@ -27,20 +28,19 @@ public:
 	WProperties(std::string _name);							// Constructor
 	~WProperties();											// Destructor
 
-	void SetInspectedObject(GameObject* _object);			// Loads the information to display of a Model given
 	void Draw();											// Operations performed when Rendering this window
 
 	// ---------- Getters ---------- //
 	Component* GetToDelete() const { return toDelete; }
-	GameObject* GetSelectedGO() const { return selectedObject; };
 
 	// ---------- Setters ---------- //
 	void SetToDelete(Component* _component) { toDelete = _component; }
 
 private:
 	void DrawComponentHeader(Component* _component);		// Draws the Components information of the Selected GameObject
-	void DrawTransformationBody();							// Subfunction of DrawComponentHeader. Draws the Transformation information of the selected GameObject into the window (translation, rotation, scale)
+	void DrawTransformationBody(CTransform* _transform);	// Subfunction of DrawComponentHeader. Draws the Transformation information of the selected GameObject into the window (translation, rotation, scale)
 	void DrawMeshBody(CMesh* _mesh);						// Subfunction of DrawComponentHeader. Draws the Geometry information of the mesh in the GameObject into the window (Number of meshes, textures, triangles, faces...)
 	void DrawMaterialBody(CMaterial* _material);			// Subfunction of DrawComponentHeader. Draws the Texture information for each texture in the GameObject into the window (Size, wrapping, min and mag filters, preview)
 	void DrawCameraBody(CCamera* _camera);					// Subfunction of DrawComponentHeader. Draws the camera and frustum information of that component in the GameObject into the window (near/far planes, FOV...)
+	void DrawLightBody(CLight* _camera);					// Subfunction of DrawComponentHeader. Draws the light information of that component in the GameObject into the window (type of light, direction, color...)
 };

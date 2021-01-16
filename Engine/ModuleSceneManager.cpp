@@ -1,6 +1,11 @@
 #include "ModuleSceneManager.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "ModuleEditor.h"
+#include "CMesh.h"
+#include "ImGuizmo.h"
+#include <Geometry/LineSegment.h>
+#include <Geometry/Triangle.h>
 
 ModuleSceneManager::ModuleSceneManager()
 {
@@ -116,4 +121,80 @@ void ModuleSceneManager::DrawSkybox()
 	glBindVertexArray(0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ModuleSceneManager::MousePicker(int _x, int _y)
+{
+	// deselect all gameobjects
+	// TODO: Keep Guizmo object selected if clicked there
+	// selectedObject = nullptr;
+
+	//Normalise x,y to [-1,1]
+	float vpX = (_x - App->editor->GetViewportPos().x - App->editor->GetViewportSize().x / 2) / (App->editor->GetViewportSize().x / 2);
+	float vpY = (_y - App->editor->GetViewportPos().y - App->editor->GetViewportSize().y / 2) / (App->editor->GetViewportSize().y / 2) * -1; // -1 inverts the Y coordinate (origin of frustum is at LOWERLEFT. origin of screen is at UPPERLEFT)
+
+	LineSegment ray = App->camera->GenerateRaycast((float)vpX, (float)vpY);
+
+	//check collisions
+		// collisions with octree + aabb
+	std::list<GameObject*> intersectedObjects;
+	octree.GetRoot()->CollectLineIntersections(ray, intersectedObjects); //return map(distancia,gameobject)
+
+	GameObject* pickedGO = nullptr;
+	if (!intersectedObjects.empty())
+	{
+		// collisions with vertices
+		float minDist = 3.40282e+038f; // max float
+		float objDist = 3.40282e+038f;
+		for (std::list<GameObject*>::const_iterator it = intersectedObjects.begin(); it != intersectedObjects.end(); ++it)
+		{
+			CMesh* cmesh = (*it)->GetComponent<CMesh>();
+			unsigned int* indices = cmesh->GetIndices();
+			float* vertices = cmesh->GetVertices();
+
+			// transform ray to local mesh coordinates
+			LineSegment localSpaceRay(ray);
+			localSpaceRay.Transform((*it)->GetModelMatrix().Inverted());
+
+			// generate each face of the mesh
+			float3 face[3];
+			float vtxDist;
+			for (unsigned int i = 0; i < cmesh->GetNumIndices(); i += 3)
+			{
+				face[0].x = vertices[indices[i] * cmesh->GetVtxSize()];
+				face[0].y = vertices[indices[i] * cmesh->GetVtxSize()+1];
+				face[0].z = vertices[indices[i] * cmesh->GetVtxSize()+2];
+
+				face[1].x = vertices[indices[i+1] * cmesh->GetVtxSize()];
+				face[1].y = vertices[indices[i+1] * cmesh->GetVtxSize()+1];
+				face[1].z = vertices[indices[i+1] * cmesh->GetVtxSize()+2];
+
+				face[2].x = vertices[indices[i+2] * cmesh->GetVtxSize()];
+				face[2].y = vertices[indices[i+2] * cmesh->GetVtxSize()+1];
+				face[2].z = vertices[indices[i+2] * cmesh->GetVtxSize()+2];
+
+				// compare the face with the ray
+				Triangle f = Triangle(face[0], face[1], face[2]);
+				if (localSpaceRay.Intersects(f, &vtxDist, nullptr))
+				{
+					// min distance
+					if (vtxDist < objDist)
+					{
+						objDist = vtxDist;
+					}
+				}
+			}
+			// choose the GO selection by minDist
+			
+			if (objDist < minDist)
+			{
+				minDist = objDist;
+				pickedGO = (*it);
+			}
+		}
+	}
+	if (pickedGO)
+	{
+		App->sceneMng->SetSelectedGO(pickedGO);
+	}
 }

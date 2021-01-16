@@ -228,8 +228,23 @@
     <ClCompile Include="ThirdPartyLibs\MathGeoLib\Algorithm\Random\LCG.cpp">
       <Filter>MathGeoLib\Algorithm\Random</Filter>
     </ClCompile>
-    <ClCompile Include="Config.cpp">
-      <Filter>UtilityModules</Filter>
+    <ClCompile Include="ThirdPartyLibs\ImGUI\ImGradient.cpp">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\ImGUI\ImGuizmo.cpp">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\ImGUI\ImSequencer.cpp">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPartyLibs\ImGUI\ImCurveEdit.cpp">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="W_tools.cpp">
+      <Filter>EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="CLight.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -683,6 +698,26 @@
     </ClInclude>
     <ClInclude Include="ThirdPartyLibs\rapidjson\rapidjson\msinttypes\stdint.h">
       <Filter>rapidjson\msinttypes</Filter>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImCurveEdit.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImGradient.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImGuizmo.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImSequencer.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPartyLibs\ImGUI\ImZoomSlider.h">
+      <Filter>ImGUI\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="W_tools.h">
+      <Filter>EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="CLight.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -739,6 +774,8 @@
     </Filter>
     <Filter Include="rapidjson\msinttypes">
       <UniqueIdentifier>{fbaa3bc5-d3c1-4c49-ae99-a3186abc2e1e}</UniqueIdentifier>
+    <Filter Include="ImGUI\ImGuizmo">
+      <UniqueIdentifier>{a576fb88-7515-4571-9c73-04c8cd39d947}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

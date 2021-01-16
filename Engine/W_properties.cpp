@@ -2,12 +2,14 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
+#include "ModuleSceneManager.h"
 #include "GameObject.h"
-#include "CTransform.h"
-#include "CMaterial.h"
 #include "ImporterMaterial.h"
+#include "CTransform.h"
 #include "CMesh.h"
+#include "CMaterial.h"
 #include "CCamera.h"
+#include "CLight.h"
 #include "GL/glew.h"
 #include "Leaks.h"
 
@@ -19,11 +21,6 @@ WProperties::~WProperties()
 {
 }
 
-void WProperties::SetInspectedObject(GameObject* _object)
-{
-	selectedObject = _object;
-}
-
 void WProperties::Draw()
 {
 	if (!ImGui::Begin(name.c_str(), &active))
@@ -32,8 +29,9 @@ void WProperties::Draw()
 		return;
 	}
 
-	if (selectedObject)
+	if (App->sceneMng->GetSelectedGO())
 	{
+		GameObject* selectedObject = App->sceneMng->GetSelectedGO();
 		// GameObject Options
 		strcpy_s(RenameBuf, IM_ARRAYSIZE(RenameBuf), (char*)selectedObject->GetName().c_str());
 		ImGui::AlignTextToFramePadding(); ImGui::TextUnformatted("Name:"); ImGui::SameLine();
@@ -72,6 +70,10 @@ void WProperties::Draw()
 			{
 				selectedObject->AddComponent(CAMERA);
 			}
+			if (ImGui::MenuItem("Light"))
+			{
+				selectedObject->AddComponent(LIGHT);
+			}
 
 			// TODO: Generate opening a window on already existing component creation
 			/*if(false)
@@ -108,9 +110,11 @@ void WProperties::DrawComponentHeader(Component* _component)
 		name = "Material"; break;
 	case CAMERA:
 		name = "Camera"; break;
+	case LIGHT:
+		name = "Light"; break;
 	}
 
-	bool headerOpen = ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap);
+	bool headerOpen = ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_DefaultOpen);
 	ImGui::SameLine();
 	if (ImGui::GetWindowWidth() > 170)
 		ImGui::Indent(ImGui::GetWindowWidth() - 85);
@@ -126,7 +130,7 @@ void WProperties::DrawComponentHeader(Component* _component)
 		switch (_component->GetType())
 		{
 		case TRANSFORM:
-			DrawTransformationBody();
+			DrawTransformationBody((CTransform*)_component);
 			break;
 		case MESH:
 			DrawMeshBody((CMesh*)_component);
@@ -136,6 +140,9 @@ void WProperties::DrawComponentHeader(Component* _component)
 			break;
 		case CAMERA:
 			DrawCameraBody((CCamera*)_component);
+			break;
+		case LIGHT:
+			DrawLightBody((CLight*)_component);
 			break;
 		}
 	}
@@ -149,12 +156,11 @@ void WProperties::DrawComponentHeader(Component* _component)
 	}
 }
 
-void WProperties::DrawTransformationBody()
+void WProperties::DrawTransformationBody(CTransform* _transform)
 {
-	CTransform* transform = selectedObject->GetTransform();
-	float3 scale = transform->GetScale();
-	float3 rotation = transform->GetRotation();
-	float3 position = transform->GetPos();
+	float3 scale = _transform->GetScale();
+	float3 rotation = _transform->GetRotation();
+	float3 position = _transform->GetPos();
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 
 	ImGui::PushItemWidth(70.f);
@@ -176,11 +182,12 @@ void WProperties::DrawTransformationBody()
 
 	if (modified)
 	{
+		GameObject* selectedObject = App->sceneMng->GetSelectedGO();
 		selectedObject->SetTransform(scale, rotation, position);
 		selectedObject->UpdateBoundingBoxes();
 		selectedObject->UpdateOctreePosition();
 		if (selectedObject->GetComponent<CCamera>())
-			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(transform);
+			selectedObject->GetComponent<CCamera>()->UpdateFrustumFromTransform(_transform);
 		App->camera->cullingCamera->PerformFrustumCulling();
 	}
 	ImGui::PopItemWidth();
@@ -197,14 +204,13 @@ void WProperties::DrawMeshBody(CMesh* _mesh)
 
 // Texture
 // TODO: should this go somewhere else?
-const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
-const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
-const char* filterM[] = { "Linear", "Nearest" };
+
 void WProperties::DrawMaterialBody(CMaterial* _material)
 {
 	ImGui::PushItemWidth(100);
 
 	// ------ Material base settings ------ //
+	// TODO: set ambient color as global, for all gameobjects
 	ImGui::ColorEdit3("Set ambient color", &_material->ambient[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
 	// The following settings are used when material has no diffuse/specular maps
 	ImGui::ColorEdit3("Set diffuse color", &_material->diffuse[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs); ImGui::SameLine();
@@ -225,6 +231,9 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 		std::string label;
 		for (unsigned int i = 0u; i < _material->textures.size(); ++i)
 		{
+			static char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
+			static char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
+			static char* filterM[] = { "Linear", "Nearest" };
 			label = "Texture " + std::to_string(i);
 			if (ImGui::BeginTabItem(label.c_str()))
 			{
@@ -316,4 +325,38 @@ void WProperties::DrawCameraBody(CCamera* _camera)
 		frust->SetVerticalFovAndAspectRatio(VFOV, ar);	// The aspect ratio is not stored, so when resizing the viewport/window the user can recover the original aspect ratio
 	}
 	ImGui::PopItemWidth();
+}
+
+void WProperties::DrawLightBody(CLight* _light)
+{
+	const char* items[] = { "Directional Light", "Point Light", "Spot Light" };
+	ImGui::PushItemWidth(180);
+	ImGui::Combo("Light Type", &_light->GetTypeRef(), items, IM_ARRAYSIZE(items));
+
+	ImGui::Spacing();
+
+	ImGui::ColorEdit3("Light Color", &_light->GetColorRef().x, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
+	ImGui::DragFloat("Intensity", &_light->GetIntensityRef(), .02f, 0.0f, FLT_MAX, "%.2f");
+
+	switch (_light->GetType())
+	{
+	case 0:	// Directional
+		break;
+	case 1:	// Point
+		ImGui::TextUnformatted("This is Point Light");
+		ImGui::DragFloat("Constant Att.", &_light->GetKcRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Linear Att.", &_light->GetKlRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Quadratic Att.", &_light->GetKqRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		break;
+	case 2:	// Spot
+		ImGui::DragFloat("Constant Att.", &_light->GetKcRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Linear Att.", &_light->GetKlRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Quadratic Att.", &_light->GetKqRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
+		ImGui::DragFloat("Inner Angle", &_light->GetInnerAngRef(), .02f, 0.f, 180, "%.2f");
+		ImGui::DragFloat("Outer Angle", &_light->GetOuterAngRef(), .02f, 0.f, 180, "%.2f");
+		break;
+	default:
+		ImGui::TextUnformatted("The type of ligt was nos specified!");
+		break;
+	}
 }

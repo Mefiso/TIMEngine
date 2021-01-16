@@ -21,8 +21,6 @@ WMonitor::~WMonitor()
 
 void WMonitor::Draw()
 {
-	int w, h;
-	SDL_GetWindowPosition(App->window->window, &w, &h);
 	if (!ImGui::Begin(name.c_str(), &active))
 	{
 		ImGui::End();
