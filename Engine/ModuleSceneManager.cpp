@@ -3,6 +3,7 @@
 #include "ModuleCamera.h"
 #include "ModuleEditor.h"
 #include "CMesh.h"
+#include "ImGuizmo.h"
 #include <Geometry/LineSegment.h>
 #include <Geometry/Triangle.h>
 
@@ -125,7 +126,7 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 {
 	// deselect all gameobjects
 	// TODO: Keep Guizmo object selected if clicked there
-	selectedObject = nullptr;
+	// selectedObject = nullptr;
 
 	//Normalise x,y to [-1,1]
 	float vpX = (_x - App->editor->GetViewportPos().x - App->editor->GetViewportSize().x / 2) / (App->editor->GetViewportSize().x / 2);

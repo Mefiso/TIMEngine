@@ -106,8 +106,11 @@ bool GameObject::AddComponent(ComponentType _type)
 	case LIGHT:
 		if (!this->GetComponent<CLight>())
 		{
+			if (!this->GetTransform())
+				AddComponent(TRANSFORM);
 			newComp = new CLight(this);
 			components.push_back(newComp);
+			//App->sceneMng->lightSources[this] = this->GetModelMatrix().TranslatePart();
 			createdComp = true;
 		}
 		break;
@@ -136,6 +139,8 @@ void GameObject::RemoveComponent(int _cID)
 	{
 		if (components[toRemove]->GetType() == TRANSFORM)
 			transform = nullptr;
+		if (components[toRemove]->GetType() == LIGHT)
+			App->sceneMng->lightSources;
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
 	}

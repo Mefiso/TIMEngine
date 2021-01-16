@@ -204,14 +204,13 @@ void WProperties::DrawMeshBody(CMesh* _mesh)
 
 // Texture
 // TODO: should this go somewhere else?
-const char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
-const char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
-const char* filterM[] = { "Linear", "Nearest" };
+
 void WProperties::DrawMaterialBody(CMaterial* _material)
 {
 	ImGui::PushItemWidth(100);
 
 	// ------ Material base settings ------ //
+	// TODO: set ambient color as global, for all gameobjects
 	ImGui::ColorEdit3("Set ambient color", &_material->ambient[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
 	// The following settings are used when material has no diffuse/specular maps
 	ImGui::ColorEdit3("Set diffuse color", &_material->diffuse[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs); ImGui::SameLine();
@@ -232,6 +231,9 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 		std::string label;
 		for (unsigned int i = 0u; i < _material->textures.size(); ++i)
 		{
+			static char* wrap[] = { "Repeat", "Clamp", "Clamp to border", "Mirrored Repeat" };
+			static char* filterm[] = { "Linear, Mipmap linear", "Linear, Mipmap nearest", "Nearest, Mipmap linear", "Nearest, Mipmap nearest" };
+			static char* filterM[] = { "Linear", "Nearest" };
 			label = "Texture " + std::to_string(i);
 			if (ImGui::BeginTabItem(label.c_str()))
 			{
@@ -339,7 +341,6 @@ void WProperties::DrawLightBody(CLight* _light)
 	switch (_light->GetType())
 	{
 	case 0:	// Directional
-		ImGui::DragFloat3("Direction", &_light->GetDirectionRef().x, .02f, -FLT_MAX, FLT_MAX, "%.2f");
 		break;
 	case 1:	// Point
 		ImGui::TextUnformatted("This is Point Light");
@@ -348,7 +349,6 @@ void WProperties::DrawLightBody(CLight* _light)
 		ImGui::DragFloat("Quadratic Att.", &_light->GetKqRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
 		break;
 	case 2:	// Spot
-		ImGui::DragFloat3("Direction", &_light->GetDirectionRef().x, .02f, -FLT_MAX, FLT_MAX, "%.2f");
 		ImGui::DragFloat("Constant Att.", &_light->GetKcRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
 		ImGui::DragFloat("Linear Att.", &_light->GetKlRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
 		ImGui::DragFloat("Quadratic Att.", &_light->GetKqRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
