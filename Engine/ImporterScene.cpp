@@ -95,7 +95,7 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 		App->StartTimer();
 		imported = ImporterMaterial::Import(material, _dir, object);
 		LOG("IMPORT TIME mat: %d microseconds", App->StopTimer());
-		/*if (imported)
+		if (imported)
 		{
 			unsigned int fsize = ImporterMaterial::Save(object->GetComponent<CMaterial>(), matPath.c_str());
 
@@ -109,7 +109,7 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 					LOG("LOAD TIME mat: %d microseconds", App->StopTimer());
 				}
 			}
-		}*/
+		}
 	}
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
 	{

@@ -174,11 +174,13 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 		float* color = new float[3];
 		memcpy(color, cursor, bytes);
 		ourMaterial->ambient = float3(color);
+		RELEASE_ARRAY(color);
 		cursor += bytes;
 
 		color = new float[3];
 		memcpy(color, cursor, bytes);
 		ourMaterial->diffuse = float3(color);
+		RELEASE_ARRAY(color);
 		cursor += bytes;
 
 		float s;
@@ -189,6 +191,7 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 		color = new float[3];
 		memcpy(color, cursor, bytes);
 		ourMaterial->specular = float3(color);
+		RELEASE_ARRAY(color);
 		cursor += bytes;
 
 		int a;
@@ -212,16 +215,20 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 			bytes = sizeof(char) * t[0];
 			memcpy(tp, cursor, bytes);
 			texture->type = tp;
+			RELEASE_ARRAY(tp);
 			cursor += bytes;
 
 			char* path = new char[t[1]];
 			bytes = sizeof(char) * t[1];
 			memcpy(path, cursor, bytes);
 			texture->path = path;
+			RELEASE_ARRAY(path);
 			cursor += bytes;
+			RELEASE_ARRAY(t);
 
 			texture->id = LoadTexture("./Library/Textures/" + texture->path, "./Library/Textures/" + texture->path);
-			ourMaterial->textures.push_back(texture);
+			App->filesys->loadedTextures.push_back(texture);
+			ourMaterial->textures.push_back(App->filesys->loadedTextures[App->filesys->loadedTextures.size() - 1]);
 		}
 		RELEASE_ARRAY(fileBuffer);
 		fclose(f);
