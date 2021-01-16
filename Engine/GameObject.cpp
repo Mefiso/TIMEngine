@@ -6,6 +6,7 @@
 #include "CTransform.h"
 #include "CMaterial.h"
 #include "CCamera.h"
+#include "CLight.h"
 #include "debugdraw.h"
 
 
@@ -63,7 +64,7 @@ void GameObject::Draw()
 	}
 }
 
-bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string& path)
+bool GameObject::AddComponent(ComponentType _type)
 {
 	bool createdComp = false;
 	Component* newComp;
@@ -102,6 +103,17 @@ bool GameObject::AddComponent(ComponentType _type, void* arg, const std::string&
 			createdComp = true;
 		}
 		break;
+	case LIGHT:
+		if (!this->GetComponent<CLight>())
+		{
+			if (!this->GetTransform())
+				AddComponent(TRANSFORM);
+			newComp = new CLight(this);
+			components.push_back(newComp);
+			//App->sceneMng->lightSources[this] = this->GetModelMatrix().TranslatePart();
+			createdComp = true;
+		}
+		break;
 	default:
 		newComp = new Component(INVALID, this);
 		components.push_back(newComp);		// TODO: Should we really be doing this?
@@ -127,6 +139,8 @@ void GameObject::RemoveComponent(int _cID)
 	{
 		if (components[toRemove]->GetType() == TRANSFORM)
 			transform = nullptr;
+		if (components[toRemove]->GetType() == LIGHT)
+			App->sceneMng->lightSources;
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
 	}

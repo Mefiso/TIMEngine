@@ -8,6 +8,7 @@ class CTransform;
 class CMaterial;
 class CMesh;
 class CCamera;
+class CLight;
 class GameObject;
 
 class WProperties : public Window
@@ -41,4 +42,5 @@ private:
 	void DrawMeshBody(CMesh* _mesh);						// Subfunction of DrawComponentHeader. Draws the Geometry information of the mesh in the GameObject into the window (Number of meshes, textures, triangles, faces...)
 	void DrawMaterialBody(CMaterial* _material);			// Subfunction of DrawComponentHeader. Draws the Texture information for each texture in the GameObject into the window (Size, wrapping, min and mag filters, preview)
 	void DrawCameraBody(CCamera* _camera);					// Subfunction of DrawComponentHeader. Draws the camera and frustum information of that component in the GameObject into the window (near/far planes, FOV...)
+	void DrawLightBody(CLight* _camera);					// Subfunction of DrawComponentHeader. Draws the light information of that component in the GameObject into the window (type of light, direction, color...)
 };

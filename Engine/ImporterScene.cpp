@@ -54,7 +54,7 @@ void ImporterScene::Load(std::string const& _path)
 
 void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* object, std::string _dir)
 {
-	object->AddComponent(TRANSFORM, nullptr);
+	object->AddComponent(TRANSFORM);
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
 		// IMPORT MESHES

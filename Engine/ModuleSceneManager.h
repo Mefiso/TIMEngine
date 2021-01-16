@@ -3,11 +3,13 @@
 #include "Globals.h"
 #include "GameObject.h"
 #include "Octree.h"
+#include <list>
 
 class ModuleSceneManager : public Module
 {
 public:
 	Octree octree = Octree();										// Octree structure of the scene
+	std::list<GameObject*> lightSources;							// List of all GO in the scene with a Light Component. This will be used in the shaders to only take the light of the closest objects.
 
 private:
 	GameObject* root = new GameObject();							// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children
