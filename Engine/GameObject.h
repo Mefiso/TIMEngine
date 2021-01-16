@@ -15,12 +15,9 @@ class CMaterial;
 class GameObject
 {
 private:
-
 	static int objectCount;																				// Global counter of number of GameObjects. Used to set the uID of each new instance of GameObject.
 
 public:
-
-	bool isSelected = false;
 	static bool drawOBB;
 
 private:

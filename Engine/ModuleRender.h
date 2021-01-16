@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "Math/float3.h"
 #include "MSTimer.h"
+#include "Geometry/LineSegment.h"
 
 class Model;
 class GameObject;
@@ -14,6 +15,9 @@ struct SDL_Rect;
 class ModuleRender : public Module
 {
 public:
+
+	LineSegment picking = LineSegment(float3::zero, float3::unitY);
+	float3 last_hit;
 	void* context = nullptr;										// Context of the SDL_GL configuration
 
 	bool depthTest = true;											// Set if depth test is performed

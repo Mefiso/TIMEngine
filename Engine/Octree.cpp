@@ -216,7 +216,7 @@ void OctreeNode::CollectFrustumIntersections(std::vector<GameObject*>& insideObj
 	{
 		for (std::list<GameObject*>::const_iterator it = this->objects.begin(); it != this->objects.end(); ++it)
 		{
-			if (BoxInFrustum((*it)->GetOBB().MinimalEnclosingAABB(), frustumPlanes, frustumPoints))
+			if (BoxInFrustum((*it)->GetOBB().MinimalEnclosingAABB(), frustumPlanes, frustumPoints)) 
 			{
 				if (std::find(insideObjects.begin(), insideObjects.end(), *it) == insideObjects.end())
 					insideObjects.push_back(*it);
@@ -227,6 +227,27 @@ void OctreeNode::CollectFrustumIntersections(std::vector<GameObject*>& insideObj
 		{
 			for (int i = 0; i < 8; ++i)
 				children[i]->CollectFrustumIntersections(insideObjects, frustumPlanes, frustumPoints);
+		}
+	}
+}
+
+const void OctreeNode::CollectLineIntersections(LineSegment _ray, std::list<GameObject*> &_intersectedObj) const
+{
+
+	if (this->GetBox().Intersects(_ray)) // if intersects octree
+	{
+		for (std::list<GameObject*>::const_iterator it = this->objects.begin(); it != this->objects.end(); ++it)
+		{
+			if ((*it)->GetOBB().MinimalEnclosingAABB().Intersects(_ray)) // if instersects aabb
+			{
+				if (std::find(_intersectedObj.begin(), _intersectedObj.end(), *it) == _intersectedObj.end())
+					_intersectedObj.push_back(*it);
+			}
+		}
+		if (children[0] != nullptr)
+		{
+			for (int i = 0; i < 8; ++i)
+				children[i]->CollectLineIntersections(_ray, _intersectedObj);
 		}
 	}
 }

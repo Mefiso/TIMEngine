@@ -53,16 +53,15 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 	{
 		ImGuiTreeNodeFlags node_flags = base_flags;
 		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)_gameObjList[i]->GetUID(),
-			node_flags | (_gameObjList[i]->GetChildren().empty() ? ImGuiTreeNodeFlags_Leaf : 0) | (_gameObjList[i]->isSelected ? ImGuiTreeNodeFlags_Selected : 0),
+			node_flags | (_gameObjList[i]->GetChildren().empty() ? ImGuiTreeNodeFlags_Leaf : 0) | ( _gameObjList[i] == App->sceneMng->GetSelectedGO() ? ImGuiTreeNodeFlags_Selected : 0),
 			"%s", _gameObjList[i]->GetName().c_str());
-
+		
 		// On item clicked - Process Selection of Items
+		// TODO: Differentiate click arrow to open hierarchy vs click to select object
 		if (ImGui::IsItemClicked()) {
 			if (!ImGui::GetIO().KeyCtrl) {
-				DeselectAll(App->sceneMng->GetRoot()->GetChildren());
-				App->editor->InspectObject(_gameObjList[i]);   // send the selected GO to w_properties
+				App->sceneMng->SetSelectedGO(_gameObjList[i]);   // send the selected GO to w_properties
 			}
-			_gameObjList[i]->isSelected = true;
 		}
 
 		// Process Dragging items and changing parents
@@ -91,8 +90,7 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 
 			if (ImGui::MenuItem("Delete"))
 			{
-				DeselectAll(App->sceneMng->GetRoot()->GetChildren());
-				App->editor->InspectObject(nullptr);				// Reset selection (needed for avoiding pointer dereferenced memory)
+				App->sceneMng->SetSelectedGO(nullptr);				// Reset inspector selection (needed for avoiding pointer dereferenced memory)
 				toDelete = _gameObjList[i];
 			}
 
@@ -106,16 +104,6 @@ void WHierarchy::DrawTree(std::vector<GameObject*>& _gameObjList)
 			DrawTree(goChildren);
 			ImGui::TreePop();
 		}
-	}
-}
-
-void WHierarchy::DeselectAll(std::vector<GameObject*> goRoots)
-{
-	for (unsigned int i = 0u; i < goRoots.size(); ++i)
-	{
-		goRoots[i]->isSelected = false;
-		std::vector<GameObject*> goChildren = goRoots[i]->GetChildren();
-		DeselectAll(goChildren);
 	}
 }
 

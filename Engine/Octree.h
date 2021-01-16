@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Geometry/AABB.h"
+#include "Geometry/LineSegment.h"
 #include <list>
 
 class GameObject;
@@ -24,6 +25,7 @@ public:
 	void ForwardToChildren();
 	void Draw();
 	void CollectFrustumIntersections(std::vector<GameObject*>& insideObjects, const float4 frustumPlanes[6], const float3 frustumPoints[8]);
+	const void CollectLineIntersections(LineSegment _ray, std::list<GameObject*> &_intersectedObj) const;
 	const AABB& GetBox() const { return box; }
 
 private:

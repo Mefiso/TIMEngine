@@ -2,9 +2,10 @@
 #include "Module.h"
 #include "Globals.h"
 #include <vector>
-
+#include <Math/float2.h>
+#include "W_viewport.h"
+#include "W_tools.h"
 class Window;
-class WViewport;
 class WConsole;
 class WHierarchy;
 class WMonitor;
@@ -23,12 +24,13 @@ private:
 	ImGuiIO* io = nullptr;											// Pointer to the inputs/outputs setting of ImGui
 
 	//  ------ ImGui Windows ------- //
-	WViewport* viewport = nullptr;
+	WConfig* configuration = nullptr;
 	WConsole* console = nullptr;
 	WHierarchy* hierarchy = nullptr;
 	WMonitor* monitor = nullptr;
-	WConfig* configuration = nullptr;
 	WProperties* properties = nullptr;
+	WViewport* viewport = nullptr;
+	WTools* tools = nullptr;
 	WAbout* about = nullptr;
 
 	std::vector<Window*> editorWindows;								// Vector containig the references to each ImGui window
@@ -51,8 +53,13 @@ public:
 	// Windows methods
 	void CreateViewport();											// Sends the definition (FBO, RBO, colorBuffer) of the viewport from ModuleRender to W_Viewport
 	void Log(const char* input) const;								// Sends LOG inputs from the log function to W_Console
-	void InspectObject(GameObject* _object);						// Sends the currently selected GameObject in the hierarchy to the properties inspector window WProperties
-	const GameObject* GetSelectedObject() const;					// Retrieves the currently selected game object in the hierarchy and properties windows.
+
+	// ---------- Getters ---------- //
+	float2 GetViewportPos() const { return viewport->GetViewportPosition(); }
+	float2 GetViewportSize() const { return float2(viewport->GetWidth(), viewport->GetHeight()); }
+	int GetGuizmoState() const { return tools->GetGuizmoState(); }
+	int GetGuizmoMode() const { return tools->GetGuizmoMode(); }
+	int GetPlayPauseState() const { return tools->GetPlayPauseState(); }
 
 private:
 	void DrawMainMenu();											// Generates the main menu using ImGui

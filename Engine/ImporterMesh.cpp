@@ -145,6 +145,7 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _owner, unsigned int 
 
 			cmesh->SetNumIndices(header[0]);
 			cmesh->SetNumVertices(header[1]);
+			cmesh->SetVtxSize(header[2]);
 
 			// Load indices
 			bytes = sizeof(unsigned int) * header[0];
