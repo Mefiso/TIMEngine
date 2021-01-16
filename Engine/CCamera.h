@@ -28,4 +28,8 @@ public:
 	void UpdateFrustumFromTransform(CTransform* _transform);	// Updates Frustum position and rotation. This function must be called when the Transform of the 'owner' GameObject changes
 	void UpdateTransformFromFrustum();							// Updates the Transform of the 'owner' GameObject. This function must be called when the frustum is modified by the user inputs that control the camera
 	void PerformFrustumCulling(bool extractFrustum = false);	// Extracts the frustum planes and corner points if needed, and tells the renderer to perform the frustum culling
+
+	// ------ Serialization -------- //
+	void onSave(rapidjson::Value& config) const override;
+	void onLoad(const rapidjson::Value& config) override;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Algorithm/Random/LCG.h"
+#include "rapidjson/document.h"
 
 class GameObject;
 
@@ -41,4 +42,8 @@ public:
 	// ---------- Setters ---------- //
 	void Enable() { active = true; }
 	void Disable() { active = false; }
+
+	// ------ Serialization -------- //
+	virtual void onSave(rapidjson::Value& config) const {}
+	virtual void onLoad(const rapidjson::Value& config) {}
 };

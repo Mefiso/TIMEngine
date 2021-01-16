@@ -29,4 +29,8 @@ public:
 	void SetScale(float3& _scale) { scale = _scale; }
 
 	void UpdateTransformMatrix();											// Updates transformMatrix. Must be used when a change is detected in Rotation, Scale and Position
+
+	// ------ Serialization -------- //
+	void onSave(rapidjson::Value& config) const override;
+	void onLoad(const rapidjson::Value& config) override;
 };

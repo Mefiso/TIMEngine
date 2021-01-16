@@ -19,3 +19,22 @@ void CTransform::UpdateTransformMatrix()
 										Quat::FromEulerXYZ(rotation.x, rotation.y, rotation.z),
 										scale);
 }
+
+void CTransform::onSave(rapidjson::Value& config) const
+{
+}
+
+void CTransform::onLoad(const rapidjson::Value& config)
+{
+	position = float3(config["Position"][0].GetFloat(),
+		config["Position"][1].GetFloat(),
+		config["Position"][2].GetFloat());
+	rotation = float3(config["Rotation"][0].GetFloat(),
+		config["Rotation"][1].GetFloat(),
+		config["Rotation"][2].GetFloat());
+	scale = float3(config["Scale"][0].GetFloat(),
+		config["Scale"][1].GetFloat(),
+		config["Scale"][2].GetFloat());
+
+	UpdateTransformMatrix();
+}

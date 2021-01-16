@@ -68,3 +68,11 @@ void CCamera::PerformFrustumCulling(bool extractFrustum)
 
 	App->renderer->PerformFrustumCulling(frustumPlanes, frustumPoints);
 }
+
+void CCamera::onSave(rapidjson::Value& config) const
+{
+}
+
+void CCamera::onLoad(const rapidjson::Value& config)
+{
+}

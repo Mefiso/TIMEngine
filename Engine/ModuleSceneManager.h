@@ -9,7 +9,7 @@ class ModuleSceneManager : public Module
 {
 public:
 	Octree octree = Octree();										// Octree structure of the scene
-	Config config = Config();										// Config file for the scene
+	//Config config = Config();										// Config file for the scene
 
 private:
 	GameObject* root = new GameObject();							// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children

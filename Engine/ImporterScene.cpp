@@ -89,16 +89,27 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 
 		// IMPORT MATERIALS
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		imported = ImporterMaterial::Import(material, _dir, object);
-		//**
-		//object->RemoveComponent(object->GetComponent<CMaterial>()->GetUID());
-			//Load
-			// save the custom file format
-			//	log time
-			//	save the custom file format
-			//	load from custom file format
-			//	log time
+		std::string matPath = "./Library/Materials/";
+		matPath = matPath + node->mName.C_Str() + ".material";
 
+		App->StartTimer();
+		imported = ImporterMaterial::Import(material, _dir, object);
+		LOG("IMPORT TIME mat: %d microseconds", App->StopTimer());
+		if (imported)
+		{
+			unsigned int fsize = ImporterMaterial::Save(object->GetComponent<CMaterial>(), matPath.c_str());
+
+			object->RemoveComponent(object->GetComponent<CMaterial>()->GetUUID());
+			if (fsize > 0)
+			{
+				if (object->AddComponent(MATERIAL))
+				{
+					App->StartTimer();
+					ImporterMaterial::Load(matPath, object->GetComponent<CMaterial>(), fsize);
+					LOG("LOAD TIME mat: %d microseconds", App->StopTimer());
+				}
+			}
+		}
 	}
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
 	{
@@ -151,29 +162,18 @@ bool ImporterScene::Load(std::string const& _path)
 			for (int j = 0; j < components.Size(); ++i)
 			{
 				go->AddComponent(static_cast<ComponentType>(components[j]["Type"].GetInt()), components[j]["UUID"].GetInt());
+				Component* c = go->GetComponent(components[j]["UUID"].GetInt());
+				c->onLoad(components[j]);
 				switch (components[j]["Type"].GetInt())
 				{
-					// ONLOAD METHOD
 				case TRANSFORM:
-					CTransform* c = go->GetComponent<CTransform>();
-					c->SetPos(float3(components[j]["Position"][0].GetFloat(),
-						components[j]["Position"][1].GetFloat(),
-						components[j]["Position"][2].GetFloat()));
-					c->SetRotation(float3(components[j]["Rotation"][0].GetFloat(),
-						components[j]["Rotation"][1].GetFloat(),
-						components[j]["Rotation"][2].GetFloat()));
-					c->SetScale(float3(components[j]["Scale"][0].GetFloat(),
-						components[j]["Scale"][1].GetFloat(),
-						components[j]["Scale"][2].GetFloat()));
-
-					c->UpdateTransformMatrix();
 					break;
 				case MESH:
 					// Get filename
 					// Get size?
 					// call ImporterMesh::Load
 					break;
-				case Material:
+				case MATERIAL:
 					// Get Ambient diffuse specular, etc
 					// Get textures array of filenames
 					// call ImporterMaterial::Load

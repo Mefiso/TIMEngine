@@ -14,3 +14,12 @@ CMaterial::~CMaterial()
 {
 	textures.clear();
 }
+
+void CMaterial::onSave(rapidjson::Value& config) const
+{
+}
+
+void CMaterial::onLoad(const rapidjson::Value& config)
+{
+
+}

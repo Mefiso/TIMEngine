@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "CMaterial.h"
 #include "ImporterMaterial.h"
+#include "ImporterMesh.h"
 
 #include <string>
 
@@ -93,4 +94,15 @@ void CMesh::Draw()
 		glBindVertexArray(0);
 		glActiveTexture(GL_TEXTURE0);
 	}
+}
+
+void CMesh::onSave(rapidjson::Value& config) const
+{
+}
+
+void CMesh::onLoad(const rapidjson::Value& config)
+{
+	filename = config["Filename"].GetString();
+	filesize = config["Filesize"].GetInt();
+	ImporterMesh::Load(("./Library/Meshes/"+filename).c_str(), owner, filesize);
 }

@@ -269,7 +269,8 @@ void GameObject::SetTransform(float4x4& _newTransform)
 void GameObject::SetProgram(unsigned int program)
 {
 	// update components
-	GetComponent<CMesh>()->SetProgram(program);
+	if(GetComponent<CMesh>())
+		GetComponent<CMesh>()->SetProgram(program);
 
 	// update children accordingly
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)

@@ -131,7 +131,10 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _owner, unsigned int 
 	}
 	else {
 			CMesh* cmesh = _owner->GetComponent<CMesh>();
-			cmesh->path = _filename;
+			std::string fn = std::string(_filename);
+			cmesh->filename = fn.substr(0, fn.find_last_of('/')).size() == fn.size() ? fn.substr(fn.find_last_of('\\') + 1, fn.size()) : fn.substr(fn.find_last_of('/') + 1, fn.size());
+			cmesh->filesize = _filesize;
+
 			char* fileBuffer = new char[_filesize]; // Allocate
 			char* cursor = fileBuffer;
 			fread_s(fileBuffer, sizeof(char) * _filesize, sizeof(char), _filesize, f);
