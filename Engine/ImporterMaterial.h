@@ -22,7 +22,7 @@ namespace ImporterMaterial
 	bool			Import(aiMaterial* _material, const std::string& _path, GameObject* _parent);	// Imports a Material with all its textures from Assimp
 	bool			Load(std::string _filename, CMaterial* ourMaterial, unsigned int _filesize);	// Loads a Material with all its textures from a file in custom file format
 	unsigned int	Save(CMaterial* _material, const char* _filename);								// Saves the info of a Component Material into a file in custom file format
-	
+
 	unsigned int	LoadTexture(std::string _path, std::string _destPath, bool saveToCustom=false);	// Loads an image file and attaches it to a GL_TEXTURE_2D
 	unsigned int	LoadCubemap(std::vector<std::string> _faces);									// Loads a Cubemap Texture from 6 images ('faces') and attaches it to a GL_TEXTURE_CUBE_MAP
 	void			SaveTexture(const char* _destPath);												// Saves a texture loaded in DevIL to a new .DDS file
@@ -41,9 +41,11 @@ namespace ImporterMaterial
 				{
 					// Checks if texture is already loaded in scene. If so, skips loading texture from file.
 					bool skip = false;
+					std::string ff = file.C_Str();
 					for (unsigned j = 0; j < App->filesys->loadedTextures.size(); ++j)
 					{
-						if (std::strcmp(App->filesys->loadedTextures[j]->path.data(), file.C_Str()) == 0)
+						std::string pp = App->filesys->loadedTextures[j]->path;
+						if (ff.substr(0, ff.find_last_of('.')).compare(pp.substr(0, pp.find_last_of('.'))) == 0)
 						{
 							_matTextures->push_back(App->filesys->loadedTextures[j]);
 							skip = true;
