@@ -60,7 +60,7 @@ void CMesh::Draw()
 		transform(spotLights.begin(), spotLights.end(), back_inserter(spots), [](const std::map<GameObject*, float>::value_type& val) {return val.first->GetComponent<CLight>(); });
 		// Send the lights to shader
 			// Ambient color
-		ModuleProgram::setVec3(program, "lights.ambientColor", float3(0.2f));	// TODO: GLOBAL ambient light
+		ModuleProgram::setVec3(program, "lights.ambientColor", float3(0.01f));	// TODO: GLOBAL ambient light
 			// Directional Light
 		if (directionalLight)
 		{

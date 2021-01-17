@@ -274,6 +274,9 @@ void GameObject::SetTransform(float3& _scale, float3& _rotation, float3& _transl
 	transform->SetRotation(_rotation);
 	transform->SetScale(_scale);
 	transform->UpdateTransformMatrix();
+
+	if (this->GetComponent<CLight>())
+		this->GetComponent<CLight>()->SetPositionDirection(GetModelMatrix());
 }
 
 void GameObject::SetTransform(float4x4& _newTransform)
@@ -289,6 +292,8 @@ void GameObject::SetTransform(float4x4& _newTransform)
 	transform->SetRotation(rotation);
 
 	transform->UpdateTransformMatrix();
+	if (this->GetComponent<CLight>())
+		this->GetComponent<CLight>()->SetPositionDirection(GetModelMatrix());
 }
 
 void GameObject::SetProgram(unsigned int program)

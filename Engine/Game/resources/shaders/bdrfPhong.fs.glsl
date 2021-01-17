@@ -112,8 +112,7 @@ vec3 ProcessSpot(SpotLight LSpot, vec3 colorDiffuse, vec3 specularMap, float shi
 	float cosInner = cos(LSpot.innerAng);
 	float cosOuter = cos(LSpot.outerAng);
 
-	float angleAttenuation;
-	angleAttenuation = incidenceAngle > cosInner ? 1 : ((cosInner > incidenceAngle && incidenceAngle > cosOuter) ? ((incidenceAngle - cosOuter)/(cosInner - cosOuter)) : 0);
+	float angleAttenuation = clamp((incidenceAngle - cosOuter)/(cosInner - cosOuter), 0, 1);
 	float attenuation = 1 / (LSpot.Kc + LSpot.Kl *  + LSpot.Kq *d*d);	
 	vec3 Li = LSpot.color * LSpot.intensity * attenuation * angleAttenuation;
 
@@ -149,5 +148,5 @@ void main()
 	vec3 ldr = Fcolor / (Fcolor + vec3(1.0)); // reinhard tone mapping
 	// Gamma correction
 	ldr = pow(ldr, vec3(1/2.2));
-	color = vec4(Fcolor, 1.0);
+	color = vec4(ldr, 1.0);
 }
