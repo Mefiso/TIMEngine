@@ -18,7 +18,7 @@ public:
 	void* context = nullptr;										// Context of the SDL_GL configuration
 
 	bool depthTest	= true;											// Set if depth test is performed
-	bool cullFace	= true;											// Set if face culling is performed
+	bool cullFace	= false;										// Set if face culling is performed
 	bool showGrid	= true;											// Set if the grid is rendered
 	bool showOctree	= false;										// Set if the octree from scene is rendered
 
