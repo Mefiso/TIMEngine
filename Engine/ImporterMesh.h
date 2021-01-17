@@ -16,18 +16,18 @@ namespace ImporterMesh
 	namespace // Private functions in the namespace
 	{
 		// If vertex is a point outside the current min and max points for AABB, it modifies those min/max points
-		void CheckMinMaxPoints(float* vertex, CMesh* _cmesh)
+		void CheckMinMaxPoints(float* _vertex, CMesh* _cmesh)
 		{
 			float3 AABBmax = _cmesh->GetAABBmax();
 			float3 AABBmin = _cmesh->GetAABBmin();
 
-			AABBmax.x = vertex[0] > AABBmax.x ? vertex[0] : AABBmax.x;
-			AABBmax.y = vertex[1] > AABBmax.y ? vertex[1] : AABBmax.y;
-			AABBmax.z = vertex[2] > AABBmax.z ? vertex[2] : AABBmax.z;
+			AABBmax.x = _vertex[0] > AABBmax.x ? _vertex[0] : AABBmax.x;
+			AABBmax.y = _vertex[1] > AABBmax.y ? _vertex[1] : AABBmax.y;
+			AABBmax.z = _vertex[2] > AABBmax.z ? _vertex[2] : AABBmax.z;
 
-			AABBmin.x = vertex[0] < AABBmin.x ? vertex[0] : AABBmin.x;
-			AABBmin.y = vertex[1] < AABBmin.y ? vertex[1] : AABBmin.y;
-			AABBmin.z = vertex[2] < AABBmin.z ? vertex[2] : AABBmin.z;
+			AABBmin.x = _vertex[0] < AABBmin.x ? _vertex[0] : AABBmin.x;
+			AABBmin.y = _vertex[1] < AABBmin.y ? _vertex[1] : AABBmin.y;
+			AABBmin.z = _vertex[2] < AABBmin.z ? _vertex[2] : AABBmin.z;
 
 			_cmesh->SetAABBmax(AABBmax);
 			_cmesh->SetAABBmin(AABBmin);
@@ -59,14 +59,14 @@ namespace ImporterMesh
 		// ------------------------------------------------------------------------------------- //
 
 		// Loads the Vertex Array Object of this mesh
-		unsigned int CreateVAO(unsigned int VBO, unsigned int EBO)
+		unsigned int CreateVAO(unsigned int _VBO, unsigned int _EBO)
 		{
 			unsigned int VAO = 0u;
 			glGenVertexArrays(1, &VAO);
 
 			glBindVertexArray(VAO);
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
 
 			// TODO: what if normals or uvs are not present?
 			// vertex positions

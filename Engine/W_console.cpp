@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "Leaks.h"
 
-WConsole::WConsole(std::string name) : Window(name)
+WConsole::WConsole(std::string _name) : Window(_name)
 {
 	ClearLog();
 	memset(InputBuf, 0, sizeof(InputBuf));
@@ -162,32 +162,32 @@ void    WConsole::Draw()
 	ImGui::End();
 }
 
-void    WConsole::ExecCommand(const char* command_line)
+void    WConsole::ExecCommand(const char* _command_line)
 {
-	AddLog("# %s\n", command_line);
+	AddLog("# %s\n", _command_line);
 
 	// Process command
-	if (_stricmp(command_line, "CLEAR") == 0)
+	if (_stricmp(_command_line, "CLEAR") == 0)
 	{
 		ClearLog();
 	}
-	else if (_stricmp(command_line, "HELP") == 0)
+	else if (_stricmp(_command_line, "HELP") == 0)
 	{
 		AddLog("Commands:");
 		for (int i = 0; i < Commands.Size - 1; i++)
 			AddLog("- %s", Commands[i]);
 	}
-	else if (_stricmp(command_line, "NAME") == 0)
+	else if (_stricmp(_command_line, "NAME") == 0)
 	{
 		AddLog("This Game Engine is titled TIME or TIMEngine, which stands for The Incredible Mefiso's Engine.   There's actually another command: TRUENAME");
 	}
-	else if (_stricmp(command_line, "TRUENAME") == 0)
+	else if (_stricmp(_command_line, "TRUENAME") == 0)
 	{
 		AddLog("TIME: VGhlIEVuZ2luZSBuYW1lIGFjdHVhbGx5IHN0YW5kcyBmb3IgVHJlYWNoZXJvdXMgSW5mYW1vdXMgTWlzY3JlYW50IEVuZ2luZQkozL/iloDMv+KAv+KAicy/4paAzL8gzL8p");
 	}
 	else
 	{
-		AddLog("Unknown command: '%s'\n", command_line);
+		AddLog("Unknown command: '%s'\n", _command_line);
 	}
 
 	// On command input, we scroll to bottom even if AutoScroll==false

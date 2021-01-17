@@ -1,10 +1,10 @@
 #include "ModuleProgram.h"
 #include "Leaks.h"
 
-unsigned int ModuleProgram::CreateProgramFromFile(const char* vertexPath, const char* fragmentPath)
+unsigned int ModuleProgram::CreateProgramFromFile(const char* _vertexPath, const char* _fragmentPath)
 {
-	const char* vShaderCode = LoadShaderSource(vertexPath);
-	const char* fShaderCode = LoadShaderSource(fragmentPath);
+	const char* vShaderCode = LoadShaderSource(_vertexPath);
+	const char* fShaderCode = LoadShaderSource(_fragmentPath);
 	unsigned int vertex = CompileShader(GL_VERTEX_SHADER, vShaderCode);
 	unsigned int fragment = CompileShader(GL_FRAGMENT_SHADER, fShaderCode);
 	unsigned int ID = CreateProgram(vertex, fragment);

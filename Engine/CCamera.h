@@ -11,9 +11,9 @@
 class CCamera : public Component
 {
 private:
-	Frustum* frustum = new Frustum();							// frustum object of this Camera
-	float4 frustumPlanes[6];
-	float3 frustumPoints[8];
+	Frustum*	frustum = new Frustum();						// frustum object of this Camera
+	float4		frustumPlanes[6];
+	float3		frustumPoints[8];
 
 public:
 	CCamera(GameObject* _owner);								// Constructor
@@ -27,9 +27,9 @@ public:
 
 	void UpdateFrustumFromTransform(CTransform* _transform);	// Updates Frustum position and rotation. This function must be called when the Transform of the 'owner' GameObject changes
 	void UpdateTransformFromFrustum();							// Updates the Transform of the 'owner' GameObject. This function must be called when the frustum is modified by the user inputs that control the camera
-	void PerformFrustumCulling(bool extractFrustum = false);	// Extracts the frustum planes and corner points if needed, and tells the renderer to perform the frustum culling
+	void PerformFrustumCulling(bool _extractFrustum = false);	// Extracts the frustum planes and corner points if needed, and tells the renderer to perform the frustum culling
 
 	// ------ Serialization -------- //
-	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
-	void onLoad(const rapidjson::Value& config) override;
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;	// To serialize this component when saving the scene
+	void onLoad(const rapidjson::Value& config) override;							// To load this component when loading the scene
 };

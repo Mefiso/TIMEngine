@@ -13,7 +13,7 @@ private:
 	std::map<std::string, std::string> libraries;			// Map containing the used Libraries' names and their versions
 
 public:
-	WAbout(std::string name);								// Constructor
+	WAbout(std::string _name);								// Constructor
 	~WAbout();												// Destructor
 
 	void Draw() override;									// Operations performed when Rendering this window

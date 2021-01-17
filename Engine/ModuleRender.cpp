@@ -146,15 +146,15 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-void ModuleRender::PerformFrustumCulling(const float4 frustumPlanes[6], const float3 frustumPoints[8])
+void ModuleRender::PerformFrustumCulling(const float4 _frustumPlanes[6], const float3 _frustumPoints[8])
 {
 	objectsToDraw.clear();
-	App->sceneMng->octree.CollectFrustumIntersections(objectsToDraw, frustumPlanes, frustumPoints);
+	App->sceneMng->octree.CollectFrustumIntersections(objectsToDraw, _frustumPlanes, _frustumPoints);
 }
 
-void ModuleRender::RemoveObjectFromDrawList(GameObject* go)
+void ModuleRender::RemoveObjectFromDrawList(GameObject* _go)
 {
-	std::vector<GameObject*>::iterator it = std::find(objectsToDraw.begin(), objectsToDraw.end(), go);
+	std::vector<GameObject*>::iterator it = std::find(objectsToDraw.begin(), objectsToDraw.end(), _go);
 	if (it != objectsToDraw.end())
 		objectsToDraw.erase(it);
 }

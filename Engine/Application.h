@@ -38,7 +38,7 @@ public:
 	bool			Init();								// Call Init() for each Module
 	update_status	Update();							// Call Update() for each Module
 	bool			CleanUp();							// Call CleanUp() for each Module
-	void			BroadcastEvent(const Event& event);	// Call ReceiveEvent() for each Module
+	void			BroadcastEvent(const Event& _event);	// Call ReceiveEvent() for each Module
 
 	void Log(const char* input) const;					// Forward a LOG output to the Editor, then to W_Console
 

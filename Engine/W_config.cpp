@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "Leaks.h"
 
-WConfig::WConfig(std::string name) : Window(name),
+WConfig::WConfig(std::string _name) : Window(_name),
 brightness(1.0f), resizable(RESIZABLE), borderless(false), fulldesktop(false), vsync(VSYNC)
 {
 }

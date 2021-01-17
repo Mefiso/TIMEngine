@@ -216,12 +216,12 @@ void GameObject::AddChild(GameObject* _newChild)
 	children.push_back(_newChild);
 }
 
-void GameObject::RemoveChild(int childID)
+void GameObject::RemoveChild(int _childID)
 {
 	int toRemove = -1;
 	for (unsigned int i = 0u; i < children.size(); ++i)
 	{
-		if (children[i]->UUID == childID)
+		if (children[i]->UUID == _childID)
 		{
 			toRemove = (int)i;
 			break;
@@ -231,18 +231,18 @@ void GameObject::RemoveChild(int childID)
 		children.erase(children.begin() + toRemove);
 }
 
-GameObject* GameObject::SearchChild(int childID)
+GameObject* GameObject::SearchChild(int _childID)
 {
 	for (int i = 0; i < children.size(); ++i)
 	{
-		if (children[i]->UUID == childID)
+		if (children[i]->UUID == _childID)
 		{
 			return children[i];
 		}
 	}
 	for (int i = 0; i < children.size(); ++i)
 	{
-		GameObject* go = children[i]->SearchChild(childID);
+		GameObject* go = children[i]->SearchChild(_childID);
 		if (go)
 			return go;
 	}
@@ -293,16 +293,16 @@ void GameObject::SetTransform(float4x4& _newTransform)
 		this->GetComponent<CLight>()->SetPositionDirection(GetModelMatrix());
 }
 
-void GameObject::SetProgram(unsigned int program)
+void GameObject::SetProgram(unsigned int _program)
 {
 	// update components
 	if(GetComponent<CMesh>())
-		GetComponent<CMesh>()->SetProgram(program);
+		GetComponent<CMesh>()->SetProgram(_program);
 
 	// update children accordingly
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
-		(*it)->SetProgram(program);
+		(*it)->SetProgram(_program);
 	}
 }
 
@@ -377,22 +377,22 @@ float4 GameObject::ComputeCenterAndDistance() const
 	}
 }
 
-void GameObject::onSave(rapidjson::Value& config, rapidjson::Document& d)
+void GameObject::onSave(rapidjson::Value& _config, rapidjson::Document& _d)
 {
 	rapidjson::Value g(rapidjson::kObjectType);
-	g.AddMember("UUID", rapidjson::Value().SetInt(UUID), d.GetAllocator());
-	g.AddMember("ParentUUID", parent ? rapidjson::Value().SetInt(parent->UUID): rapidjson::Value().SetInt(-1), d.GetAllocator());
+	g.AddMember("UUID", rapidjson::Value().SetInt(UUID), _d.GetAllocator());
+	g.AddMember("ParentUUID", parent ? rapidjson::Value().SetInt(parent->UUID): rapidjson::Value().SetInt(-1), _d.GetAllocator());
 	rapidjson::Value s;
 	s = rapidjson::StringRef(name.c_str(), name.size());
-	g.AddMember("Name", s, d.GetAllocator());
+	g.AddMember("Name", s, _d.GetAllocator());
 	rapidjson::Value c(rapidjson::kArrayType);
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
-		(*it)->onSave(c, d);
-	g.AddMember("Components", c, d.GetAllocator());
+		(*it)->onSave(c, _d);
+	g.AddMember("Components", c, _d.GetAllocator());
 
-	config.PushBack(g, d.GetAllocator());
+	_config.PushBack(g, _d.GetAllocator());
 
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
-		(*it)->onSave(config, d);
+		(*it)->onSave(_config, _d);
 
 }

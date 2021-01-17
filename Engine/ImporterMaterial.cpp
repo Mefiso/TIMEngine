@@ -141,7 +141,7 @@ unsigned int ImporterMaterial::Save(CMaterial* _material, const char* _filename)
 	}
 }
 
-bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsigned int _filesize)
+bool ImporterMaterial::Load(std::string _filename, CMaterial* _cmaterial, unsigned int _filesize)
 {
 	// Open file to read
 	FILE* f;
@@ -158,8 +158,8 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 		}
 		ilInit();
 		iluInit();
-		ourMaterial->filename = _filename.substr(0, _filename.find_last_of('/')).size() == _filename.size() ? _filename.substr(_filename.find_last_of('\\') + 1, _filename.size()) : _filename.substr(_filename.find_last_of('/') + 1, _filename.size());
-		ourMaterial->filesize = _filesize;
+		_cmaterial->filename = _filename.substr(0, _filename.find_last_of('/')).size() == _filename.size() ? _filename.substr(_filename.find_last_of('\\') + 1, _filename.size()) : _filename.substr(_filename.find_last_of('/') + 1, _filename.size());
+		_cmaterial->filesize = _filesize;
 
 		char* fileBuffer = new char[_filesize]; // Allocate
 		char* cursor = fileBuffer;
@@ -174,30 +174,30 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 		unsigned int bytes = sizeof(float) * 3;
 		float* color = new float[3];
 		memcpy(color, cursor, bytes);
-		ourMaterial->ambient = float3(color);
+		_cmaterial->ambient = float3(color);
 		RELEASE_ARRAY(color);
 		cursor += bytes;
 
 		color = new float[3];
 		memcpy(color, cursor, bytes);
-		ourMaterial->diffuse = float3(color);
+		_cmaterial->diffuse = float3(color);
 		RELEASE_ARRAY(color);
 		cursor += bytes;
 
 		float s;
 		memcpy(&s, cursor, sizeof(float));
-		ourMaterial->shininess = s;
+		_cmaterial->shininess = s;
 		cursor += sizeof(float);
 
 		color = new float[3];
 		memcpy(color, cursor, bytes);
-		ourMaterial->specular = float3(color);
+		_cmaterial->specular = float3(color);
 		RELEASE_ARRAY(color);
 		cursor += bytes;
 
 		int a;
 		memcpy(&a, cursor, sizeof(int));
-		ourMaterial->shininessAlpha = a;
+		_cmaterial->shininessAlpha = a;
 		cursor += sizeof(int);
 
 		for (int i = 0; i < header[0]; ++i)
@@ -229,7 +229,7 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 
 			texture->id = LoadTexture("./Library/Textures/" + texture->path, "./Library/Textures/" + texture->path);
 			App->filesys->loadedTextures.push_back(texture);
-			ourMaterial->textures.push_back(App->filesys->loadedTextures[App->filesys->loadedTextures.size() - 1]);
+			_cmaterial->textures.push_back(App->filesys->loadedTextures[App->filesys->loadedTextures.size() - 1]);
 		}
 		RELEASE_ARRAY(fileBuffer);
 		LOG("[info] Material data loaded from '%s' file", _filename.c_str());
@@ -242,7 +242,7 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 	return false;
 }
 
-unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string _destPath, bool saveToCustom)
+unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string _destPath, bool _saveToCustom)
 {
 	ILuint imgId;
 	ILboolean success;
@@ -281,7 +281,7 @@ unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		if(saveToCustom)
+		if(_saveToCustom)
 			SaveTexture(_destPath.replace(_destPath.find_last_of('.'), _destPath.size(), ".dds").c_str());
 	}
 	else

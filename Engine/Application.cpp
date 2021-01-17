@@ -79,10 +79,10 @@ bool Application::CleanUp()
 	return ret;
 }
 
-void Application::BroadcastEvent(const Event& event)
+void Application::BroadcastEvent(const Event& _event)
 {
 	for (vector<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
-		(*it)->ReceiveEvent(event);
+		(*it)->ReceiveEvent(_event);
 }
 
 void Application::Log(const char* input) const

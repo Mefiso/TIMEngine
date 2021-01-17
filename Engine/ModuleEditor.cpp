@@ -132,9 +132,9 @@ const bool ModuleEditor::IsViewportHovered() const
 	return viewport->viewportIsHovered;
 }
 
-void ModuleEditor::SendEvent(const SDL_Event& event) const
+void ModuleEditor::SendEvent(const SDL_Event& _event) const
 {
-	ImGui_ImplSDL2_ProcessEvent(&event);
+	ImGui_ImplSDL2_ProcessEvent(&_event);
 }
 
 void ModuleEditor::CreateViewport()
@@ -142,10 +142,10 @@ void ModuleEditor::CreateViewport()
 	viewport->SetColorbuffer(App->renderer->GetTextureColorbuffer(), App->renderer->GetViewportWidth(), App->renderer->GetViewportHeight());
 }
 
-void ModuleEditor::Log(const char* input) const
+void ModuleEditor::Log(const char* _input) const
 {
 	if (console)
-		console->AddLog(input);
+		console->AddLog(_input);
 }
 
 void ModuleEditor::DrawMainMenu()

@@ -6,7 +6,7 @@
 #include "ImGuizmo.h"
 
 
-WViewport::WViewport(std::string name) : Window(name)
+WViewport::WViewport(std::string _name) : Window(_name)
 {
 }
 

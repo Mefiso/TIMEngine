@@ -19,6 +19,6 @@ public:
 	bool Start() override;														// Load default scene
 	bool CleanUp() override;													// Clean memory allocated by this Module
 
-	void DropFile(const std::string& file);										// Called when a Drop File event is recieved. Calls the appropiate importer for the type of file.
-	std::string OpenDialog(const char* _filters, const char* dir, int* _size) const;
+	void DropFile(const std::string& _file);									// Called when a Drop File event is recieved. Calls the appropiate importer for the type of file.
+	std::string OpenDialog(const char* _filters, const char* _dir, int* _size) const;// Opens a WindowsOS window dialog to select a file to import
 };

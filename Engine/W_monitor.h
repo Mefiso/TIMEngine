@@ -27,7 +27,7 @@ private:
 	const unsigned int histNumElements = 50u;		// Maximum number of elements represented in the Framerate Histogram
 
 public:
-	WMonitor(std::string name);						// Constructor
+	WMonitor(std::string _name);					// Constructor
 	~WMonitor();									// Destructor
 	void Draw() override;							// Operations performed when Rendering this window
 

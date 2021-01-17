@@ -6,7 +6,7 @@
 #include "IL/il.h"
 #include "Leaks.h"
 
-WMonitor::WMonitor(std::string name) : Window(name)
+WMonitor::WMonitor(std::string _name) : Window(_name)
 {
 	SDL_VERSION(&hardware.compiled);
 	hardware.CPU_count = SDL_GetCPUCount();

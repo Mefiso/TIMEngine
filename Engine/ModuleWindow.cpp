@@ -87,13 +87,13 @@ bool ModuleWindow::CleanUp()
 	return true;
 }
 
-void ModuleWindow::ReceiveEvent(const Event& event)
+void ModuleWindow::ReceiveEvent(const Event& _event)
 {
-	switch (event.type)
+	switch (_event.type)
 	{
 	case Event::window_resize:
-		width = event.point2d.x;
-		height = event.point2d.y;
+		width = _event.point2d.x;
+		height = _event.point2d.y;
 		break;
 	}
 }

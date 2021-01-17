@@ -44,8 +44,8 @@ public:
 	bool		AddComponent(ComponentType _type, const int _UUID = -1);						// Create and attach a new Component to this GameObject
 	void		RemoveComponent(int _cID);														// Detach a component from this GameObject
 	void		AddChild(GameObject* _newChild);												// Subfunction of SetParent(). Places another GameObject as a child of this one
-	void		RemoveChild(int childID);														// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
-	GameObject*	SearchChild(int childID);
+	void		RemoveChild(int _childID);														// Subfunction of SetParent(). Removes a GameObject (by ID) from this.children list (DOES NOT DELETE THE OBJECT)
+	GameObject*	SearchChild(int _childID);
 
 	// ---------- Getters ---------- //
 	const std::string&	GetName() const				{ return name; }
@@ -88,7 +88,7 @@ public:
 	void SetTransform(float3& _scale, float3& _rotation, float3& _translation);
 	void SetTransform(float4x4& _newTransform);
 	void SetParent(GameObject* _newParent);
-	void SetProgram(unsigned int program);
+	void SetProgram(unsigned int _program);
 
 	void UpdateBoundingBoxes();
 	void UpdateOctreePosition();
@@ -96,5 +96,5 @@ public:
 	float4 ComputeCenterAndDistance() const;
 
 	// ------- Serialization ------- //
-	void onSave(rapidjson::Value& config, rapidjson::Document& d);
+	void onSave(rapidjson::Value& _config, rapidjson::Document& _d);
 };

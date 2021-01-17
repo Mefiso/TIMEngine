@@ -14,7 +14,7 @@ private:
 	bool	vsync;					// VSYNC enable/disable passed to the ModuleWindow
 
 public:
-	WConfig(std::string name);		// Constructor
+	WConfig(std::string _name);		// Constructor
 	~WConfig();						// Destructor
 
 	void Draw() override;			// Operations performed when Rendering this window

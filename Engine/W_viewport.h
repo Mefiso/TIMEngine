@@ -17,7 +17,7 @@ private:
 	float2			viewportPosition = float2(0, 0);	// Position of the Viewport in the screen
 
 public:
-	WViewport(std::string name);						// Constructor
+	WViewport(std::string _name);						// Constructor
 	~WViewport();										// Destructor
 
 	void Draw() override;								// Operations performed when Rendering this window

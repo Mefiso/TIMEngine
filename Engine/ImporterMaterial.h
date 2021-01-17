@@ -20,10 +20,10 @@ class GameObject;
 namespace ImporterMaterial
 {
 	bool			Import(aiMaterial* _material, const std::string& _path, GameObject* _parent);	// Imports a Material with all its textures from Assimp
-	bool			Load(std::string _filename, CMaterial* ourMaterial, unsigned int _filesize);	// Loads a Material with all its textures from a file in custom file format
+	bool			Load(std::string _filename, CMaterial* _cmaterial, unsigned int _filesize);		// Loads a Material with all its textures from a file in custom file format
 	unsigned int	Save(CMaterial* _material, const char* _filename);								// Saves the info of a Component Material into a file in custom file format
 
-	unsigned int	LoadTexture(std::string _path, std::string _destPath, bool saveToCustom=false);	// Loads an image file and attaches it to a GL_TEXTURE_2D
+	unsigned int	LoadTexture(std::string _path, std::string _destPath, bool _saveToCustom=false);	// Loads an image file and attaches it to a GL_TEXTURE_2D
 	unsigned int	LoadCubemap(std::vector<std::string> _faces);									// Loads a Cubemap Texture from 6 images ('faces') and attaches it to a GL_TEXTURE_CUBE_MAP
 	void			SaveTexture(const char* _destPath);												// Saves a texture loaded in DevIL to a new .DDS file
 

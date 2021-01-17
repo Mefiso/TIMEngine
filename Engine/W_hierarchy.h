@@ -11,7 +11,7 @@ private:
 	GameObject* toDelete	= nullptr;						// Pointer to a GameObject to which the Delete option has been chosen, from the Context Menu (Right-Click)
 
 public:
-	WHierarchy(std::string name);							// Constructor
+	WHierarchy(std::string _name);							// Constructor
 	~WHierarchy();											// Destructor
 
 	void Draw() override;									// Operations performed when Rendering this window

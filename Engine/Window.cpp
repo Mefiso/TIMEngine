@@ -1,6 +1,6 @@
 #include "Window.h"
 
-Window::Window(std::string name) : name(name)
+Window::Window(std::string _name) : name(_name)
 {
 }
 
@@ -8,7 +8,7 @@ Window::~Window()
 {
 }
 
-void Window::Enable(bool active)
+void Window::Enable(bool _active)
 {
-	this->active = active;
+	this->active = _active;
 }

@@ -9,44 +9,44 @@
 
 namespace ModuleProgram
 {
-	unsigned int CreateProgramFromFile(const char* vertexPath, const char* fragmentPath);	// Creates a Shading Program from the path of the Vertex and Fragment shader files
+	unsigned int CreateProgramFromFile(const char* _vertexPath, const char* _fragmentPath);	// Creates a Shading Program from the path of the Vertex and Fragment shader files
 
 	namespace
 	{
 		// Check for shader compilation/linking errors.
-		void checkCompileErrors(unsigned int shader, const char* type)
+		void checkCompileErrors(unsigned int _shader, const char* _type)
 		{
 			int success;
-			if (type != "PROGRAM")
+			if (_type != "PROGRAM")
 			{
-				glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+				glGetShaderiv(_shader, GL_COMPILE_STATUS, &success);
 				if (!success)
 				{
 					int len = 0;
-					glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+					glGetShaderiv(_shader, GL_INFO_LOG_LENGTH, &len);
 					if (len > 0)
 					{
 						int written = 0;
 						char* infoLog = (char*)malloc(len);
-						glGetShaderInfoLog(shader, len, &written, infoLog);
-						LOG("[error] ERROR::SHADER_COMPILATION_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", type, infoLog);
+						glGetShaderInfoLog(_shader, len, &written, infoLog);
+						LOG("[error] ERROR::SHADER_COMPILATION_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", _type, infoLog);
 						free(infoLog);
 					}
 				}
 			}
 			else
 			{
-				glGetProgramiv(shader, GL_LINK_STATUS, &success);
+				glGetProgramiv(_shader, GL_LINK_STATUS, &success);
 				if (!success)
 				{
 					int len = 0;
-					glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &len);
+					glGetProgramiv(_shader, GL_INFO_LOG_LENGTH, &len);
 					if (len > 0)
 					{
 						int written = 0;
 						char* infoLog = (char*)malloc(len);
-						glGetProgramInfoLog(shader, len, &written, infoLog);
-						LOG("[error] ERROR::PROGRAM_LINKING_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", type, infoLog);
+						glGetProgramInfoLog(_shader, len, &written, infoLog);
+						LOG("[error] ERROR::PROGRAM_LINKING_ERROR of type: %s \n%s\n -- --------------------------------------------------- -- ", _type, infoLog);
 						free(infoLog);
 					}
 				}
@@ -54,11 +54,11 @@ namespace ModuleProgram
 		}
 
 		// Read a file and store the text in a char* buffer
-		char* LoadShaderSource(const char* shader_file_name)
+		char* LoadShaderSource(const char* _shader_file_name)
 		{
 			char* data = nullptr;
 			FILE* file = nullptr;
-			fopen_s(&file, shader_file_name, "rb");
+			fopen_s(&file, _shader_file_name, "rb");
 			if (file)
 			{
 				fseek(file, 0, SEEK_END);
@@ -70,32 +70,32 @@ namespace ModuleProgram
 				fclose(file);
 			}
 			else
-				LOG("[error] Can't read file %s", shader_file_name);
+				LOG("[error] Can't read file %s", _shader_file_name);
 			return data;
 		}
 
 		// Compile a shader written in GLSL, from the text stored in a char* buffer
-		unsigned int CompileShader(unsigned int type, const char* source)
+		unsigned int CompileShader(unsigned int _type, const char* _source)
 		{
-			unsigned shader_id = glCreateShader(type);
-			glShaderSource(shader_id, 1, &source, 0);
+			unsigned shader_id = glCreateShader(_type);
+			glShaderSource(shader_id, 1, &_source, 0);
 			glCompileShader(shader_id);
-			const char* type_name = type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT";
+			const char* type_name = _type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT";
 			checkCompileErrors(shader_id, type_name);
 
 			return shader_id;
 		}
 
 		// Generate a shading program from the compiled Vertex and Fragment shaders
-		unsigned int CreateProgram(unsigned int vtx_shader, unsigned int frg_shader)
+		unsigned int CreateProgram(unsigned int _vtx_shader, unsigned int _frg_shader)
 		{
 			unsigned program_id = glCreateProgram();
-			glAttachShader(program_id, vtx_shader);
-			glAttachShader(program_id, frg_shader);
+			glAttachShader(program_id, _vtx_shader);
+			glAttachShader(program_id, _frg_shader);
 			glLinkProgram(program_id);
 			checkCompileErrors(program_id, "PROGRAM");
-			glDeleteShader(vtx_shader);
-			glDeleteShader(frg_shader);
+			glDeleteShader(_vtx_shader);
+			glDeleteShader(_frg_shader);
 			return program_id;
 		}
 	}

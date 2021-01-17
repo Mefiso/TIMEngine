@@ -1,6 +1,6 @@
 #include "W_about.h"
 
-WAbout::WAbout(std::string name) : Window(name)
+WAbout::WAbout(std::string _name) : Window(_name)
 {
 	libraries["ASSIMP"] = "5.0.1";
 	libraries["DevIL"] = "1.8.0";

@@ -18,19 +18,19 @@ public:
 	~CTransform();															// Destructor
 
 	// ---------- Getters ---------- //
-	const float3& GetPos() const { return position; }
-	const float3& GetRotation() const { return rotation; }
-	const float3& GetScale() const { return scale; }
-	const float4x4& GetTransformationMatrix() const { return transformMatrix; }
+	const float3& GetPos() const					{ return position; }
+	const float3& GetRotation() const				{ return rotation; }
+	const float3& GetScale() const					{ return scale; }
+	const float4x4& GetTransformationMatrix() const	{ return transformMatrix; }
 
 	// ---------- Setters ---------- //
-	void SetPos(float3& _position) { position = _position; }
-	void SetRotation(float3& _rotation) { rotation = _rotation; }
-	void SetScale(float3& _scale) { scale = _scale; }
+	void SetPos(float3& _position)		{ position = _position; }
+	void SetRotation(float3& _rotation)	{ rotation = _rotation; }
+	void SetScale(float3& _scale)		{ scale = _scale; }
 
 	void UpdateTransformMatrix();											// Updates transformMatrix. Must be used when a change is detected in Rotation, Scale and Position
 
 	// ------ Serialization -------- //
-	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
-	void onLoad(const rapidjson::Value& config) override;
+	void onSave(rapidjson::Value& _config, rapidjson::Document& _d) const override;	// To serialize this component when saving the scene
+	void onLoad(const rapidjson::Value& _config) override;							// To load this component when loading the scene
 };

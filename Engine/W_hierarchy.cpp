@@ -4,7 +4,7 @@
 #include "ModuleSceneManager.h"
 #include "ModuleEditor.h"
 
-WHierarchy::WHierarchy(std::string name) : Window(name)
+WHierarchy::WHierarchy(std::string _name) : Window(_name)
 {
 }
 

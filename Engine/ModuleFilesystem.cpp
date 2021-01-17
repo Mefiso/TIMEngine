@@ -45,13 +45,13 @@ bool ModuleFilesystem::CleanUp()
 	return true;
 }
 
-void ModuleFilesystem::DropFile(const std::string& file)
+void ModuleFilesystem::DropFile(const std::string& _file)
 {
-	std::string ext = file.substr(file.find_last_of('.'), file.size());
+	std::string ext = _file.substr(_file.find_last_of('.'), _file.size());
 
 	// FBX or OBJ files -> Load a scene
 	if (ext.compare(".fbx") == 0 || ext.compare(".FBX") == 0 || ext.compare(".obj") == 0 || ext.compare(".OBJ") == 0)
-		ImporterScene::Import(file);
+		ImporterScene::Import(_file);
 }
 
 std::string ModuleFilesystem::OpenDialog(const char* _filters, const char* _dir, int* _size) const

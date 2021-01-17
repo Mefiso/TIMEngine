@@ -51,9 +51,9 @@ void CCamera::UpdateTransformFromFrustum()
 	}
 }
 
-void CCamera::PerformFrustumCulling(bool extractFrustum)
+void CCamera::PerformFrustumCulling(bool _extractFrustum)
 {
-	if (extractFrustum)
+	if (_extractFrustum)
 	{
 		// Compute frustum planes
 		float4x4 viewProjMatrix = frustum->ViewProjMatrix();
@@ -71,7 +71,7 @@ void CCamera::PerformFrustumCulling(bool extractFrustum)
 	App->renderer->PerformFrustumCulling(frustumPlanes, frustumPoints);
 }
 
-void CCamera::onSave(rapidjson::Value& config, rapidjson::Document& d) const
+void CCamera::onSave(rapidjson::Value& _config, rapidjson::Document& d) const
 {
 	rapidjson::Value c(rapidjson::kObjectType);
 	c.AddMember("UUID", rapidjson::Value(UUID).Move(), d.GetAllocator());
@@ -103,20 +103,20 @@ void CCamera::onSave(rapidjson::Value& config, rapidjson::Document& d) const
 		d.GetAllocator()).PushBack(rapidjson::Value(up[2]).Move(), d.GetAllocator());
 	c.AddMember("Up", u, d.GetAllocator());
 
-	config.PushBack(c, d.GetAllocator());
+	_config.PushBack(c, d.GetAllocator());
 }
 
-void CCamera::onLoad(const rapidjson::Value& config)
+void CCamera::onLoad(const rapidjson::Value& _config)
 {
-	frustum->SetViewPlaneDistances(config["NearPlane"].GetFloat(), config["FarPlane"].GetFloat());
-	frustum->SetVerticalFovAndAspectRatio(config["FOV"].GetFloat(), config["AspectRatio"].GetFloat());
-	frustum->SetPos(float3(config["Position"][0].GetFloat(),
-		config["Position"][1].GetFloat(),
-		config["Position"][2].GetFloat()));
-	frustum->SetFront(float3(config["Front"][0].GetFloat(),
-		config["Front"][1].GetFloat(),
-		config["Front"][2].GetFloat()));
-	frustum->SetUp(float3(config["Up"][0].GetFloat(),
-		config["Up"][1].GetFloat(),
-		config["Up"][2].GetFloat()));
+	frustum->SetViewPlaneDistances(_config["NearPlane"].GetFloat(), _config["FarPlane"].GetFloat());
+	frustum->SetVerticalFovAndAspectRatio(_config["FOV"].GetFloat(), _config["AspectRatio"].GetFloat());
+	frustum->SetPos(float3(_config["Position"][0].GetFloat(),
+		_config["Position"][1].GetFloat(),
+		_config["Position"][2].GetFloat()));
+	frustum->SetFront(float3(_config["Front"][0].GetFloat(),
+		_config["Front"][1].GetFloat(),
+		_config["Front"][2].GetFloat()));
+	frustum->SetUp(float3(_config["Up"][0].GetFloat(),
+		_config["Up"][1].GetFloat(),
+		_config["Up"][2].GetFloat()));
 }
