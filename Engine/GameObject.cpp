@@ -10,7 +10,6 @@
 #include "debugdraw.h"
 #include "Leaks.h"
 
-
 LCG GameObject::randomGen = LCG();
 bool GameObject::drawOBB = false;
 
@@ -127,7 +126,7 @@ bool GameObject::AddComponent(ComponentType _type, const int _UUID)
 				AddComponent(TRANSFORM);
 			newComp = new CLight(this);
 			components.push_back(newComp);
-			//App->sceneMng->lightSources[this] = this->GetModelMatrix().TranslatePart();
+			App->sceneMng->lightSources.push_back(this);
 			createdComp = true;
 		}
 		break;
@@ -159,7 +158,16 @@ void GameObject::RemoveComponent(int _cID)
 		if (components[toRemove]->GetType() == MESH)
 			App->renderer->RemoveObjectFromDrawList(this);
 		if (components[toRemove]->GetType() == LIGHT)
-			App->sceneMng->lightSources;
+		{
+			for (std::list<GameObject*>::iterator it = App->sceneMng->lightSources.begin(); it != App->sceneMng->lightSources.end(); ++it)
+			{
+				if (this == (*it))
+				{
+					App->sceneMng->lightSources.erase(it);
+					break;
+				}
+			}
+		}
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
 		GetComponent<CMaterial>();

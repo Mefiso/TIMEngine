@@ -24,8 +24,49 @@ struct Material
 	int hasSpecularMap;
 	int shininessAlpha;
 };
-
 uniform Material material;
+
+struct DirLight
+{
+	vec3 direction;
+	vec3 color;
+	float intensity;
+};
+
+struct PointLight
+{
+	vec3 position;
+	vec3 color;
+	float intensity;
+	float Kc;
+	float Kl;
+	float Kq;
+};
+
+struct SpotLight
+{
+	vec3 position;
+	vec3 direction;
+	vec3 color;
+	float intensity;
+	float Kc;
+	float Kl;
+	float Kq;
+	float innerAng;
+	float outerAng;
+};
+
+struct Lights
+{
+	vec3 ambientColor;
+	DirLight directional;
+	int num_point;
+	PointLight pointLights[8];
+	int num_spot;
+	SpotLight spotLights[8];
+};
+uniform Lights lights;
+
 
 void main()
 {

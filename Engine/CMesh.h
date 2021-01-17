@@ -2,6 +2,7 @@
 #include "Component.h"
 #include <Math/float3.h>
 #include <string>
+#include <map>
 
 class CMesh : public Component
 {
@@ -55,4 +56,7 @@ public:
 	// ------ Serialization -------- //
 	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
 	void onLoad(const rapidjson::Value& config) override;
+
+private:
+	void SelectClosestLights(std::map<GameObject*, float>& _pointLights, std::map<GameObject*, float>& _spotLights, GameObject* _directionalLight); // From the list of GameObjects with lights in SceneManager, selects the ones that are closest to this GameObject
 };

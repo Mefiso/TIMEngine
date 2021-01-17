@@ -338,12 +338,12 @@ void WProperties::DrawLightBody(CLight* _light)
 	ImGui::ColorEdit3("Light Color", &_light->GetColorRef().x, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
 	ImGui::DragFloat("Intensity", &_light->GetIntensityRef(), .02f, 0.0f, FLT_MAX, "%.2f");
 
+	ImGui::PushItemWidth(100);
 	switch (_light->GetType())
 	{
 	case 0:	// Directional
 		break;
 	case 1:	// Point
-		ImGui::TextUnformatted("This is Point Light");
 		ImGui::DragFloat("Constant Att.", &_light->GetKcRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
 		ImGui::DragFloat("Linear Att.", &_light->GetKlRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
 		ImGui::DragFloat("Quadratic Att.", &_light->GetKqRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
