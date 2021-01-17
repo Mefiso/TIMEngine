@@ -17,10 +17,11 @@ private:
 
 public:
 	CLight(GameObject* _owner);			// Constructor
+	CLight(GameObject* _owner, const int _UUID);
 	~CLight();							// Destructor
 
 	// ---------- Getters ---------- //
-	int GetType() const { return lType; }
+	int GetLType() const { return lType; }
 	int &GetTypeRef() { return lType; }
 	float3& GetColorRef() { return lColor; }
 	float& GetIntensityRef() { return lIntensity; }
@@ -33,5 +34,8 @@ public:
 	// ---------- Setters ---------- //
 	void SetType(int _type) { lType = (_type < 0 || _type > 2) ? 0 : _type; }
 
+	// ------ Serialization -------- //
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
+	void onLoad(const rapidjson::Value& config) override;
 };
 

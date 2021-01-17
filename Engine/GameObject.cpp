@@ -125,7 +125,10 @@ bool GameObject::AddComponent(ComponentType _type, const int _UUID)
 		{
 			if (!this->GetTransform())
 				AddComponent(TRANSFORM);
-			newComp = new CLight(this);
+			if (_UUID != -1)
+				newComp = new CLight(this, _UUID);
+			else
+				newComp = new CLight(this);
 			components.push_back(newComp);
 			//App->sceneMng->lightSources[this] = this->GetModelMatrix().TranslatePart();
 			createdComp = true;
