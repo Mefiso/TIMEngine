@@ -17,7 +17,8 @@ private:
 	float lOuterAng = 0.f;				// Intensity drops smoothly between inner and outer angle	- (Spot Lights)
 	// Light position and direction are taken from the Transform Component of the GameObject
 	float3 pos = owner->GetModelMatrix().TranslatePart();
-	float3 dir = owner->GetModelMatrix().RotatePart().Col3(2).Normalized();
+	//float3 dir = owner->GetModelMatrix().RotatePart().Col3(2).Normalized();
+	float3 dir = float3::one;
 
 public:
 	CLight(GameObject* _owner);			// Constructor
@@ -25,6 +26,8 @@ public:
 
 	// ---------- Getters ---------- //
 	int GetType() const { return lType; }
+	float GetInnerAngle() const { return lInnerAng; }
+	float GetOuterAngle() const { return lOuterAng; }
 	int &GetTypeRef() { return lType; }
 	float3& GetColorRef() { return lColor; }
 	float& GetIntensityRef() { return lIntensity; }
@@ -38,6 +41,7 @@ public:
 
 	// ---------- Setters ---------- //
 	void SetType(int _type) { lType = (_type < 0 || _type > 2) ? 0 : _type; }
+	void SetOuterAngle(float _angle) { lOuterAng = _angle; }
 
 };
 

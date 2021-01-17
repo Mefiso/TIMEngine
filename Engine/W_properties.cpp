@@ -352,8 +352,10 @@ void WProperties::DrawLightBody(CLight* _light)
 		ImGui::DragFloat("Constant Att.", &_light->GetKcRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
 		ImGui::DragFloat("Linear Att.", &_light->GetKlRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
 		ImGui::DragFloat("Quadratic Att.", &_light->GetKqRef(), .02f, 0.0001f, FLT_MAX, "%.2f");
-		ImGui::DragFloat("Inner Angle", &_light->GetInnerAngRef(), .02f, 0.f, 180, "%.2f");
-		ImGui::DragFloat("Outer Angle", &_light->GetOuterAngRef(), .02f, 0.f, 180, "%.2f");
+		ImGui::DragFloat("Inner Angle", &_light->GetInnerAngRef(), .05f, 0.f, 180, "%.2f");
+		if (_light->GetOuterAngle() < _light->GetInnerAngle())
+			_light->SetOuterAngle(_light->GetInnerAngle());
+		ImGui::DragFloat("Outer Angle", &_light->GetOuterAngRef(), .05f, _light->GetInnerAngle(), 180, "%.2f");
 		break;
 	default:
 		ImGui::TextUnformatted("The type of ligt was nos specified!");

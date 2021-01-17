@@ -1,3 +1,4 @@
+#include "Globals.h"
 #include "CMesh.h"
 #include "Application.h"
 #include "ModuleSceneManager.h"
@@ -59,39 +60,43 @@ void CMesh::Draw()
 		transform(spotLights.begin(), spotLights.end(), back_inserter(spots), [](const std::map<GameObject*, float>::value_type& val) {return val.first->GetComponent<CLight>(); });
 		// Send the lights to shader
 			// Ambient color
-		ModuleProgram::setVec3(program, "Lights.ambientColor", float3(1.0));	// TODO: GLOBAL ambient light
+		ModuleProgram::setVec3(program, "lights.ambientColor", float3(0.2f));	// TODO: GLOBAL ambient light
 			// Directional Light
 		if (directionalLight)
 		{
 			CLight* directional = directionalLight->GetComponent<CLight>();
-			ModuleProgram::setVec3(program, "Lights.directional.direction", directional->GetDir());
-			ModuleProgram::setVec3(program, "Lights.directional.color", directional->GetColorRef());
-			ModuleProgram::setFloat(program, "Lights.directional.intensity", directional->GetIntensityRef());
+			ModuleProgram::setInt(program, "lights.hasDirectional", 1);
+			ModuleProgram::setVec3(program, "lights.directional.direction", directional->GetDir());
+			ModuleProgram::setVec3(program, "lights.directional.color", directional->GetColorRef());
+			ModuleProgram::setFloat(program, "lights.directional.intensity", directional->GetIntensityRef());
+		}
+		else {
+			ModuleProgram::setInt(program, "lights.hasDirectional", 0);
 		}
 			// Point Lights
-		ModuleProgram::setInt(program, "Lights.num_point", points.size());
+		ModuleProgram::setInt(program, "lights.num_point", (int)points.size());
 		for (unsigned int i = 0; i<points.size(); ++i)
 		{
-			ModuleProgram::setVec3(program, "Lights.pointLights[" + std::to_string(i) + "].position", points[i]->GetPos());
-			ModuleProgram::setVec3(program, "Lights.pointLights["+std::to_string(i)+"].color", points[i]->GetColorRef());
-			ModuleProgram::setFloat(program, "Lights.pointLights[" + std::to_string(i) + "].intensity", points[i]->GetIntensityRef());
-			ModuleProgram::setFloat(program, "Lights.pointLights[" + std::to_string(i) + "].Kc", points[i]->GetKcRef());
-			ModuleProgram::setFloat(program, "Lights.pointLights[" + std::to_string(i) + "].Kl", points[i]->GetKlRef());
-			ModuleProgram::setFloat(program, "Lights.pointLights[" + std::to_string(i) + "].Kq", points[i]->GetKqRef());
+			ModuleProgram::setVec3(program, "lights.pointLights[" + std::to_string(i) + "].position", points[i]->GetPos());
+			ModuleProgram::setVec3(program, "lights.pointLights["+std::to_string(i)+"].color", points[i]->GetColorRef());
+			ModuleProgram::setFloat(program, "lights.pointLights[" + std::to_string(i) + "].intensity", points[i]->GetIntensityRef());
+			ModuleProgram::setFloat(program, "lights.pointLights[" + std::to_string(i) + "].Kc", points[i]->GetKcRef());
+			ModuleProgram::setFloat(program, "lights.pointLights[" + std::to_string(i) + "].Kl", points[i]->GetKlRef());
+			ModuleProgram::setFloat(program, "lights.pointLights[" + std::to_string(i) + "].Kq", points[i]->GetKqRef());
 		}
 			// Spot Lights
-		ModuleProgram::setInt(program, "Lights.num_spot", spots.size());
+		ModuleProgram::setInt(program, "lights.num_spot", (int)spots.size());
 		for (unsigned int i = 0; i < spots.size(); ++i)
 		{
-			ModuleProgram::setVec3(program, "Lights.pointLights[" + std::to_string(i) + "].position", spots[i]->GetPos());
-			ModuleProgram::setVec3(program, "Lights.pointLights[" + std::to_string(i) + "].direction", spots[i]->GetDir());
-			ModuleProgram::setVec3(program, "Lights.spotLights[" + std::to_string(i) + "].color", spots[i]->GetColorRef());
-			ModuleProgram::setFloat(program, "Lights.spotLights[" + std::to_string(i) + "].intensity", spots[i]->GetIntensityRef());
-			ModuleProgram::setFloat(program, "Lights.spotLights[" + std::to_string(i) + "].Kc", spots[i]->GetKcRef());
-			ModuleProgram::setFloat(program, "Lights.spotLights[" + std::to_string(i) + "].Kl", spots[i]->GetKlRef());
-			ModuleProgram::setFloat(program, "Lights.spotLights[" + std::to_string(i) + "].Kq", spots[i]->GetKqRef());
-			ModuleProgram::setFloat(program, "Lights.spotLights[" + std::to_string(i) + "].innerAng", spots[i]->GetInnerAngRef());
-			ModuleProgram::setFloat(program, "Lights.spotLights[" + std::to_string(i) + "].outerAng", spots[i]->GetOuterAngRef());
+			ModuleProgram::setVec3(program, "lights.spotLights[" + std::to_string(i) + "].position", spots[i]->GetPos());
+			ModuleProgram::setVec3(program, "lights.spotLights[" + std::to_string(i) + "].direction", spots[i]->GetDir());
+			ModuleProgram::setVec3(program, "lights.spotLights[" + std::to_string(i) + "].color", spots[i]->GetColorRef());
+			ModuleProgram::setFloat(program, "lights.spotLights[" + std::to_string(i) + "].intensity", spots[i]->GetIntensityRef());
+			ModuleProgram::setFloat(program, "lights.spotLights[" + std::to_string(i) + "].Kc", spots[i]->GetKcRef());
+			ModuleProgram::setFloat(program, "lights.spotLights[" + std::to_string(i) + "].Kl", spots[i]->GetKlRef());
+			ModuleProgram::setFloat(program, "lights.spotLights[" + std::to_string(i) + "].Kq", spots[i]->GetKqRef());
+			ModuleProgram::setFloat(program, "lights.spotLights[" + std::to_string(i) + "].innerAng", DegToRad(spots[i]->GetInnerAngRef()));
+			ModuleProgram::setFloat(program, "lights.spotLights[" + std::to_string(i) + "].outerAng", DegToRad(spots[i]->GetOuterAngRef()));
 		}
 
 		// Camera
@@ -176,7 +181,7 @@ void CMesh::onLoad(const rapidjson::Value& config)
 	ImporterMesh::Load(("./Library/Meshes/"+filename).c_str(), owner, filesize);
 }
 
-void CMesh::SelectClosestLights(std::map<GameObject*, float>& _pointLights, std::map<GameObject*, float>& _spotLights, GameObject* _directionalLight)
+void CMesh::SelectClosestLights(std::map<GameObject*, float>& _pointLights, std::map<GameObject*, float>& _spotLights, GameObject*& _directionalLight)
 {
 	for (std::list<GameObject*>::iterator it = App->sceneMng->lightSources.begin(); it != App->sceneMng->lightSources.end(); ++it)
 	{
@@ -208,6 +213,7 @@ void CMesh::SelectClosestLights(std::map<GameObject*, float>& _pointLights, std:
 					_pointLights[(*it)] = distance;
 				}
 			}
+			break;
 		case 2: // Spot
 			if (_spotLights.size() < 8)
 				_spotLights[(*it)] = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart());
@@ -231,6 +237,7 @@ void CMesh::SelectClosestLights(std::map<GameObject*, float>& _pointLights, std:
 					_spotLights[(*it)] = distance;
 				}
 			}
+			break;
 		}
 	}
 }
