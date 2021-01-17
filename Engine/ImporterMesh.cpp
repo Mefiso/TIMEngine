@@ -2,8 +2,9 @@
 #include "Application.h"
 #include "ModuleSceneManager.h"
 #include "GameObject.h"
+#include "Algorithm/Random/LCG.h"
 
-bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _owner)
+bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _owner, std::string& _path)
 {
 	if (_owner->AddComponent(MESH))
 	{
@@ -71,7 +72,13 @@ bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _owner)
 		GameObject* go = new GameObject("Child");
 		go->SetParent(_owner);
 		go->AddComponent(TRANSFORM);
-		Import(_aimesh, go);
+		bool imported = Import(_aimesh, go, _path);
+		if (imported)
+		{
+			LCG rng = LCG();
+			std::string p = _path.substr(0, _path.find_last_of('.')) + std::to_string(rng.Int(0, 100)) + ".mesh";
+			Save(go->GetComponent<CMesh>(), p.c_str());
+		}
 	}
 	return false;
 }

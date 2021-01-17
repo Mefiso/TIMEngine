@@ -52,4 +52,5 @@ public:
 	void SetSelectedGO(GameObject* _object)		{ selectedObject = _object; }
 	void SetSkyboxTexture(unsigned int _texID)	{ skyboxTexture = _texID; }
 	void SetRoot(GameObject* _root)				{ RELEASE(root); root = _root; }
+	void CleanScene() { RELEASE(root); }
 };

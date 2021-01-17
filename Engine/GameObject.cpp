@@ -350,7 +350,7 @@ float4 GameObject::ComputeCenterAndDistance() const
 {
 	if (GetComponent<CMesh>() != nullptr)
 	{
-		return float4(GetModelMatrix().Col3(3), obb.Size().Length() * 2.f);
+		return float4(GetModelMatrix().Col3(3), obb.Size().Length() * 2.2f);
 	}
 	else
 	{
@@ -373,7 +373,7 @@ float4 GameObject::ComputeCenterAndDistance() const
 			return ret;
 		}
 		else
-			return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.f);
+			return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.2f);
 	}
 }
 

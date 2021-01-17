@@ -398,7 +398,7 @@ void WProperties::DrawLightBody(CLight* _light)
 	ImGui::DragFloat("Intensity", &_light->GetIntensityRef(), .02f, 0.0f, FLT_MAX, "%.2f");
 
 	ImGui::PushItemWidth(100);
-	switch (_light->GetType())
+	switch (_light->GetLType())
 	{
 	case 0:	// Directional
 		break;

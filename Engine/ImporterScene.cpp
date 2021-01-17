@@ -66,7 +66,7 @@ void ImporterScene::ProcessNode(aiNode* node, const aiScene* scene, GameObject* 
 		meshPath = meshPath + node->mName.C_Str() + ".mesh";
 
 		App->StartTimer();
-		bool imported = ImporterMesh::Import(mesh, object);
+		bool imported = ImporterMesh::Import(mesh, object, meshPath);
 		LOG("IMPORT TIME: %d microseconds", App->StopTimer());
 		// TODO: the if nesting shouldnt be included?
 		if (imported)
@@ -133,6 +133,7 @@ bool ImporterScene::Load(const char* _path)
 	else
 	{
 		App->sceneMng->SetSelectedGO(nullptr);
+		App->sceneMng->CleanScene();
 
 		char readBuffer[65536];
 		rapidjson::FileReadStream is(f, readBuffer, sizeof(readBuffer));

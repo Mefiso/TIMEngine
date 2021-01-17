@@ -109,7 +109,7 @@ void WConfig::DrawCameraHeader()
 
 		ImGui::TextUnformatted("Movement Speed");
 		ImGui::PushItemWidth(100.f);
-		ImGui::DragFloat("Using Keys", &App->camera->MovementSpeed, 0.5f, 0.5f, 50.f, "%.2f", ImGuiSliderFlags_None);
+		ImGui::DragFloat("Using Keys", &App->camera->MovementSpeed, 10.f, 5.f, 1000.f, "%.2f", ImGuiSliderFlags_None);
 		ImGui::DragFloat("Mouse Sensitivity", &App->camera->MouseSensitivity, 0.0001f, 0.001f, 0.01f, "%.3f", ImGuiSliderFlags_None);
 
 		ImGui::Separator();
@@ -121,7 +121,7 @@ void WConfig::DrawCameraHeader()
 			frust->SetViewPlaneDistances(nearPlane, farPlane);
 		}
 
-		if (ImGui::InputFloat("Far Plane", &farPlane, 5.f, 20.0f, "%.3f")) {
+		if (ImGui::InputFloat("Far Plane", &farPlane, 50.f, 100.0f, "%.3f")) {
 			frust->SetViewPlaneDistances(nearPlane, farPlane);
 		}
 

@@ -1,4 +1,5 @@
 #include "CLight.h"
+#include "ModuleSceneManager.h"
 
 CLight::CLight(GameObject* _owner) : Component(LIGHT, _owner)
 {
@@ -53,4 +54,6 @@ void CLight::onLoad(const rapidjson::Value& config)
 	Kq = config["Kq"].GetFloat();
 	lInnerAng = config["InnerAng"].GetFloat();
 	lOuterAng = config["OuterAng"].GetFloat();
+
+	App->sceneMng->lightSources.push_back(owner);
 }

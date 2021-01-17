@@ -109,7 +109,7 @@ update_status ModuleRender::Update()
 
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
 	if (showGrid)
-		dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, gridColor);
+		dd::xzSquareGrid(-10000, 10000, 0.0f, 100.0f, gridColor);
 	if (showOctree)
 		App->sceneMng->octree.Draw();
 

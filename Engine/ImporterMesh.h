@@ -9,7 +9,7 @@
 class GameObject;
 namespace ImporterMesh
 {
-	bool			Import(const aiMesh* _aimesh, GameObject* _owner);							// Imports a Mesh from Assimp into a GameObject '_parent'
+	bool			Import(const aiMesh* _aimesh, GameObject* _owner, std::string& _path);		// Imports a Mesh from Assimp into a GameObject '_parent'
 	bool			Load(const char* _filename, GameObject* _owner, unsigned int _filesize);	// Loads a Mesh from a file in custom file format
 	unsigned int	Save(CMesh* _mesh, const char* _filename);									// Saves the information of a Component Mesh into a file, using our custom file format
 

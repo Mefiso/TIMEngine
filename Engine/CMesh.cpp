@@ -50,7 +50,7 @@ void CMesh::Draw()
 		// TODO: if program == multipleBDRF
 		std::map<GameObject*, float> pointLights;	// 8
 		std::map<GameObject*, float> spotLights;	// 8
-		GameObject* directionalLight = nullptr;		// 1 
+		GameObject* directionalLight = nullptr;		// 1
 		SelectClosestLights(pointLights, spotLights, directionalLight);
 
 		// Rebuild the maps into Light* lists
@@ -185,59 +185,62 @@ void CMesh::SelectClosestLights(std::map<GameObject*, float>& _pointLights, std:
 {
 	for (std::list<GameObject*>::iterator it = App->sceneMng->lightSources.begin(); it != App->sceneMng->lightSources.end(); ++it)
 	{
-		switch ((*it)->GetComponent<CLight>()->GetType())
+		if ((*it)->GetComponent<CLight>())
 		{
-		case 0: // Directional
-			_directionalLight = (*it);
-			break;
-		case 1: // Point
-			if (_pointLights.size() < 8)
-				_pointLights[(*it)] = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart());
-			else
+			switch ((*it)->GetComponent<CLight>()->GetLType())
 			{
-				// Get the pointLight with the higher distance
-				float maxDist = 0.f;
-				GameObject* maxer;
-				for (auto const& x : _pointLights)
-					if (x.second > maxDist)
-					{
-						maxDist = x.second;
-						maxer = x.first;
-					}
-
-				float distance = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart()); // Get the incoming Light distance to this GO
-
-				if (distance < maxDist) // If the distance is lower, replace pointLight with the incoming GO
+			case 0: // Directional
+				_directionalLight = (*it);
+				break;
+			case 1: // Point
+				if (_pointLights.size() < 8)
+					_pointLights[(*it)] = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart());
+				else
 				{
-					_pointLights.erase(maxer);
-					_pointLights[(*it)] = distance;
-				}
-			}
-			break;
-		case 2: // Spot
-			if (_spotLights.size() < 8)
-				_spotLights[(*it)] = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart());
-			else
-			{
-				// Get the pointLight with the higher distance
-				float maxDist = 0.f;
-				GameObject* maxer;
-				for (auto const& x : _spotLights)
-					if (x.second > maxDist)
+					// Get the pointLight with the higher distance
+					float maxDist = 0.f;
+					GameObject* maxer;
+					for (auto const& x : _pointLights)
+						if (x.second > maxDist)
+						{
+							maxDist = x.second;
+							maxer = x.first;
+						}
+
+					float distance = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart()); // Get the incoming Light distance to this GO
+
+					if (distance < maxDist) // If the distance is lower, replace pointLight with the incoming GO
 					{
-						maxDist = x.second;
-						maxer = x.first;
+						_pointLights.erase(maxer);
+						_pointLights[(*it)] = distance;
 					}
-
-				float distance = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart()); // Get the incoming Light distance to this GO
-
-				if (distance < maxDist) // If the distance is lower, replace pointLight with the incoming GO
-				{
-					_spotLights.erase(maxer);
-					_spotLights[(*it)] = distance;
 				}
+				break;
+			case 2: // Spot
+				if (_spotLights.size() < 8)
+					_spotLights[(*it)] = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart());
+				else
+				{
+					// Get the pointLight with the higher distance
+					float maxDist = 0.f;
+					GameObject* maxer;
+					for (auto const& x : _spotLights)
+						if (x.second > maxDist)
+						{
+							maxDist = x.second;
+							maxer = x.first;
+						}
+
+					float distance = this->owner->GetModelMatrix().TranslatePart().Distance((*it)->GetModelMatrix().TranslatePart()); // Get the incoming Light distance to this GO
+
+					if (distance < maxDist) // If the distance is lower, replace pointLight with the incoming GO
+					{
+						_spotLights.erase(maxer);
+						_spotLights[(*it)] = distance;
+					}
+				}
+				break;
 			}
-			break;
 		}
 	}
 }

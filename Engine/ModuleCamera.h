@@ -20,7 +20,7 @@ enum Camera_Movement {
 };
 
 // Default values
-const float SPEED		= 2.5f;													// Base value of MovementSpeed
+const float SPEED		= 600.f;													// Base value of MovementSpeed
 const float SENSITIVITY	= .005f;												// Base value of MouseSensitivity
 const float VERTICALFOV	= DegToRad(60.f);										// Initial Vertical FOV of the camera
 const float ASPECTRATIO	= SCREEN_WIDTH / (float)SCREEN_HEIGHT;					// Initial Aspect ratio of the camera Frustrum
@@ -45,12 +45,12 @@ public:
 	bool Start();																// Perform the initial frustum culling
 	bool CleanUp() override;													// Clean memory allocated by this Module
 	void ReceiveEvent(const Event& _event) override;							// Recieve events from App (that recieves events from other Modules)
-	
+
 	void			onFocus(float3 _center, float _distance);					// Moves the camera to Focus the selected object, and places it at a suitable distance
 	void			onResize(float _aspect_ratio);								// Sets the camera FOV and aspectratio when resizing the application Window
 	LineSegment		GenerateRaycast(float _x, float _y);						// Generates a LineSegment from a normalized x,y. Used for the mouse picking over the viewport.
 	void			ProcessViewportEvents();									// Called from ModuleEditor, when an input is recieved inside the viewport. Perfoms the necessary operations for the corresponding input. This allows the control of the actions performed when the input is captured inside the viewport.
-	
+
 	// ---------- Getters ---------- //
 	float4x4 ViewMatrix() const			{ return frustum->ViewMatrix(); }		// Returns the View matrix of the Camera frustrum
 	float4x4 ProjectionMatrix() const	{ return frustum->ProjectionMatrix(); }	// Returns the Projection matrix of the Camera
@@ -61,7 +61,7 @@ public:
 	void SetCullingCamera(CCamera* _camera)	{ cullingCamera = _camera; cullingCamera->PerformFrustumCulling(true); }
 	void ResetCullingCamera()				{ cullingCamera = defaultCamera; cullingCamera->PerformFrustumCulling(true); }
 
-	
+
 private:
 	// (Mouse) Event Handlers
 	void ProcessMouseMovement(float _xoffset, float _yoffset);					// Applies the corresponding changes when recieving a Event::rotate_event from ModuleInput

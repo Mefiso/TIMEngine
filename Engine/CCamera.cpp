@@ -7,7 +7,7 @@
 CCamera::CCamera(GameObject* _owner) : Component(CAMERA, _owner)
 {
 	frustum->SetKind(FrustumSpaceGL, FrustumRightHanded);
-	frustum->SetViewPlaneDistances(0.1f, 200.0f);
+	frustum->SetViewPlaneDistances(0.1f, 10000.0f);
 	frustum->SetVerticalFovAndAspectRatio(DegToRad(60.f), SCREEN_WIDTH / (float)SCREEN_HEIGHT);
 	frustum->SetPos(float3(0, 0, 0));
 	frustum->SetFront(-float3::unitZ);
