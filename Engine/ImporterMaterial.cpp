@@ -65,6 +65,7 @@ void ImporterMaterial::SaveTexture(const char* _destPath)
 				fileBuffer = (char*)data;
 				fwrite(fileBuffer, sizeof(char), size, f);
 				fileBuffer = nullptr;
+				LOG("[info] Texture data stored into '%s' file.", _destPath);
 			}
 			RELEASE_ARRAY(data);
 		}
@@ -147,7 +148,7 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 	errno_t err;
 	if ((err = fopen_s(&f, _filename.c_str(), "rb")) != 0) {
 		// File could not be opened. FILE* was set to NULL. error code is returned in err.
-		LOG("[error] File could not be opened: %s", _filename.c_str(), strerror(err));
+		LOG("[error] File could not be opened: %s. %s", _filename.c_str(), strerror(err));
 		return false;
 	}
 	else {
@@ -231,6 +232,7 @@ bool ImporterMaterial::Load(std::string _filename, CMaterial* ourMaterial, unsig
 			ourMaterial->textures.push_back(App->filesys->loadedTextures[App->filesys->loadedTextures.size() - 1]);
 		}
 		RELEASE_ARRAY(fileBuffer);
+		LOG("[info] Material data loaded from '%s' file", _filename.c_str());
 		fclose(f);
 
 		ilShutDown();
@@ -253,6 +255,7 @@ unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string 
 	success = ilLoadImage(_path.c_str());				/* Loading of image */
 	if (success)										/* If no error occured: */
 	{
+		LOG("[info] Loaded texture from: %s", _path.c_str());
 		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 		if (!success)
 		{
@@ -284,7 +287,9 @@ unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string 
 	else
 	{
 		/* Error occured */
-		LOG("[error] Could not Load image %s", _path.c_str())
+		ILenum error;
+		error = ilGetError();
+		LOG("[error] Could not Load image %s. %s", _path.c_str(), iluErrorString(error));
 			return false;
 	}
 	ilDeleteImages(1, &imgId);
