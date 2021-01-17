@@ -326,7 +326,7 @@ void GameObject::UpdateBoundingBoxes()
 
 	obb = aabb.Transform(GetModelMatrix());
 	if (nonuniformScaling)
-		obb.Scale(obb.CenterPoint(), 1.0f / GetAccumulatedScale().x);
+		obb.Scale(obb.CenterPoint(), 1.0f / (GetAccumulatedScale().x + 0.000001f));
 
 	//Added, calculate obb vertices only when obb is updated
 	ddVec3 points[8];
@@ -363,7 +363,7 @@ float4 GameObject::ComputeCenterAndDistance() const
 				maxPoint = maxPoint.Max(child->obb.MinimalEnclosingAABB().maxPoint);
 			}
 		}
-		if (minPoint.Equals(float3::inf) || maxPoint.Equals(-float3::inf))
+		if (!minPoint.IsFinite() || !maxPoint.IsFinite())
 		{
 			float4 ret = float4::zero;
 			for (GameObject* child : children)

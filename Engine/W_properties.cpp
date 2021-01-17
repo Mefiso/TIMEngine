@@ -192,9 +192,9 @@ void WProperties::DrawTransformationBody(CTransform* _transform)
 	ImGui::SameLine(); if (ImGui::SliderAngle("Z##2", &rotation.z)) modified = true;
 
 	ImGui::TextUnformatted("Scale");
-	if (ImGui::SliderFloat("X##3", &scale.x, 0.0f, 10.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Y##3", &scale.y, 0.0f, 10.0f, "%.2f")) modified = true;
-	ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.z, 0.0f, 10.0f, "%.2f")) modified = true;
+	if (ImGui::SliderFloat("X##3", &scale.x, 0.0f, 10.0f, "%.3f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Y##3", &scale.y, 0.0f, 10.0f, "%.3f")) modified = true;
+	ImGui::SameLine(); if (ImGui::SliderFloat("Z##3", &scale.z, 0.0f, 10.0f, "%.3f")) modified = true;
 
 	if (modified)
 	{
@@ -237,6 +237,38 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 	ImGui::InputInt("Shininess in alpha", &_material->shininessAlpha, 1, 1); ImGui::SameLine();
 	HelpMarker("Number of the specular map which has the shininess in the alpha channel. If 0, no specular map contains the shininess and the above setting is used instead.");
 
+	if (ImGui::Button("Add Texture")) { ImGui::OpenPopup("AddTexturePopup"); }
+	if (ImGui::BeginPopup("AddTexturePopup"))
+	{
+		std::string type;
+		int size;
+		std::string fn;
+		if (ImGui::MenuItem("Diffuse"))
+		{
+			type = "diffuse";
+			fn = App->filesys->OpenDialog("Texture Files\0*.dds;*.png;*.tif\0", ".\\Library\\Textures\\", &size);
+		}
+		if (ImGui::MenuItem("Specular"))
+		{
+			type = "specular";
+			fn = App->filesys->OpenDialog("Texture Files\0*.dds;*.png;*.tif\0", ".\\Library\\Textures\\", &size);
+		}
+		if (!fn.empty())
+		{
+			Texture* texture = new Texture();
+			texture->type = type;
+			texture->id = ImporterMaterial::LoadTexture(fn, "./Library/Textures/" + fn.substr(fn.find_last_of('\\')+1, fn.size()), true);
+			fn = fn.replace(fn.find_last_of('.'), fn.size(), ".dds");
+			texture->path = fn.substr(fn.find_last_of('\\')+1, fn.size());
+			texture->wraps = GL_REPEAT;
+			texture->wrapt = GL_REPEAT;
+			texture->minfilter = GL_LINEAR_MIPMAP_LINEAR;
+			texture->magfilter = GL_LINEAR;
+			App->filesys->loadedTextures.push_back(texture);
+			_material->textures.push_back(App->filesys->loadedTextures[App->filesys->loadedTextures.size() - 1]);
+		}
+		ImGui::EndPopup();
+	}
 	// -------- Textures settings -------- //
 	ImVec4 color = { 0.0f, 0.3f, 1.0f, 1.0f };
 	// TODO: Button to add textures inside this component
@@ -253,44 +285,58 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 			label = "Texture " + std::to_string(i);
 			if (ImGui::BeginTabItem(label.c_str()))
 			{
-				glBindTexture(GL_TEXTURE_2D, _material->textures[i]->id);
+				if (ImGui::GetWindowWidth() > 170)
+					ImGui::Indent(ImGui::GetWindowWidth() - 85);
+				bool deleted = ImGui::Button(("Delete"));
+				if (ImGui::GetWindowWidth() > 170)
+					ImGui::Unindent(ImGui::GetWindowWidth() - 85);
+				if (deleted)
+				{
+					_material->textures.erase(_material->textures.begin() + i);
+					--i;
+				}
+				else
+				{
+					glBindTexture(GL_TEXTURE_2D, _material->textures[i]->id);
 
-				// Texture type
-				ImGui::TextUnformatted("Type:"); ImGui::SameLine();
-				ImGui::TextColored(color, "%s", _material->textures[i]->type.c_str());
-				// Texture size
-				int w, h;
-				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
-				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
-				ImGui::TextUnformatted("Width:"); ImGui::SameLine();
-				ImGui::TextColored(color, "%d", w);
-				ImGui::TextUnformatted("Height:"); ImGui::SameLine();
-				ImGui::TextColored(color, "%d", h);
+					// Texture  type
+					ImGui::TextUnformatted("Type:"); ImGui::SameLine();
+					ImGui::TextColored(color, "%s", _material->textures[i]->type.c_str());
+					// Texture size
+					int w, h;
+					glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+					glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+					ImGui::TextUnformatted("Width:"); ImGui::SameLine();
+					ImGui::TextColored(color, "%d", w);
+					ImGui::TextUnformatted("Height:"); ImGui::SameLine();
+					ImGui::TextColored(color, "%d", h);
 
-				auto it = std::find(wrapmode.begin(), wrapmode.end(), _material->textures[i]->wraps);
-				int indexWS = it - wrapmode.begin();
-				if (ImGui::Combo("Wrap (S dir)", &indexWS, wrap, IM_ARRAYSIZE(wrap)))
-					_material->textures[i]->wraps = wrapmode[indexWS];
+					auto it = std::find(wrapmode.begin(), wrapmode.end(), _material->textures[i]->wraps);
+					int indexWS = it - wrapmode.begin();
+					if (ImGui::Combo("Wrap (S dir)", &indexWS, wrap, IM_ARRAYSIZE(wrap)))
+						_material->textures[i]->wraps = wrapmode[indexWS];
 
-				it = std::find(wrapmode.begin(), wrapmode.end(), _material->textures[i]->wrapt);
-				int indexWT = it - wrapmode.begin();
-				if (ImGui::Combo("Wrap (T dir)", &indexWT, wrap, IM_ARRAYSIZE(wrap)))
-					_material->textures[i]->wrapt = wrapmode[indexWT];
+					it = std::find(wrapmode.begin(), wrapmode.end(), _material->textures[i]->wrapt);
+					int indexWT = it - wrapmode.begin();
+					if (ImGui::Combo("Wrap (T dir)", &indexWT, wrap, IM_ARRAYSIZE(wrap)))
+						_material->textures[i]->wrapt = wrapmode[indexWT];
 
-				it = std::find(filtermode.begin(), filtermode.end() - 2, _material->textures[i]->minfilter);
-				int indexFm = it - filtermode.begin();
-				if (ImGui::Combo("Minification", &indexFm, filterm, IM_ARRAYSIZE(filterm)))
-					_material->textures[i]->minfilter = filtermode[indexFm];
+					it = std::find(filtermode.begin(), filtermode.end() - 2, _material->textures[i]->minfilter);
+					int indexFm = it - filtermode.begin();
+					if (ImGui::Combo("Minification", &indexFm, filterm, IM_ARRAYSIZE(filterm)))
+						_material->textures[i]->minfilter = filtermode[indexFm];
 
-				it = std::find(filtermode.end() - 2, filtermode.end(), _material->textures[i]->magfilter);
-				int indexFM = it - (filtermode.end() - 2);
-				if (ImGui::Combo("Magnification", &indexFM, filterM, IM_ARRAYSIZE(filterM)))
-					_material->textures[i]->magfilter = filtermode[4 + indexFM];
-				ImGui::Separator();
+					it = std::find(filtermode.end() - 2, filtermode.end(), _material->textures[i]->magfilter);
+					int indexFM = it - (filtermode.end() - 2);
+					if (ImGui::Combo("Magnification", &indexFM, filterM, IM_ARRAYSIZE(filterM)))
+						_material->textures[i]->magfilter = filtermode[4 + indexFM];
+					ImGui::Separator();
 
-				ImTextureID texid = (ImTextureID)_material->textures[i]->id;
-				float sizeX = ImGui::GetWindowSize().x > 350.f ? 350.f : ImGui::GetWindowSize().x;
-				ImGui::Image(texid, ImVec2(sizeX, sizeX * h / (float)w));
+					ImTextureID texid = (ImTextureID)_material->textures[i]->id;
+					float sizeX = ImGui::GetWindowSize().x > 350.f ? 350.f : ImGui::GetWindowSize().x;
+					ImGui::Image(texid, ImVec2(sizeX, sizeX * h / (float)w));
+				}
+
 				ImGui::EndTabItem();
 			}
 		}
