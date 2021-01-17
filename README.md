@@ -1,8 +1,8 @@
 # TIME
 ## Description
-Custom video game engine that tries to mimic Unity and the likes features. It is developed mostly for educational purposes and it will be used for developing and delivering several assignments for the Master's Degree in [Advanced Programming for AAA Vide Games](https://www.talent.upc.edu/ing/estudis/formacio/curs/201200/master-degree-advanced-programming-aaa-videogames/) (UPC School).
+Custom VideoGame engine that tries to mimic Unity and the likes features. It is developed mostly for educational purposes and it will be used for developing and delivering several assignments for the Master's Degree in [Advanced Programming for AAA Vide Games](https://www.talent.upc.edu/ing/estudis/formacio/curs/201200/master-degree-advanced-programming-aaa-videogames/) (UPC School).
 
-All the code and the releases can be found in the [github page](https://github.com/Mefiso/TIMEngine). As mentioned below, the code source code for the first assignment is in main and release/first-assignment branches.
+All the code and the releases can be found in the [github page](https://github.com/Mefiso/TIMEngine). As mentioned below, the code source code for the  and second assignments are in main and release/first-assignment branches.
 
 ## Name
 The name of this engine is **TIME** (_/taɪm/_) a.k.a **TIMEngine** (_/taɪm ˈɛnʤɪn/_). It is an acronym for The Incredible Mefiso's Engine. But more information may be revealed by the console inside the application.
@@ -32,6 +32,15 @@ Finally, the Engine features Unity-like camera controls:
 
 Of course docking/resizing/moving the GUI windows can be performed freely.
 
+#### Second Assignment Features
+1. Load and Save scenes, aswell as saving models and textures in our custom file format.
+2. The active camera performs Frustum Culling accelerated with an Octree structure.
+3. The scene contains editable Gizmos that are displayed when an object is selected, via inspector or via Mouse Picking, to move the GameObjects around.
+4. Shading algorithm handles models with diffuse and specular maps, and several Lights in ths scene, including Directional, Point and Spot Lights, with BDRS Phong algorithms.
+5. FPS control via VSYNC and Delays
+6. Play, Stop, and Pause buttons that save and load scene states.
+7. Skybox
+
 ## First assignment
 The first assignment delivery can be found on the release section, the Engine has all the functionalities specified on the requirements section of the assignment.
 
@@ -39,7 +48,14 @@ The code source code for the first assignment is in main and release/first-assig
 
 _Note that the fox texture is a DDS file but the Totoro one is not due to the difficulty of finding models with DDS texture attached. Since the fox can be perfectly loaded is already proven that the specified requirement is met. You can also drag and drop DDS textures without any inconvenient._
 
-## Author
+## Second assignment
+The second assignment delivery can be found on the release section, the Engine has all the functionalities specified on the requirements section of the assignment.
+
+## Authors
 Name: **Pol Pérez Granero**
 
 Github username: [**Mefiso**](https://github.com/Mefiso)
+
+Name: **Francesc Porta Solsona**
+
+Github username: [**FrancPS**](https://github.com/FrancPS)
