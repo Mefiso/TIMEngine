@@ -126,7 +126,7 @@ bool ImporterMesh::Load(const char* _filename, GameObject* _owner, unsigned int 
 	errno_t err;
 	if ((err = fopen_s(&f, _filename, "rb")) != 0) {
 		// File could not be opened. FILE* was set to NULL. error code is returned in err.
-		LOG("[error] File could not be opened: %s", _filename, strerror(err));
+		LOG("[error] File could not be opened: %s. %s", _filename, strerror(err));
 		return false;
 	}
 	else {

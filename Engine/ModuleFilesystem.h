@@ -20,4 +20,5 @@ public:
 	bool CleanUp() override;													// Clean memory allocated by this Module
 
 	void DropFile(const std::string& file);										// Called when a Drop File event is recieved. Calls the appropiate importer for the type of file.
+	std::string OpenDialog(const char* _filters, const char* dir, int* _size) const;
 };

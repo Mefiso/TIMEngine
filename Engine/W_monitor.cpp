@@ -66,6 +66,7 @@ void WMonitor::DrawTimersHeader()
 
 		// Timers
 		ImGui::Text("Real time since application start: %.3f s", App->timeMng->GetRealTime());
+		ImGui::Text("Game time since game started: %.3f s", App->timeMng->GetTime());
 	}
 }
 

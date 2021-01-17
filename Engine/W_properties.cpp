@@ -3,8 +3,10 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
 #include "ModuleSceneManager.h"
+#include "ModuleFilesystem.h"
 #include "GameObject.h"
 #include "ImporterMaterial.h"
+#include "ImporterMesh.h"
 #include "CTransform.h"
 #include "CMesh.h"
 #include "CMaterial.h"
@@ -60,11 +62,25 @@ void WProperties::Draw()
 			}
 			if (ImGui::MenuItem("Mesh"))
 			{
-				selectedObject->AddComponent(MESH);
+				int size;
+				std::string fn = App->filesys->OpenDialog("Mesh Files\0*.mesh\0", ".\\Library\\Meshes\\", &size);
+				if (!fn.empty())
+				{
+					selectedObject->AddComponent(MESH);
+					ImporterMesh::Load(fn.c_str(), selectedObject, size);
+					selectedObject->SetProgram(App->sceneMng->GetProgram());
+					App->camera->cullingCamera->PerformFrustumCulling();
+				}
 			}
 			if (ImGui::MenuItem("Material"))
 			{
-				selectedObject->AddComponent(MATERIAL);
+				int size;
+				std::string fn = App->filesys->OpenDialog("Material Files\0*.material\0", ".\\Library\\Materials\\", &size);
+				if (!fn.empty())
+				{
+					selectedObject->AddComponent(MATERIAL); //
+					ImporterMaterial::Load(fn, selectedObject->GetComponent<CMaterial>(), size);
+				}
 			}
 			if (ImGui::MenuItem("Camera"))
 			{

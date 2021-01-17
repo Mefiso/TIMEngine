@@ -22,10 +22,11 @@ private:
 
 public:
 	CLight(GameObject* _owner);			// Constructor
+	CLight(GameObject* _owner, const int _UUID);
 	~CLight();							// Destructor
 
 	// ---------- Getters ---------- //
-	int GetType() const { return lType; }
+	int GetLType() const { return lType; }
 	float GetInnerAngle() const { return lInnerAng; }
 	float GetOuterAngle() const { return lOuterAng; }
 	int &GetTypeRef() { return lType; }
@@ -43,5 +44,9 @@ public:
 	void SetType(int _type) { lType = (_type < 0 || _type > 2) ? 0 : _type; }
 	void SetOuterAngle(float _angle) { lOuterAng = _angle; }
 	void SetPositionDirection(float4x4 _modelMatrix);
+
+	// ------ Serialization -------- //
+	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;
+	void onLoad(const rapidjson::Value& config) override;
 };
 
