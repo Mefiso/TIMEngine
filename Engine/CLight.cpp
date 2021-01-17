@@ -2,6 +2,7 @@
 
 CLight::CLight(GameObject* _owner) : Component(LIGHT, _owner)
 {
+	SetPositionDirection(_owner->GetModelMatrix());
 }
 
 CLight::CLight(GameObject* _owner, const int _UUID) : Component(LIGHT, _owner, _UUID)
@@ -10,6 +11,12 @@ CLight::CLight(GameObject* _owner, const int _UUID) : Component(LIGHT, _owner, _
 
 CLight::~CLight()
 {
+}
+
+void CLight::SetPositionDirection(float4x4 _modelMatrix)
+{
+	dir = _modelMatrix.RotatePart().Col3(2).Normalized();
+	pos = _modelMatrix.TranslatePart();
 }
 
 void CLight::onSave(rapidjson::Value& config, rapidjson::Document& d) const
@@ -46,5 +53,4 @@ void CLight::onLoad(const rapidjson::Value& config)
 	Kq = config["Kq"].GetFloat();
 	lInnerAng = config["InnerAng"].GetFloat();
 	lOuterAng = config["OuterAng"].GetFloat();
-
 }
