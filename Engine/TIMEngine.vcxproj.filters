@@ -246,6 +246,7 @@
     <ClCompile Include="CLight.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="Config.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />

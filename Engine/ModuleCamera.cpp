@@ -119,8 +119,8 @@ void ModuleCamera::ProcessOrbit(float _xoffset, float _yoffset, float3 _orbit_ce
 
 void ModuleCamera::ProcessMouseScroll(float _xoffset, float _yoffset)
 {
-	frustum->SetPos(frustum->Pos() + frustum->Front() * yoffset * 200.f); // simulates zoom but it's actually moving
-	frustum->SetPos(frustum->Pos() + frustum->WorldRight() * xoffset * 200.f);
+	frustum->SetPos(frustum->Pos() + frustum->Front() * _yoffset * 200.f); // simulates zoom but it's actually moving
+	frustum->SetPos(frustum->Pos() + frustum->WorldRight() * _xoffset * 200.f);
 
 	activeCamera->UpdateTransformFromFrustum();
 	cullingCamera->PerformFrustumCulling(true);
