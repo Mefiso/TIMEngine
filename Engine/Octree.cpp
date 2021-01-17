@@ -15,7 +15,10 @@
 
 #define CAPACITY 3
 
-OctreeNode::OctreeNode(const AABB& box) : box(box)
+// ******************************************* //
+// *************** OCTREE NODE *************** //
+// ******************************************* //
+OctreeNode::OctreeNode(const AABB& _box) : box(_box)
 {
 	for (int i = 0; i < 8; ++i)
 		children[i] = nullptr;
@@ -28,7 +31,7 @@ OctreeNode::~OctreeNode()
 			RELEASE(children[i]);
 }
 
-void OctreeNode::Insert(GameObject* go)
+void OctreeNode::Insert(GameObject* _go)
 {
 	// If it isn't a leave
 	if (children[0] != nullptr)
@@ -36,65 +39,19 @@ void OctreeNode::Insert(GameObject* go)
 		for (int i = 0; i < 8; ++i)
 		{
 			// If it intersects with any octree childs
-			if (children[i]->box.Intersects(go->GetOBB().MinimalEnclosingAABB()))
+			if (children[i]->box.Intersects(_go->GetOBB().MinimalEnclosingAABB()))
 			{
-				children[i]->Insert(go);
+				children[i]->Insert(_go);
 			}
 		}
 	}
 	else
 	{
-		objects.push_back(go);
+		objects.push_back(_go);
 		if (objects.size() > CAPACITY)
 		{
 			CreateChildren();
 			ForwardToChildren();
-		}
-	}
-}
-
-bool OctreeNode::Erase(GameObject* go)
-{
-	bool ret = false;
-	std::list<GameObject*>::iterator it = std::find(objects.begin(), objects.end(), go);
-	if (it != objects.end())
-	{
-		objects.erase(it);
-		ret = true;
-	}
-	// Check if it's not a leaf
-	else if (children[0] != nullptr)
-	{
-		for (int i = 0; i < 8; ++i)
-			ret = children[i]->Erase(go) ? true : ret;
-		if (ret)
-		{
-			std::list<GameObject*> co;
-			OnErase(co);
-		}
-	}
-
-	return ret;
-}
-
-void OctreeNode::OnErase(std::list<GameObject*> &childObjects)
-{
-	for (int i = 0; i < 8; ++i)
-	{
-		for (std::list<GameObject*>::iterator it = children[i]->objects.begin(), end = children[i]->objects.end(); it != end; ++it)
-		{
-			if (std::find(childObjects.begin(), childObjects.end(), *it) == childObjects.end())
-				childObjects.push_back(*it);
-		}
-		if (children[i]->children[0] != nullptr)
-			children[i]->OnErase(childObjects);
-	}
-	if (childObjects.size() <= CAPACITY)
-	{
-		objects.insert(objects.end(), childObjects.begin(), childObjects.end());
-		for (int i = 0; i < 8; ++i)
-		{
-			RELEASE(children[i])
 		}
 	}
 }
@@ -200,6 +157,53 @@ void OctreeNode::ForwardToChildren()
 	}
 }
 
+bool OctreeNode::Erase(GameObject* _go)
+{
+	// TODO Optimisation: Check if go intesects with the node. if not, skip it
+	bool ret = false;
+	std::list<GameObject*>::iterator it = std::find(objects.begin(), objects.end(), _go);
+	if (it != objects.end())
+	{
+		objects.erase(it);
+		ret = true;
+	}
+	// Check if it's not a leaf
+	else if (children[0] != nullptr)
+	{
+		for (int i = 0; i < 8; ++i)
+			ret = children[i]->Erase(_go) ? true : ret;
+		if (ret)
+		{
+			std::list<GameObject*> co;
+			OnErase(co);
+		}
+	}
+
+	return ret;
+}
+
+void OctreeNode::OnErase(std::list<GameObject*>& _childObjects)
+{
+	for (int i = 0; i < 8; ++i)
+	{
+		for (std::list<GameObject*>::iterator it = children[i]->objects.begin(), end = children[i]->objects.end(); it != end; ++it)
+		{
+			if (std::find(_childObjects.begin(), _childObjects.end(), *it) == _childObjects.end())
+				_childObjects.push_back(*it);
+		}
+		if (children[i]->children[0] != nullptr)
+			children[i]->OnErase(_childObjects);
+	}
+	if (_childObjects.size() <= CAPACITY)
+	{
+		objects.insert(objects.end(), _childObjects.begin(), _childObjects.end());
+		for (int i = 0; i < 8; ++i)
+		{
+			RELEASE(children[i])
+		}
+	}
+}
+
 void OctreeNode::Draw()
 {
 	dd::aabb(box.minPoint, box.maxPoint, float3(0.1f, 1.0f, 0.3f));
@@ -210,30 +214,29 @@ void OctreeNode::Draw()
 	}
 }
 
-void OctreeNode::CollectFrustumIntersections(std::vector<GameObject*>& insideObjects, const float4 frustumPlanes[6], const float3 frustumPoints[8])
+void OctreeNode::CollectFrustumIntersections(std::vector<GameObject*>& _intersectedObj, const float4 _frustumPlanes[6], const float3 _frustumPoints[8])
 {
-	if (BoxInFrustum(box, frustumPlanes, frustumPoints))
+	if (BoxInFrustum(box, _frustumPlanes, _frustumPoints))
 	{
 		for (std::list<GameObject*>::const_iterator it = this->objects.begin(); it != this->objects.end(); ++it)
 		{
-			if (BoxInFrustum((*it)->GetOBB().MinimalEnclosingAABB(), frustumPlanes, frustumPoints)) 
+			if (BoxInFrustum((*it)->GetOBB().MinimalEnclosingAABB(), _frustumPlanes, _frustumPoints))
 			{
-				if (std::find(insideObjects.begin(), insideObjects.end(), *it) == insideObjects.end())
-					insideObjects.push_back(*it);
+				if (std::find(_intersectedObj.begin(), _intersectedObj.end(), *it) == _intersectedObj.end())
+					_intersectedObj.push_back(*it);
 			}
 		}
 
 		if (children[0] != nullptr)
 		{
 			for (int i = 0; i < 8; ++i)
-				children[i]->CollectFrustumIntersections(insideObjects, frustumPlanes, frustumPoints);
+				children[i]->CollectFrustumIntersections(_intersectedObj, _frustumPlanes, _frustumPoints);
 		}
 	}
 }
 
 const void OctreeNode::CollectLineIntersections(LineSegment _ray, std::list<GameObject*> &_intersectedObj) const
 {
-
 	if (this->GetBox().Intersects(_ray)) // if intersects octree
 	{
 		for (std::list<GameObject*>::const_iterator it = this->objects.begin(); it != this->objects.end(); ++it)
@@ -252,16 +255,16 @@ const void OctreeNode::CollectLineIntersections(LineSegment _ray, std::list<Game
 	}
 }
 
-bool OctreeNode::BoxInFrustum(const AABB& box, const float4 frustumPlanes[6], const float3 frustumPoints[8])
+bool OctreeNode::BoxInFrustum(const AABB& _box, const float4 _frustumPlanes[6], const float3 _frustumPoints[8])
 {
 	// Check box points outside/inside frustum planes
 	float3 boxPoints[8];
-	box.GetCornerPoints(boxPoints);
+	_box.GetCornerPoints(boxPoints);
 	for (int i = 0; i < 6; ++i)
 	{
 		int out = 0;
 		for (int j = 0; j < 8; ++j)
-			out += (frustumPlanes[i].Dot(float4(boxPoints[j], 1.0f)) < 0.0) ? 1 : 0;
+			out += (_frustumPlanes[i].Dot(float4(boxPoints[j], 1.0f)) < 0.0) ? 1 : 0;
 		if (out == 8)
 		{
 			return false;
@@ -269,16 +272,20 @@ bool OctreeNode::BoxInFrustum(const AABB& box, const float4 frustumPlanes[6], co
 	}
 	// Check frustum points outside/inside box
 	int out;
-	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].x > box.MaxX()) ? 1 : 0); if (out == 8) return false;
-	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].x < box.MinX()) ? 1 : 0); if (out == 8) return false;
-	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].y > box.MaxY()) ? 1 : 0); if (out == 8) return false;
-	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].y < box.MinY()) ? 1 : 0); if (out == 8) return false;
-	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].z > box.MaxZ()) ? 1 : 0); if (out == 8) return false;
-	out = 0; for (int i = 0; i < 8; i++) out += ((frustumPoints[i].z < box.MinZ()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((_frustumPoints[i].x > _box.MaxX()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((_frustumPoints[i].x < _box.MinX()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((_frustumPoints[i].y > _box.MaxY()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((_frustumPoints[i].y < _box.MinY()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((_frustumPoints[i].z > _box.MaxZ()) ? 1 : 0); if (out == 8) return false;
+	out = 0; for (int i = 0; i < 8; i++) out += ((_frustumPoints[i].z < _box.MinZ()) ? 1 : 0); if (out == 8) return false;
 
 	return true;
 }
 
+
+// ******************************************* //
+// ************* OCTREE TREE (xd) ************ //
+// ******************************************* //
 Octree::Octree()
 {
 }
@@ -288,36 +295,36 @@ Octree::~Octree()
 	CleanUp();
 }
 
-void Octree::SetBoundaries(const AABB& box)
-{
-	CleanUp();
-	root = new OctreeNode(box);
-}
-
-void Octree::Insert(GameObject* go)
-{
-	if (root)
-	{
-		if (go->GetOBB().MinimalEnclosingAABB().Intersects(root->GetBox()))
-			root->Insert(go);
-	}
-}
-
-void Octree::Erase(GameObject* go)
-{
-	if (root)
-		root->Erase(go);
-}
-
-void Octree::UpdateGO(GameObject* go)
-{
-	Erase(go);
-	Insert(go);
-}
-
 void Octree::CleanUp()
 {
 	RELEASE(root);
+}
+
+void Octree::SetBoundaries(const AABB& _box)
+{
+	CleanUp();
+	root = new OctreeNode(_box);
+}
+
+void Octree::Insert(GameObject* _go)
+{
+	if (root)
+	{
+		if (_go->GetOBB().MinimalEnclosingAABB().Intersects(root->GetBox()))
+			root->Insert(_go);
+	}
+}
+
+void Octree::Erase(GameObject* _go)
+{
+	if (root)
+		root->Erase(_go);
+}
+
+void Octree::UpdateGO(GameObject* _go)
+{
+	Erase(_go);
+	Insert(_go);
 }
 
 void Octree::Draw()
@@ -325,8 +332,14 @@ void Octree::Draw()
 	root->Draw();
 }
 
-void Octree::CollectFrustumIntersections(std::vector<GameObject*>& insideObjects, const float4 frustumPlanes[6], const float3 frustumPoints[8])
+void Octree::CollectFrustumIntersections(std::vector<GameObject*>& _intersectedObj, const float4 _frustumPlanes[6], const float3 _frustumPoints[8])
 {
 	if (root)
-		root->CollectFrustumIntersections(insideObjects, frustumPlanes, frustumPoints);
+		root->CollectFrustumIntersections(_intersectedObj, _frustumPlanes, _frustumPoints);
+}
+
+const void Octree::CollectLineIntersections(LineSegment _ray, std::list<GameObject*>& _intersectedObj) const
+{
+	if (root)
+		root->CollectLineIntersections(_ray, _intersectedObj);
 }

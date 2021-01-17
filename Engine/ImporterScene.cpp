@@ -16,7 +16,6 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <string>
-#include <map>
 
 // Assimp Callback
 struct aiLogStream stream;		// Assimp logs are registered in this variable

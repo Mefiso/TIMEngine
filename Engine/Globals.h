@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-#define _FILE_NAME_ (strrchr("\\" __FILE__, '\\') + 1) // obtains the filename from the _FILE path
+#define _FILE_NAME_ (strrchr("\\" __FILE__, '\\') + 1) // obtains the filename from the _FILE_ path
 #define LOG(format, ...) log(_FILE_NAME_, __LINE__, format, __VA_ARGS__);
 
 void log(const char file[], int line, const char* format, ...);

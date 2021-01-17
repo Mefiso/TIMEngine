@@ -13,12 +13,6 @@
 LCG GameObject::randomGen = LCG();
 bool GameObject::drawOBB = false;
 
-GameObject::GameObject() : UUID(randomGen.Int())
-{
-	aabb.SetNegativeInfinity();
-	obb.SetNegativeInfinity();
-}
-
 GameObject::GameObject(const std::string& _name) : name(_name), UUID(randomGen.Int())
 {
 	aabb.SetNegativeInfinity();
