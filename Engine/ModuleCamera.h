@@ -20,7 +20,7 @@ enum Camera_Movement {
 };
 
 // Default values
-const float SPEED		= 600.f;													// Base value of MovementSpeed
+const float SPEED		= 600.f;												// Base value of MovementSpeed
 const float SENSITIVITY	= .005f;												// Base value of MouseSensitivity
 const float VERTICALFOV	= DegToRad(60.f);										// Initial Vertical FOV of the camera
 const float ASPECTRATIO	= SCREEN_WIDTH / (float)SCREEN_HEIGHT;					// Initial Aspect ratio of the camera Frustrum
