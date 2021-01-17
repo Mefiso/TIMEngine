@@ -369,7 +369,7 @@ float4 GameObject::ComputeCenterAndDistance() const
 				maxPoint = maxPoint.Max(child->obb.MinimalEnclosingAABB().maxPoint);
 			}
 		}
-		if (minPoint.Equals(float3::inf) || maxPoint.Equals(-float3::inf))
+		if (!minPoint.IsFinite() || !maxPoint.IsFinite())
 		{
 			float4 ret = float4::zero;
 			for (GameObject* child : children)
