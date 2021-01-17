@@ -255,7 +255,7 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 			{
 				glBindTexture(GL_TEXTURE_2D, _material->textures[i]->id);
 
-				// Texture  type
+				// Texture type
 				ImGui::TextUnformatted("Type:"); ImGui::SameLine();
 				ImGui::TextColored(color, "%s", _material->textures[i]->type.c_str());
 				// Texture size

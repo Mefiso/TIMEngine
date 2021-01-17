@@ -137,7 +137,7 @@ void ModuleSceneManager::MousePicker(int _x, int _y)
 	//check collisions
 		// collisions with octree + aabb
 	std::list<GameObject*> intersectedObjects;
-	octree.GetRoot()->CollectLineIntersections(ray, intersectedObjects); //return map(distancia,gameobject)
+	octree.CollectLineIntersections(ray, intersectedObjects); //return map(distancia,gameobject)
 
 	GameObject* pickedGO = nullptr;
 	if (!intersectedObjects.empty())

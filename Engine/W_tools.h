@@ -19,9 +19,9 @@ enum GameState {
 class WTools : public Window
 {
 private:
-	GuizmoState guizmoState = POS;			// State of the ImGuizmo. To draw TRANSFORM, ROTATION or SCALE gizmos
-	GuizmoMode guizmoMode = LOCAL;					// Mode of the gizmos to draw in LOCAL or WORLD coordinates
-	GameState playPauseStop = STOP;					// Play, Pause and Stop buttons state
+	GuizmoState	guizmoState		= POS;	// State of the ImGuizmo. To draw TRANSFORM, ROTATION or SCALE gizmos
+	GuizmoMode	guizmoMode		= LOCAL;// Mode of the gizmos to operate in LOCAL or WORLD coordinate system
+	GameState	playPauseStop	= STOP;	// Play, Pause and Stop buttons state
 
 public:
 	WTools(std::string name);			// Constructor
@@ -29,7 +29,7 @@ public:
 	void Draw() override;				// Operations performed when Rendering this window
 
 	// ---------- Getters ---------- //
-	GuizmoState GetGuizmoState() const { return guizmoState; }
-	GuizmoMode GetGuizmoMode() const { return guizmoMode; }
-	GameState GetPlayPauseState() const { return playPauseStop; }
+	GuizmoState	GetGuizmoState() const		{ return guizmoState; }
+	GuizmoMode	GetGuizmoMode() const		{ return guizmoMode; }
+	GameState	GetPlayPauseState() const	{ return playPauseStop; }
 };

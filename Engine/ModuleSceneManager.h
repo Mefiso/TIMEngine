@@ -12,7 +12,7 @@ public:
 	std::list<GameObject*> lightSources;							// List of all GO in the scene with a Light Component. This will be used in the shaders to only take the light of the closest objects.
 
 private:
-	GameObject* root = new GameObject();							// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children
+	GameObject* root = new GameObject("root");						// Root GameObject of the scene. All loaded and new GameObjects will be hanging from 'root' as its children
 	GameObject* selectedObject = nullptr;							// Pointer to the selected Game Object. This will have the gizmos on him, w_properties will show its information, and will be highlighted in the w_hierarchy
 	unsigned int skyboxVAO = 0u, skyboxVBO = 0u;					// IDs of the Skybox Cube buffer objects
 	unsigned int skyboxTexture = 0u;								// ID of the cubemap texture generated for the skybox

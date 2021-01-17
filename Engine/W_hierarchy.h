@@ -7,8 +7,8 @@
 class WHierarchy : public Window
 {
 private:
-	GameObject* dragged = nullptr;							// Pointer to the GameObject that is being dragged (from BeginDragDropSource() ).
-	GameObject* toDelete = nullptr;							// Pointer to a GameObject to which the Delete option has been chosen, from the Context Menu (Right-Click)
+	GameObject* dragged		= nullptr;						// Pointer to the GameObject that is being dragged (from BeginDragDropSource() ).
+	GameObject* toDelete	= nullptr;						// Pointer to a GameObject to which the Delete option has been chosen, from the Context Menu (Right-Click)
 
 public:
 	WHierarchy(std::string name);							// Constructor

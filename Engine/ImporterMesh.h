@@ -9,12 +9,11 @@
 class GameObject;
 namespace ImporterMesh
 {
-	bool Import(const aiMesh* _aimesh, GameObject* _owner);	// Imports a mesh from assimp into a GameObject '_parent'
-	unsigned int Save(CMesh* _mesh, const char* _filename);			// Saves the information of a Component Mesh into a file, using our custom file format
-	bool Load(const char* _filename, GameObject* _owner, unsigned int _filesize);
-	//void LoadCheckers(Material* ourMaterial);
+	bool			Import(const aiMesh* _aimesh, GameObject* _owner);							// Imports a Mesh from Assimp into a GameObject '_parent'
+	bool			Load(const char* _filename, GameObject* _owner, unsigned int _filesize);	// Loads a Mesh from a file in custom file format
+	unsigned int	Save(CMesh* _mesh, const char* _filename);									// Saves the information of a Component Mesh into a file, using our custom file format
 
-	namespace
+	namespace // Private functions in the namespace
 	{
 		// If vertex is a point outside the current min and max points for AABB, it modifies those min/max points
 		void CheckMinMaxPoints(float* vertex, CMesh* _cmesh)
@@ -33,6 +32,7 @@ namespace ImporterMesh
 			_cmesh->SetAABBmax(AABBmax);
 			_cmesh->SetAABBmin(AABBmin);
 		}
+		// ------------------------------------------------------------------------------------- //
 
 		// Loads the Vertex Buffer Object of this mesh
 		unsigned int LoadVBO(CMesh* _cmesh, unsigned int _numVertices, float* _verts, unsigned int _vtxSize)
@@ -44,6 +44,7 @@ namespace ImporterMesh
 			glBufferData(GL_ARRAY_BUFFER, buff_size, _verts, GL_STATIC_DRAW);
 			return VBO;
 		}
+		// ------------------------------------------------------------------------------------- //
 
 		// Loads the Element Buffer Object of this mesh
 		unsigned int LoadEBO(unsigned int _numIndices, unsigned int* _indices)
@@ -55,6 +56,7 @@ namespace ImporterMesh
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, _indices, GL_STATIC_DRAW);
 			return EBO;
 		}
+		// ------------------------------------------------------------------------------------- //
 
 		// Loads the Vertex Array Object of this mesh
 		unsigned int CreateVAO(unsigned int VBO, unsigned int EBO)
@@ -80,5 +82,6 @@ namespace ImporterMesh
 			glBindVertexArray(0);
 			return VAO;
 		}
+		// ------------------------------------------------------------------------------------- //
 	}
 };

@@ -7,29 +7,29 @@
 #include <string>
 
 struct Texture {
-	unsigned int id;	// identifier
-	std::string type;	// type of texture
-	std::string path;	// path to the file on your drive
-	int wraps;			// Identifier of the Horizontal Wrapping of the texture. Select from W_config -> wrap[].
-	int wrapt;			// Identifier of the Vertical Wrapping of the texture. Select from W_config -> wrap[].
-	int minfilter;		// Identifier of the Minification filter applied to the specified Texture. Select from W_config -> filterm[].
-	int magfilter;		// Identifier of the Magnification filter applied to the specified Texture. Select from W_config -> filterM[].
+	unsigned int	id;			// identifier
+	std::string		type;		// type of texture
+	std::string		path;		// path to the file on your drive
+	int				wraps;		// Identifier of the Horizontal Wrapping of the texture. Select from W_config -> wrap[].
+	int				wrapt;		// Identifier of the Vertical Wrapping of the texture. Select from W_config -> wrap[].
+	int				minfilter;	// Identifier of the Minification filter applied to the specified Texture. Select from W_config -> filterm[].
+	int				magfilter;	// Identifier of the Magnification filter applied to the specified Texture. Select from W_config -> filterM[].
 };
 
 class GameObject;
 namespace ImporterMaterial
 {
-	bool Import(aiMaterial* _material, const std::string& _path, GameObject* _parent);
-	void SaveTexture(const char* _destPath);
-	unsigned int Save(CMaterial* _material, const char* _filename);
-	bool Load(std::string _filename, CMaterial* ourMaterial, unsigned int _filesize);
-	//void LoadCheckers(Material* ourMaterial);
+	bool			Import(aiMaterial* _material, const std::string& _path, GameObject* _parent);	// Imports a Material with all its textures from Assimp
+	bool			Load(std::string _filename, CMaterial* ourMaterial, unsigned int _filesize);	// Loads a Material with all its textures from a file in custom file format
+	unsigned int	Save(CMaterial* _material, const char* _filename);								// Saves the info of a Component Material into a file in custom file format
+	
+	unsigned int	LoadTexture(std::string _path, std::string _destPath, bool saveToCustom=false);	// Loads an image file and attaches it to a GL_TEXTURE_2D
+	unsigned int	LoadCubemap(std::vector<std::string> _faces);									// Loads a Cubemap Texture from 6 images ('faces') and attaches it to a GL_TEXTURE_CUBE_MAP
+	void			SaveTexture(const char* _destPath);												// Saves a texture loaded in DevIL to a new .DDS file
 
-	unsigned int LoadTexture(std::string _path, std::string _destPath, bool saveToCustom=false);			// Loads an image file and attaches it to a GL_TEXTURE_2D
-	unsigned int LoadCubemap(std::vector<std::string> _faces);	// Loads a Cubemap Texture from 6 images ('faces') and attaches it to a GL_TEXTURE_CUBE_MAP
-
-	namespace
+	namespace	// Private functions
 	{
+		// Iterates over the textures that come from an Assimp material and loads them using LoadTexture
 		void LoadMaterialTextures(aiMaterial* _material, aiTextureType _type, const std::string& _name, const std::string& _path, std::vector<Texture*>* _matTextures)
 		{
 			// Iterates over all material textures of the specified type
@@ -95,6 +95,7 @@ namespace ImporterMaterial
 				}
 			}
 		}
+		// ------------------------------------------------------------------------------------- //
 	}
 };
 

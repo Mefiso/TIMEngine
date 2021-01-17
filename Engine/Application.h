@@ -29,23 +29,23 @@ public:
 	ModuleCamera* camera = nullptr;
 
 private:
-	std::vector<Module*> modules;				// Vector containig the references to each App Module
+	std::vector<Module*> modules;						// Vector containig the references to each App Module
 
 public:
-	Application();								// Constructor
-	~Application();								// Destructor
+	Application();										// Constructor
+	~Application();										// Destructor
 
-	bool Init();								// Call Init() for each Module
-	update_status Update();						// Call Update() for each Module
-	bool CleanUp();								// Call CleanUp() for each Module
-	void BroadcastEvent(const Event& event);	// Call ReceiveEvent() for each Module
+	bool			Init();								// Call Init() for each Module
+	update_status	Update();							// Call Update() for each Module
+	bool			CleanUp();							// Call CleanUp() for each Module
+	void			BroadcastEvent(const Event& event);	// Call ReceiveEvent() for each Module
 
-	void Log(const char* input) const;			// Forward a LOG output to the Editor, then to W_Console
+	void Log(const char* input) const;					// Forward a LOG output to the Editor, then to W_Console
 
 	// Easy access to a precision timer from timeManager module
-	void StartTimer();
-	unsigned int ReadTimer() const;
-	unsigned int StopTimer();
+	void			StartTimer();
+	unsigned int	ReadTimer() const;
+	unsigned int	StopTimer();
 };
 
 extern Application* App;

@@ -2,12 +2,14 @@
 
 WAbout::WAbout(std::string name) : Window(name)
 {
-	libraries["glew"] = "2.1.0";
-	libraries["SDL2"] = "2.0.12";
-	libraries["ImGUI"] = "v1.79";
-	libraries["MathGeoLib"] = "v1.5";
+	libraries["ASSIMP"] = "5.0.1";
 	libraries["DevIL"] = "1.8.0";
-	libraries["assimp"] = "5.0.1";
+	libraries["GLEW"] = "2.1.0";
+	libraries["ImGUI"] = "v1.79";
+	libraries["ImGuizmo"] = "";
+	libraries["MathGeoLib"] = "v1.5";
+	libraries["RapidJSON"] = "v1.1";
+	libraries["SDL2"] = "2.0.12";
 	libraries["DebugDraw"] = "";
 	active = false;
 }
