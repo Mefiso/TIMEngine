@@ -282,7 +282,7 @@ unsigned int ImporterMaterial::LoadTexture(const std::string _path, std::string 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		if(saveToCustom)
-			SaveTexture(_destPath.c_str());
+			SaveTexture(_destPath.replace(_destPath.find_last_of('.'), _destPath.size(), ".dds").c_str());
 	}
 	else
 	{

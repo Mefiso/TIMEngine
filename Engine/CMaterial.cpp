@@ -18,6 +18,7 @@ CMaterial::~CMaterial()
 
 void CMaterial::onSave(rapidjson::Value& config, rapidjson::Document& d) const
 {
+	ImporterMaterial::Save((CMaterial*)this, ("./Library/Materials/" + filename).c_str());
 	rapidjson::Value c(rapidjson::kObjectType);
 	c.AddMember("UUID", rapidjson::Value(UUID).Move(), d.GetAllocator());
 	c.AddMember("Type", rapidjson::Value(GetType()).Move(), d.GetAllocator());

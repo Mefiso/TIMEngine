@@ -246,18 +246,19 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 		if (ImGui::MenuItem("Diffuse"))
 		{
 			type = "diffuse";
-			fn = App->filesys->OpenDialog("Texture Files\0*.dds\0*.png\0*.tif", ".\\Library\\Textures\\", &size);
+			fn = App->filesys->OpenDialog("Texture Files\0*.dds;*.png;*.tif\0", ".\\Library\\Textures\\", &size);
 		}
 		if (ImGui::MenuItem("Specular"))
 		{
 			type = "specular";
-			fn = App->filesys->OpenDialog("Texture Files\0*.dds\0*.png\0*.tif", ".\\Library\\Textures\\", &size);
+			fn = App->filesys->OpenDialog("Texture Files\0*.dds;*.png;*.tif\0", ".\\Library\\Textures\\", &size);
 		}
 		if (!fn.empty())
 		{
 			Texture* texture = new Texture();
-			texture->id = ImporterMaterial::LoadTexture(fn, "./Library/Textures/", true);
 			texture->type = type;
+			texture->id = ImporterMaterial::LoadTexture(fn, "./Library/Textures/" + fn.substr(fn.find_last_of('\\')+1, fn.size()), true);
+			fn = fn.replace(fn.find_last_of('.'), fn.size(), ".dds");
 			texture->path = fn.substr(fn.find_last_of('\\')+1, fn.size());
 			texture->wraps = GL_REPEAT;
 			texture->wrapt = GL_REPEAT;
