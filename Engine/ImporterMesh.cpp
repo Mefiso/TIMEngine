@@ -66,6 +66,13 @@ bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _owner)
 
 		return true;
 	}
+	else
+	{
+		GameObject* go = new GameObject("Child");
+		go->SetParent(_owner);
+		go->AddComponent(TRANSFORM);
+		Import(_aimesh, go);
+	}
 	return false;
 }
 
