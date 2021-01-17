@@ -16,7 +16,9 @@ public:
 		return (unsigned int)(stopped ? elapsed / (float)freq : (SDL_GetPerformanceCounter() - start) / (float)freq);
 	}
 	unsigned int Stop() {
-		elapsed = SDL_GetPerformanceCounter() - start;
+		if (!stopped)
+			elapsed = SDL_GetPerformanceCounter() - start;
+		stopped = true;
 		return (unsigned int)elapsed / (float)freq;
 	}
 

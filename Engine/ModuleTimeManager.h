@@ -41,5 +41,9 @@ public:
 
 	// ---------- Setters ---------- //
 	void SetMSPerFrame(float _msPerFrame) { msPerFrame = _msPerFrame; }
+
+	void StartGameClock() { time.Start(); }
+	void StopGameClock() { time.Stop(); }
+	void ResumeGameClock() { time.Resume(); }
 };
 

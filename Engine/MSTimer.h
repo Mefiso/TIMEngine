@@ -20,6 +20,7 @@ public:
 	unsigned int Stop()
 	{
 		elapsed += stopped ? 0u : SDL_GetTicks() - start;
+		stopped = true;
 		return elapsed;
 	}
 	void Resume()

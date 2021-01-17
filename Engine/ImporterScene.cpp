@@ -133,6 +133,8 @@ bool ImporterScene::Load(const char* _path)
 	}
 	else
 	{
+		App->sceneMng->SetSelectedGO(nullptr);
+
 		char readBuffer[65536];
 		rapidjson::FileReadStream is(f, readBuffer, sizeof(readBuffer));
 
@@ -191,9 +193,7 @@ bool ImporterScene::Load(const char* _path)
 		// Set shaders program
 		App->sceneMng->GetRoot()->SetProgram(App->sceneMng->GetProgram());
 
-		// Focus and frustum culling
-		float4 centerDistance = App->sceneMng->GetRoot()->GetChildren()[App->sceneMng->GetRoot()->GetChildren().size() - 1]->ComputeCenterAndDistance();
-		App->camera->onFocus(centerDistance.xyz(), centerDistance.w);
+		// Frustum culling
 		App->camera->cullingCamera->PerformFrustumCulling();
 		return true;
 	}

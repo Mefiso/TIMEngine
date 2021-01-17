@@ -1,12 +1,27 @@
 #pragma once
 #include "Window.h"
 
+enum GuizmoState {
+	POS,
+	ROTATION,
+	SCALE
+};
+enum GuizmoMode {
+	LOCAL,
+	WORLD
+};
+enum GameState {
+	PLAY,
+	PAUSE,
+	STOP
+};
+
 class WTools : public Window
 {
 private:
-	int guizmoState = 0;				// State of the ImGuizmo. To draw TRANSFORM, ROTATION or SCALE gizmos
-	int guizmoMode = 0;					// Mode of the gizmos to draw in LOCAL or WORLD coordinates
-	int playPauseStop = 2;				// Play, Pause and Stop buttons state
+	GuizmoState guizmoState = POS;			// State of the ImGuizmo. To draw TRANSFORM, ROTATION or SCALE gizmos
+	GuizmoMode guizmoMode = LOCAL;					// Mode of the gizmos to draw in LOCAL or WORLD coordinates
+	GameState playPauseStop = STOP;					// Play, Pause and Stop buttons state
 
 public:
 	WTools(std::string name);			// Constructor
@@ -14,7 +29,7 @@ public:
 	void Draw() override;				// Operations performed when Rendering this window
 
 	// ---------- Getters ---------- //
-	int GetGuizmoState() const { return guizmoState; }
-	int GetGuizmoMode() const { return guizmoMode; }
-	int GetPlayPauseState() const { return playPauseStop; }
+	GuizmoState GetGuizmoState() const { return guizmoState; }
+	GuizmoMode GetGuizmoMode() const { return guizmoMode; }
+	GameState GetPlayPauseState() const { return playPauseStop; }
 };
