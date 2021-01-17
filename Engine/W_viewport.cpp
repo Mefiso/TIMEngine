@@ -44,7 +44,6 @@ void WViewport::Draw()
 		viewportIsHovered = false;
 	}
 
-	// TODO: Image is deformed when closing the
 	ImGui::Image((ImTextureID)texid, ImVec2(win_size.x, win_size.y), ImVec2(0.f, 1.f), ImVec2(1.f, 0.f));
 	if (App->sceneMng->GetSelectedGO())
 		if (App->sceneMng->GetSelectedGO()->GetTransform())
