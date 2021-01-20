@@ -264,6 +264,7 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 			texture->magfilter = GL_LINEAR;
 			App->filesys->loadedTextures.push_back(texture);
 			_material->textures.push_back(App->filesys->loadedTextures[App->filesys->loadedTextures.size() - 1]);
+			_material->filesize += 6 * sizeof(int) + sizeof(char) * (texture->path.size() + 1 + texture->type.size() + 1);
 		}
 		ImGui::EndPopup();
 	}
@@ -289,6 +290,7 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 					ImGui::Unindent(ImGui::GetWindowWidth() - 85);
 				if (deleted)
 				{
+					_material->filesize -= 6 * sizeof(int) + sizeof(char) * (_material->textures[i]->path.size() + 1 + _material->textures[i]->type.size() + 1);
 					_material->textures.erase(_material->textures.begin() + i);
 					--i;
 				}

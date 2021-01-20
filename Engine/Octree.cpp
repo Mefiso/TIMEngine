@@ -33,19 +33,20 @@ OctreeNode::~OctreeNode()
 
 void OctreeNode::Insert(GameObject* _go)
 {
+	bool intersectsAll = true;
+	bool intersects[8];
 	// If it isn't a leave
 	if (children[0] != nullptr)
 	{
 		for (int i = 0; i < 8; ++i)
 		{
 			// If it intersects with any octree childs
-			if (children[i]->box.Intersects(_go->GetOBB().MinimalEnclosingAABB()))
-			{
-				children[i]->Insert(_go);
-			}
+			intersects[i] = children[i]->box.Intersects(_go->GetOBB().MinimalEnclosingAABB());
+			if (!intersects[i])
+				intersectsAll = false;
 		}
 	}
-	else
+	if (intersectsAll)
 	{
 		objects.push_back(_go);
 		if (objects.size() > CAPACITY)
@@ -53,6 +54,12 @@ void OctreeNode::Insert(GameObject* _go)
 			CreateChildren();
 			ForwardToChildren();
 		}
+	}
+	else
+	{
+		for (int i = 0; i < 8; ++i)
+			if (intersects[i])
+				children[i]->Insert(_go);
 	}
 }
 

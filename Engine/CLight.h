@@ -46,7 +46,7 @@ public:
 	void SetPositionDirection(float4x4 _modelMatrix);		// Sets 'pos' and 'dir' from the GameObject Model Matrix
 
 	// ------ Serialization -------- //
-	void onSave(rapidjson::Value& config, rapidjson::Document& d) const override;	// To serialize this component when saving the scene
-	void onLoad(const rapidjson::Value& config) override;							// To load this component when loading the scene
+	void onSave(rapidjson::Value& _config, rapidjson::Document& _d) const override;	// To serialize this component when saving the scene
+	void onLoad(const rapidjson::Value& _config) override;							// To load this component when loading the scene
 };
 

@@ -123,7 +123,6 @@ bool GameObject::AddComponent(ComponentType _type, const int _UUID)
 			else
 				newComp = new CLight(this);
 			components.push_back(newComp);
-			App->sceneMng->lightSources.push_back(this);
 			createdComp = true;
 		}
 		break;
@@ -154,17 +153,6 @@ void GameObject::RemoveComponent(int _cID)
 			transform = nullptr;
 		if (components[toRemove]->GetType() == MESH)
 			App->renderer->RemoveObjectFromDrawList(this);
-		if (components[toRemove]->GetType() == LIGHT)
-		{
-			for (std::list<GameObject*>::iterator it = App->sceneMng->lightSources.begin(); it != App->sceneMng->lightSources.end(); ++it)
-			{
-				if (this == (*it))
-				{
-					App->sceneMng->lightSources.erase(it);
-					break;
-				}
-			}
-		}
 		RELEASE(components[toRemove]);
 		components.erase(components.begin() + toRemove);
 		GetComponent<CMaterial>();
@@ -350,7 +338,7 @@ float4 GameObject::ComputeCenterAndDistance() const
 {
 	if (GetComponent<CMesh>() != nullptr)
 	{
-		return float4(GetModelMatrix().Col3(3), obb.Size().Length() * 2.2f);
+		return float4(GetModelMatrix().Col3(3), obb.Size().Length() * 2.f);
 	}
 	else
 	{
@@ -373,7 +361,7 @@ float4 GameObject::ComputeCenterAndDistance() const
 			return ret;
 		}
 		else
-			return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.2f);
+			return float4(GetModelMatrix().Col3(3), (maxPoint - minPoint).Length() * 2.f);
 	}
 }
 

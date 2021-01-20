@@ -3,6 +3,7 @@
 
 #include <IL/il.h>
 #include <IL/devil_cpp_wrapper.hpp>
+#include "Leaks.h"
 
 
 bool ImporterMaterial::Import(aiMaterial* _material, const std::string& _path, GameObject* _parent)
@@ -17,17 +18,11 @@ bool ImporterMaterial::Import(aiMaterial* _material, const std::string& _path, G
 		iluInit();
 
 		CMaterial* cmaterial = _parent->GetComponent<CMaterial>();
-		std::vector<Texture*>* diffuseMaps = new std::vector<Texture*>();
-		LoadMaterialTextures(_material, aiTextureType_DIFFUSE, "diffuse", _path, diffuseMaps);
-		cmaterial->textures.insert(cmaterial->textures.end(), diffuseMaps->begin(), diffuseMaps->end());
-		std::vector<Texture*>* specularMaps = new std::vector<Texture*>();
-		LoadMaterialTextures(_material, aiTextureType_SPECULAR, "specular", _path, specularMaps);
-		cmaterial->textures.insert(cmaterial->textures.end(), specularMaps->begin(), specularMaps->end());
+		LoadMaterialTextures(_material, aiTextureType_DIFFUSE, "diffuse", _path, &cmaterial->textures);
+		LoadMaterialTextures(_material, aiTextureType_SPECULAR, "specular", _path, &cmaterial->textures);
 		cmaterial->filename = _material->GetName().C_Str();
 		cmaterial->filename.append(".mat");
 
-		RELEASE(diffuseMaps);
-		RELEASE(specularMaps);
 		ilShutDown();
 
 		return true;

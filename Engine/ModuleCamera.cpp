@@ -8,7 +8,7 @@
 #include "Math/float3x3.h"
 #include "Leaks.h"
 
-ModuleCamera::ModuleCamera() : Module(), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY)
+ModuleCamera::ModuleCamera() : Module(), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), RotationSpeed(RSPEED)
 {
 	frustum->SetPos(float3(0, 1, 7));
 }
@@ -171,6 +171,7 @@ void ModuleCamera::ProcessSpeed(float _multiplier)
 void ModuleCamera::ProcessKeyboard(Camera_Movement _direction, float _deltaTime)
 {
 	float MoveCelerity = MovementSpeed * _deltaTime;
+	float RotCelerity = RotationSpeed * _deltaTime;
 	switch (_direction)
 	{
 	case FORWARD:
@@ -192,16 +193,16 @@ void ModuleCamera::ProcessKeyboard(Camera_Movement _direction, float _deltaTime)
 		frustum->SetPos(frustum->Pos() - float3::unitY * MoveCelerity);
 		break;
 	case PITCH_UP:
-		RotateCamera(0, MoveCelerity / 3);
+		RotateCamera(0, RotCelerity / 3);
 		break;
 	case PITCH_DOWN:
-		RotateCamera(0, -MoveCelerity / 3);
+		RotateCamera(0, -RotCelerity / 3);
 		break;
 	case YAW_LEFT:
-		RotateCamera(MoveCelerity / 3, 0);
+		RotateCamera(RotCelerity / 3, 0);
 		break;
 	case YAW_RIGHT:
-		RotateCamera(-MoveCelerity / 3, 0);
+		RotateCamera(-RotCelerity / 3, 0);
 		break;
 	}
 

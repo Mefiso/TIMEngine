@@ -21,15 +21,16 @@ enum Camera_Movement {
 
 // Default values
 const float SPEED		= 600.f;												// Base value of MovementSpeed
+const float RSPEED		= 10.f;													// Base value of RotationSpeed
 const float SENSITIVITY	= .005f;												// Base value of MouseSensitivity
 const float VERTICALFOV	= DegToRad(60.f);										// Initial Vertical FOV of the camera
 const float ASPECTRATIO	= SCREEN_WIDTH / (float)SCREEN_HEIGHT;					// Initial Aspect ratio of the camera Frustrum
-//const float ZOOM = .1f;
 
 class ModuleCamera : public Module
 {
 public:
 	float MovementSpeed		= 0.f;												// Multiplier of the Camera movement speed when using the keyboard
+	float RotationSpeed		= 0.f;												// Multiplier of the Rotation movement speed when using the keyboard
 	float MouseSensitivity	= 0.f;												// Multiplier of the Mouse sensitivity
 
 	CCamera* defaultCamera	= new CCamera(nullptr);								// This is the default camera of the Engine. To simplify functionality, we use a Component Camera

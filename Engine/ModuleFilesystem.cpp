@@ -19,7 +19,7 @@ ModuleFilesystem::~ModuleFilesystem()
 
 bool ModuleFilesystem::Start()
 {
-	ImporterScene::Import("./resources/models/baker_house/BakerHouse.fbx");
+	//ImporterScene::Import("./resources/models/baker_house/BakerHouse.fbx");
 	std::vector<std::string> faces =
 	{
 		".\\resources\\skybox\\default\\right.jpg",

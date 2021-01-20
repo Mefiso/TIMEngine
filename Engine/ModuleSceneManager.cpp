@@ -38,6 +38,7 @@ bool ModuleSceneManager::CleanUp()
 	glDeleteVertexArrays(1, &skyboxVAO);
 	glDeleteBuffers(1, &skyboxVBO);
 	glDeleteTextures(1, &skyboxTexture);
+	lightSources.clear();
 
 	RELEASE(root);
 

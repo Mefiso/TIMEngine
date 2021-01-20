@@ -109,7 +109,10 @@ void WConfig::DrawCameraHeader()
 
 		ImGui::TextUnformatted("Movement Speed");
 		ImGui::PushItemWidth(100.f);
-		ImGui::DragFloat("Using Keys", &App->camera->MovementSpeed, 10.f, 5.f, 1000.f, "%.2f", ImGuiSliderFlags_None);
+		ImGui::DragFloat("Using Keys##1", &App->camera->MovementSpeed, 10.f, 5.f, 1000.f, "%.2f", ImGuiSliderFlags_None);
+		ImGui::TextUnformatted("Rotation Speed");
+		ImGui::PushItemWidth(100.f);
+		ImGui::DragFloat("Using Keys##2", &App->camera->RotationSpeed, 1.f, 1.f, 50.f, "%.2f", ImGuiSliderFlags_None);
 		ImGui::DragFloat("Mouse Sensitivity", &App->camera->MouseSensitivity, 0.0001f, 0.001f, 0.01f, "%.3f", ImGuiSliderFlags_None);
 
 		ImGui::Separator();

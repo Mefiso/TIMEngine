@@ -3,6 +3,7 @@
 #include "ModuleSceneManager.h"
 #include "GameObject.h"
 #include "Algorithm/Random/LCG.h"
+#include "Leaks.h"
 
 bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _owner, std::string& _path)
 {
@@ -77,7 +78,17 @@ bool ImporterMesh::Import(const aiMesh* _aimesh, GameObject* _owner, std::string
 		{
 			LCG rng = LCG();
 			std::string p = _path.substr(0, _path.find_last_of('.')) + std::to_string(rng.Int(0, 100)) + ".mesh";
-			Save(go->GetComponent<CMesh>(), p.c_str());
+			unsigned int fsize = Save(go->GetComponent<CMesh>(), p.c_str());
+			go->RemoveComponent(go->GetComponent<CMesh>()->GetUUID());
+			if (fsize > 0)
+			{
+				if (go->AddComponent(MESH))
+				{
+					App->StartTimer();
+					Load(p.c_str(), go, fsize);
+					LOG("LOAD TIME mat: %d microseconds", App->StopTimer());
+				}
+			}
 		}
 	}
 	return false;

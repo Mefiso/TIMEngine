@@ -93,6 +93,8 @@ namespace ImporterMaterial
 							App->filesys->loadedTextures.push_back(texture);
 							_matTextures->push_back(App->filesys->loadedTextures[App->filesys->loadedTextures.size() - 1]);
 						}
+						else
+							RELEASE(texture);
 					}
 				}
 			}
