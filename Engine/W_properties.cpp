@@ -225,7 +225,7 @@ void WProperties::DrawMaterialBody(CMaterial* _material)
 
 	// ------ Material base settings ------ //
 	// TODO: set ambient color as global, for all gameobjects
-	ImGui::ColorEdit3("Set ambient color", &_material->ambient[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
+	//ImGui::ColorEdit3("Set ambient color", &_material->ambient[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs);
 	// The following settings are used when material has no diffuse/specular maps
 	ImGui::ColorEdit3("Set diffuse color", &_material->diffuse[0], ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoInputs); ImGui::SameLine();
 	HelpMarker("This color is used when there isn't any diffuse map");
