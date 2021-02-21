@@ -1,13 +1,15 @@
 #include "W_about.h"
 
-WAbout::WAbout(std::string name, int ID) : Window(name, ID)
+WAbout::WAbout(std::string _name) : Window(_name)
 {
-	libraries["glew"] = "2.1.0";
-	libraries["SDL2"] = "2.0.12";
-	libraries["ImGUI"] = "v1.79";
-	libraries["MathGeoLib"] = "v1.5";
+	libraries["ASSIMP"] = "5.0.1";
 	libraries["DevIL"] = "1.8.0";
-	libraries["assimp"] = "5.0.1";
+	libraries["GLEW"] = "2.1.0";
+	libraries["ImGUI"] = "v1.79";
+	libraries["ImGuizmo"] = "";
+	libraries["MathGeoLib"] = "v1.5";
+	libraries["RapidJSON"] = "v1.1";
+	libraries["SDL2"] = "2.0.12";
 	libraries["DebugDraw"] = "";
 	active = false;
 }
@@ -25,7 +27,7 @@ void WAbout::Draw()
 		return;
 	}
 
-	ImVec4 color = { 0.2, 0.5, 1.0, 1.0 };
+	ImVec4 color = { 0.2f, 0.5f, 1.0f, 1.0f };
 	ImGui::TextColored(color, "%s %s", engineName.c_str(), version.c_str());
 	ImGui::Separator();
 	ImGui::TextWrapped(description.c_str());
@@ -44,5 +46,3 @@ void WAbout::Draw()
 	ImGui::TextWrapped(license.c_str());
 	ImGui::End();
 }
-
-

@@ -1,28 +1,44 @@
 #pragma once
 #include "Window.h"
-#include "ModuleTexture.h"
+#include "GL/glew.h"
 #include <Math/float4x4.h>
 
-class Model;
-class Mesh;
+class Component;
+class CTransform;
+class CMaterial;
+class CMesh;
+class CCamera;
+class CLight;
+class GameObject;
 
 class WProperties : public Window
 {
 private:
-	// Should it be a pointer to a vector?
-	std::vector<Texture*> selected_textures;
-	float3 scale = float3::zero;
-	float3 rotation = float3::zero;
-	float3 translation = float3::zero;
-	std::vector<Mesh*> selected_meshes;
-public:
-	WProperties(std::string name, int ID);
-	~WProperties();
+	Component*	toDelete	= nullptr;				// Pointer to a Component to which the 'Remove Component' option has been chosen, from the Options Menu
+	float3		scale		= float3::zero;			// Gets the scale transform of a Model
+	float3		rotation	= float3::zero;			// Gets the rotation transform of a Model
+	float3		translation	= float3::zero;			// Gets the translation transform of a Model
+	char RenameBuf[100];							// Buffer that stores the name of the selected GameObject, used by an InputText allowing the user to change the name of that GameObject
+	const std::vector<GLint> wrapmode	= { GL_REPEAT, GL_CLAMP, GL_CLAMP_TO_BORDER, GL_MIRRORED_REPEAT };																	 // Wrap mode options for the current texture.
+	const std::vector<GLint> filtermode	= { GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR, GL_NEAREST }; // Filter mode options for the current texture.
 
-	void Draw();
-	void SelectPropertiesFromModel(const Model* model);
+public:
+	WProperties(std::string _name);					// Constructor
+	~WProperties();									// Destructor
+
+	void Draw();									// Operations performed when Rendering this window
+
+	// ---------- Getters ---------- //
+	Component* GetToDelete() const { return toDelete; }
+
+	// ---------- Setters ---------- //
+	void SetToDelete(Component* _component) { toDelete = _component; }
+
 private:
-	void TransformationHeader() const;
-	void GeometryHeader() const;
-	void TexturesHeader() const;
+	void DrawComponentHeader(Component* _component);		// Draws the Components information of the Selected GameObject
+	void DrawTransformationBody(CTransform* _transform);	// Subfunction of DrawComponentHeader. Draws the Transformation information of the selected GameObject into the window (translation, rotation, scale)
+	void DrawMeshBody(CMesh* _mesh);						// Subfunction of DrawComponentHeader. Draws the Geometry information of the mesh in the GameObject into the window (Number of meshes, textures, triangles, faces...)
+	void DrawMaterialBody(CMaterial* _material);			// Subfunction of DrawComponentHeader. Draws the Texture information for each texture in the GameObject into the window (Size, wrapping, min and mag filters, preview)
+	void DrawCameraBody(CCamera* _camera);					// Subfunction of DrawComponentHeader. Draws the camera and frustum information of that component in the GameObject into the window (near/far planes, FOV...)
+	void DrawLightBody(CLight* _camera);					// Subfunction of DrawComponentHeader. Draws the light information of that component in the GameObject into the window (type of light, direction, color...)
 };

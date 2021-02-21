@@ -2,56 +2,55 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
-#include "ImGUI/imgui_impl_sdl.h"
-#include "ImGUI/imgui_impl_opengl3.h"
-#include "W_console.h"
-#include "W_monitor.h"
+#include "ModuleSceneManager.h"
+#include "ImporterScene.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
 #include "W_config.h"
-#include "W_about.h"
+#include "W_console.h"
+#include "W_hierarchy.h"
+#include "W_monitor.h"
 #include "W_properties.h"
+#include "W_viewport.h"
+#include "W_Tools.h"
+#include "W_about.h"
 #include "Leaks.h"
+#include "Brofiler.h"
 
 ModuleEditor::ModuleEditor()
 {
-	editorWindows.push_back(console = new WConsole("Console", 0));
-	editorWindows.push_back(monitor = new WMonitor("Monitoring window", 1));
-	editorWindows.push_back(configuration = new WConfig("Configuration", 2));
-	editorWindows.push_back(about = new WAbout("About", 3));
-	editorWindows.push_back(properties = new WProperties("Properties", 4));
+	editorWindows.push_back(configuration = new WConfig("Configuration"));
+	editorWindows.push_back(console = new WConsole("Console"));
+	editorWindows.push_back(hierarchy = new WHierarchy("Hierarchy"));
+	editorWindows.push_back(monitor = new WMonitor("Monitoring"));
+	editorWindows.push_back(properties = new WProperties("Properties"));
+	editorWindows.push_back(viewport = new WViewport("Viewport"));
+	editorWindows.push_back(tools = new WTools("Tools"));
+	editorWindows.push_back(about = new WAbout("About"));
 }
 
 ModuleEditor::~ModuleEditor()
 {
-	
 }
 
 bool ModuleEditor::Init()
 {
 	ImGui::CreateContext();
 	io = &ImGui::GetIO();
-	//io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-	io->ConfigViewportsNoAutoMerge = true;
-	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-	ImGuiStyle& style = ImGui::GetStyle();
-	if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		style.WindowRounding = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
 	ImGui_ImplOpenGL3_Init();
 
-	SelectedModel(App->renderer->modelLoaded);
-	
+	CreateViewport();
+
 	return true;
 }
 
 update_status ModuleEditor::PreUpdate()
 {
+	BROFILER_CATEGORY("PreUpdateEditor", Profiler::Color::Orchid);
+
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
@@ -61,12 +60,15 @@ update_status ModuleEditor::PreUpdate()
 
 update_status ModuleEditor::Update()
 {
-	//ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-	CreateMainMenu();
+	BROFILER_CATEGORY("UpdateEditor", Profiler::Color::Orchid);
+	ImGuiID dockspaceID = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+	DrawMainMenu();
 
 	//ImGui::ShowDemoWindow();
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 	{
+		if (std::strcmp((*it)->GetWindowName(), "About"))
+			ImGui::SetNextWindowDockID(dockspaceID, ImGuiCond_FirstUseEver);
 		if ((*it)->isEnabled())
 			(*it)->Draw();
 	}
@@ -75,36 +77,48 @@ update_status ModuleEditor::Update()
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-	// Update and Render additional Platform Windows
-	   // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-	   //  For this specific demo app we could also call SDL_GL_MakeCurrent(window, gl_context) directly)
-	if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
-		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
-	}
-	
 	if (should_quit) return UPDATE_STOP;
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleEditor::PostUpdate()
 {
+	GameObject* toDeleteGO = hierarchy->GetToDelete();
+	if (toDeleteGO) {
+		if (toDeleteGO->GetParent())
+		{
+			toDeleteGO->GetParent()->RemoveChild(toDeleteGO->GetUUID());
+		}
+		RELEASE(toDeleteGO);
+		hierarchy->SetToDelete(nullptr);
+	}
+
+	Component* toDeleteCMP = properties->GetToDelete();
+	if (toDeleteCMP)
+	{
+		if (toDeleteCMP->GetOwner())
+		{
+			toDeleteCMP->GetOwner()->RemoveComponent(toDeleteCMP->GetUUID());
+		}
+		properties->SetToDelete(nullptr);
+	}
+
 	return UPDATE_CONTINUE;
 }
 
 bool ModuleEditor::CleanUp()
 {
-	
 	LOG("Destroying Editor");
 	for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
-		delete (*it);
+		RELEASE(*it);
 	editorWindows.clear();
-	
+
+	viewport = nullptr;
 	console = nullptr;
+	monitor = nullptr;
+	configuration = nullptr;
+	properties = nullptr;
+	about = nullptr;
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
@@ -113,45 +127,60 @@ bool ModuleEditor::CleanUp()
 	return true;
 }
 
-void ModuleEditor::SendEvent(const SDL_Event& event) const
+const bool ModuleEditor::IsViewportHovered() const
 {
-	ImGui_ImplSDL2_ProcessEvent(&event);
+	return viewport->viewportIsHovered;
 }
 
-void ModuleEditor::Log(const char* input) const
+void ModuleEditor::SendEvent(const SDL_Event& _event) const
+{
+	ImGui_ImplSDL2_ProcessEvent(&_event);
+}
+
+void ModuleEditor::CreateViewport()
+{
+	viewport->SetColorbuffer(App->renderer->GetTextureColorbuffer(), App->renderer->GetViewportWidth(), App->renderer->GetViewportHeight());
+}
+
+void ModuleEditor::Log(const char* _input) const
 {
 	if (console)
-		console->AddLog(input);
+		console->AddLog(_input);
 }
 
-void ModuleEditor::ProcessFPS(float deltaTime) const
-{
-	monitor->AddFPS(deltaTime);
-}
-
-void ModuleEditor::SelectedModel(const Model* const model) const
-{
-	properties->SelectPropertiesFromModel(model);
-}
-
-void ModuleEditor::CreateMainMenu()
+void ModuleEditor::DrawMainMenu()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
-		if (ImGui::BeginMenu("Menu"))
+		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::BeginMenu("Windows")) 
+			ShowMenuFile();
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("GameObject"))
+		{
+			ShowMenuGameObject();
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Layout"))
+		{
+			for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
 			{
-				for (std::vector<Window*>::iterator it = editorWindows.begin(), end = editorWindows.end(); it != end; ++it)
-				{
-					if (ImGui::MenuItem((*it)->GetWindowName(), NULL, (*it)->isEnabled()))
-						(*it)->Enable(!(*it)->isEnabled());
-				}
-				ImGui::EndMenu();
-			}
-			if (ImGui::MenuItem("Quit"))
-			{
-				should_quit = true;
+				if (ImGui::MenuItem((*it)->GetWindowName(), NULL, (*it)->isEnabled()))
+					(*it)->Enable(!(*it)->isEnabled());
 			}
 			ImGui::EndMenu();
 		}
@@ -166,5 +195,90 @@ void ModuleEditor::CreateMainMenu()
 		}
 		ImGui::EndMainMenuBar();
 	}
-	
+}
+
+void ModuleEditor::ShowMenuFile()
+{
+	ImGui::MenuItem("(demo menu)", NULL, false, false);
+	ImGui::MenuItem("Only QUIT option is actually working!", NULL, false, false);
+	if (ImGui::MenuItem("New")) {}
+	if (ImGui::MenuItem("Open", "Ctrl+O"))
+	{
+		if (ImporterScene::Load("./Library/Scenes/Scene 1.json"))
+		{
+			App->sceneMng->SetName("Scene 1");
+		}
+	}
+	if (ImGui::BeginMenu("Open Recent"))
+	{
+		ImGui::MenuItem("fish_hat.c");
+		ImGui::MenuItem("fish_hat.inl");
+		ImGui::MenuItem("fish_hat.h");
+		if (ImGui::BeginMenu("More.."))
+		{
+			ImGui::MenuItem("Hello");
+			ImGui::MenuItem("Sailor");
+			if (ImGui::BeginMenu("Recurse.."))
+			{
+				ShowMenuFile();
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenu();
+	}
+	if (ImGui::MenuItem("Save", "Ctrl+S"))
+	{
+		std::string path = "./Library/Scenes/";
+		path.append(App->sceneMng->GetName());
+		path.append(".json");
+		ImporterScene::Save(path.c_str());
+	}
+	if (ImGui::MenuItem("Save As..")) {}
+
+	ImGui::Separator();
+
+	if (ImGui::BeginMenu("Options"))
+	{
+		static bool enabled = true;
+		ImGui::MenuItem("Enabled", "", &enabled);
+		ImGui::BeginChild("child", ImVec2(0, 60), true);
+		for (int i = 0; i < 10; i++)
+			ImGui::Text("Scrolling Text %d", i);
+		ImGui::EndChild();
+		static float f = 0.5f;
+		static int n = 0;
+		ImGui::SliderFloat("Value", &f, 0.0f, 1.0f);
+		ImGui::InputFloat("Input", &f, 0.1f);
+		ImGui::Combo("Combo", &n, "Yes\0No\0Maybe\0\0");
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Colors"))
+	{
+		float sz = ImGui::GetTextLineHeight();
+		for (int i = 0; i < ImGuiCol_COUNT; i++)
+		{
+			const char* name = ImGui::GetStyleColorName((ImGuiCol)i);
+			ImVec2 p = ImGui::GetCursorScreenPos();
+			ImGui::GetWindowDrawList()->AddRectFilled(p, ImVec2(p.x + sz, p.y + sz), ImGui::GetColorU32((ImGuiCol)i));
+			ImGui::Dummy(ImVec2(sz, sz));
+			ImGui::SameLine();
+			ImGui::MenuItem(name);
+		}
+		ImGui::EndMenu();
+	}
+
+	ImGui::Separator();
+
+	if (ImGui::MenuItem("Quit Application", "Alt+F4"))
+		should_quit = true;
+}
+
+void ModuleEditor::ShowMenuGameObject()
+{
+	if (ImGui::MenuItem("Create Empty GameObject"))
+	{
+		App->sceneMng->CreateEmptyGameObject();
+	}
 }

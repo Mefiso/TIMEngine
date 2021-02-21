@@ -3,47 +3,49 @@
 #include "Globals.h"
 #include "Module.h"
 
-class ModuleRender;
 class ModuleWindow;
-class ModuleTextures;
 class ModuleInput;
-class ModuleRenderExercise;
-class ModuleCamera;
-class ModuleProgram;
-//class ModuleRenderExercise;
-class ModuleEditor;
+class ModuleFilesystem;
+class ModuleSceneManager;
+class ModuleRender;
 class ModuleDebugDraw;
-class ModuleTexture;
+class ModuleEditor;
+class ModuleCamera;
+class ModuleTimeManager;
+struct Event;
 
 class Application
 {
 public:
-
-	Application();
-	~Application();
-
-	bool Init();
-	update_status Update();
-	bool CleanUp();
-
-	void Log(const char* input) const;
-	void ProcessFPS(const float deltaTime) const;
-
-public:
-	ModuleRender* renderer = nullptr;
+	// ---- Application Modules ---- //
+	ModuleTimeManager* timeMng = nullptr;
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
-	ModuleCamera* camera = nullptr;
-	ModuleProgram* program = nullptr;
-	ModuleEditor* editor = nullptr;
-	//ModuleRenderExercise* exercise = nullptr;
+	ModuleFilesystem* filesys = nullptr;
+	ModuleSceneManager* sceneMng = nullptr;
+	ModuleRender* renderer = nullptr;
 	ModuleDebugDraw* debugdraw = nullptr;
-	ModuleTexture* textureLoader = nullptr;
+	ModuleEditor* editor = nullptr;
+	ModuleCamera* camera = nullptr;
 
 private:
+	std::vector<Module*> modules;						// Vector containig the references to each App Module
 
-	std::vector<Module*> modules;
+public:
+	Application();										// Constructor
+	~Application();										// Destructor
 
+	bool			Init();								// Call Init() for each Module
+	update_status	Update();							// Call Update() for each Module
+	bool			CleanUp();							// Call CleanUp() for each Module
+	void			BroadcastEvent(const Event& _event);	// Call ReceiveEvent() for each Module
+
+	void Log(const char* input) const;					// Forward a LOG output to the Editor, then to W_Console
+
+	// Easy access to a precision timer from timeManager module
+	void			StartTimer();
+	unsigned int	ReadTimer() const;
+	unsigned int	StopTimer();
 };
 
 extern Application* App;

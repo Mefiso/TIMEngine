@@ -4,9 +4,11 @@
 #include "Globals.h"
 #include "Leaks.h"
 
+#include "Brofiler.h"
+
 #include "SDL.h"
-#pragma comment( lib, "SDL/lib/x86/SDL2.lib" )
-#pragma comment( lib, "SDL/lib/x86/SDL2main.lib" )
+//#pragma comment( lib, "ThirdPartyLibs/SDL/lib/x86/SDL2.lib" )
+//#pragma comment( lib, "ThirdPartyLibs/SDL/lib/x86/SDL2main.lib" )
 
 void DumpLeaks(void)
 {
@@ -24,7 +26,7 @@ enum main_states
 
 Application* App = NULL;
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
 	atexit(DumpLeaks);
 	int main_return = EXIT_FAILURE;
@@ -59,6 +61,7 @@ int main(int argc, char ** argv)
 
 		case MAIN_UPDATE:
 		{
+			BROFILER_FRAME("TIMEngine Toguapo men");
 			int update_return = App->Update();
 
 			if (update_return == UPDATE_ERROR)
@@ -70,7 +73,7 @@ int main(int argc, char ** argv)
 			if (update_return == UPDATE_STOP)
 				state = MAIN_FINISH;
 		}
-			break;
+		break;
 
 		case MAIN_FINISH:
 
@@ -85,13 +88,9 @@ int main(int argc, char ** argv)
 			state = MAIN_EXIT;
 
 			break;
-
 		}
-
 	}
-
-	delete App;
-	App = nullptr;
+	RELEASE(App);
 	LOG("Bye :)\n");
 	return main_return;
 }

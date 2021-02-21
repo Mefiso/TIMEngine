@@ -4,14 +4,13 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
-#include "ModuleInput.h"
-#include "ModuleProgram.h"
 #include "ModuleDebugDraw.h"
+#include "ModuleSceneManager.h"
+#include "GameObject.h"
 #include "debugdraw.h"
-#include "Model.h"
 #include "SDL.h"
-#include "uSTimer.h"
 #include "Leaks.h"
+#include "Brofiler.h"
 
 void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -46,7 +45,6 @@ void __stdcall OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLe
 
 ModuleRender::ModuleRender()
 {
-	msTimer = MSTimer();
 }
 
 // Destructor
@@ -58,10 +56,9 @@ ModuleRender::~ModuleRender()
 bool ModuleRender::Init()
 {
 	LOG("Creating Renderer context");
-	
+
 	// Create an OpenGL context associated with the window.
 	context = SDL_GL_CreateContext(App->window->window);
-	//SDL_GL_MakeCurrent(App->window->window, context);
 	GLenum err = glewInit();
 	// c check for errors
 	LOG("[info] Using Glew %s", glewGetString(GLEW_VERSION));
@@ -72,11 +69,6 @@ bool ModuleRender::Init()
 	LOG("[info] OpenGL version supported %s", glGetString(GL_VERSION));
 	LOG("[info] GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-	// They are enabled inside ImGui_ImplOpenGL3_RenderDrawData so setting them here is useless
-	//glEnable(GL_DEPTH_TEST); // Enable depth test
-	//glEnable(GL_CULL_FACE); // Enable cull backward faces
-	//glFrontFace(GL_CCW); // Front faces will be counter clockwise
-	//glDisable(GL_CULL_FACE);
 #ifdef _DEBUG
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -84,45 +76,31 @@ bool ModuleRender::Init()
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
 #endif
 
-	defaultProgram = App->program->CreateProgramFromFile(".\\resources\\shaders\\vertex_shader.glsl", ".\\resources\\shaders\\fragment_shader.glsl");
-	// Load models
-	uSTimer test = uSTimer();
-	modelLoaded = new Model();
-	modelLoaded->Load("./resources/models/baker_house/BakerHouse.fbx");
+	SDL_DisplayMode mode;
+	SDL_GetDesktopDisplayMode(0, &mode);
+	viewport_width = (int)(mode.w * 0.8f);
+	viewport_height = (int)(mode.h * 0.8f);
+	InitFramebuffer();
+	glViewport(0, 0, viewport_width, viewport_height);
 
-	msTimer.Start();
+	glDepthFunc(GL_LEQUAL); // For the skybox to be visualized at z-depth = (+-)1
 
 	return true;
 }
 
 update_status ModuleRender::PreUpdate()
 {
-	App->ProcessFPS(msTimer.Stop() / 1000.0f);
-
-	int w, h;
-	SDL_GetWindowSize(App->window->window, &w, &h);
-	glViewport(0, 0, w, h);
-	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+	BROFILER_CATEGORY("PreUpdateRenderer", Profiler::Color::Orchid);
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP) {
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-	}
-
-	if (eventOcurred) {
-		TranslateCamera(msTimer.Read() / 1000.0f);
-		RotateCameraKeys(msTimer.Read() / 1000.0f);
-		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) {
-			App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
-		}
-	}
-	msTimer.Start();
 	return UPDATE_CONTINUE;
 }
 
 // Called every draw update
 update_status ModuleRender::Update()
 {
+	BROFILER_CATEGORY("UpdateRenderer", Profiler::Color::Orchid);
 	if (depthTest) glEnable(GL_DEPTH_TEST); // Enable depth test
 	else glDisable(GL_DEPTH_TEST);
 
@@ -130,18 +108,30 @@ update_status ModuleRender::Update()
 	else glDisable(GL_CULL_FACE);
 
 	dd::axisTriad(float4x4::identity, 0.1f, 1.0f);
-	dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
-
-	modelLoaded->Draw(defaultProgram);
-
 	if (showGrid)
-		App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), App->window->width, App->window->height);
+		dd::xzSquareGrid(-10000, 10000, 0.0f, 100.0f, gridColor);
+	if (showOctree)
+		App->sceneMng->octree.Draw();
+
+	// Render non-culled GameObjects
+	for (std::vector<GameObject*>::iterator it = objectsToDraw.begin(), end = objectsToDraw.end(); it != end; ++it)
+		(*it)->Draw();
+
+	if (App->camera->cullingCamera != App->camera->defaultCamera)
+		App->camera->cullingCamera->Draw();
+
+	App->debugdraw->Draw(App->camera->ViewMatrix(), App->camera->ProjectionMatrix(), viewport_width, viewport_height);
+
+	// Render Skybox
+	// TODO: if (drawskybox)... else glClearColor(bgcolor)
+	App->sceneMng->DrawSkybox();
 
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleRender::PostUpdate()
 {
+	BROFILER_CATEGORY("PostUpdateRenderer", Profiler::Color::Orchid);
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }
@@ -150,89 +140,43 @@ update_status ModuleRender::PostUpdate()
 bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
-
-	delete modelLoaded;
-	glDeleteProgram(defaultProgram);
-	
 	//Destroy window
 	SDL_GL_DeleteContext(context);
 
 	return true;
 }
 
-void ModuleRender::WindowResized(unsigned int width, unsigned int height)
+void ModuleRender::PerformFrustumCulling(const float4 _frustumPlanes[6], const float3 _frustumPoints[8])
 {
-	App->window->width = width;
-	App->window->height = height;
-	App->camera->onResize((float) width / (float) height);
+	objectsToDraw.clear();
+	App->sceneMng->octree.CollectFrustumIntersections(objectsToDraw, _frustumPlanes, _frustumPoints);
 }
 
-void ModuleRender::RotateCameraMouse(float xoffset, float yoffset) const
+void ModuleRender::RemoveObjectFromDrawList(GameObject* _go)
 {
-	if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
-		SDL_SetRelativeMouseMode(SDL_TRUE);
-	}
-	App->camera->ProcessMouseMovement(xoffset, yoffset);
+	std::vector<GameObject*>::iterator it = std::find(objectsToDraw.begin(), objectsToDraw.end(), _go);
+	if (it != objectsToDraw.end())
+		objectsToDraw.erase(it);
 }
 
-void ModuleRender::MouseWheel(float xoffset, float yoffset) const
+void ModuleRender::InitFramebuffer()
 {
-	App->camera->ProcessMouseScroll(yoffset);
+	glGenFramebuffers(1, &FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	// create a color attachment texture
+	glGenTextures(1, &textureColorbuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, viewport_width, viewport_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+	// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
+	glGenRenderbuffers(1, &RBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, viewport_width, viewport_height); // use a single renderbuffer object for both a depth AND stencil buffer.
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO); // now actually attach it
+	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		LOG("[error] FRAMEBUFFER:: Framebuffer is not complete!");
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
-
-void ModuleRender::OrbitObject(float xoffset, float yoffset) const
-{
-	App->camera->ProcessOrbit(xoffset, yoffset, modelLoaded->enclosingSphere.pos);
-}
-
-bool ModuleRender::DropFile(const std::string& file)
-{
-	if (file.substr(file.find_last_of('.'), file.size()).compare(".fbx") == 0) {
-		modelLoaded->Load(file);
-		App->camera->onFocus(modelLoaded->enclosingSphere.pos, modelLoaded->enclosingSphere.r * 3);
-		return true;
-	}
-	else {
-		// Replace all textures because we only have one per model
-		modelLoaded->ReloadTexture(file.c_str());
-		return false;
-	}
-}
-
-void ModuleRender::TranslateCamera(float deltaTime) const
-{
-	// Translate camera
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(UP, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(DOWN, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(FORWARD, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(BACKWARD, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(LEFT, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(RIGHT, deltaTime);
-
-	// Speed increase/decrease
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_DOWN) {
-		App->camera->ProcessSpeed(2);	
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_UP) {
-		App->camera->ProcessSpeed(0.5f);
-	}
-}
-
-void ModuleRender::RotateCameraKeys(float deltaTime) const
-{
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(PITCH_UP, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(PITCH_DOWN, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(YAW_LEFT, deltaTime);
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		App->camera->ProcessKeyboard(YAW_RIGHT, deltaTime);
-}
-

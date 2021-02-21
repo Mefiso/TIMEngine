@@ -7,28 +7,20 @@
 class WConfig : public Window
 {
 private:
-	// SDL window
-	float brightness;
-	bool fullscreen;
-	bool resizable;
-	bool borderless;
-	bool fulldesktop;
-	bool vsync;
+	float	brightness;				// Screen brightness value passed to the ModuleWindow
+	bool	resizable;				// Resizable enable/disable passed to the ModuleWindow
+	bool	borderless;				// Borderless enable/disable passed to the ModuleWindow
+	bool	fulldesktop;			// Fullscreen desktop enable/disable passed to the ModuleWindow
+	bool	vsync;					// VSYNC enable/disable passed to the ModuleWindow
 
-	const std::vector<GLint> wrapmode = { GL_REPEAT, GL_CLAMP, GL_CLAMP_TO_BORDER, GL_MIRRORED_REPEAT };
-	const std::vector<GLint> filtermode = { GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR, GL_NEAREST };
 public:
-	WConfig(std::string name, int ID);
-	~WConfig();
+	WConfig(std::string _name);		// Constructor
+	~WConfig();						// Destructor
 
-	void Draw() override;
-	
+	void Draw() override;			// Operations performed when Rendering this window
+
 private:
-	void WindowHeader();
-	void InputHeader();
-	void RendererHeader();
-	void TextureHeader();
-	void CameraHeader();
-	int width;
-	int height;
+	void DrawWindowHeader();		// Displays ModuleWindow settings and sends them to it when modified.
+	void DrawRendererHeader();		// Displays ModuleRender settings and sends them to it when modified.
+	void DrawCameraHeader();		// Displays ModuleCamera settings and sends them to it when modified.
 };

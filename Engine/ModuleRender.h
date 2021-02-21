@@ -1,10 +1,12 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "Math/float4.h"
+#include "Math/float3.h"
 #include "MSTimer.h"
+#include "Geometry/LineSegment.h"
 
 class Model;
+class GameObject;
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -13,39 +15,40 @@ struct SDL_Rect;
 class ModuleRender : public Module
 {
 public:
-	ModuleRender();
-	~ModuleRender();
+	void* context = nullptr;										// Context of the SDL_GL configuration
 
-	bool Init();
-	update_status PreUpdate();
-	update_status Update();
-	update_status PostUpdate();
-	bool CleanUp();
+	bool depthTest	= true;											// Set if depth test is performed
+	bool cullFace	= false;										// Set if face culling is performed
+	bool showGrid	= true;											// Set if the grid is rendered
+	bool showOctree	= false;										// Set if the octree from scene is rendered
 
-	// callback funcs
-	void WindowResized(unsigned int width, unsigned int height);
-	void RotateCameraMouse(float xoffset, float yoffset) const;
-	void MouseWheel(float xoffset, float yoffset) const;
-	void OrbitObject(float xoffset, float yoffset) const;
-	bool DropFile(const std::string& file);
+	float3 backgroundColor	= { 0.1f, 0.1f, 0.1f };					// Base color of the viewport window
+	float3 gridColor		= { 1.0f, 1.0f, 1.0f };					// Base color of the world Grid
+
+private:
+	int viewport_width = 0, viewport_height = 0;					// Initial size of Viewport window
+	unsigned int FBO = 0u, textureColorbuffer = 0u, RBO = 0u;		// IDs of the Viewport buffer objects and texture
+	std::vector<GameObject*> objectsToDraw;							// Objects that pass the frustum culling test
+
 public:
-	bool depthTest = true;
-	bool cullFace = true;
-	void* context = nullptr;
-	bool eventOcurred = false;
-	bool showGrid = true;
+	ModuleRender();													// Constructor
+	~ModuleRender();												// Destructor
 
-	float4 backgroundColor = { 0.1f, 0.1f, 0.1f, 0.1f };
+	//  ----- Module Functions ----- //
+	bool			Init() override;								// Initialise Module
+	update_status	PreUpdate() override;							// Operations that must be performed just before each frame
+	update_status	Update() override;								// Operations performed at each frame
+	update_status	PostUpdate() override;							// Operations that must be performed just after each frame
+	bool			CleanUp() override;								// Clean memory allocated by this Module
 
-	unsigned int defaultProgram = 0;
+	void PerformFrustumCulling(const float4 _frustumPlanes[6], const float3 _frustumPoints[8]);	// Recalculates the objects to draw. Calls Octree CollectFrustumIntersections
+	void RemoveObjectFromDrawList(GameObject* _go);												// Removes a single GameObject from 'objectsToDraw'
 
-	// Models
-	Model* modelLoaded = nullptr;
+	// ---------- Getters ---------- //
+	unsigned int GetTextureColorbuffer()	{ return textureColorbuffer; }
+	unsigned int GetViewportWidth()			{ return viewport_width; }
+	unsigned int GetViewportHeight()		{ return viewport_height; }
 
 private:
-	void TranslateCamera(float deltaTime) const;
-	void RotateCameraKeys(float deltaTime) const;
-
-private:
-	MSTimer msTimer;
+	void InitFramebuffer();											// Initialises a framebuffer to 'FBO', 'RBO' and 'textureColorbuffer' variables. Called at Initialisation
 };
